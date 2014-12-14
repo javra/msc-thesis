@@ -1,0 +1,64 @@
+\documentclass[10pt]{report}
+%TODO: page layout
+\usepackage[backref=page,
+unicode,
+pdfauthor={Jakob von Raumer},
+pdftitle={Master Thesis},
+pdfsubject={Mathematics},
+pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo}
+\usepackage[scaled=0.95]{helvet}
+\usepackage{courier}
+\linespread{1.05}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage[all,2cell,cmtip]{xy}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathmorphing,arrows}
+\usepackage[numbered]{bookmark}
+\usepackage{fancyhdr}
+\usepackage{amssymb,amsmath,amsthm,mathrsfs,wasysym}
+\usepackage{enumitem,mathtools,xspace}
+\usepackage[nottoc]{tocbibind}
+\pagestyle{fancyplain}
+
+\begin{document}
+
+\title{Master Thesis}
+\author{\begin{tabular}{r@{ }l} 
+Author:      & Jakob von Raumer \\[1ex] 
+Supervisors: & Prof. Jeremy Avigad\\
+             & Prof. Steve Awodey
+\end{tabular}}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Introduction}
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
+
+Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum \cite{hottbook} dolor sit amet,
+
+\section{Test section}
+
+\chapter{Homotopy type theory}
+
+\chapter{Non-abelian Topology}
+
+\chapter{The Lean theorem prover}
+
+\chapter{Applying NAT on types}
+
+\chapter{Future work or such}
+
+\bibliographystyle{alpha}
+\bibliography{references}
+
+\appendix
+
+\chapter{Category theory}
+
+\end{document}
