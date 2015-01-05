@@ -6,3 +6,7 @@ main.pdf
 *.bbl
 *.blg
 *.brf
+*.clean
+*.olean
+*.ilean
+
