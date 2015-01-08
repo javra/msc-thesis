@@ -1,8 +1,7 @@
-import algebra.category.basic
+import algebra.precategory.basic algebra.precategory.morphism
 
-open precategory morphism truncation eq sigma sigma.ops
+open precategory morphism truncation eq sigma sigma.ops unit
 
--- HERE BE DRAGONS
 structure worm_precat {D₀ : Type} (C : precategory D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type) : Type :=
@@ -40,6 +39,10 @@ structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
         id_left₁→id_left₂ id_right₁→id_right₂ :=
   (homH' : Π {a b c d : D₀} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
     is_hset (D₂ f g h i))
+  (id_comp₁ : Π {a b c : D₀} (f : hom a b) (g : hom b c),
+    ID₂ (g ∘ f) = comp₁ (ID₂ g) (ID₂ f))
+  (id_comp₂ : Π {a b c : D₀} (f : hom a b) (g : hom b c),
+    ID₁ (g ∘ f) = comp₂ (ID₁ g) (ID₁ f))
   (interchange : Π {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : D₀}
     {f₀₀ : hom a₀₀ a₀₁} {f₀₁ : hom a₀₁ a₀₂} {f₁₀ : hom a₁₀ a₁₁}
     {f₁₁ : hom a₁₁ a₁₂} {f₂₀ : hom a₂₀ a₂₁} {f₂₁ : hom a₂₁ a₂₂}
@@ -49,12 +52,53 @@ structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
     (v : D₂ f₀₁ f₁₁ g₀₁ g₀₂) (u : D₂ f₀₀ f₁₀ g₀₀ g₀₁),
     comp₁ (comp₂ x w) (comp₂ v u) = comp₂ (comp₁ x v) (comp₁ w u))
 
-
 inductive Dbl_precat : Type :=
 mk : Π {D₀ : Type} [C : precategory D₀]
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b)
     (g : hom c d) (h : hom a c) (i : hom b d), Type),
   dbl_precat C D₂ → Dbl_precat
+
+namespace dbl_precat
+  variables {D₀ : Type} [C : precategory D₀]
+
+  set_option pp.beta true
+  definition square_dbl_precat : dbl_precat C
+    (λ ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
+      (h : hom a c) (i : hom b d), unit) :=
+  begin
+    fapply dbl_precat.mk,
+    repeat ( intros ;
+      [ exact ⋆ |
+        [ apply (@is_hprop.elim) | apply trunc_succ ] ; apply trunc_succ ; exact unit_contr ] ),
+    repeat ( intros;  apply idp)
+  end
+
+  definition comm_square_dbl_precat : dbl_precat C
+    (λ ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
+      (h : hom a c) (i : hom b d), g ∘ h = i ∘ f) :=
+  begin
+    fapply dbl_precat.mk,
+      intros, exact (calc g₂ ∘ h₂ ∘ h₁ = (g₂ ∘ h₂) ∘ h₁ : assoc
+                                  ... = (i₂ ∘ g₁) ∘ h₁ : a_1
+                                  ... = i₂ ∘ g₁ ∘ h₁ : assoc
+                                  ... = i₂ ∘ i₁ ∘ f₁ : a_2
+                                  ... = (i₂ ∘ i₁) ∘ f₁ : assoc),
+      intros, exact (calc f ∘ ID a = f : id_right
+                               ... = ID b ∘ f : id_left),
+      repeat ( intros ; apply @is_hset.elim ; apply !homH ),
+      intros,  exact (calc (i₂ ∘ i₁) ∘ f₁ = i₂ ∘ i₁ ∘ f₁ : assoc
+                                     ... = i₂ ∘ g₁ ∘ h₁ : a_2
+                                     ... = (i₂ ∘ g₁) ∘ h₁ : assoc
+                                     ... = (g₂ ∘ h₂) ∘ h₁ : a_1
+                                     ... = g₂ ∘ h₂ ∘ h₁ : assoc),
+      intros, exact (calc ID b ∘ f = f : id_left
+                               ... = f ∘ ID a : id_right),
+      repeat ( intros ; apply @is_hset.elim ; apply !homH ),
+      intros, apply succ_is_trunc, apply trunc_succ, apply !homH,
+      repeat ( intros ; apply @is_hprop.elim ;  apply succ_is_trunc ;  apply !homH ),
+  end
+
+end dbl_precat
 
 namespace dbl_precat
   variables {D₀ : Type} [C : precategory D₀]
@@ -111,6 +155,6 @@ namespace dbl_precat
   definition DC4_1 (u : D₂ f g h i) (v : D₂ f₂ g₂ i i₂)
     : (@bnd_left D₀ C D₂ D _ _ _ _ _ _ _ _ (@comp₁ D₀ C D₂ D a b c d c₂ d₃ f g h i g₃ h₂ i₃ w u)) = (bnd_left w) ∘ (bnd_left u) := idp
 
-  check DC4_1
+  check zero
 
 end dbl_precat
