@@ -2,7 +2,7 @@ import algebra.precategory.basic algebra.precategory.morphism
 
 open precategory morphism truncation eq sigma sigma.ops unit
 
-structure worm_precat {D₀ : Type} (C : precategory D₀)
+structure worm_precat [class] {D₀ : Type} [C : precategory D₀]
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type) : Type :=
   (comp₁ : Π {a b c₁ d₁ c₂ d₂ : D₀} ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄
@@ -30,11 +30,11 @@ structure worm_precat {D₀ : Type} (C : precategory D₀)
       (transport (λ x, D₂ f g x _) (id_right h)
         (comp₁  u (ID₁ f))) = u)
 
-structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
+structure dbl_precat [class] {D₀ : Type} [C : precategory D₀]
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type)
-  extends worm_precat C D₂,
-    worm_precat C (λ ⦃a b c d : D₀⦄ f g h i, D₂ h i f g)
+  extends worm_precat D₂,
+    worm_precat (λ ⦃a b c d : D₀⦄ f g h i, D₂ h i f g)
       renaming comp₁→comp₂ ID₁→ID₂ assoc₁→assoc₂
         id_left₁→id_left₂ id_right₁→id_right₂ :=
   (homH' : Π {a b c d : D₀} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
@@ -52,109 +52,10 @@ structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
     (v : D₂ f₀₁ f₁₁ g₀₁ g₀₂) (u : D₂ f₀₀ f₁₀ g₀₀ g₀₁),
     comp₁ (comp₂ x w) (comp₂ v u) = comp₂ (comp₁ x v) (comp₁ w u))
 
+check @worm_precat.comp₁
+
 inductive Dbl_precat : Type :=
 mk : Π {D₀ : Type} [C : precategory D₀]
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b)
     (g : hom c d) (h : hom a c) (i : hom b d), Type),
-  dbl_precat C D₂ → Dbl_precat
-
-namespace dbl_precat
-  variables {D₀ : Type} [C : precategory D₀]
-
-  set_option pp.beta true
-  definition square_dbl_precat : dbl_precat C
-    (λ ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
-      (h : hom a c) (i : hom b d), unit) :=
-  begin
-    fapply dbl_precat.mk,
-    repeat ( intros ;
-      [ exact ⋆ |
-        [ apply (@is_hprop.elim) | apply trunc_succ ] ; apply trunc_succ ; exact unit_contr ] ),
-    repeat ( intros;  apply idp)
-  end
-
-  definition comm_square_dbl_precat : dbl_precat C
-    (λ ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
-      (h : hom a c) (i : hom b d), g ∘ h = i ∘ f) :=
-  begin
-    fapply dbl_precat.mk,
-      intros, exact (calc g₂ ∘ h₂ ∘ h₁ = (g₂ ∘ h₂) ∘ h₁ : assoc
-                                  ... = (i₂ ∘ g₁) ∘ h₁ : a_1
-                                  ... = i₂ ∘ g₁ ∘ h₁ : assoc
-                                  ... = i₂ ∘ i₁ ∘ f₁ : a_2
-                                  ... = (i₂ ∘ i₁) ∘ f₁ : assoc),
-      intros, exact (calc f ∘ ID a = f : id_right
-                               ... = ID b ∘ f : id_left),
-      repeat ( intros ; apply @is_hset.elim ; apply !homH ),
-      intros,  exact (calc (i₂ ∘ i₁) ∘ f₁ = i₂ ∘ i₁ ∘ f₁ : assoc
-                                     ... = i₂ ∘ g₁ ∘ h₁ : a_2
-                                     ... = (i₂ ∘ g₁) ∘ h₁ : assoc
-                                     ... = (g₂ ∘ h₂) ∘ h₁ : a_1
-                                     ... = g₂ ∘ h₂ ∘ h₁ : assoc),
-      intros, exact (calc ID b ∘ f = f : id_left
-                               ... = f ∘ ID a : id_right),
-      repeat ( intros ; apply @is_hset.elim ; apply !homH ),
-      intros, apply succ_is_trunc, apply trunc_succ, apply !homH,
-      repeat ( intros ; apply @is_hprop.elim ;  apply succ_is_trunc ;  apply !homH ),
-  end
-
-end dbl_precat
-
-namespace dbl_precat
-  variables {D₀ : Type} [C : precategory D₀]
-    {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
-      (h : hom a c) (i : hom b d), Type}
-    [D : dbl_precat C D₂]
-  include C D
-
-  definition D₁ : D₀ → D₀ → Type := @hom D₀ C
-
-  /-set_option pp.universes true
-  set_option pp.implicit true
-  definition vert_precat : precategory (Σ (a b : D₀), hom a b) :=
-  begin
-    fapply precategory.mk,
-                intros (S, T),
-                exact (Σ (h : hom S.1 T.1) (i : hom S.2.1 T.2.1), D₂ S.2.2 T.2.2 h i),
-              intros, apply trunc_sigma, apply !homH,
-              intro f, apply trunc_sigma, apply !homH,
-              intro g, apply !homH',
-            intros (S, T, U, V, W), fapply sigma.mk, apply (comp (V.1) (W.1)),
-            fapply sigma.mk, apply (@comp D₀ C S.2.1 T.2.1 U.2.1 (V.2.1) (W.2.1)),
-            exact (@comp₁ D₀ C D₂ D S.1 S.2.1 T.1 T.2.1 _ _ _ _ _ _ _ _ _ (V.2.2) (W.2.2)),
-  end-/
-
-  variables {a b c d a₂ b₂ c₂ d₂ d₃ d₄ : D₀}
-    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
-    {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
-    {g₃ : hom c₂ d₃} {h₂ : hom c c₂} {i₃ : hom d d₃}
-    (u : D₂ f g h i)
-    (v : D₂ f₂ g₂ i i₂)
-    (w : D₂ g g₃ h₂ i₃)
-
-  notation u `+₁` v := comp₁ v u
-  notation u `+₂` v := comp₂ v u
-
-  definition bnd_upper (u : D₂ f g h i) := f
-  definition bnd_lower (u : D₂ f g h i) := g
-  definition bnd_left (u : D₂ f g h i) := h
-  definition bnd_right (u : D₂ f g h i) := i
-
-  notation `∂₁⁻` u := bnd_upper u
-  notation `∂₁⁺` u := bnd_lower u
-  notation `∂₂⁻` u := bnd_left u
-  notation `∂₂⁺` u := bnd_right u
-
-  notation `ε₁` f := ID₁ f
-  notation `ε₂` f := ID₂ f
-
-  definition zero (a : D₀) : D₂ (ID a) (ID a) (ID a) (ID a) := (@ID₁ D₀ C D₂ D a a (ID a))
-  notation `◻` := zero
-
-  check @bnd_left
-  definition DC4_1 (u : D₂ f g h i) (v : D₂ f₂ g₂ i i₂)
-    : (@bnd_left D₀ C D₂ D _ _ _ _ _ _ _ _ (@comp₁ D₀ C D₂ D a b c d c₂ d₃ f g h i g₃ h₂ i₃ w u)) = (bnd_left w) ∘ (bnd_left u) := idp
-
-  check zero
-
-end dbl_precat
+  dbl_precat D₂ → Dbl_precat
