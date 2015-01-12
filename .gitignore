@@ -9,4 +9,4 @@ main.pdf
 *.clean
 *.olean
 *.ilean
-
+*.d
