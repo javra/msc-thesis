@@ -33,7 +33,8 @@ namespace dbl_precat
       intros, exact (calc f ∘ ID a = f : id_right
                                ... = ID b ∘ f : id_left),
       repeat ( intros ; apply @is_hset.elim ; apply !homH ),
-      intros,  exact (calc (i₂ ∘ i₁) ∘ f₁ = i₂ ∘ i₁ ∘ f₁ : assoc
+      intros, apply succ_is_trunc, apply trunc_succ, apply !homH,
+      intros, exact (calc (i₂ ∘ i₁) ∘ f₁ = i₂ ∘ i₁ ∘ f₁ : assoc
                                      ... = i₂ ∘ g₁ ∘ h₁ : a_2
                                      ... = (i₂ ∘ g₁) ∘ h₁ : assoc
                                      ... = (g₂ ∘ h₂) ∘ h₁ : a_1
@@ -66,12 +67,12 @@ namespace dbl_precat
 
 end dbl_precat
 
-namespace dbl_precat
+namespace worm_precat
   context
   parameters {D₀ : Type} [C : precategory D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
-    [D : dbl_precat C D₂]
+    [D : worm_precat C D₂]
 
   structure vert_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : hom vo1 vo2)
 
@@ -169,9 +170,6 @@ namespace dbl_precat
     exact (id_right₁ C u),
   end
 
-
---vert_comp (vert_id Sg) Su = Su
-
 end
 
   universe variables l₀ l₁ l₂
@@ -198,4 +196,4 @@ end
     intros (Sf, Sg, Su), exact (@vert_id_right D₀ C D₂ D Sf Sg Su),
   end
 
-end dbl_precat
+end worm_precat

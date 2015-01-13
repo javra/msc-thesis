@@ -29,6 +29,8 @@ structure worm_precat [class] {D₀ : Type} (C : precategory D₀)
     transport (λ x, D₂ f g h x) (id_right i)
       (transport (λ x, D₂ f g x _) (id_right h)
         (comp₁  u (ID₁ f))) = u)
+  (homH' : Π {a b c d : D₀} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
+    is_hset (D₂ f g h i))
 
 structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
@@ -36,9 +38,7 @@ structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
   extends worm_precat C D₂,
     worm_precat C (λ ⦃a b c d : D₀⦄ f g h i, D₂ h i f g)
       renaming comp₁→comp₂ ID₁→ID₂ assoc₁→assoc₂
-        id_left₁→id_left₂ id_right₁→id_right₂ :=
-  (homH' : Π {a b c d : D₀} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
-    is_hset (D₂ f g h i))
+        id_left₁→id_left₂ id_right₁→id_right₂ homH'→homH'_dontuse :=
   (id_comp₁ : Π {a b c : D₀} (f : hom a b) (g : hom b c),
     ID₂ (g ∘ f) = comp₁ (ID₂ g) (ID₂ f))
   (id_comp₂ : Π {a b c : D₀} (f : hom a b) (g : hom b c),
