@@ -7,7 +7,7 @@ namespace dbl_precat
   variables {D₀ : Type} [C : precategory D₀]
   include C
 
-  definition square_dbl_precat : dbl_precat
+  definition square_dbl_precat : dbl_precat C
     (λ ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), unit) :=
   begin
@@ -19,7 +19,7 @@ namespace dbl_precat
     repeat ( intros;  apply idp)
   end
 
-  definition comm_square_dbl_precat : dbl_precat
+  definition comm_square_dbl_precat : dbl_precat C
     (λ ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), g ∘ h = i ∘ f) :=
   begin
@@ -44,9 +44,9 @@ namespace dbl_precat
       repeat ( intros ; apply @is_hprop.elim ;  apply succ_is_trunc ;  apply !homH ),
   end
 
-end dbl_precat
 
-check @dbl_precat.comp₁
+
+end dbl_precat
 
 namespace dbl_precat
   variables {D₀ : Type} [C : precategory D₀]
@@ -63,45 +63,72 @@ namespace dbl_precat
     (v : D₂ f₂ g₂ i i₂)
     (w : D₂ g g₃ h₂ i₃)
 
-  notation u `+₁` v := comp₁ v u
-  notation u `+₂` v := comp₂ v u
+  --notation u `+₁` v := comp₁ v u
+  --notation u `+₂` v := comp₂ v u
 
 end dbl_precat
 
 namespace dbl_precat
-  universe variables l₀ l₁ l₂
+  context
+  --universe variables l₀ l₁ l₂
   /-variables {D₀ : Type.{l₀}} [C : precategory.{l₀ (max l₀ l₁)} D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type.{max l₀ l₁ l₂}}
-    [D : dbl_precat D₂]-/
-  variables {D₀ : Type} [C : precategory D₀]
+    [D : dbl_precat C D₂]-/
+  parameters {D₀ : Type} [C : precategory D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
-    [D : dbl_precat D₂]
-  include C D
+    [D : dbl_precat C D₂]
+--  include C D
 
-  definition D₁ : D₀ → D₀ → Type := @hom D₀ C
+  structure vert_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : hom vo1 vo2)
 
+  structure vert_connect (Sf Sg : vert_ob) : Type :=
+  (vc1 : hom (vert_ob.vo1 Sf) (vert_ob.vo1 Sg))
+  (vc2 : hom (vert_ob.vo2 Sf) (vert_ob.vo2 Sg))
+  (vc3 : D₂ (vert_ob.vo3 Sf) (vert_ob.vo3 Sg) vc1 vc2)
 
-  set_option pp.compact_goals true
-  set_option pp.beta true
-  definition vert_connect {a b c d : D₀} (f : hom a b) (g : hom c d) :=
-  Σ (h : hom a c) (i : hom b d), D₂ f g h i
+  open vert_ob vert_connect
+  check vert_connect.mk
+exit
+  definition vert_connect_path {Sf Sg : vert_ob} (Su Sv : vert_connect Sf Sg)
+    (p1a p1b : (vo1 Sf) = (vo1 Sg))
+    (p2a p2b : (vo2 Sf) = (vo2 Sg))
+    (p3a : p1a ▹ p2a ▹ (vo3 Sf) = (vo3 Sg))
+    (p3b : p1b ▹ p2b ▹ (vo3 Sf) = (vo3 Sg))
+      : vert_connect.mk p1a p2a p3a  = vert_connect.mk p1b p2b p3b :=
+  sorry
 
-  check assoc
-  definition vert_comp {a₁ a₂ a₃ b₁ b₂ b₃ : D₀}
-    {f : hom a₁ b₁} {g : hom a₂ b₂} {h : hom a₃ b₃}
-    : vert_connect g h → vert_connect f g → vert_connect f h :=
-  (λ v u, sigma.mk (v.1 ∘ u.1) (sigma.mk (v.2.1 ∘ u.2.1) (comp₁ v.2.2 u.2.2)))
+  definition vert_comp [reducible] {Sf Sg Sh : Σ (a b : D₀), hom a b}
+    : vert_connect Sg Sh → vert_connect Sf Sg → vert_connect Sf Sh :=
+  (λ v u, ⟨ v.1 ∘ u.1 , v.2.1 ∘ u.2.1 , comp₁ C v.2.2 u.2.2 ⟩)
 
-  definition vert_assoc {f₁ f₂ f₃ f₄ : Σ (a b : D₀), hom a b}
-    (Sw : vert_connect f₃ f₄)
-    (Sv : vert_connect f₂ f₃)
-    (Su : vert_connect f₁ f₂) : vert_comp Sw (vert_comp Sv Su) = vert_comp (vert_comp Sw Sv) Su
+  set_option class.trace_instances true
+  set_option unifier.expensive_classes true
+  check @transport
+  check @sigma.path
+  check @assoc₁
+  definition vert_assoc {Sf₁ Sf₂ Sf₃ Sf₄ : Σ (a b : D₀), @hom D₀ C a b}
+    (Sw : vert_connect Sf₃ Sf₄) (Sv : vert_connect Sf₂ Sf₃) (Su : vert_connect Sf₁ Sf₂)
+    : vert_comp Sw (vert_comp Sv Su) = vert_comp (vert_comp Sw Sv) Su :=
 
+  sigma.path (@assoc D₀ C Sf₁.1 Sf₂.1 Sf₃.1 Sf₄.1 Sw.1 Sv.1 Su.1) (
+    sigma.path (@assoc D₀ C Sf₁.2.1 Sf₂.2.1 Sf₃.2.1 Sf₄.2.1 Sw.2.1 Sv.2.1 Su.2.1)
+      (@assoc₁ D₀ C D₂ D Sf₁.1 Sf₁.2.1 Sf₂.1 Sf₂.2.1 Sf₃.1 Sf₃.2.1 Sf₄.1 Sf₄.2.1
+        Sf₁.2.2 Sf₂.2.2 Su.1 Su.2.1 Sf₃.2.2 Sv.1 Sv.2.1 Sf₄.2.2 Sw.1 Sw.2.1 Sw.2.2 Sv.2.2 Su.2.2)
+    )
+exit
+  definition vert_assoc {Sf₁ Sf₂ Sf₃ Sf₄ : Σ (a b : D₀), @hom D₀ C a b}
+    (Sw : vert_connect Sf₃ Sf₄) (Sv : vert_connect Sf₂ Sf₃) (Su : vert_connect Sf₁ Sf₂)
+    : vert_comp Sw (vert_comp Sv Su) = vert_comp (vert_comp Sw Sv) Su :=
+  sigma.path (@assoc D₀ C Sf₁.1 Sf₂.1 Sf₃.1 Sf₄.1 Sw.1 Sv.1 Su.1) (
+    sigma.path (@assoc D₀ C Sf₁.2.1 Sf₂.2.1 Sf₃.2.1 Sf₄.2.1 Sw.2.1 Sv.2.1 Su.2.1)
+      (@assoc₁ D₀ C D₂ D Sf₁.1 Sf₁.2.1 Sf₂.1 Sf₂.2.1 Sf₃.1 Sf₃.2.1 Sf₄.1 Sf₄.2.1
+        Sf₁.2.2 Sf₂.2.2 Su.1 Su.2.1 Sf₃.2.2 Sv.1 Sv.2.1 Sf₄.2.2 Sw.1 Sw.2.1 Sw.2.2 Sv.2.2 Su.2.2)
+    )
 
   definition vert_precat : precategory.{(max l₀ l₁) (max l₀ l₁ l₂)} (Σ (a b : D₀), hom a b) :=
-  begin
+  /-begin
     fapply precategory.mk.{(max l₀ l₁) (max l₀ l₁ l₂)},
                 intros (S, T),
                 exact (Σ (h : hom S.1 T.1) (i : hom S.2.1 T.2.1), D₂ S.2.2 T.2.2 h i),
@@ -118,12 +145,9 @@ namespace dbl_precat
         fapply sigma.path, exact (@assoc D₀ C a.2.1 b.2.1 c.2.1 d.2.1 h.2.1 g.2.1 f.2.1),
         apply (@assoc₁ D₀ C D₂ D a.1 a.2.1 b.1 b.2.1 c.1 c.2.1 d.1 d.2.1
           a.2.2 b.2.2 f.1 f.2.1 c.2.2 g.1 g.2.1 d.2.2 h.1 h.2.1 f.2.2 g.2.2 h.2.2),
-  end
+  end-/ sorry
 
-exit
-
-
-  definition bnd_upper (u : D₂ f g h i) := f
+  /-definition bnd_upper (u : D₂ f g h i) := f
   definition bnd_lower (u : D₂ f g h i) := g
   definition bnd_left (u : D₂ f g h i) := h
   definition bnd_right (u : D₂ f g h i) := i
@@ -143,6 +167,8 @@ exit
   definition DC4_1 (u : D₂ f g h i) (v : D₂ f₂ g₂ i i₂)
     : (@bnd_left D₀ C D₂ D _ _ _ _ _ _ _ _ (@comp₁ D₀ C D₂ D a b c d c₂ d₃ f g h i g₃ h₂ i₃ w u)) = (bnd_left w) ∘ (bnd_left u) := idp
 
-  check zero
+  check zero-/
+
+end
 
 end dbl_precat

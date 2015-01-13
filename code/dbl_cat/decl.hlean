@@ -2,7 +2,7 @@ import algebra.precategory.basic algebra.precategory.morphism
 
 open precategory morphism truncation eq sigma sigma.ops unit
 
-structure worm_precat [class] {D₀ : Type} [C : precategory D₀]
+structure worm_precat [class] {D₀ : Type} (C : precategory D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type) : Type :=
   (comp₁ : Π {a b c₁ d₁ c₂ d₂ : D₀} ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄
@@ -30,11 +30,11 @@ structure worm_precat [class] {D₀ : Type} [C : precategory D₀]
       (transport (λ x, D₂ f g x _) (id_right h)
         (comp₁  u (ID₁ f))) = u)
 
-structure dbl_precat [class] {D₀ : Type} [C : precategory D₀]
+structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type)
-  extends worm_precat D₂,
-    worm_precat (λ ⦃a b c d : D₀⦄ f g h i, D₂ h i f g)
+  extends worm_precat C D₂,
+    worm_precat C (λ ⦃a b c d : D₀⦄ f g h i, D₂ h i f g)
       renaming comp₁→comp₂ ID₁→ID₂ assoc₁→assoc₂
         id_left₁→id_left₂ id_right₁→id_right₂ :=
   (homH' : Π {a b c d : D₀} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
@@ -52,10 +52,8 @@ structure dbl_precat [class] {D₀ : Type} [C : precategory D₀]
     (v : D₂ f₀₁ f₁₁ g₀₁ g₀₂) (u : D₂ f₀₀ f₁₀ g₀₀ g₀₁),
     comp₁ (comp₂ x w) (comp₂ v u) = comp₂ (comp₁ x v) (comp₁ w u))
 
-check @worm_precat.comp₁
-
 inductive Dbl_precat : Type :=
-mk : Π {D₀ : Type} [C : precategory D₀]
+mk : Π {D₀ : Type} (C : precategory D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b)
     (g : hom c d) (h : hom a c) (i : hom b d), Type),
-  dbl_precat D₂ → Dbl_precat
+  dbl_precat C D₂ → Dbl_precat
