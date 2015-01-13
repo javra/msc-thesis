@@ -1,7 +1,8 @@
-import types.sigma
+import types.sigma types.pi
 import .decl
 
 open precategory morphism truncation eq sigma sigma.ops unit nat
+open equiv pi
 
 namespace dbl_precat
   variables {D₀ : Type} [C : precategory D₀]
@@ -67,18 +68,26 @@ end dbl_precat
 
 namespace dbl_precat
   context
-  --universe variables l₀ l₁ l₂
-  /-variables {D₀ : Type.{l₀}} [C : precategory.{l₀ (max l₀ l₁)} D₀]
-    {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
-      (h : hom a c) (i : hom b d), Type.{max l₀ l₁ l₂}}
-    [D : dbl_precat C D₂]-/
   parameters {D₀ : Type} [C : precategory D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
     [D : dbl_precat C D₂]
-  --include D
 
   structure vert_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : hom vo1 vo2)
+
+  definition vert_ob_sigma_char : (Σ (a b : D₀), hom a b) ≃ vert_ob :=
+  begin
+    fapply equiv.mk,
+      intro S, apply (vert_ob.mk S.1 S.2.1 S.2.2),
+    fapply is_equiv.adjointify,
+        intro V, apply (vert_ob.rec_on V), intros (a, b, f),
+        apply (⟨a, b, f⟩),
+      intro V, apply (vert_ob.rec_on V), intros (a, b, f),
+      apply idp,
+    intro S, apply (sigma.rec_on S), intros (a, S'),
+    apply (sigma.rec_on S'), intros (b, f),
+    apply idp,
+  end
 
   structure vert_connect (Sf Sg : vert_ob) : Type :=
   (vc1 : hom (vert_ob.vo1 Sf) (vert_ob.vo1 Sg))
@@ -86,6 +95,22 @@ namespace dbl_precat
   (vc3 : D₂ (vert_ob.vo3 Sf) (vert_ob.vo3 Sg) vc1 vc2)
 
   open vert_ob vert_connect
+
+  definition vert_connect_sigma_char (Sf Sg : vert_ob) :
+    (Σ (h : hom (vo1 Sf) (vo1 Sg)) (i : hom (vo2 Sf) (vo2 Sg)), D₂ (vo3 Sf) (vo3 Sg) h i)
+      ≃ vert_connect Sf Sg :=
+  begin
+    fapply equiv.mk,
+      intro S, apply (vert_connect.mk S.1 S.2.1 S.2.2),
+    fapply is_equiv.adjointify,
+        intro V, apply (vert_connect.rec_on V), intros (h, i, u),
+        exact (⟨h, i, u⟩),
+      intro V, apply (vert_connect.rec_on V), intros (h, i, u),
+      apply idp,
+    intro S, apply (sigma.rec_on S), intros (h, S'),
+    apply (sigma.rec_on S'), intros (i, u),
+    apply idp,
+  end
 
   definition vert_connect_path' {Sf Sg : vert_ob} : Π
     {h₁ h₂ : hom (vo1 Sf) (vo1 Sg)}
@@ -108,6 +133,10 @@ namespace dbl_precat
   (λ Sv Su, vert_connect.mk (vc1 Sv ∘ vc1 Su) (vc2 Sv ∘ vc2 Su)
     (comp₁ C (vc3 Sv) (vc3 Su)))
 
+  definition vert_id [D : dbl_precat C D₂] (Sf : vert_ob)
+    : vert_connect Sf Sf :=
+  vert_connect.mk (ID (vo1 Sf)) (ID (vo2 Sf)) (ID₁ D₂ (vo3 Sf))
+
   definition vert_assoc [D : dbl_precat C D₂] {Sf₁ Sf₂ Sf₃ Sf₄ : vert_ob}
     (Sw : vert_connect Sf₃ Sf₄) (Sv : vert_connect Sf₂ Sf₃) (Su : vert_connect Sf₁ Sf₂)
     : vert_comp Sw (vert_comp Sv Su) = vert_comp (vert_comp Sw Sv) Su :=
@@ -118,63 +147,55 @@ namespace dbl_precat
     exact (assoc₁ C (vc3 Sw) (vc3 Sv) (vc3 Su)),
   end
 
-  /-sigma.path (@assoc D₀ C Sf₁.1 Sf₂.1 Sf₃.1 Sf₄.1 Sw.1 Sv.1 Su.1) (
-    sigma.path (@assoc D₀ C Sf₁.2.1 Sf₂.2.1 Sf₃.2.1 Sf₄.2.1 Sw.2.1 Sv.2.1 Su.2.1)
-      (@assoc₁ D₀ C D₂ D Sf₁.1 Sf₁.2.1 Sf₂.1 Sf₂.2.1 Sf₃.1 Sf₃.2.1 Sf₄.1 Sf₄.2.1
-        Sf₁.2.2 Sf₂.2.2 Su.1 Su.2.1 Sf₃.2.2 Sv.1 Sv.2.1 Sf₄.2.2 Sw.1 Sw.2.1 Sw.2.2 Sv.2.2 Su.2.2)
-    )-/
-exit
-  definition vert_assoc {Sf₁ Sf₂ Sf₃ Sf₄ : Σ (a b : D₀), @hom D₀ C a b}
-    (Sw : vert_connect Sf₃ Sf₄) (Sv : vert_connect Sf₂ Sf₃) (Su : vert_connect Sf₁ Sf₂)
-    : vert_comp Sw (vert_comp Sv Su) = vert_comp (vert_comp Sw Sv) Su :=
-  sigma.path (@assoc D₀ C Sf₁.1 Sf₂.1 Sf₃.1 Sf₄.1 Sw.1 Sv.1 Su.1) (
-    sigma.path (@assoc D₀ C Sf₁.2.1 Sf₂.2.1 Sf₃.2.1 Sf₄.2.1 Sw.2.1 Sv.2.1 Su.2.1)
-      (@assoc₁ D₀ C D₂ D Sf₁.1 Sf₁.2.1 Sf₂.1 Sf₂.2.1 Sf₃.1 Sf₃.2.1 Sf₄.1 Sf₄.2.1
-        Sf₁.2.2 Sf₂.2.2 Su.1 Su.2.1 Sf₃.2.2 Sv.1 Sv.2.1 Sf₄.2.2 Sw.1 Sw.2.1 Sw.2.2 Sv.2.2 Su.2.2)
-    )
+  definition vert_id_left [D : dbl_precat C D₂] {Sf Sg : vert_ob}
+    (Su : vert_connect Sf Sg) : vert_comp (vert_id Sg) Su = Su :=
+  begin
+    apply (vert_connect.rec_on Su),
+    intros (h, i, u),
+    fapply vert_connect_path',
+    apply id_left,
+    apply id_left,
+    exact (id_left₁ C u),
+  end
 
-  definition vert_precat : precategory.{(max l₀ l₁) (max l₀ l₁ l₂)} (Σ (a b : D₀), hom a b) :=
-  /-begin
-    fapply precategory.mk.{(max l₀ l₁) (max l₀ l₁ l₂)},
-                intros (S, T),
-                exact (Σ (h : hom S.1 T.1) (i : hom S.2.1 T.2.1), D₂ S.2.2 T.2.2 h i),
-              intros, apply trunc_sigma, apply !homH,
-              intro f, apply trunc_sigma, apply !homH,
-              intro g, apply !homH',
-            intros (S, T, U, V, W), fapply sigma.mk, apply (comp (V.1) (W.1)),
-            fapply sigma.mk, apply (@comp D₀ C S.2.1 T.2.1 U.2.1 (V.2.1) (W.2.1)),
-            apply (@comp₁ D₀ C D₂ D S.1 S.2.1 T.1 T.2.1 U.1 U.2.1
-              S.2.2 T.2.2), apply (V.2.2), apply (W.2.2),
-          intros, fapply sigma.mk, exact (ID a.1),
-          fapply sigma.mk, exact (ID a.2.1), apply (@ID₁ D₀ C D₂ D a.1 a.2.1 a.2.2),
-        intros, fapply sigma.path, apply (@assoc D₀ C a.1 b.1 c.1 d.1 h.1 g.1 f.1),
-        fapply sigma.path, exact (@assoc D₀ C a.2.1 b.2.1 c.2.1 d.2.1 h.2.1 g.2.1 f.2.1),
-        apply (@assoc₁ D₀ C D₂ D a.1 a.2.1 b.1 b.2.1 c.1 c.2.1 d.1 d.2.1
-          a.2.2 b.2.2 f.1 f.2.1 c.2.2 g.1 g.2.1 d.2.2 h.1 h.2.1 f.2.2 g.2.2 h.2.2),
-  end-/ sorry
+  definition vert_id_right [D : dbl_precat C D₂] {Sf Sg : vert_ob}
+    (Su : vert_connect Sf Sg) : vert_comp Su (vert_id Sf) = Su :=
+  begin
+    apply (vert_connect.rec_on Su),
+    intros (h, i, u),
+    fapply vert_connect_path',
+    apply id_right,
+    apply id_right,
+    exact (id_right₁ C u),
+  end
 
-  /-definition bnd_upper (u : D₂ f g h i) := f
-  definition bnd_lower (u : D₂ f g h i) := g
-  definition bnd_left (u : D₂ f g h i) := h
-  definition bnd_right (u : D₂ f g h i) := i
 
-  notation `∂₁⁻` u := bnd_upper u
-  notation `∂₁⁺` u := bnd_lower u
-  notation `∂₂⁻` u := bnd_left u
-  notation `∂₂⁺` u := bnd_right u
-
-  notation `ε₁` f := ID₁ f
-  notation `ε₂` f := ID₂ f
-
-  definition zero (a : D₀) : D₂ (ID a) (ID a) (ID a) (ID a) := (@ID₁ D₀ C D₂ D a a (ID a))
-  notation `◻` := zero
-
-  check @bnd_left
-  definition DC4_1 (u : D₂ f g h i) (v : D₂ f₂ g₂ i i₂)
-    : (@bnd_left D₀ C D₂ D _ _ _ _ _ _ _ _ (@comp₁ D₀ C D₂ D a b c d c₂ d₃ f g h i g₃ h₂ i₃ w u)) = (bnd_left w) ∘ (bnd_left u) := idp
-
-  check zero-/
+--vert_comp (vert_id Sg) Su = Su
 
 end
+
+  universe variables l₀ l₁ l₂
+  variables {D₀ : Type.{l₀}} [C : precategory.{l₀ (max l₀ l₁)} D₀]
+    {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
+      (h : hom a c) (i : hom b d), Type.{max l₀ l₁ l₂}}
+    [D : dbl_precat C D₂]
+
+  definition vert_precat [D : dbl_precat C D₂]
+    : precategory.{(max l₀ l₁) (max l₀ l₁ l₂)} vert_ob :=
+  begin
+    fapply precategory.mk.{(max l₀ l₁) (max l₀ l₁ l₂)},
+                intros (Sf, Sg), exact (@vert_connect D₀ C D₂ Sf Sg),
+              intros (Sf, Sg), apply trunc_equiv, apply equiv.to_is_equiv,
+              exact (@vert_connect_sigma_char D₀ C D₂ Sf Sg),
+              apply trunc_sigma, apply !homH,
+              intro f, apply trunc_sigma, apply !homH,
+              intro g, apply (@homH' D₀ C D₂ D),
+            intros (Sf, Sg, Sh, Sv, Su), apply (vert_comp Sv Su),
+          intro Sf, exact (@vert_id D₀ C D₂ D Sf),
+        intros (Sf₁, Sf₂, Sf₃, Sf₄, Sw, Sv, Su),
+        exact (@vert_assoc D₀ C D₂ D Sf₁ Sf₂ Sf₃ Sf₄ Sw Sv Su),
+      intros (Sf, Sg, Su), exact (@vert_id_left D₀ C D₂ D Sf Sg Su),
+    intros (Sf, Sg, Su), exact (@vert_id_right D₀ C D₂ D Sf Sg Su),
+  end
 
 end dbl_precat
