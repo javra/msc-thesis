@@ -63,9 +63,6 @@ namespace dbl_precat
     (v : D₂ f₂ g₂ i i₂)
     (w : D₂ g g₃ h₂ i₃)
 
-  --notation u `+₁` v := comp₁ v u
-  --notation u `+₂` v := comp₂ v u
-
 end dbl_precat
 
 namespace dbl_precat
@@ -79,7 +76,7 @@ namespace dbl_precat
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
     [D : dbl_precat C D₂]
---  include C D
+  --include D
 
   structure vert_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : hom vo1 vo2)
 
@@ -89,34 +86,43 @@ namespace dbl_precat
   (vc3 : D₂ (vert_ob.vo3 Sf) (vert_ob.vo3 Sg) vc1 vc2)
 
   open vert_ob vert_connect
-  check vert_connect.mk
-exit
-  definition vert_connect_path {Sf Sg : vert_ob} (Su Sv : vert_connect Sf Sg)
-    (p1a p1b : (vo1 Sf) = (vo1 Sg))
-    (p2a p2b : (vo2 Sf) = (vo2 Sg))
-    (p3a : p1a ▹ p2a ▹ (vo3 Sf) = (vo3 Sg))
-    (p3b : p1b ▹ p2b ▹ (vo3 Sf) = (vo3 Sg))
-      : vert_connect.mk p1a p2a p3a  = vert_connect.mk p1b p2b p3b :=
-  sorry
 
-  definition vert_comp [reducible] {Sf Sg Sh : Σ (a b : D₀), hom a b}
+  definition vert_connect_path' {Sf Sg : vert_ob} : Π
+    {h₁ h₂ : hom (vo1 Sf) (vo1 Sg)}
+    {i₁ i₂ : hom (vo2 Sf) (vo2 Sg)}
+    (ph : h₁ = h₂)
+    {u : D₂ (vo3 Sf) (vo3 Sg) h₁ i₁}
+    (pi : i₁ = i₂)
+    {v : D₂ (vo3 Sf) (vo3 Sg) h₂ i₂}
+    (puv : pi ▹ ph ▹ u = v)
+      , vert_connect.mk h₁ i₁ u  = vert_connect.mk h₂ i₂ v :=
+  begin
+    intros (h₁, h₂, i₁, i₂, ph), apply (eq.rec_on ph),
+    intros (u, pi), apply (eq.rec_on pi),
+    intros, apply (eq.rec_on puv),
+    apply idp,
+  end
+
+  definition vert_comp [reducible] [D : dbl_precat C D₂] {Sf Sg Sh : vert_ob}
     : vert_connect Sg Sh → vert_connect Sf Sg → vert_connect Sf Sh :=
-  (λ v u, ⟨ v.1 ∘ u.1 , v.2.1 ∘ u.2.1 , comp₁ C v.2.2 u.2.2 ⟩)
+  (λ Sv Su, vert_connect.mk (vc1 Sv ∘ vc1 Su) (vc2 Sv ∘ vc2 Su)
+    (comp₁ C (vc3 Sv) (vc3 Su)))
 
-  set_option class.trace_instances true
-  set_option unifier.expensive_classes true
-  check @transport
-  check @sigma.path
-  check @assoc₁
-  definition vert_assoc {Sf₁ Sf₂ Sf₃ Sf₄ : Σ (a b : D₀), @hom D₀ C a b}
+  definition vert_assoc [D : dbl_precat C D₂] {Sf₁ Sf₂ Sf₃ Sf₄ : vert_ob}
     (Sw : vert_connect Sf₃ Sf₄) (Sv : vert_connect Sf₂ Sf₃) (Su : vert_connect Sf₁ Sf₂)
     : vert_comp Sw (vert_comp Sv Su) = vert_comp (vert_comp Sw Sv) Su :=
+  begin
+    fapply vert_connect_path',
+    exact (assoc (vc1 Sw) (vc1 Sv) (vc1 Su)),
+    exact (assoc (vc2 Sw) (vc2 Sv) (vc2 Su)),
+    exact (assoc₁ C (vc3 Sw) (vc3 Sv) (vc3 Su)),
+  end
 
-  sigma.path (@assoc D₀ C Sf₁.1 Sf₂.1 Sf₃.1 Sf₄.1 Sw.1 Sv.1 Su.1) (
+  /-sigma.path (@assoc D₀ C Sf₁.1 Sf₂.1 Sf₃.1 Sf₄.1 Sw.1 Sv.1 Su.1) (
     sigma.path (@assoc D₀ C Sf₁.2.1 Sf₂.2.1 Sf₃.2.1 Sf₄.2.1 Sw.2.1 Sv.2.1 Su.2.1)
       (@assoc₁ D₀ C D₂ D Sf₁.1 Sf₁.2.1 Sf₂.1 Sf₂.2.1 Sf₃.1 Sf₃.2.1 Sf₄.1 Sf₄.2.1
         Sf₁.2.2 Sf₂.2.2 Su.1 Su.2.1 Sf₃.2.2 Sv.1 Sv.2.1 Sf₄.2.2 Sw.1 Sw.2.1 Sw.2.2 Sv.2.2 Su.2.2)
-    )
+    )-/
 exit
   definition vert_assoc {Sf₁ Sf₂ Sf₃ Sf₄ : Σ (a b : D₀), @hom D₀ C a b}
     (Sw : vert_connect Sf₃ Sf₄) (Sv : vert_connect Sf₂ Sf₃) (Su : vert_connect Sf₁ Sf₂)
