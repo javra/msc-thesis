@@ -28,7 +28,11 @@ structure weak_dbl_gpd [class] {D₀ : Type} (C : groupoid D₀)
                 @comp₂ @ID₂ @assoc₂ @id_left₂ @id_right₂ @homH'_dontuse
                 @id_comp₁ @id_comp₂ @interchange)
               )
-            a b f)/-
+            a b f)
+exit
+structure weak_dbl_gpd' [class]  {D₀ : Type} (C : groupoid D₀)
+  (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
+    Type) extends weak_dbl_gpd C D₂ :=
   (all_iso₂ : Π a b (f : @precategory.hom _
     (@horiz_precat D₀ C D₂
        (dbl_precat.mk @comp₁ @ID₁ @assoc₁ @id_left₁ @id_right₁ @homH'
@@ -42,7 +46,7 @@ structure weak_dbl_gpd [class] {D₀ : Type} (C : groupoid D₀)
                 @comp₂ @ID₂ @assoc₂ @id_left₂ @id_right₂ @homH'_dontuse
                 @id_comp₁ @id_comp₂ @interchange)
               )
-            a b f)-/
+            a b f)
 
 
 
