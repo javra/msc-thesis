@@ -6,26 +6,47 @@ open eq function precategory morphism groupoid dbl_precat
 
 namespace weak_dbl_gpd
 
-check dbl_precat
+check @dbl_precat.vert_precat
+check @dbl_precat.horiz_precat
+check @hom
+check dbl_precat.mk
+check @is_iso
+
 structure weak_dbl_gpd [class] {D₀ : Type} (C : groupoid D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type) extends dbl_precat C D₂ :=
-  (inv₁ : Π ⦃ a b c d : D₀ ⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
-    D₂ f g h i → D₂ g f (h⁻¹) (i⁻¹))
-/-
-  (iso₁_sect : Π ⦃ a b c d : D₀ ⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
-    (u : D₂ f g h i),
-    (transport (λ x, D₂ f f (ID a) x) (inverse_compose i)
-      (transport (λ x, D₂ f f x (i⁻¹ ∘ i)) (inverse_compose h)
-        (comp₁ (inv₁ u) u))) = ID₁ D₂ f)
+  (all_iso₁ : Π a b (f : @precategory.hom _
+    (@vert_precat D₀ C D₂
+       (dbl_precat.mk @comp₁ @ID₁ @assoc₁ @id_left₁ @id_right₁ @homH'
+         @comp₂ @ID₂ @assoc₂ @id_left₂ @id_right₂ @homH'_dontuse
+         @id_comp₁ @id_comp₂ @interchange
+       )
+    )
+    a b), @is_iso _
+            (@vert_precat D₀ C D₂
+              (dbl_precat.mk @comp₁ @ID₁ @assoc₁ @id_left₁ @id_right₁ @homH'
+                @comp₂ @ID₂ @assoc₂ @id_left₂ @id_right₂ @homH'_dontuse
+                @id_comp₁ @id_comp₂ @interchange)
+              )
+            a b f)/-
+  (all_iso₂ : Π a b (f : @precategory.hom _
+    (@horiz_precat D₀ C D₂
+       (dbl_precat.mk @comp₁ @ID₁ @assoc₁ @id_left₁ @id_right₁ @homH'
+         @comp₂ @ID₂ @assoc₂ @id_left₂ @id_right₂ @homH'_dontuse
+         @id_comp₁ @id_comp₂ @interchange
+       )
+    )
+    a b), @is_iso _
+            (@horiz_precat D₀ C D₂
+              (dbl_precat.mk @comp₁ @ID₁ @assoc₁ @id_left₁ @id_right₁ @homH'
+                @comp₂ @ID₂ @assoc₂ @id_left₂ @id_right₂ @homH'_dontuse
+                @id_comp₁ @id_comp₂ @interchange)
+              )
+            a b f)-/
+
+
+
 exit
-  (iso₁_retr : Π ⦃ a b c d : D₀ ⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
-    (u : D₂ f g h i), comp₁ u (inv₁ u) = ID₁ g)
-exit
-  (inv₂ : Π ⦃ a b c d : D₀ ⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
-    D₂ f g h i → D₂ (f⁻¹) (g⁻¹) i h)
-  (iso₂_sect : Π ⦃ a b c d : D₀ ⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
-    (u : D₂ f g h i), comp₂ (inv₂ u) u = ID₂ f)-/
 
 end weak_dbl_gpd
 
