@@ -5,7 +5,7 @@ open precategory morphism truncation eq sigma sigma.ops unit
 structure worm_precat [class] {D₀ : Type} (C : precategory D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type) : Type :=
-  (comp₁ : Π {a b c₁ d₁ c₂ d₂ : D₀} ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄
+  (comp₁ : Π ⦃a b c₁ d₁ c₂ d₂ : D₀⦄ ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄
     ⦃i₁ : hom b d₁⦄ ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄,
     (D₂ g₁ g₂ h₂ i₂) → (D₂ f₁ g₁ h₁ i₁) → (@D₂ a b c₂ d₂ f₁ g₂ (h₂ ∘ h₁) (i₂ ∘ i₁)))
   (ID₁ : Π {a b : D₀} (f : hom a b), D₂ f f (ID a) (ID b))

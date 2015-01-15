@@ -1,5 +1,5 @@
 import types.pi types.sigma
-import .decl .basic
+import ..dbl_cat.decl ..dbl_cat.basic
 
 open eq dbl_precat precategory truncation morphism
 
@@ -8,9 +8,7 @@ namespace dbl_precat
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type) [D : dbl_precat C D₂]
 
-  set_option unifier.max_steps 100000
-  set_option verbose true
-  check @comp₂
+  set_option unifier.max_steps 23574
   structure thin_structure (thin : Π ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄, D₂ f g h i → Type) : Type :=
   (thin_hprop : Π ⦃a b c d : D₀⦄ ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
