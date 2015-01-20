@@ -10,7 +10,7 @@ namespace dbl_precat
 
   set_option unifier.max_steps 23574
   set_option pp.beta true
-  structure thin_structure (thin : Π ⦃a b c d : D₀⦄
+  structure thin_structure [class] (thin : Π ⦃a b c d : D₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), g ∘ h = i ∘ f → D₂ f g h i) : Type :=
   (thin_id₁ : Π ⦃a b : D₀⦄ (f : hom a b) p, thin f f (ID a) (ID b) p = ID₁ D₂ f)
   (thin_id₂ : Π ⦃a b : D₀⦄ (f : hom a b) p, thin (ID a) (ID b) f f p = ID₂ D₂ f)

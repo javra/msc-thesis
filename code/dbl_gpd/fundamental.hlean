@@ -21,6 +21,15 @@ namespace dbl_precat
     (λ (a b : C) (p : ι a = ι b), concat_1p p)
     (λ ⦃a b : C⦄ (p : ι a = ι b), @is_iso.mk C _ a b p (p⁻¹) !concat_pV !concat_Vp)
 
+  /-definition square_rec {P : Π (a b c d : C) (f : ι a = ι b) (g : ι c = ι d)
+    (h : ι a = ι c) (i : ι b = ι d), ap ι' (h ⬝ g) = ap ι' (f ⬝ i) → Type}
+    {a b c d : C} {f : ι a = ι b} {g : ι c = ι d}
+    {h : ι a = ι c} {i : ι b = ι d} (u : ap ι' (h ⬝ g) = ap ι' (f ⬝ i))
+    (P a a a a idp idp idp idp idp) :
+      P a b c d f g h i u :=
+  @eq.rec A (ι a)
+  check @eq.rec-/
+
   definition fund_dbl_precat_comp {a₁ b₁ a₂ b₂ a₃ b₃ : C}
     (f₁ : ι a₁ = ι b₁) (g₁ : ι a₂ = ι b₂) (h₁ : ι a₁ = ι a₂) (i₁ : ι b₁ = ι b₂)
     (g₂ : ι a₃ = ι b₃) (h₂ : ι a₂ = ι a₃) (i₂ : ι b₂ = ι b₃)
@@ -44,15 +53,17 @@ namespace dbl_precat
     (w : ap ι' (h₃ ⬝ g₃) = ap ι' (g₂ ⬝ i₃))
     (v : ap ι' (h₂ ⬝ g₂) = ap ι' (g₁ ⬝ i₂))
     (u : ap ι' (h₁ ⬝ g₁) = ap ι' (f₁ ⬝ i₁)) :
-    transport (λ x, ap ι' (_ ⬝ g₃) = ap ι' (f₁ ⬝ x)) (assoc i₃ i₂ i₁)
-      (transport (λ x, ap ι' (x ⬝ g₃) = ap ι' (f₁ ⬝ _)) (assoc h₃ h₂ h₁)
-      (fund_dbl_precat_comp X A C ι' ι f₁ g₂ (h₁ ⬝ h₂) (i₁ ⬝ i₂) g₃ h₃ i₃ w
-        (fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u)))
-      = fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₃ (h₂ ⬝ h₃) (i₂ ⬝ i₃)
-        (fund_dbl_precat_comp X A C ι' ι g₁ g₂ h₂ i₂ g₃ h₃ i₃ w v) u :=
-  begin
-
-  end-/
+   assoc i₃ i₂ i₁ ▹ assoc h₃ h₂ h₁ ▹
+    fund_dbl_precat_comp X A C ι' ι f₁ g₂ (h₁ ⬝ h₂) (i₁ ⬝ i₂) g₃ h₃ i₃ w
+      (fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u)
+  = fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₃ (h₂ ⬝ h₃) (i₂ ⬝ i₃)
+      (fund_dbl_precat_comp X A C ι' ι g₁ g₂ h₂ i₂ g₃ h₃ i₃ w v) u :=
+  calc assoc i₃ i₂ i₁ ▹ assoc h₃ h₂ h₁ ▹
+    fund_dbl_precat_comp X A C ι' ι f₁ g₂ (h₁ ⬝ h₂) (i₁ ⬝ i₂) g₃ h₃ i₃ w
+      (fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u)
+  = fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₃ (h₂ ⬝ h₃) (i₂ ⬝ i₃)
+      (fund_dbl_precat_comp X A C ι' ι g₁ g₂ h₂ i₂ g₃ h₃ i₃ w v) u : sorry
+  -/
 
   definition fundamental_dbl_precat : dbl_precat (fundamental_groupoid X A C ι)
     (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
@@ -62,7 +73,7 @@ namespace dbl_precat
       intros, apply (fund_dbl_precat_comp X A C ι' ι), exact a_1, exact a_2,
       intros, exact (calc ap ι' (idp ⬝ f) = ap ι' f : concat_1p
                                       ... = ap ι' (f ⬝ idp) : concat_p1),
-      intros, apply (eq.rec_on u),
+      intros, whnf,
   end
   check dbl_precat.mk
 

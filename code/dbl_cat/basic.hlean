@@ -46,8 +46,6 @@ namespace dbl_precat
       repeat ( intros ; apply @is_hprop.elim ;  apply succ_is_trunc ;  apply !homH ),
   end
 
-
-
 end dbl_precat
 
 namespace dbl_precat
@@ -55,15 +53,19 @@ namespace dbl_precat
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
     [D : @dbl_precat D₀ C D₂]
-  include C D
 
   variables {a b c d a₂ b₂ c₂ d₂ d₃ d₄ : D₀}
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
     {g₃ : hom c₂ d₃} {h₂ : hom c c₂} {i₃ : hom d d₃}
     (u : D₂ f g h i)
-    (v : D₂ f₂ g₂ i i₂)
-    (w : D₂ g g₃ h₂ i₃)
+
+  infixl `+₁`:65 := λ {D₀ : Type} [C : precategory D₀]
+    {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
+      (h : hom a c) (i : hom b d), Type} {a b c₁ d₁ c₂ d₂ : D₀}
+    {f₁ : hom a b} {g₁ : hom c₁ d₁} {h₁ : hom a c₁} {i₁ : hom b d₁}
+    {g₂ : hom c₂ d₂} {h₂ : hom c₁ c₂} {i₂ : hom d₁ d₂}
+    (u : D₂ f₁ g₁ h₁ i₁) (v : D₂ g₁ g₂ h₂ i₂), comp₁ v u
 
 end dbl_precat
 
@@ -129,16 +131,18 @@ namespace worm_precat
     apply idp,
   end
 
-  definition two_cell_comp [reducible] [D : worm_precat C D₂] {Sf Sg Sh : two_cell_ob}
+  set_option pp.universes true
+  include D
+  definition two_cell_comp [reducible] {Sf Sg Sh : two_cell_ob}
     : two_cell_connect Sg Sh → two_cell_connect Sf Sg → two_cell_connect Sf Sh :=
   (λ Sv Su, two_cell_connect.mk (vc1 Sv ∘ vc1 Su) (vc2 Sv ∘ vc2 Su)
-    (comp₁ C (vc3 Sv) (vc3 Su)))
+    (comp₁ D₂ (vc3 Sv) (vc3 Su)))
 
-  definition two_cell_id [D : worm_precat C D₂] (Sf : two_cell_ob)
+  definition two_cell_id (Sf : two_cell_ob)
     : two_cell_connect Sf Sf :=
   two_cell_connect.mk (ID (vo1 Sf)) (ID (vo2 Sf)) (ID₁ D₂ (vo3 Sf))
 
-  definition two_cell_assoc [D : worm_precat C D₂] {Sf₁ Sf₂ Sf₃ Sf₄ : two_cell_ob}
+  definition two_cell_assoc {Sf₁ Sf₂ Sf₃ Sf₄ : two_cell_ob}
     (Sw : two_cell_connect Sf₃ Sf₄) (Sv : two_cell_connect Sf₂ Sf₃) (Su : two_cell_connect Sf₁ Sf₂)
     : two_cell_comp Sw (two_cell_comp Sv Su) = two_cell_comp (two_cell_comp Sw Sv) Su :=
   begin
@@ -208,5 +212,9 @@ namespace dbl_precat
 
   definition horiz_precat [D : dbl_precat C D₂] :=
   @worm_precat.two_cell_precat.{l₀ l₁ l₂} D₀ C _ (to_worm_precat_2 D₂)
+
+  definition zero [D : dbl_precat C D₂] (a : D₀) := ID₁ D₂ (ID a)
+  notation `◻` := !zero
+
 
 end dbl_precat
