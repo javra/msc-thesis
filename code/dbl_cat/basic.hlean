@@ -75,6 +75,7 @@ namespace worm_precat
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
     [D : worm_precat C D₂]
+  include D
 
   structure two_cell_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : hom vo1 vo2)
 
