@@ -22,24 +22,21 @@ context
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
     ⦃g₃ : hom c₃ d₃⦄ ⦃h₃ : hom c₂ c₃⦄ ⦃i₃ : hom d₂ d₃⦄
     (w : D₂ g₂ g₃ h₃ i₃) (v : D₂ g₁ g₂ h₂ i₂) (u : D₂ f g₁ h₁ i₁),
-    transport _ (assoc i₃ i₂ i₁)
-      (transport _ (assoc h₃ h₂ h₁)
+    (assoc i₃ i₂ i₁) ▹ ((assoc h₃ h₂ h₁) ▹
         (comp₁ w (comp₁ v u))) = (comp₁ (comp₁ w v) u)
 
   definition id_left₁_type [reducible] (comp₁ : comp₁_type) (ID₁ : ID₁_type) : Type :=
   Π ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i),
-    transport _ (id_left i)
-      (transport _ (id_left h)
+    (id_left i) ▹ ((id_left h) ▹
         (comp₁ (ID₁ g) u)) = u
 
   definition id_right₁_type [reducible] (comp₁ : comp₁_type) (ID₁ : ID₁_type) : Type :=
   Π ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i),
-    transport _ (id_right i)
-      (transport _ (id_right h)
+    (id_right i) ▹ ((id_right h) ▹
         (comp₁ u (ID₁ f))) = u
 
   definition homH'_type [reducible] : Type :=
