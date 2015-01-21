@@ -69,17 +69,20 @@ namespace dbl_precat
 
 end dbl_precat
 
+set_option pp.implicit true
+set_option pp.universes true
+set_option pp.notation false
 namespace worm_precat
   context
   parameters {D₀ : Type} [C : precategory D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
     [D : worm_precat C D₂]
-  include D
+  include C D
 
   structure two_cell_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : hom vo1 vo2)
 
-  definition two_cell_ob_sigma_char : (Σ (a b : D₀), hom a b) ≃ two_cell_ob :=
+  definition two_cell_ob_sigma_char : (Σ (a b : D₀), hom a b) ≃ @two_cell_ob D C :=
   begin
     fapply equiv.mk,
       intro S, apply (two_cell_ob.mk S.1 S.2.1 S.2.2),
@@ -93,7 +96,7 @@ namespace worm_precat
     apply idp,
   end
 
-  structure two_cell_connect (Sf Sg : two_cell_ob) : Type :=
+  structure two_cell_connect (Sf Sg : @two_cell_ob D C) : Type :=
   (vc1 : hom (two_cell_ob.vo1 Sf) (two_cell_ob.vo1 Sg))
   (vc2 : hom (two_cell_ob.vo2 Sf) (two_cell_ob.vo2 Sg))
   (vc3 : D₂ (two_cell_ob.vo3 Sf) (two_cell_ob.vo3 Sg) vc1 vc2)

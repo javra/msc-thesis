@@ -12,8 +12,10 @@ namespace dbl_precat
   set_option pp.beta true
   structure thin_structure [class] (thin : Π ⦃a b c d : D₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), g ∘ h = i ∘ f → D₂ f g h i) : Type :=
-  (thin_id₁ : Π ⦃a b : D₀⦄ (f : hom a b) p, thin f f (ID a) (ID b) p = ID₁ D₂ f)
-  (thin_id₂ : Π ⦃a b : D₀⦄ (f : hom a b) p, thin (ID a) (ID b) f f p = ID₂ D₂ f)
+  (thin_id₁ : Π ⦃a b : D₀⦄ (f : hom a b),
+    thin f f (ID a) (ID b) ((id_right f) ⬝ (id_left f)⁻¹) = ID₁ D₂ f)
+  (thin_id₂ : Π ⦃a b : D₀⦄ (f : hom a b),
+    thin (ID a) (ID b) f f ((id_left f) ⬝ (id_right f)⁻¹) = ID₂ D₂ f)
   (thin_comp₁ : Π ⦃a b c₁ d₁ c₂ d₂ : D₀⦄ ⦃f₁ : @hom D₀ C a b⦄ ⦃g₁ : @hom D₀ C c₁ d₁⦄
     ⦃h₁ : @hom D₀ C a c₁⦄ ⦃i₁ : @hom D₀ C b d₁⦄
     ⦃g₂ : @hom D₀ C c₂ d₂⦄ ⦃h₂ : @hom D₀ C c₁ c₂⦄ ⦃i₂ : @hom D₀ C d₁ d₂⦄

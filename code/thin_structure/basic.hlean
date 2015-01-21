@@ -67,5 +67,18 @@ namespace thin_structure
     apply (thin_structure.thin_id₂ D thin),
   end
 
+  set_option pp.beta true
+  check thin_structure.thin_id₂
+  definition br_of_br_square ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c) :
+    (id_left id) ▹
+    (comp₁ D₂ (comp₂ D₂ (br_connect g) (ID₂ D₂ g)) (comp₂ D₂ (ID₁ D₂ g) (br_connect f)))
+      = br_connect (g ∘ f) :=
+  begin
+    apply moveR_transport_p,
+    assert (line2_thin : thin (g ∘ id) (id ∘ id) g id = comp₂ D₂ (br_connect g) (ID₂ D₂ g)),
+      intro p, apply inverse,
+      apply ((thin_structure.thin_id₂ D thin g ▹ _),
+  end
+
   end
 end thin_structure
