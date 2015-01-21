@@ -78,11 +78,11 @@ namespace worm_precat
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
     [D : worm_precat C D₂]
-  include C D
+
 
   structure two_cell_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : hom vo1 vo2)
 
-  definition two_cell_ob_sigma_char : (Σ (a b : D₀), hom a b) ≃ @two_cell_ob D C :=
+  definition two_cell_ob_sigma_char : (Σ (a b : D₀), hom a b) ≃ two_cell_ob :=
   begin
     fapply equiv.mk,
       intro S, apply (two_cell_ob.mk S.1 S.2.1 S.2.2),
@@ -96,7 +96,7 @@ namespace worm_precat
     apply idp,
   end
 
-  structure two_cell_connect (Sf Sg : @two_cell_ob D C) : Type :=
+  structure two_cell_connect (Sf Sg : two_cell_ob) : Type :=
   (vc1 : hom (two_cell_ob.vo1 Sf) (two_cell_ob.vo1 Sg))
   (vc2 : hom (two_cell_ob.vo2 Sf) (two_cell_ob.vo2 Sg))
   (vc3 : D₂ (two_cell_ob.vo3 Sf) (two_cell_ob.vo3 Sg) vc1 vc2)
@@ -135,16 +135,16 @@ namespace worm_precat
     apply idp,
   end
 
-  set_option pp.universes true
+  --set_option pp.universes true
   include D
   definition two_cell_comp [reducible] {Sf Sg Sh : two_cell_ob}
     : two_cell_connect Sg Sh → two_cell_connect Sf Sg → two_cell_connect Sf Sh :=
   (λ Sv Su, two_cell_connect.mk (vc1 Sv ∘ vc1 Su) (vc2 Sv ∘ vc2 Su)
-    (comp₁ D₂ (vc3 Sv) (vc3 Su)))
+    (@comp₁ D₀ C D₂ D _ _ _ _ _ _ _ _ _ _ _ _ _ (vc3 Sv) (vc3 Su)))
 
   definition two_cell_id (Sf : two_cell_ob)
     : two_cell_connect Sf Sf :=
-  two_cell_connect.mk (ID (vo1 Sf)) (ID (vo2 Sf)) (ID₁ D₂ (vo3 Sf))
+  two_cell_connect.mk (ID (vo1 Sf)) (ID (vo2 Sf)) (@ID₁ D₀ C D₂ D _ _ (vo3 Sf))
 
   definition two_cell_assoc {Sf₁ Sf₂ Sf₃ Sf₄ : two_cell_ob}
     (Sw : two_cell_connect Sf₃ Sf₄) (Sv : two_cell_connect Sf₂ Sf₃) (Su : two_cell_connect Sf₁ Sf₂)
@@ -153,10 +153,10 @@ namespace worm_precat
     fapply two_cell_connect_path',
     exact (assoc (vc1 Sw) (vc1 Sv) (vc1 Su)),
     exact (assoc (vc2 Sw) (vc2 Sv) (vc2 Su)),
-    exact (assoc₁ C (vc3 Sw) (vc3 Sv) (vc3 Su)),
+    exact (@assoc₁ D₀ C D₂ D _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _  (vc3 Sw) (vc3 Sv) (vc3 Su)),
   end
 
-  definition two_cell_id_left [D : worm_precat C D₂] {Sf Sg : two_cell_ob}
+  definition two_cell_id_left {Sf Sg : two_cell_ob}
     (Su : two_cell_connect Sf Sg) : two_cell_comp (two_cell_id Sg) Su = Su :=
   begin
     apply (two_cell_connect.rec_on Su),
@@ -164,10 +164,10 @@ namespace worm_precat
     fapply two_cell_connect_path',
     apply id_left,
     apply id_left,
-    exact (id_left₁ C u),
+    exact (@id_left₁ D₀ C D₂ D _ _ _ _ _ _ _ _ u),
   end
 
-  definition two_cell_id_right [D : worm_precat C D₂] {Sf Sg : two_cell_ob}
+  definition two_cell_id_right {Sf Sg : two_cell_ob}
     (Su : two_cell_connect Sf Sg) : two_cell_comp Su (two_cell_id Sf) = Su :=
   begin
     apply (two_cell_connect.rec_on Su),
@@ -175,7 +175,7 @@ namespace worm_precat
     fapply two_cell_connect_path',
     apply id_right,
     apply id_right,
-    exact (id_right₁ C u),
+    exact (@id_right₁ D₀ C D₂ D _ _ _ _ _ _ _ _ u),
   end
 
 end
