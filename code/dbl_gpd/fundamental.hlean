@@ -21,15 +21,6 @@ namespace dbl_precat
     (λ (a b : C) (p : ι a = ι b), concat_1p p)
     (λ ⦃a b : C⦄ (p : ι a = ι b), @is_iso.mk C _ a b p (p⁻¹) !concat_pV !concat_Vp)
 
-  /-definition square_rec {P : Π (a b c d : C) (f : ι a = ι b) (g : ι c = ι d)
-    (h : ι a = ι c) (i : ι b = ι d), ap ι' (h ⬝ g) = ap ι' (f ⬝ i) → Type}
-    {a b c d : C} {f : ι a = ι b} {g : ι c = ι d}
-    {h : ι a = ι c} {i : ι b = ι d} (u : ap ι' (h ⬝ g) = ap ι' (f ⬝ i))
-    (P a a a a idp idp idp idp idp) :
-      P a b c d f g h i u :=
-  @eq.rec A (ι a)
-  check @eq.rec-/
-
   definition fund_dbl_precat_comp {a₁ b₁ a₂ b₂ a₃ b₃ : C}
     (f₁ : ι a₁ = ι b₁) (g₁ : ι a₂ = ι b₂) (h₁ : ι a₁ = ι a₂) (i₁ : ι b₁ = ι b₂)
     (g₂ : ι a₃ = ι b₃) (h₂ : ι a₂ = ι a₃) (i₂ : ι b₂ = ι b₃)
@@ -45,7 +36,7 @@ namespace dbl_precat
                          ... = (ap ι' ((f₁ ⬝ i₁) ⬝ i₂)) : ap_pp
                          ... = (ap ι' (f₁ ⬝ (i₁ ⬝ i₂))) : concat_pp_p
 
-  /-
+  print definition fund_dbl_precat_comp
   definition fund_dbl_precat_assoc {a₁ b₁ a₂ b₂ a₃ b₃ a₄ b₄ : C}
     (f₁ : ι a₁ = ι b₁) (g₁ : ι a₂ = ι b₂) (h₁ : ι a₁ = ι a₂) (i₁ : ι b₁ = ι b₂)
     (g₂ : ι a₃ = ι b₃) (h₂ : ι a₂ = ι a₃) (i₂ : ι b₂ = ι b₃)
@@ -53,17 +44,14 @@ namespace dbl_precat
     (w : ap ι' (h₃ ⬝ g₃) = ap ι' (g₂ ⬝ i₃))
     (v : ap ι' (h₂ ⬝ g₂) = ap ι' (g₁ ⬝ i₂))
     (u : ap ι' (h₁ ⬝ g₁) = ap ι' (f₁ ⬝ i₁)) :
-   assoc i₃ i₂ i₁ ▹ assoc h₃ h₂ h₁ ▹
+   concat_pp_p i₁ i₂ i₃ ▹ (concat_pp_p h₁ h₂ h₃ ▹
     fund_dbl_precat_comp X A C ι' ι f₁ g₂ (h₁ ⬝ h₂) (i₁ ⬝ i₂) g₃ h₃ i₃ w
-      (fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u)
+      (fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u))
   = fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₃ (h₂ ⬝ h₃) (i₂ ⬝ i₃)
       (fund_dbl_precat_comp X A C ι' ι g₁ g₂ h₂ i₂ g₃ h₃ i₃ w v) u :=
-  calc assoc i₃ i₂ i₁ ▹ assoc h₃ h₂ h₁ ▹
-    fund_dbl_precat_comp X A C ι' ι f₁ g₂ (h₁ ⬝ h₂) (i₁ ⬝ i₂) g₃ h₃ i₃ w
-      (fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u)
-  = fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₃ (h₂ ⬝ h₃) (i₂ ⬝ i₃)
-      (fund_dbl_precat_comp X A C ι' ι g₁ g₂ h₂ i₂ g₃ h₃ i₃ w v) u : sorry
-  -/
+  begin
+
+  end
 
   definition fundamental_dbl_precat : dbl_precat (fundamental_groupoid X A C ι)
     (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),

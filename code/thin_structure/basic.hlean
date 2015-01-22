@@ -67,17 +67,53 @@ namespace thin_structure
     apply (thin_structure.thin_id₂ D thin),
   end
 
-  set_option pp.beta true
-  check thin_structure.thin_id₂
-  definition br_of_br_square ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c) :
-    (id_left id) ▹
+  --TODO: make this waay shorter!
+  definition br_of_br_square_aux_aux {a c : D₀} (gf : hom a c)
+    (h₁ : hom c c) (p : h₁ = ID c)
+    (r1 : h₁ ∘ gf = h₁ ∘ gf) (r2 : (ID c) ∘ gf = (ID c) ∘ gf)
+    (rr : (p ▹ r1) = r2) :
+    (p ▹ thin gf h₁ gf h₁ r1) = thin gf (ID c) gf (ID c) r2 :=
+  eq.rec_on rr (eq.rec_on p idp)
+
+  definition br_of_br_square_aux ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c)
+    (p : ID c ∘ ID c = ID c) :
+    transport (λ x, D₂ (g ∘ f) x (g ∘ f) x)
+      p (thin (g ∘ f) (ID c ∘ ID c) (g ∘ f) (ID c ∘ ID c)
+    (refl ((ID c ∘ ID c) ∘ g ∘ f))) = br_connect (g ∘ f) :=
+  begin
+    apply br_of_br_square_aux_aux,
+    apply @is_hset.elim, apply !homH,
+  end
+
+  definition br_of_br_square ⦃a b c : D₀⦄ (f : @hom D₀ C a b) (g : @hom D₀ C  b c) :
+    (@id_left D₀ C c c (ID c)) ▹
     (comp₁ D₂ (comp₂ D₂ (br_connect g) (ID₂ D₂ g)) (comp₂ D₂ (ID₁ D₂ g) (br_connect f)))
       = br_connect (g ∘ f) :=
   begin
     apply moveR_transport_p,
-    assert (line2_thin : thin (g ∘ id) (id ∘ id) g id = comp₂ D₂ (br_connect g) (ID₂ D₂ g)),
-      intro p, apply inverse,
-      apply ((thin_structure.thin_id₂ D thin g ▹ _),
+    assert (line2_commute : (id ∘ id) ∘ g = id ∘ g ∘ id),
+      exact (calc (id ∘ id) ∘ g = id ∘ g : @id_left D₀ C
+                           ... = (id ∘ g) ∘ id : @id_right D₀ C
+                           ... = id ∘ (g ∘ id) : assoc id g id),
+    assert (line2_thin : thin (g ∘ id) (id ∘ id) g id line2_commute = comp₂ D₂ (br_connect g) (ID₂ D₂ g)),
+      assert (line2_aux : ID₂ D₂ g = thin (ID b) (ID c) g g ((@id_left D₀ C b c g) ⬝ (@id_right D₀ C b c g)⁻¹)),
+        apply inverse, apply (thin_structure.thin_id₂ D thin),
+      apply inverse, apply concat, exact (ap (λx, comp₂ D₂ (br_connect g) x) line2_aux),
+      apply (thin_structure.thin_comp₂ D thin),
+    assert (line1_commute : (g ∘ ID b) ∘ f = ID c ∘ g ∘ f),
+      exact (calc (g ∘ ID b) ∘ f = g ∘ f : @id_right D₀ C
+                            ... = ID c ∘ g ∘ f : @id_left D₀ C),
+    assert (line1_thin : thin (g ∘ f) (g ∘ ID b) f (ID c) line1_commute = comp₂ D₂ (ID₁ D₂ g) (br_connect f)),
+      assert (line1_aux : ID₁ D₂ g = thin g g (ID b) (ID c) ((id_right g) ⬝ (id_left g)⁻¹)),
+        apply inverse, apply (thin_structure.thin_id₁ D thin),
+      apply inverse, apply concat, exact (ap (λx, comp₂ D₂ x (br_connect f)) line1_aux),
+      apply (thin_structure.thin_comp₂ D thin),
+    apply concat, exact (ap (λx, comp₁ D₂ x (comp₂ D₂ (ID₁ D₂ g) (br_connect f))) (line2_thin⁻¹)),
+    apply concat, exact (ap (λx, comp₁ D₂ (thin (g ∘ id) (id ∘ id) g id line2_commute) x) (line1_thin⁻¹)),
+    apply concat, apply (thin_structure.thin_comp₁ D thin),
+      apply (refl ((ID c ∘ id) ∘ g ∘ f)),
+    apply moveL_transport_V,
+    apply br_of_br_square_aux,
   end
 
   end

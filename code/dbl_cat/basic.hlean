@@ -220,5 +220,4 @@ namespace dbl_precat
   definition zero [D : dbl_precat C D₂] (a : D₀) := ID₁ D₂ (ID a)
   notation `◻` := !zero
 
-
 end dbl_precat

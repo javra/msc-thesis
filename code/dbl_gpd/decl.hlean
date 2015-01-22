@@ -6,12 +6,6 @@ open eq function precategory morphism groupoid dbl_precat
 
 namespace weak_dbl_gpd
 
-check @dbl_precat.vert_precat
-check @dbl_precat.horiz_precat
-check @hom
-check dbl_precat.mk
-check @is_iso
-exit
 structure weak_dbl_gpd' [class] {D₀ : Type} (C : groupoid D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type) extends dbl_precat C D₂ :=
