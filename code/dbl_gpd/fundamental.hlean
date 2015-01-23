@@ -21,22 +21,61 @@ namespace dbl_precat
     (λ (a b : C) (p : ι a = ι b), concat_1p p)
     (λ ⦃a b : C⦄ (p : ι a = ι b), @is_iso.mk C _ a b p (p⁻¹) !concat_pV !concat_Vp)
 
+  definition fund_dbl_precat_comp_flat {a₁ b₁ a₂ b₂ a₃ b₃ : X}
+    (f₁ : a₁ = b₁) (g₁ : a₂ = b₂) (h₁ : a₁ = a₂) (i₁ : b₁ = b₂)
+    (g₂ : a₃ = b₃) (h₂ : a₂ = a₃) (i₂ : b₂ = b₃)
+    (v : h₂ ⬝ g₂ = g₁ ⬝ i₂)
+    (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :
+      (h₁ ⬝ h₂) ⬝ g₂ = f₁ ⬝ (i₁ ⬝ i₂) :=
+    calc (h₁ ⬝ h₂) ⬝ g₂ = h₁ ⬝ (h₂ ⬝ g₂) : concat_pp_p
+                   ... = h₁ ⬝ (g₁ ⬝ i₂) : v
+                   ... = (h₁ ⬝ g₁) ⬝ i₂ : concat_p_pp
+                   ... = (f₁ ⬝ i₁) ⬝ i₂ : u
+                   ... = f₁ ⬝ (i₁ ⬝ i₂) : concat_pp_p
+
   definition fund_dbl_precat_comp {a₁ b₁ a₂ b₂ a₃ b₃ : C}
     (f₁ : ι a₁ = ι b₁) (g₁ : ι a₂ = ι b₂) (h₁ : ι a₁ = ι a₂) (i₁ : ι b₁ = ι b₂)
     (g₂ : ι a₃ = ι b₃) (h₂ : ι a₂ = ι a₃) (i₂ : ι b₂ = ι b₃)
-    (v : ap ι' (h₂ ⬝ g₂) = ap ι' (g₁ ⬝ i₂)) (u : ap ι' (h₁ ⬝ g₁) = ap ι' (f₁ ⬝ i₁)) :
-      ap ι' ((h₁ ⬝ h₂) ⬝ g₂) = ap ι' (f₁ ⬝ (i₁ ⬝ i₂)) :=
-  calc ap ι' ((h₁ ⬝ h₂) ⬝ g₂) = ap ι' (h₁ ⬝ (h₂ ⬝ g₂)) : concat_pp_p
-                         ... = (ap ι' h₁) ⬝ (ap ι' (h₂ ⬝ g₂)) : ap_pp
-                         ... = (ap ι' h₁) ⬝ (ap ι' (g₁ ⬝ i₂)) : v
-                         ... = (ap ι' (h₁ ⬝ (g₁ ⬝ i₂))) : ap_pp
-                         ... = (ap ι' ((h₁ ⬝ g₁) ⬝ i₂)) : concat_p_pp
-                         ... = (ap ι' (h₁ ⬝ g₁)) ⬝ (ap ι' i₂) : ap_pp
-                         ... = (ap ι' (f₁ ⬝ i₁)) ⬝ (ap ι' i₂) : u
-                         ... = (ap ι' ((f₁ ⬝ i₁) ⬝ i₂)) : ap_pp
-                         ... = (ap ι' (f₁ ⬝ (i₁ ⬝ i₂))) : concat_pp_p
+    (v : ap ι' h₂ ⬝ ap ι' g₂ = ap ι' g₁ ⬝ ap ι' i₂)
+    (u : ap ι' h₁ ⬝ ap ι' g₁ = ap ι' f₁ ⬝ ap ι' i₁) :
+      (ap ι' h₁ ⬝ ap ι' h₂) ⬝ ap ι' g₂ = ap ι' f₁ ⬝ (ap ι' i₁ ⬝ ap ι' i₂) :=
+  @fund_dbl_precat_comp_flat X A C Xtrunc Atrunc Cset
+    (ι' (ι a₁)) (ι' (ι b₁)) (ι' (ι a₂)) (ι' (ι b₂)) (ι' (ι a₃)) (ι' (ι b₃))
+    (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
+    (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u
+
+  definition square_rec_on {a b c d : X}
+    {f : a = b} {g : c = d} {h : a = c} {i : b = d}
+    (u : h ⬝ g = f ⬝ i)
+    {P : Π (a b c d : X) (f : a = b) (g : c = d) (h : a = c) (i : b = d),
+       h ⬝ g = f ⬝ i → Type}
+    (H : P a a a a idp idp idp idp idp) : P a b c d f g h i u :=
+  begin
+    revert u, revert f, revert h, revert g, apply (eq.rec_on i),
+    intro g, apply (eq.rec_on g),
+    intros, apply (eq.rec_on u),
+    apply (eq.rec_on h), exact H,
+  end
+
+  check square_rec_on
+  definition fund_dbl_precat_flat_assoc {a₁ b₁ a₂ b₂ a₃ b₃ a₄ b₄ : X}
+    (f₁ : a₁ = b₁) (g₁ : a₂ = b₂) (h₁ : a₁ = a₂) (i₁ : b₁ = b₂)
+    (g₂ : a₃ = b₃) (h₂ : a₂ = a₃) (i₂ : b₂ = b₃)
+    (g₃ : a₄ = b₄) (h₃ : a₃ = a₄) (i₃ : b₃ = b₄)
+    (w : h₃ ⬝ g₃ = g₂ ⬝ i₃)
+    (v : h₂ ⬝ g₂ = g₁ ⬝ i₂)
+    (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :
+      concat_pp_p i₁ i₂ i₃ ▹ (concat_pp_p h₁ h₂ h₃ ▹
+        fund_dbl_precat_comp_flat X A C f₁ g₂ (h₁ ⬝ h₂) (i₁ ⬝ i₂) g₃ h₃ i₃ w
+          (fund_dbl_precat_comp_flat X A C f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u))
+      = fund_dbl_precat_comp_flat X A C f₁ g₁ h₁ i₁ g₃ (h₂ ⬝ h₃) (i₂ ⬝ i₃)
+        (fund_dbl_precat_comp_flat X A C g₁ g₂ h₂ i₂ g₃ h₃ i₃ w v) u :=
+    begin
+      apply (square_rec_on X A C w),
+    end
 
   print definition fund_dbl_precat_comp
+exit
   definition fund_dbl_precat_assoc {a₁ b₁ a₂ b₂ a₃ b₃ a₄ b₄ : C}
     (f₁ : ι a₁ = ι b₁) (g₁ : ι a₂ = ι b₂) (h₁ : ι a₁ = ι a₂) (i₁ : ι b₁ = ι b₂)
     (g₂ : ι a₃ = ι b₃) (h₂ : ι a₂ = ι a₃) (i₂ : ι b₂ = ι b₃)
@@ -48,7 +87,7 @@ namespace dbl_precat
     fund_dbl_precat_comp X A C ι' ι f₁ g₂ (h₁ ⬝ h₂) (i₁ ⬝ i₂) g₃ h₃ i₃ w
       (fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u))
   = fund_dbl_precat_comp X A C ι' ι f₁ g₁ h₁ i₁ g₃ (h₂ ⬝ h₃) (i₂ ⬝ i₃)
-      (fund_dbl_precat_comp X A C ι' ι g₁ g₂ h₂ i₂ g₃ h₃ i₃ w v) u :=
+      (fund_dbl_precat_comp X A C ι' ι g₁ g₂ h₂ i₂ g₃ h₃ i₃ uw v) u :=
   begin
 
   end
