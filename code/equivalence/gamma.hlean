@@ -60,18 +60,50 @@ namespace gamma
     apply (!id_left⁻¹),
   end
 
+  protected definition M_morphism.comp {a b c : D₀} (M : M_morphism b c) (N : M_morphism a b)
+    : M_morphism a c :=
+  begin
+    fapply M_morphism.mk,
+      apply ((M_morphism.discon N) ⬝ (M_morphism.discon M)),
+      apply ((M_morphism.lid M) ∘ (M_morphism.lid N)),
+      apply ((M_morphism.comp_transport a b c M N) ▹ comp₂ D₂ (M_morphism.filler M) (M_morphism.filler N)),
+  end
+
+  protected definition M_morphism.congr ⦃a b : D₀⦄
+    (f1 g1 : a = b) (f2 g2 : hom a b)
+    (f3 : D₂ f2 (transport (λ x, hom a x) f1 (ID a)) id id)
+    (g3 : D₂ g2 (transport (λ x, hom a x) g1 (ID a)) id id)
+    (p1 : f1 = g1) (p2 : f2 = g2) (p3 : p1 ▹ p2 ▹ f3 = g3) :
+      M_morphism.mk f1 f2 f3 = M_morphism.mk g1 g2 g3 :=
+  begin
+    apply (eq.rec_on p3),
+    apply (eq.rec_on p2),
+    apply (eq.rec_on p1),
+    apply idp,
+  end
+
+  protected definition M_morphism.assoc ⦃a b c d : D₀⦄ (h : M_morphism c d)
+    (g : M_morphism b c) (f : M_morphism a b) :
+    M_morphism.comp h (M_morphism.comp g f) = M_morphism.comp (M_morphism.comp h g) f :=
+  begin
+    revert h, revert g, apply (M_morphism.rec_on f), intros (f1, f2, f3),
+    intro g, apply (M_morphism.rec_on g), intros (g1, g2, g3),
+    intro h, apply (M_morphism.rec_on h), intros (h1, h2, h3),
+    fapply M_morphism.congr,
+      apply @is_hset.elim, exact D₀set,
+      apply !assoc,
+      exact sorry,
+  end
+
   protected definition M : groupoid.{l l} D₀ :=
   begin
     fapply groupoid.mk,
       intros (a, b), exact (M_morphism a b),
       intros (a, b), exact (M_morphism.is_hset a b),
-      intros (a, b, c, M, N), fapply M_morphism.mk,
-        apply ((M_morphism.discon N) ⬝ (M_morphism.discon M)),
-        apply ((M_morphism.lid M) ∘ (M_morphism.lid N)),
-        apply ((M_morphism.comp_transport a b c M N) ▹ comp₂ D₂ (M_morphism.filler M) (M_morphism.filler N)),
+      intros (a, b, c, M, N), exact (@M_morphism.comp a b c M N),
       intros,  fapply M_morphism.mk,
         apply idp, apply id, apply (ID₂ D₂ id),
-      intros,
+      --intros (a, b, c, d, M),
   end
 
 
