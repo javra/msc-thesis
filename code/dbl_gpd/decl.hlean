@@ -20,7 +20,7 @@ structure weak_dbl_gpd [class] {D₀ : Type} (C : groupoid D₀)
 
 structure dbl_gpd [class] {D₀ : Type} (C : groupoid D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
-    Type) extends parent : weak_dbl_gpd' C D₂ :=
+    Type) extends parent : weak_dbl_gpd C D₂ :=
   (thin : Π ⦃a b c d : D₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), g ∘ h = i ∘ f → D₂ f g h i)
   (T : @thin_structure D₀ C D₂ parent thin)
