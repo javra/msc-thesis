@@ -12,7 +12,7 @@ namespace dbl_gpd
   [D : dbl_gpd C D₂]
   {thin : Π ⦃a b c d : D₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), g ∘ h = i ∘ f → D₂ f g h i}
-  [T : @thin_structure D₀ C D₂ (@weak_dbl_gpd.to_dbl_precat D₀ C D₂ (@dbl_gpd.to_weak_dbl_gpd D₀ C D₂ D)) thin]
+  [T : thin_structure D₂ thin]
   include C T
 
   definition ur_connect ⦃a b : D₀⦄ (f : hom a b) : D₂ (ID b) f (f⁻¹) (ID b) :=

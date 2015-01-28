@@ -8,8 +8,7 @@ context
   parameters
     {D₀ : Type}
     (C : groupoid D₀)
-    (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
-    Type)
+    (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type)
 
   definition inv₁_type : Type :=
   Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
@@ -43,25 +42,23 @@ context
     (compose_inverse g) ▹ ((compose_inverse f) ▹
     (@comp₂ D₀ C D₂ D _ _ _ _ _ _ _ _ _ _ _ _ _ u (inv₂ u))) = ID₂ D₂ i
 
-  structure weak_dbl_gpd [class] extends D : dbl_precat C D₂ :=
-  (inv₁ : inv₁_type)
-  (inverse_compose₁ : @inverse_compose₁_type D inv₁)
-  (compose_inverse₁ : @compose_inverse₁_type D inv₁)
-  (inv₂ : inv₂_type)
-  (inverse_compose₂ : @inverse_compose₂_type D inv₂)
-  (compose_inverse₂ : @compose_inverse₂_type D inv₂)
 end
 
-context
-  parameters
-    {D₀ : Type}
-    (C : groupoid D₀)
-    (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
-    Type)
+structure weak_dbl_gpd [class] {D₀ : Type}
+  (C : groupoid D₀)
+  (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type)
+  extends D : dbl_precat C D₂ :=
+(inv₁ : inv₁_type C D₂)
+(inverse_compose₁ : @inverse_compose₁_type D₀ C D₂ D inv₁)
+(compose_inverse₁ : @compose_inverse₁_type D₀ C D₂ D inv₁)
+(inv₂ : inv₂_type C D₂)
+(inverse_compose₂ : @inverse_compose₂_type D₀ C D₂ D inv₂)
+(compose_inverse₂ : @compose_inverse₂_type D₀ C D₂ D inv₂)
 
-  structure dbl_gpd [class] extends D : weak_dbl_gpd C D₂:=
-  (thin : Π ⦃a b c d : D₀⦄
-    (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), g ∘ h = i ∘ f → D₂ f g h i)
-  (T : @thin_structure D₀ C D₂ (@weak_dbl_gpd.to_dbl_precat D₀ C D₂ D) thin)
-
-end
+structure dbl_gpd [class]  {D₀ : Type}
+  (C : groupoid D₀)
+  (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type)
+  extends D : weak_dbl_gpd C D₂:=
+(thin : Π ⦃a b c d : D₀⦄
+  (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), g ∘ h = i ∘ f → D₂ f g h i)
+(T : @thin_structure D₀ C D₂ (@weak_dbl_gpd.to_dbl_precat D₀ C D₂ D) thin)
