@@ -14,7 +14,7 @@ namespace gamma
     (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
       Type.{l})
     [G : dbl_gpd C D₂]
-  include D₀set C G
+  include G D₀set C
 
   structure M_morphism (a : D₀) : Type :=
     (lid : hom a a)
@@ -74,36 +74,70 @@ namespace gamma
     fapply M_morphism.mk, apply (ID a), apply (ID₂ D₂ (ID a)),
   end
 
-  definition transport_commute {A B : Type} {P : A → B → Type}
+  definition transport_commute {A B : Type} (P : A → B → Type)
     {a a' : A} (p : a = a') {b b' : B} (q : b = b') :
     p ▹ q ▹ P a b = q ▹ p ▹ P a b :=
   begin
     apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
   end
 
-  print definition id_left₁_type
-  check @id_left₂
-  protected definition M_Morphism.id_left ⦃a : D₀⦄ (M : M_morphism a) :
+  protected definition M_morphism.id_left ⦃a : D₀⦄ (M : M_morphism a) :
     M_morphism.comp (M_morphism.one a) M = M :=
   begin
     apply (M_morphism.rec_on M), intros (lid, filler),
     fapply (M_morphism.congr),
       apply (id_left lid),
-      --assert (foo : id_left lid ▹ id_left (ID a) ▹ comp₂ D₂ (ID₂ D₂ (ID a)) filler = filler),
-      apply (@id_left₂ D₀ C D₂ G a a a a (ID a) (ID a) lid (ID a) filler),
+      apply concat, rotate 3, apply (id_left₂ D₂ filler),
+      exact sorry,
   end
 
-  variables (a : D₀) (lid : hom a a) (filler : D₂ lid id id id)  (M : M_morphism a)
-  check (@id_left₂ D₀ C D₂ G a a a a (ID a) (ID a) lid (ID a) filler)
-exit
+  protected definition M_morphism.id_right ⦃a : D₀⦄ (M : M_morphism a) :
+    M_morphism.comp M (M_morphism.one a) = M :=
+  begin
+    apply (M_morphism.rec_on M), intros (lid, filler),
+    fapply (M_morphism.congr),
+      apply (id_right lid),
+      apply concat, rotate 3, apply (id_right₂ D₂ filler),
+      exact sorry
+  end
+
+  --TODO: Think of something better to prevent such ambiguities
+  definition iso_of_id' {a : D₀} : @morphism.inverse D₀ C a a (ID a) (all_iso (ID a)) = id :=
+  inverse_eq_intro_left !id_compose
+
+  definition M_morphism.inv_aux ⦃a : D₀⦄ (u : M_morphism a) :
+    D₂ ((M_morphism.lid u)⁻¹) id id id :=
+  iso_of_id' ▹ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler  u))
+
+  definition M_morphism.inv [reducible] ⦃a : D₀⦄ (u : M_morphism a) :
+    M_morphism a :=
+  begin
+    fapply M_morphism.mk,
+      apply ((M_morphism.lid u)⁻¹),
+      exact (M_morphism.inv_aux u),
+  end
+
+  definition M_morphism.inverse_compose ⦃a : D₀⦄ (u : M_morphism a) :
+    M_morphism.comp (M_morphism.inv u) u = M_morphism.one a :=
+  begin
+    apply (M_morphism.rec_on u), intros (lid, filler),
+    fapply (M_morphism.congr),
+      apply inverse_compose,
+      exact sorry,
+  end
+
+  open M_morphism
   protected definition M (a : D₀) : group (M_morphism a) :=
   begin
     fapply group.mk,
-      intros (u, v), apply (M_morphism.comp u v),
+      intros (u, v), apply (comp u v),
       apply (M_morphism.is_hset a),
-      intros (u, v, w), apply ((M_morphism.assoc u v w)⁻¹),
-      fapply M_morphism.mk, apply (ID a), apply (ID₂ D₂ (ID a)),
-
+      intros (u, v, w), apply ((assoc u v w)⁻¹),
+      apply M_morphism.one,
+      intro u, apply (id_left u),
+      intro u, apply (id_right u),
+      intro u, apply (inv D₂ u),
+      intro u, apply (inverse_compose u),
   end
 
 
