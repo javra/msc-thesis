@@ -75,10 +75,22 @@ namespace gamma
   end
 
   definition transport_commute {A B : Type} (P : A → B → Type)
-    {a a' : A} (p : a = a') {b b' : B} (q : b = b') :
-    p ▹ q ▹ P a b = q ▹ p ▹ P a b :=
+    {a a' : A} (p : a = a') {b b' : B} (q : b = b')
+    {P1 : P a b} :
+    p ▹ q ▹ P1 = q ▹ p ▹ P1 :=
   begin
-    apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
+    revert P1,
+    apply (eq.rec_on p), apply (eq.rec_on q),
+    intros, apply idp,
+  end
+
+  definition transport_top_bottom_commute ⦃a : D₀⦄ (f' f g' g : hom a a)
+    (pf : f' = f) (pg : g' = g) (u : D₂ f g id id) :
+    pf ▹ pg ▹ u = pg ▹ pf ▹ u :=
+  begin
+    revert u,
+    apply (eq.rec_on pf), apply (eq.rec_on pg),
+    intros, apply idp,
   end
 
   protected definition M_morphism.id_left ⦃a : D₀⦄ (M : M_morphism a) :
@@ -88,7 +100,12 @@ namespace gamma
     fapply (M_morphism.congr),
       apply (id_left lid),
       apply concat, rotate 3, apply (id_left₂ D₂ filler),
-      exact sorry,
+      apply transport_commute,
+  end
+
+  definition id_left_id_eq_id_right_id ⦃ a : D₀ ⦄ : (id_left (ID a)) = (id_right (ID a)) :=
+  begin
+    apply is_hset.elim,
   end
 
   protected definition M_morphism.id_right ⦃a : D₀⦄ (M : M_morphism a) :
@@ -98,7 +115,9 @@ namespace gamma
     fapply (M_morphism.congr),
       apply (id_right lid),
       apply concat, rotate 3, apply (id_right₂ D₂ filler),
-      exact sorry
+      apply concat, apply transport_commute,
+      apply (transport _ (!id_left_id_eq_id_right_id)),
+      apply idp,
   end
 
   --TODO: Think of something better to prevent such ambiguities
