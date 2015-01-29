@@ -43,10 +43,10 @@ namespace gamma
     intro f, apply (homH' D₂),
   end
 
-  protected definition M_morphism.comp [reducible] {a: D₀} (M N : M_morphism a) : M_morphism a :=
-  M_morphism.mk ((M_morphism.lid M) ∘ (M_morphism.lid N))
-    (transport (λ x, D₂ ((M_morphism.lid M) ∘ (M_morphism.lid N)) x id id)
-    (id_left (ID a)) (comp₂ D₂ (M_morphism.filler M) (M_morphism.filler N)))
+  protected definition M_morphism.comp [reducible] {a: D₀} (v u : M_morphism a) : M_morphism a :=
+  M_morphism.mk ((M_morphism.lid v) ∘ (M_morphism.lid u))
+    (transport (λ x, D₂ ((M_morphism.lid v) ∘ (M_morphism.lid u)) x id id)
+    (id_left (ID a)) (comp₂ D₂ (M_morphism.filler v) (M_morphism.filler u)))
 
   protected definition M_morphism.congr ⦃a : D₀⦄
     (f1 g1 : hom a a) (f2 : D₂ f1 id id id) (g2 : D₂ g1 id id id)
@@ -81,15 +81,6 @@ namespace gamma
   begin
     revert P1,
     apply (eq.rec_on p), apply (eq.rec_on q),
-    intros, apply idp,
-  end
-
-  definition transport_top_bottom_commute ⦃a : D₀⦄ (f' f g' g : hom a a)
-    (pf : f' = f) (pg : g' = g) (u : D₂ f g id id) :
-    pf ▹ pg ▹ u = pg ▹ pf ▹ u :=
-  begin
-    revert u,
-    apply (eq.rec_on pf), apply (eq.rec_on pg),
     intros, apply idp,
   end
 
@@ -136,14 +127,33 @@ namespace gamma
       exact (M_morphism.inv_aux u),
   end
 
+  definition M_morphism.inverse_compose_aux2 {a : D₀} (u : M_morphism a) :
+    (M_morphism.lid u)⁻¹ = M_morphism.lid (M_morphism.inv u) :=
+  idp
+
+  definition M_morphism.inverse_compose_aux1 {a : D₀} (v u : M_morphism a) :
+    iso_of_id' ▹ (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v)) (M_morphism.filler u))
+    = (comp₂ D₂ (M_morphism.filler (M_morphism.inv v)) (M_morphism.filler u)) :=
+  begin
+    apply (M_morphism.rec_on v), intros (v1, v2),
+    apply (M_morphism.rec_on u), intros (u1, u2),
+    exact sorry,
+  end
+
+  --set_option pp.implicit true
+  set_option pp.notation false
   definition M_morphism.inverse_compose ⦃a : D₀⦄ (u : M_morphism a) :
     M_morphism.comp (M_morphism.inv u) u = M_morphism.one a :=
   begin
     apply (M_morphism.rec_on u), intros (lid, filler),
     fapply (M_morphism.congr),
       apply inverse_compose,
+      apply concat, rotate 3, apply (weak_dbl_gpd.inverse_compose₂ D₂ filler),
+      apply concat,
+      apply transport_commute,
       exact sorry,
   end
+  check transport_pp
 
   open M_morphism
   protected definition M (a : D₀) : group (M_morphism a) :=
