@@ -127,11 +127,7 @@ namespace gamma
       exact (M_morphism.inv_aux u),
   end
 
-  definition M_morphism.inverse_compose_aux2 {a : D₀} (u : M_morphism a) :
-    (M_morphism.lid u)⁻¹ = M_morphism.lid (M_morphism.inv u) :=
-  idp
-
-  definition M_morphism.inverse_compose_aux3_aux {a : D₀} (v u : M_morphism a)
+  definition M_morphism.inverse_compose_aux_aux {a : D₀} (v u : M_morphism a)
     {g : hom a a} (p : id⁻¹ = g) :
   (comp₂ D₂ (transport (λ x, D₂ ((M_morphism.lid v)⁻¹) x id id) p
     (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v))) (M_morphism.filler u))
@@ -140,26 +136,33 @@ namespace gamma
     apply (eq.rec_on p), apply idp,
   end
 
-  definition M_morphism.inverse_compose_aux3 {a : D₀} (v u : M_morphism a) :
-    (comp₂ D₂ (transport (λ x, D₂ ((M_morphism.lid v)⁻¹) x id id) iso_of_id'
-      (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v))) (M_morphism.filler u))
-    = iso_of_id' ▹ (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v)) (M_morphism.filler u)) :=
-  M_morphism.inverse_compose_aux3_aux v u iso_of_id'
+  definition M_morphism.inverse_compose_aux1 {a : D₀} (u : M_morphism a) :
+    (comp₂ D₂ (M_morphism.filler (M_morphism.inv u)) (M_morphism.filler u))
+    = iso_of_id' ▹
+    (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler u)) (M_morphism.filler u)) :=
+  (M_morphism.inverse_compose_aux_aux u u iso_of_id')
 
-  definition M_morphism.inverse_compose_aux1 {a : D₀} (v u : M_morphism a) :
-    iso_of_id' ▹ (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v)) (M_morphism.filler u))
-    = (comp₂ D₂ (M_morphism.filler (M_morphism.inv v)) (M_morphism.filler u)) :=
+  definition M_morphism.inverse_compose_aux4 {a : D₀} (u : M_morphism a) :=
+  ap (λ x, (transport (λ (a_2 : hom a a), D₂ (ID a) a_2 id id) (id_left id)
+       (transport (λ (a_3 : hom a a), D₂ a_3 (compose id id) id id)
+          (inverse_compose (M_morphism.lid u)) x)))
+    (M_morphism.inverse_compose_aux1 u)
+
+  definition M_morphism.inverse_compose_aux5 {a : D₀}
+    {f1 f5 : hom a a} {g1 g1' g3 g4 : hom a a}
+    (filler : D₂ f1 (g1 ∘ g1') (ID a) (ID a))
+    (p1 : f1 = f5) (p2 : g1 ∘ g1' = g3) (p3 : g1 = g4) (p4 : f1 = f5) (p5 : @comp D₀ C a a a g4 g1' = g3) :
+    p5 ▹ p4 ▹ p3 ▹ filler
+    = (transport (λ x, D₂ f5 x id id) p2
+      (transport (λ x, D₂ x (g1 ∘ g1') id id) p1 filler)) :=
   begin
-    apply (M_morphism.rec_on v), intros (v1, v2),
-    apply (M_morphism.rec_on u), intros (u1, u2),
-    --apply concat,
-    --assert (P : (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (iso_of_id' ▹ (M_morphism.filler v))) (M_morphism.filler u))
-    --= (comp₂ D₂ (M_morphism.filler (M_morphism.inv v)) (M_morphism.filler u)))
-    exact sorry,
+    revert p1, revert p2, revert p3, revert p4, apply (eq.rec_on p5),
+    intro p4, apply (eq.rec_on p4), intro p3, apply (eq.rec_on p3), intro p2, intro p1,
+    assert (p1refl : idp = p1), apply is_hset.elim, apply (transport _ p1refl),
+    assert (p2refl : idp = p2), apply is_hset.elim, apply (transport _ p2refl),
+    apply idp,
   end
 
-  --set_option pp.implicit true
-  set_option pp.notation true
   definition M_morphism.inverse_compose ⦃a : D₀⦄ (u : M_morphism a) :
     M_morphism.comp (M_morphism.inv u) u = M_morphism.one a :=
   begin
@@ -167,11 +170,10 @@ namespace gamma
     fapply (M_morphism.congr),
       apply inverse_compose,
       apply concat, rotate 3, apply (weak_dbl_gpd.inverse_compose₂ D₂ filler),
-      apply concat,
-      apply transport_commute,
-
+      apply concat, apply transport_commute,
+      apply concat, apply M_morphism.inverse_compose_aux4,
+      apply M_morphism.inverse_compose_aux5,
   end
-
 
   open M_morphism
   protected definition M (a : D₀) : group (M_morphism a) :=
