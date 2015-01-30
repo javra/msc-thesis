@@ -131,17 +131,35 @@ namespace gamma
     (M_morphism.lid u)⁻¹ = M_morphism.lid (M_morphism.inv u) :=
   idp
 
+  definition M_morphism.inverse_compose_aux3_aux {a : D₀} (v u : M_morphism a)
+    {g : hom a a} (p : id⁻¹ = g) :
+  (comp₂ D₂ (transport (λ x, D₂ ((M_morphism.lid v)⁻¹) x id id) p
+    (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v))) (M_morphism.filler u))
+    = p ▹ (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v)) (M_morphism.filler u)) :=
+  begin
+    apply (eq.rec_on p), apply idp,
+  end
+
+  definition M_morphism.inverse_compose_aux3 {a : D₀} (v u : M_morphism a) :
+    (comp₂ D₂ (transport (λ x, D₂ ((M_morphism.lid v)⁻¹) x id id) iso_of_id'
+      (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v))) (M_morphism.filler u))
+    = iso_of_id' ▹ (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v)) (M_morphism.filler u)) :=
+  M_morphism.inverse_compose_aux3_aux v u iso_of_id'
+
   definition M_morphism.inverse_compose_aux1 {a : D₀} (v u : M_morphism a) :
     iso_of_id' ▹ (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler v)) (M_morphism.filler u))
     = (comp₂ D₂ (M_morphism.filler (M_morphism.inv v)) (M_morphism.filler u)) :=
   begin
     apply (M_morphism.rec_on v), intros (v1, v2),
     apply (M_morphism.rec_on u), intros (u1, u2),
+    --apply concat,
+    --assert (P : (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (iso_of_id' ▹ (M_morphism.filler v))) (M_morphism.filler u))
+    --= (comp₂ D₂ (M_morphism.filler (M_morphism.inv v)) (M_morphism.filler u)))
     exact sorry,
   end
 
   --set_option pp.implicit true
-  set_option pp.notation false
+  set_option pp.notation true
   definition M_morphism.inverse_compose ⦃a : D₀⦄ (u : M_morphism a) :
     M_morphism.comp (M_morphism.inv u) u = M_morphism.one a :=
   begin
@@ -151,9 +169,9 @@ namespace gamma
       apply concat, rotate 3, apply (weak_dbl_gpd.inverse_compose₂ D₂ filler),
       apply concat,
       apply transport_commute,
-      exact sorry,
+
   end
-  check transport_pp
+
 
   open M_morphism
   protected definition M (a : D₀) : group (M_morphism a) :=
