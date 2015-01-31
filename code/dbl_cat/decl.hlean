@@ -60,10 +60,11 @@ structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
     worm_precat C (λ ⦃a b c d : D₀⦄ f g h i, D₂ h i f g)
       renaming comp₁→comp₂ ID₁→ID₂ assoc₁→assoc₂
         id_left₁→id_left₂ id_right₁→id_right₂ homH'→homH'_dontuse :=
-  (id_comp₁ : Π {a b c : D₀} (f : hom a b) (g : hom b c),
+  (id_comp₁    : Π {a b c : D₀} (f : hom a b) (g : hom b c),
     ID₂ (g ∘ f) = comp₁ (ID₂ g) (ID₂ f))
-  (id_comp₂ : Π {a b c : D₀} (f : hom a b) (g : hom b c),
+  (id_comp₂    : Π {a b c : D₀} (f : hom a b) (g : hom b c),
     ID₁ (g ∘ f) = comp₂ (ID₁ g) (ID₁ f))
+  (zero        : Π ⦃a : D₀⦄, ID₁ (ID a) = ID₂ (ID a))
   (interchange : Π {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : D₀}
     {f₀₀ : hom a₀₀ a₀₁} {f₀₁ : hom a₀₁ a₀₂} {f₁₀ : hom a₁₀ a₁₁}
     {f₁₁ : hom a₁₁ a₁₂} {f₂₀ : hom a₂₀ a₂₁} {f₂₁ : hom a₂₁ a₂₂}
