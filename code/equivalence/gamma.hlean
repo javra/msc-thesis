@@ -253,7 +253,7 @@ namespace gamma
       apply M_morphism.inverse_compose_aux5,
   end
 
-  protected definition M (a : D₀) : group (M_morphism a) :=
+  protected definition M [instance] (a : D₀) : group (M_morphism a) :=
   begin
     fapply group.mk,
       intros (u, v), apply (M_morphism.comp u v),
@@ -264,6 +264,39 @@ namespace gamma
       intro u, apply (M_morphism.id_right u),
       intro u, apply (M_morphism.inv u),
       intro u, apply (M_morphism.inverse_compose u),
+  end
+
+  protected definition mu [reducible] ⦃x : D₀⦄ (u : M_morphism x) : hom x x :=
+  M_morphism.lid u
+
+  protected definition mu_respect_comp ⦃x : D₀⦄ (v u : M_morphism x) :
+    mu (v * u) = mu v ∘ mu u :=
+  idp
+
+  protected definition mu_respect_id ⦃x : D₀⦄ (u : M_morphism x) : mu 1 = ID x :=
+  idp
+
+  protected definition phi [reducible] ⦃x y : D₀⦄ (a : hom x y) (u : M_morphism x) :
+    M_morphism y :=
+  begin
+    fapply M_morphism.mk,
+      apply (a ∘ (M_morphism.lid u) ∘ a⁻¹),
+    assert (v : D₂ (a ∘ (M_morphism.lid u) ∘ a⁻¹) (a ∘ id ∘ a⁻¹) id id),
+      apply (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ (M_morphism.filler u) (ID₁ D₂ (a⁻¹)))),
+    apply (transport (λ x, D₂ _ x id id) (compose_inverse a)
+             (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹)) v)),
+  end
+
+  check id_left₂
+  --set_option pp.notation false
+  protected definition phi_respect_id ⦃y : D₀⦄ (u : M_morphism y) :
+    phi (ID y) u = u :=
+  begin
+    apply (M_morphism.rec_on u), intros (lid, filler),
+    fapply (M_morphism.congr),
+      apply (transport _ (iso_of_id'⁻¹)),
+      apply (!id_right ⬝ !id_left),
+
   end
 
   end
