@@ -4,6 +4,8 @@ open dbl_precat precategory truncation eq nat
 open equiv groupoid morphism sigma sigma.ops prod
 open path_algebra
 
+--TODO make this file compile faster!
+
 set_option pp.beta true
 namespace gamma
   context
@@ -43,7 +45,8 @@ namespace gamma
     intro f, apply (homH' D₂),
   end
 
-  protected definition M_morphism.comp [reducible] {a: D₀} (v u : M_morphism a) : M_morphism a :=
+  protected definition M_morphism.comp [reducible] {a: D₀} (v u : M_morphism a) :
+    M_morphism a :=
   M_morphism.mk ((M_morphism.lid v) ∘ (M_morphism.lid u))
     (transport (λ x, D₂ ((M_morphism.lid v) ∘ (M_morphism.lid u)) x id id)
     (id_left (ID a)) (comp₂ D₂ (M_morphism.filler v) (M_morphism.filler u)))
@@ -58,22 +61,6 @@ namespace gamma
     apply idp,
   end
 
-  protected definition M_morphism.assoc ⦃a b c d : D₀⦄ (M N O : M_morphism a) :
-    M_morphism.comp M (M_morphism.comp N O) = M_morphism.comp (M_morphism.comp M N) O :=
-  begin
-    revert O, revert N, apply (M_morphism.rec_on M), intros (M1, M2),
-    intro N, apply (M_morphism.rec_on N), intros (N1, N2),
-    intro O, apply (M_morphism.rec_on O), intros (M1, M2),
-    fapply M_morphism.congr,
-      apply !assoc,
-      exact sorry,
-  end
-
-  protected definition M_morphism.one [reducible] (a : D₀) : M_morphism a :=
-  begin
-    fapply M_morphism.mk, apply (ID a), apply (ID₂ D₂ (ID a)),
-  end
-
   definition transport_commute {A B : Type} (P : A → B → Type)
     {a a' : A} (p : a = a') {b b' : B} (q : b = b')
     {P1 : P a b} :
@@ -82,6 +69,96 @@ namespace gamma
     revert P1,
     apply (eq.rec_on p), apply (eq.rec_on q),
     intros, apply idp,
+  end
+
+  protected definition M_morphism.assoc_bl_transport {a : D₀} {lid1 lid2 f g : hom a a}
+    (filler1 : D₂ lid1 id id id) (filler2 : D₂ lid2 f id id) (p : f = g) :
+    transport (λ x, D₂ _ (id ∘ x) id id) p (comp₂ D₂ filler1 filler2)
+    = comp₂ D₂ filler1 (p ▹ filler2) :=
+  begin
+    apply (eq.rec_on p), apply idp,
+  end
+
+  protected definition M_morphism.assoc_br_transport {a : D₀} {lid1 lid2 f g : hom a a}
+    (filler1 : D₂ lid1 f id id) (filler2 : D₂ lid2 id id id) (p : f = g) :
+    transport (λ x, D₂ _ (x ∘ id) id id) p (comp₂ D₂ filler1 filler2)
+    = comp₂ D₂ (p ▹ filler1) filler2 :=
+  begin
+    apply (eq.rec_on p), apply idp,
+  end
+
+  protected definition M_morphism.assoc_aux {a : D₀} (w v u : M_morphism a) :
+    comp₂ D₂ (M_morphism.filler w) (M_morphism.filler (M_morphism.comp v u))
+    = transport (λ x, D₂ _ (id ∘ x) id id) (id_left id)
+    (comp₂ D₂ (M_morphism.filler w) (comp₂ D₂ (M_morphism.filler v)
+      (M_morphism.filler u))) :=
+  begin
+    apply (!M_morphism.assoc_bl_transport⁻¹),
+  end
+
+  protected definition M_morphism.assoc_aux2 {a : D₀} (w v u : M_morphism a) :
+    comp₂ D₂ (M_morphism.filler (M_morphism.comp w v)) (M_morphism.filler u)
+    = transport (λ x, D₂ _ (x ∘ id) id id) (id_left id)
+    (comp₂ D₂ (comp₂ D₂ (M_morphism.filler w) (M_morphism.filler v))
+      (M_morphism.filler u)) :=
+  begin
+    apply (!M_morphism.assoc_br_transport⁻¹),
+  end
+
+  protected definition M_morphism.assoc_aux4 {a : D₀}
+    {lid f f' g g' : hom a a} (filler : D₂ lid (g ∘ f) id id)
+    (p : f = f') (q : g = g') (r : g ∘ f = g' ∘ f'):
+    transport (λ x, D₂ lid (x ∘ f') id id) q
+      (transport (λ x, D₂ lid (g ∘ x) id id) p filler)
+    = transport (λ x, D₂ lid x id id) r filler :=
+  begin
+    revert r, revert p, apply (eq.rec_on q),
+    intro p, apply (eq.rec_on p),
+    intro r, assert (P : idp = r),
+      apply is_hset.elim,
+    apply (transport _ P),
+    apply idp,
+  end
+
+  protected definition M_morphism.assoc_aux3 {a : D₀} {lid : hom a a}
+    (filler : D₂ lid (id ∘ (id ∘ id)) id id) :
+    transport (λ (x : hom a a), D₂ lid (x ∘ id) id id) (inverse (id_left id))
+      (transport (λ (x : hom a a), D₂ lid (id ∘ x) id id) (id_left id) filler)
+    = transport (λ x, D₂ lid x id id) (assoc id id id) filler :=
+  begin
+    apply M_morphism.assoc_aux4,
+  end
+
+  protected definition M_morphism.assoc ⦃a : D₀⦄ (w v u : M_morphism a) :
+    M_morphism.comp w (M_morphism.comp v u) = M_morphism.comp (M_morphism.comp w v) u :=
+  begin
+    revert u, revert v, apply (M_morphism.rec_on w), intros (w1, w2),
+    intro v, apply (M_morphism.rec_on v), intros (v1, v2),
+    intro u, apply (M_morphism.rec_on u), intros (u1, u2),
+    fapply M_morphism.congr,
+      apply !assoc, apply concat,
+      apply transport_commute,
+      apply (ap (transport (λ (a_2 : hom a a), D₂ _ a_2 id id) (id_left id))),
+      apply concat,
+      apply (ap (transport (λ (a_3 : hom a a), D₂ a_3 (compose id id) id id)
+       (assoc (M_morphism.lid (M_morphism.mk w1 w2)) (M_morphism.lid (M_morphism.mk v1 v2))
+         (M_morphism.lid (M_morphism.mk u1 u2))))),
+      apply M_morphism.assoc_aux,
+      apply concat, rotate 3, apply inverse,
+      apply M_morphism.assoc_aux2,
+      apply concat,
+      apply (transport_commute (λ x y, D₂ x (id ∘ y) id id)
+        (assoc (M_morphism.lid (M_morphism.mk w1 w2))
+          (M_morphism.lid (M_morphism.mk v1 v2)) (M_morphism.lid (M_morphism.mk u1 u2)))
+        (id_left id)),
+      apply moveL_transport_p,
+      apply concat, apply M_morphism.assoc_aux3,
+      apply assoc₂,
+  end
+
+  protected definition M_morphism.one [reducible] (a : D₀) : M_morphism a :=
+  begin
+    fapply M_morphism.mk, apply (ID a), apply (ID₂ D₂ (ID a)),
   end
 
   protected definition M_morphism.id_left ⦃a : D₀⦄ (M : M_morphism a) :
@@ -112,7 +189,8 @@ namespace gamma
   end
 
   --TODO: Think of something better to prevent such ambiguities
-  definition iso_of_id' {a : D₀} : @morphism.inverse D₀ C a a (ID a) (all_iso (ID a)) = id :=
+  definition iso_of_id' {a : D₀} :
+    @morphism.inverse D₀ C a a (ID a) (all_iso (ID a)) = id :=
   inverse_eq_intro_left !id_compose
 
   definition M_morphism.inv_aux ⦃a : D₀⦄ (u : M_morphism a) :
@@ -151,7 +229,7 @@ namespace gamma
   definition M_morphism.inverse_compose_aux5 {a : D₀}
     {f1 f5 : hom a a} {g1 g1' g3 g4 : hom a a}
     (filler : D₂ f1 (g1 ∘ g1') (ID a) (ID a))
-    (p1 : f1 = f5) (p2 : g1 ∘ g1' = g3) (p3 : g1 = g4) (p4 : f1 = f5) (p5 : @comp D₀ C a a a g4 g1' = g3) :
+    (p1 : f1 = f5) (p2 : g1 ∘ g1' = g3) (p3 : g1 = g4) (p4 : f1 = f5) (p5 : g4 ∘ g1' = g3) :
     p5 ▹ p4 ▹ p3 ▹ filler
     = (transport (λ x, D₂ f5 x id id) p2
       (transport (λ x, D₂ x (g1 ∘ g1') id id) p1 filler)) :=
@@ -175,28 +253,18 @@ namespace gamma
       apply M_morphism.inverse_compose_aux5,
   end
 
-  open M_morphism
   protected definition M (a : D₀) : group (M_morphism a) :=
   begin
     fapply group.mk,
-      intros (u, v), apply (comp u v),
+      intros (u, v), apply (M_morphism.comp u v),
       apply (M_morphism.is_hset a),
-      intros (u, v, w), apply ((assoc u v w)⁻¹),
+      intros (u, v, w), apply ((M_morphism.assoc u v w)⁻¹),
       apply M_morphism.one,
-      intro u, apply (id_left u),
-      intro u, apply (id_right u),
-      intro u, apply (inv D₂ u),
-      intro u, apply (inverse_compose u),
+      intro u, apply (M_morphism.id_left u),
+      intro u, apply (M_morphism.id_right u),
+      intro u, apply (M_morphism.inv u),
+      intro u, apply (M_morphism.inverse_compose u),
   end
-
 
   end
 end gamma
-
-    /-fapply groupoid.mk,
-      intros (a, b), exact (M_morphism a b),
-      intros (a, b), exact (M_morphism.is_hset a b),
-      intros (a, b, c, M, N), exact (@M_morphism.comp a b c M N),
-      intros,  fapply M_morphism.mk,
-        apply idp, apply id, apply (ID₂ D₂ id),-/
-      --intros (a, b, c, d, M),
