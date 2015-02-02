@@ -308,31 +308,28 @@ namespace gamma
   end
 
   variables ⦃y : D₀⦄
-    (f1 f2 f3 f4 g0 g1 g2 g3 g4 g5 g6 g7 : hom y y)
-    (p8 : f1 = f2) (p7 : g0 = g1 ∘ g2) (p6 : g2 = @comp D₀ C y y y g3 g4)
-    (p5 : f2 = f3 ∘ f4) (p4 : g1 ∘ (g3 ∘ g4) = g5 ∘ g6)
-    (p3 : g6 = g7) (p2 : f3 ∘ f4 = f1) (p1 : g5 ∘ g7 = g0)
-    (filler : D₂ f1 g0 id id)-- :=
+    {lid f2 f3 g0 g1 g2 g3 g4 g5 g6 g7 : hom y y}
+    (p8 : lid = f2) (p7 : g0 = g1 ∘ g2) (p6 : g2 = @comp D₀ C y y y g3 g4)
+    (p5 : f2 = f3 ∘ g6) (p4 : g1 ∘ (g3 ∘ g4) = g5 ∘ g6)
+    (p3 : g6 = g7) (p2 : f3 ∘ g7 = lid) (p1 : g5 ∘ g7 = g0)
+    (filler : D₂ lid g0 id id)
 
   protected definition phi_respect_id_aux3_aux
-  := (transport (λ (x : hom y y), D₂ f1 x id id) p1
+  := (transport (λ (x : hom y y), D₂ lid x id id) p1
      (transport (λ (x : hom y y), D₂ x (g5 ∘ g7) id id) p2
-      (transport (λ (x : hom y y), D₂ (f3 ∘ f4) (g5 ∘ x) id id) p3
-       (transport (λ (x : hom y y), D₂ (f3 ∘ f4) x id id) p4
+      (transport (λ (x : hom y y), D₂ (f3 ∘ x) (g5 ∘ x) id id) p3
+       (transport (λ (x : hom y y), D₂ (f3 ∘ g6) x id id) p4
         (transport (λ (x : hom y y), D₂ x (g1 ∘ (g3 ∘ g4)) id id) p5
          (transport (λ (x : hom y y), D₂ f2 (g1 ∘ x) id id) p6
           (transport (λ (x : hom y y), D₂ f2 x id id) p7
            (transport (λ (x : hom y y), D₂ x g0 id id) p8 filler))))))))
 
   protected definition phi_respect_id_aux3 :
-    phi_respect_id_aux3_aux f1 f2 f3 f4 g0 g1 g2 g3 g4 g5 g6 g7
-      p8 p7 p6 p5 p4 p3 p2 p1 filler = filler :=
+    filler = phi_respect_id_aux3_aux p8 p7 p6 p5 p4 p3 p2 p1 filler :=
   begin
-    revert filler, revert p4,
-    revert p7, revert p5,
-    revert p2, revert g1,
-    revert p3, revert g6,
-    revert p1, revert g0,
+    apply inverse, revert filler, revert p4,
+    revert p7, revert p5, revert p2, revert g1,
+    revert p3, revert g6, revert p1, revert g0,
     apply (eq.rec_on p8),
     intro g0, intro p1, apply (eq.rec_on p1),
     intro g6, intro p3, apply (eq.rec_on p3),
@@ -347,8 +344,8 @@ namespace gamma
     revert p4, revert p7, generalize (p6⁻¹), clear p6, revert g2,
     intro g2, intro p6inv, apply (eq.rec_on p6inv), intros,
     apply moveL_transport_V, apply moveL_transport_V,
-    assert (P : idp ▹ refl (comp g3 g4) ▹ p7 ▹ refl (f3 ∘ f4) ▹ filler
-      = p7 ▹ refl (f3 ∘ f4) ▹ filler),
+    assert (P : idp ▹ refl (comp g3 g4) ▹ p7 ▹ refl (f3 ∘ g6) ▹ filler
+      = p7 ▹ refl (f3 ∘ g6) ▹ filler),
       apply idp,
     apply concat, exact P, apply moveL_transport_V,
     apply concat, apply (!transport_pp⁻¹),
@@ -357,8 +354,6 @@ namespace gamma
     apply idp,
   end
 
-  --set_option pp.notation false
-  --set_option pp.implicit true
   protected definition phi_respect_id ⦃y : D₀⦄ (u : M_morphism y) :
     phi (ID y) u = u :=
   begin
@@ -375,7 +370,22 @@ namespace gamma
     apply (transport (λ x, comp₂ D₂ _ x = _) ((zero_unique D₂ y)⁻¹)),
     apply concat, apply phi_respect_id_aux2,
     apply moveR_transport_V, apply moveR_transport_V,
-    apply (!phi_respect_id_aux3⁻¹),
+    apply concat,
+    apply (phi_respect_id_aux3
+      (inverse
+        (transport (λ (a : hom y y), eq
+          (compose (ID y) (compose lid a)) lid) (inverse (iso_of_id'))
+          (concat (id_left (comp lid (ID y))) (id_right lid))))
+      (inverse (@compose_inverse D₀ C y y (@ID D₀ C y)
+                                 (@all_iso D₀ C y y (@ID D₀ C y))))
+      (inverse (id_left (@inverse D₀ C y y (ID y) (all_iso (ID y)))))
+      (id_left (compose lid (@inverse D₀ C y y (ID y) (all_iso (ID y)))))
+      (id_left (comp (ID y) (@inverse D₀ C y y (ID y) (all_iso (ID y)))))
+      (iso_of_id')
+      (id_right lid)
+      (id_right id)
+      filler),
+    apply idp,
   end
 
   end
