@@ -438,6 +438,12 @@ namespace gamma
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
+  protected definition phi_respect_P_comp_aux2 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z) :=
+    ID₁ D₂ (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso))-- = ID₁ D₂ ((a⁻¹) ∘ (b⁻¹)) :=
+  check phi_respect_P_comp_aux2
+
+exit
+
   protected definition phi_respect_P_comp ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y)
     (u : M_morphism x) : phi (b ∘ a) u = phi b (phi a u) :=
   begin
@@ -463,7 +469,7 @@ namespace gamma
       apply id_comp₂,
     apply (transport (λ x, _ = comp₂ D₂ x _) (P1⁻¹)),
     apply concat, rotate 3, apply inverse,
-    --assert (P2 : ID₁ D₂ bainv = ID₁ D₂ ((a⁻¹) ∘ (b⁻¹))),
+    assert (P2 : ID₁ D₂ (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)) = ID₁ D₂ ((a⁻¹) ∘ (b⁻¹))),
 
 
   end
