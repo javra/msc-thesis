@@ -1,9 +1,7 @@
 import algebra.groupoid algebra.group
 
 open groupoid precategory morphism function eq truncation path_algebra
-reducible compose
-coercion [persistent] Group.carrier
-instance [persistent] Group.struct
+attribute compose [reducible]
 
 structure xmod_aux [class] {P₀ : Type} (P : groupoid P₀) (M : P₀ → Group) : Type :=
   (P₀_hset : is_hset P₀)

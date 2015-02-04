@@ -2,7 +2,7 @@ import types.pi types.sigma
 import .decl
 
 open eq dbl_precat precategory truncation morphism
-reducible compose
+attribute compose [reducible]
 
 namespace thin_structure
   context
