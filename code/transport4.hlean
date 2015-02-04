@@ -1,4 +1,4 @@
-open eq
+open eq truncation
 
 context
   parameters {A B C D : Type} (P : A → B → C → D → Type)
@@ -8,7 +8,25 @@ context
     (u : P a0 b0 c0 d0) : P a1 b1 c1 d1 :=
   pd ▹ pc ▹ pb ▹ pa ▹ u
 
-  definition transport4_eq_transport {E : Type}
+  definition transport4_set_reduce [HA : is_hset A] [HB : is_hset B]
+    [HC : is_hset C] [HD : is_hset D]
+    {a0 : A} {b0 : B} {c0 : C} {d0 : D}
+    {pa : a0 = a0} {pb : b0 = b0} (pc : c0 = c0) (pd : d0 = d0)
+    (u : P a0 b0 c0 d0) :
+    transport4 pa pb pc pd u = u :=
+  begin
+    assert (Ppa : idp = pa), apply is_hset.elim,
+    apply (transport _ Ppa),
+    assert (Ppb : idp = pb), apply is_hset.elim,
+    apply (transport _ Ppb),
+    assert (Ppc : idp = pc), apply is_hset.elim,
+    apply (transport _ Ppc),
+    assert (Ppd : idp = pd), apply is_hset.elim,
+    apply (transport _ Ppd),
+    apply idp,
+  end
+
+  definition transport_eq_transport4 {E : Type}
     {f : E → A} {g : E → B} {h : E → C} {i : E → D}
     {e0 e1 : E} (p : e0 = e1)
     (u : P (f e0) (g e0) (h e0) (i e0)) :
@@ -48,12 +66,3 @@ context
   end
 
 end
-
-exit
-                      (transport
-                         (λ (a_6 : hom z x),
-                            D₂ (compose (compose b a) (compose lid a_6))
-                              (compose (compose b a) (compose id a_6))
-                              (ID z)
-                              (ID z))
-                         (inverse (Pbainv D₂ a b))
