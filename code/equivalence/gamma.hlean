@@ -95,7 +95,7 @@ namespace gamma
     apply (eq.rec_on p), apply idp,
   end
 
-  protected definition M_morphim.assoc_ur_transport {a : D₀} {lid1 lid2 f1 f2 g : hom a a}
+  protected definition M_morphism.assoc_ur_transport {a : D₀} {lid1 lid2 f1 f2 g : hom a a}
     (filler1 : D₂ lid1 f1 id id) (filler2 : D₂ lid2 f2 id id) (p : lid1 = g) :
     transport (λ x, D₂ (x ∘ lid2) _ id id) p (comp₂ D₂ filler1 filler2)
     = comp₂ D₂ (p ▹ filler1) filler2 :=
@@ -331,7 +331,9 @@ namespace gamma
     (filler : D₂ lid g0 id id)
 
   protected definition phi_respect_id_aux3_aux
-  := (transport (λ (x : hom y y), D₂ lid x id id) p1
+  :=
+  proof
+    (transport (λ (x : hom y y), D₂ lid x id id) p1
      (transport (λ (x : hom y y), D₂ x (g5 ∘ g7) id id) p2
       (transport (λ (x : hom y y), D₂ (f3 ∘ x) (g5 ∘ x) id id) p3
        (transport (λ (x : hom y y), D₂ (f3 ∘ g6) x id id) p4
@@ -339,6 +341,7 @@ namespace gamma
          (transport (λ (x : hom y y), D₂ f2 (g1 ∘ x) id id) p6
           (transport (λ (x : hom y y), D₂ f2 x id id) p7
            (transport (λ (x : hom y y), D₂ x g0 id id) p8 filler))))))))
+  qed
 
   protected definition phi_respect_id_aux3 :
     filler = phi_respect_id_aux3_aux p8 p7 p6 p5 p4 p3 p2 p1 filler :=
@@ -404,7 +407,6 @@ namespace gamma
     apply idp,
   end
 
-
   --set_option pp.notation false
   --set_option pp.implicit true
   protected definition inv_pp' ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y) :
@@ -413,10 +415,6 @@ namespace gamma
   have H2 : (a⁻¹) ∘ (b⁻¹ ∘ (b ∘ a)) = a⁻¹ ∘ a, from ap _ (iso.compose_V_pp b a),
   have H3 : a⁻¹ ∘ a = id, from inverse_compose a,
   sorry --inverse_eq_intro_left (H1 ⬝ H2 ⬝ H3)
-
-  check zero_unique
-  check comp₂
-  check M_morphism.assoc_br_transport
 
   set_option unifier.max_steps 50000
   protected definition phi_respect_P_comp_aux ⦃x y z : D₀⦄ (a : hom x y)
@@ -438,22 +436,84 @@ namespace gamma
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
-  protected definition phi_respect_P_comp_aux2 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z) :=
-    ID₁ D₂ (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso))-- = ID₁ D₂ ((a⁻¹) ∘ (b⁻¹)) :=
-  check phi_respect_P_comp_aux2
+  protected definition Pbainv ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z) :
+    (a⁻¹) ∘ (b⁻¹) = (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)) :=
+  ((inv_pp' b a)⁻¹)
 
-exit
+  protected definition phi_respect_P_comp_aux2 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
+    (lid : hom x x) (filler : D₂ lid id id id) :
+    comp₂ D₂ (comp₂ D₂ (ID₁ D₂ b) (ID₁ D₂ a))
+    (comp₂ D₂ filler
+       ((Pbainv a b) ▹ comp₂ D₂ (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹)))) =
+    transport _
+      (Pbainv a b)
+      (comp₂ D₂ (comp₂ D₂ (ID₁ D₂ b) (ID₁ D₂ a))
+        (comp₂ D₂ filler
+          (comp₂ D₂ (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹))))) :=
+  begin
+    apply (eq.rec_on (Pbainv a b)), apply idp,
+  end
 
+  protected definition phi_respect_P_comp_aux3 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
+    (lid : hom x x) (filler : D₂ lid id id id) :=
+  ap (λ x, comp₂ D₂ (ID₁ D₂ b)
+    (comp₂ D₂ (ID₁ D₂ a) x))
+    (moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (assoc₂ D₂ filler (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹)))))
+
+
+  protected definition phi_respect_P_comp_aux4 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
+    (f1 f2 g1 g2 : hom z x) (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2) :
+    transport (λ x, D₂ (b ∘ (a ∘ x)) _ id id) p
+      (transport (λ x, D₂ _ (b ∘ (a ∘ x)) id id) q
+        (comp₂ D₂ (ID₁ D₂ b) (comp₂ D₂ (ID₁ D₂ a)
+          filler)))
+   = (comp₂ D₂ (ID₁ D₂ b) (comp₂ D₂ (ID₁ D₂ a)
+        (transport (λ x, D₂ x _ id id) p
+          (transport (λ x, D₂ _ x id id) q
+            filler)))) :=
+  begin
+    apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
+  end
+
+  protected definition phi_respect_P_comp_aux5 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
+    (lid : hom x x) (filler : D₂ lid id id id) :=
+  ap (λ x, comp₂ D₂ (ID₁ D₂ b) x)
+    (moveL_transport_V _ _ _ _
+      (moveL_transport_V _ _ _ _
+        (assoc₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filler (ID₁ D₂ (a⁻¹))) (ID₁ D₂ (b⁻¹)))))
+
+  protected definition phi_respect_P_comp_aux6 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
+    (f1 f2 g1 g2 : hom z y) (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2) :
+    transport (λ x, D₂ (b ∘ x) _ id id) p
+      (transport (λ x, D₂ _ (b ∘ x) id id) q
+        (comp₂ D₂ (ID₁ D₂ b) filler))
+    = comp₂ D₂ (ID₁ D₂ b)
+        (transport (λ x, D₂ x _ id id) p
+          (transport (λ x, D₂ _ x id id) q filler)) :=
+  begin
+    apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
+  end
+
+  check @phi_respect_P_comp_aux6
+
+  protected definition phi_respect_P_comp_aux7 ⦃x w z : D₀⦄ (a : hom x w) (b : hom w z)
+    (lid : hom x x) (filer : D₂ lid id id id) :=
+  phi_respect_P_comp_aux6 a b _ _ _ _ filler
+    ((assoc a (lid ∘ (a⁻¹)) (b⁻¹))⁻¹)
+    ((assoc a (id ∘ (a⁻¹)) (b⁻¹))⁻¹)
+
+  set_option unifier.max_steps 40000
   protected definition phi_respect_P_comp ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y)
     (u : M_morphism x) : phi (b ∘ a) u = phi b (phi a u) :=
   begin
     assert (bainv : hom z x),
       exact (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)),
-    assert (Pbainv : (a⁻¹) ∘ (b⁻¹) = (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso))),
-      apply ((inv_pp' b a)⁻¹),
+    --assert (Pbainv : (a⁻¹) ∘ (b⁻¹) = (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso))),
+    --  apply ((inv_pp' b a)⁻¹),
     apply (M_morphism.rec_on u), intros (lid, filler),
     fapply (M_morphism.congr),
-      apply (transport _ Pbainv),
+      apply (transport _ (Pbainv a b)),
       apply concat, apply (!assoc⁻¹), apply (ap (λ x, b ∘ x)),
       apply concat, rotate 3, apply assoc,
       apply concat, rotate 3, apply assoc, apply (ap (λ x, x ∘ (b⁻¹))),
@@ -469,9 +529,24 @@ exit
       apply id_comp₂,
     apply (transport (λ x, _ = comp₂ D₂ x _) (P1⁻¹)),
     apply concat, rotate 3, apply inverse,
-    assert (P2 : ID₁ D₂ (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)) = ID₁ D₂ ((a⁻¹) ∘ (b⁻¹))),
-
-
+    assert (P2 : ID₁ D₂ (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso))
+      = (Pbainv a b) ▹ ID₁ D₂ ((a⁻¹) ∘ (b⁻¹))),
+      apply (eq.rec_on (Pbainv a b)), apply idp,
+    apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ b) (ID₁ D₂ a))
+      (comp₂ D₂ filler x)) P2),
+    assert (P4 : ID₁ D₂ (a⁻¹ ∘ b⁻¹) = comp₂ D₂ (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹))),
+      apply id_comp₂,
+    apply (transport (λ x, _ = comp₂ D₂ _ (comp₂ D₂ filler ((Pbainv a b) ▹ x))) (P4⁻¹)),
+    apply concat, rotate 3, apply inverse, apply phi_respect_P_comp_aux2,
+    apply moveL_transport_p,
+    apply concat, rotate 3, apply assoc₂,
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply concat, rotate 3, apply inverse, apply phi_respect_P_comp_aux3,
+    apply concat, rotate 3, apply phi_respect_P_comp_aux4,
+    apply moveL_transport_V, apply moveL_transport_V,
+    apply concat, rotate 3, apply inverse, apply phi_respect_P_comp_aux5,
+    apply concat, rotate 3, apply phi_respect_P_comp_aux6,
+    --apply moveL_transport_p, apply moveL_transport_p,
   end
 
   end
