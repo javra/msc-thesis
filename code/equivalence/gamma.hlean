@@ -218,7 +218,7 @@ namespace gamma
       (moveL_transport_V _ _ _ _
         (assoc₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filler (ID₁ D₂ (a⁻¹))) (ID₁ D₂ (b⁻¹)))))
 
-  protected definition transp_comp_eq_comp_transp_l ⦃y z w : D₀⦄
+  protected definition transp_comp_eq_comp_transp_l_bu ⦃y z w : D₀⦄
     {f1 f2 g1 g2 : hom z y} (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2)
     {f' g' : hom y w} (filler' : D₂ f' g' id id) :
     transport (λ x, D₂ (f' ∘ x) _ id id) p
@@ -231,7 +231,20 @@ namespace gamma
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
-  protected definition transp_comp_eq_comp_transp_r ⦃y z w : D₀⦄
+  protected definition transp_comp_eq_comp_transp_l_ub ⦃y z w : D₀⦄
+    {f1 f2 g1 g2 : hom z y} (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2)
+    {f' g' : hom y w} (filler' : D₂ f' g' id id) :
+    transport (λ x, D₂ _ (g' ∘ x) id id) q
+      (transport (λ x, D₂ (f' ∘ x) _ id id) p
+        (comp₂ D₂ filler' filler))
+    = comp₂ D₂ filler'
+        (transport (λ x, D₂ _ x id id) q
+          (transport (λ x, D₂ x _ id id) p filler)) :=
+  begin
+    apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
+  end
+
+  protected definition transp_comp_eq_comp_transp_r_bu ⦃y z w : D₀⦄
     {f1 f2 g1 g2 : hom y z} (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2)
     {f' g' : hom w y} (filler' : D₂ f' g' id id) :
     transport (λ x, D₂ (x ∘ f') _ id id) p
@@ -243,14 +256,26 @@ namespace gamma
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
+  protected definition transp_comp_eq_comp_transp_r_ub ⦃y z w : D₀⦄
+    {f1 f2 g1 g2 : hom y z} (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2)
+    {f' g' : hom w y} (filler' : D₂ f' g' id id) :
+    transport (λ x, D₂ _ (x ∘ g') id id) q
+      (transport (λ x, D₂ (x ∘ f') _ id id) p
+        (comp₂ D₂ filler filler'))
+    = comp₂ D₂ (transport (λ x, D₂ _ x id id) q
+      (transport (λ x, D₂ x _ id id) p filler)) filler' :=
+  begin
+    apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
+  end
+
   protected definition phi_respect_P_comp_aux7 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
     (lid : hom x x) (filler : D₂ lid id id id) :=
-  transp_comp_eq_comp_transp_l
+  transp_comp_eq_comp_transp_l_bu
     (comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a)
       (comp₂ D₂ filler (ID₁ D₂ (a⁻¹)))) (ID₁ D₂ (b⁻¹)))
     ((assoc a (lid ∘ (a⁻¹)) (b⁻¹))⁻¹)
     ((assoc a (id ∘ (a⁻¹)) (b⁻¹))⁻¹) (ID₁ D₂ b)
-
+exit
   set_option unifier.max_steps 40000
   protected definition phi_respect_P_comp ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y)
     (u : M_morphism x) : phi (b ∘ a) u = phi b (phi a u) :=
@@ -387,10 +412,13 @@ namespace gamma
     apply concat, rotate 1, apply inverse,
     apply phi_respect_M_comp_aux2,
     --apply (apD (λ x, comp₂ D₂ x (comp₂ D₂ filleru (ID₁ D₂ a ⁻¹)))),
-    apply concat, rotate 1, apply inverse,
-    apply transp_comp_eq_comp_transp_r,
+    apply concat, rotate 1, apply transp_comp_eq_comp_transp_r,
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply concat, rotate 1, apply transp_comp_eq_comp_transp_r,
+    apply moveL_transport_p, apply moveL_transport_p,
   end
 
+  check transp_comp_eq_comp_transp_r
   end
 end gamma
 
