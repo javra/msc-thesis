@@ -15,6 +15,12 @@ namespace dbl_gpd
   [T : thin_structure D₂ thin]
   include C T
 
+  definition ID₁_inverse_compose ⦃a b : D₀⦄ (f : hom a b) :
+    comp₂ D₂ (ID₁ D₂ (f⁻¹)) (ID₁ D₂ f) =
+    transport (λ x, D₂ _ x id id) ((inverse_compose f)⁻¹)
+      (transport (λ x, D₂ x _ id id) ((inverse_compose f)⁻¹) (ID₁ D₂ (ID a))) :=
+  sorry
+
   definition ur_connect ⦃a b : D₀⦄ (f : hom a b) : D₂ (ID b) f (f⁻¹) (ID b) :=
   thin (ID b) f (f⁻¹) (ID b) (compose_inverse f ⬝ id_left (ID b)⁻¹)
 

@@ -1,8 +1,8 @@
-import .gamma_group ..transport4
+import .gamma_group ..transport4 ..dbl_gpd.basic
 
 open dbl_precat precategory truncation eq nat
 open equiv groupoid morphism sigma sigma.ops prod
-open path_algebra
+open path_algebra dbl_gpd
 attribute gamma.M [instance]
 
 set_option pp.beta true
@@ -16,6 +16,8 @@ namespace gamma
       Type.{l})
     [G : dbl_gpd C D₂]
   include G D₀set C
+
+  attribute dbl_gpd.T [instance]
 
   protected definition mu [reducible] ⦃x : D₀⦄ (u : M_morphism x) : hom x x :=
   M_morphism.lid u
@@ -219,51 +221,59 @@ namespace gamma
         (assoc₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filler (ID₁ D₂ (a⁻¹))) (ID₁ D₂ (b⁻¹)))))
 
   protected definition transp_comp_eq_comp_transp_l_bu ⦃y z w : D₀⦄
-    {f1 f2 g1 g2 : hom z y} (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2)
+    {Ef : Type} {ef : Ef → hom z y}
+    {Eg : Type} {eg : Eg → hom z y}
+    {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ (ef f1) (eg g1) id id) (p : f1 = f2) (q : g1 = g2)
     {f' g' : hom y w} (filler' : D₂ f' g' id id) :
-    transport (λ x, D₂ (f' ∘ x) _ id id) p
-      (transport (λ x, D₂ _ (g' ∘ x) id id) q
+    transport (λ x, D₂ (f' ∘ (ef x)) _ id id) p
+      (transport (λ x, D₂ _ (g' ∘ (eg x)) id id) q
         (comp₂ D₂ filler' filler))
     = comp₂ D₂ filler'
-        (transport (λ x, D₂ x _ id id) p
-          (transport (λ x, D₂ _ x id id) q filler)) :=
+        (transport (λ x, D₂ (ef x) _ id id) p
+          (transport (λ x, D₂ _ (eg x) id id) q filler)) :=
+  begin
+    apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
+  end
+
+  protected definition transp_comp_eq_comp_transp_r_bu ⦃y z w : D₀⦄
+    {Ef : Type} {ef : Ef → hom y z}
+    {Eg : Type} {eg : Eg → hom y z}
+    {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ (ef f1) (eg g1) id id) (p : f1 = f2) (q : g1 = g2)
+    {f' g' : hom w y} (filler' : D₂ f' g' id id) :
+    transport (λ x, D₂ ((ef x) ∘ f') _ id id) p
+      (transport (λ x, D₂ _ ((eg x) ∘ g') id id) q
+        (comp₂ D₂ filler filler'))
+    = comp₂ D₂ (transport (λ x, D₂ (ef x) _ id id) p
+          (transport (λ x, D₂ _ (eg x) id id) q filler)) filler' :=
   begin
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
   protected definition transp_comp_eq_comp_transp_l_ub ⦃y z w : D₀⦄
-    {f1 f2 g1 g2 : hom z y} (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2)
+    {Ef : Type} {ef : Ef → hom z y}
+    {Eg : Type} {eg : Eg → hom z y}
+    {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ (ef f1) (eg g1) id id) (p : f1 = f2) (q : g1 = g2)
     {f' g' : hom y w} (filler' : D₂ f' g' id id) :
-    transport (λ x, D₂ _ (g' ∘ x) id id) q
-      (transport (λ x, D₂ (f' ∘ x) _ id id) p
+    transport (λ x, D₂ _ (g' ∘ (eg x)) id id) q
+      (transport (λ x, D₂ (f' ∘ (ef x)) _ id id) p
         (comp₂ D₂ filler' filler))
     = comp₂ D₂ filler'
-        (transport (λ x, D₂ _ x id id) q
-          (transport (λ x, D₂ x _ id id) p filler)) :=
+       (transport (λ x, D₂ _ (eg x) id id) q
+         (transport (λ x, D₂ (ef x) _ id id) p filler)) :=
   begin
     apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
   end
 
-  protected definition transp_comp_eq_comp_transp_r_bu ⦃y z w : D₀⦄
-    {f1 f2 g1 g2 : hom y z} (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2)
-    {f' g' : hom w y} (filler' : D₂ f' g' id id) :
-    transport (λ x, D₂ (x ∘ f') _ id id) p
-      (transport (λ x, D₂ _ (x ∘ g') id id) q
-        (comp₂ D₂ filler filler'))
-    = comp₂ D₂ (transport (λ x, D₂ x _ id id) p
-      (transport (λ x, D₂ _ x id id) q filler)) filler' :=
-  begin
-    apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
-  end
-
   protected definition transp_comp_eq_comp_transp_r_ub ⦃y z w : D₀⦄
-    {f1 f2 g1 g2 : hom y z} (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2)
+    {Ef : Type} {ef : Ef → hom y z}
+    {Eg : Type} {eg : Eg → hom y z}
+    {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ (ef f1) (eg g1) id id) (p : f1 = f2) (q : g1 = g2)
     {f' g' : hom w y} (filler' : D₂ f' g' id id) :
-    transport (λ x, D₂ _ (x ∘ g') id id) q
-      (transport (λ x, D₂ (x ∘ f') _ id id) p
+    transport (λ x, D₂ _ ((eg x) ∘ g') id id) q
+      (transport (λ x, D₂ ((ef x) ∘ f') _ id id) p
         (comp₂ D₂ filler filler'))
-    = comp₂ D₂ (transport (λ x, D₂ _ x id id) q
-      (transport (λ x, D₂ x _ id id) p filler)) filler' :=
+    = comp₂ D₂ (transport (λ x, D₂ _ (eg x) id id) q
+          (transport (λ x, D₂ (ef x) _ id id) p filler)) filler' :=
   begin
     apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
   end
@@ -275,7 +285,7 @@ namespace gamma
       (comp₂ D₂ filler (ID₁ D₂ (a⁻¹)))) (ID₁ D₂ (b⁻¹)))
     ((assoc a (lid ∘ (a⁻¹)) (b⁻¹))⁻¹)
     ((assoc a (id ∘ (a⁻¹)) (b⁻¹))⁻¹) (ID₁ D₂ b)
-exit
+
   set_option unifier.max_steps 40000
   protected definition phi_respect_P_comp ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y)
     (u : M_morphism x) : phi (b ∘ a) u = phi b (phi a u) :=
@@ -374,18 +384,40 @@ exit
   moveL_transport_V _ _ _ _
     (moveL_transport_V _ _ _ _ (assoc₂ D₂ w v u))
 
+  protected definition id_left₂' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (id_left₂ D₂ u))
+
+  protected definition id_right₂' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (id_right₂ D₂ u))
+
   protected definition phi_respect_M_comp_aux2 ⦃x y: D₀⦄ {a : hom x y} (lidu : hom x x)
     (filleru : D₂ lidu id id id) (lidv : hom x x) (fillerv : D₂ lidv id id id) :=
   ap (λ x, comp₂ D₂ x (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))
   (assoc₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv (ID₁ D₂ (a⁻¹))) (ID₁ D₂ a))⁻¹
 
-  check phi_respect_M_comp_aux2
+  protected definition phi_respect_M_comp_aux3 ⦃x y : D₀⦄ {a : hom x y} (lidu : hom x x)
+    (filleru : D₂ lidu id id id) (lidv : hom x x) (fillerv : D₂ lidv id id id) :=
+  ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) x) (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))
+  ((assoc₂ D₂ fillerv (ID₁ D₂ (a⁻¹)) (ID₁ D₂ a))⁻¹)
 
-/-comp₂ D₂ (comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a)
-          (comp₂ D₂ fillerv (ID₁ D₂ a ⁻¹))) (ID₁ D₂ a)) (comp₂ D₂ filleru) (ID₁ D₂ a ⁻¹)),-/
+  protected definition phi_respect_M_comp_aux4 ⦃x y : D₀⦄ {a : hom x y} (lidu : hom x x)
+    (filleru : D₂ lidu id id id) (lidv : hom x x) (fillerv : D₂ lidv id id id) :=
+  (ap (λ w, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv w)) (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))
+  (ID₁_inverse_compose a))
 
+  protected definition phi_respect_M_comp_aux5 ⦃x y : D₀⦄ {a : hom x y} (lidu : hom x x)
+    (filleru : D₂ lidu id id id) (lidv : hom x x) (fillerv : D₂ lidv id id id) :=
+  (ap (λ w, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv w)) (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))
+    (zero_unique D₂ x))
 
-
+  --set_option pp.implicit true
+  --set_option pp.notation false
   protected definition phi_respect_M_comp ⦃x y : D₀⦄ (a : hom x y) (v u : M_morphism x) :
     phi a (M_morphism.comp v u) = M_morphism.comp (phi a v) (phi a u) :=
   begin
@@ -403,23 +435,69 @@ exit
       apply concat, apply (!id_left⁻¹), apply (ap (λ x, x ∘ lidu)),
       apply inverse, apply inverse_compose,
     --Part II: Equality of fillers
+    apply moveR_transport_p, apply moveR_transport_p, apply moveR_transport_p,
+    apply concat, apply (ap (λ x, comp₂ D₂ (ID₁ D₂ a) x)),
+    apply inverse, apply transp_comp_eq_comp_transp_r_ub,
+    apply concat, apply inverse, apply transp_comp_eq_comp_transp_l_ub,
+    apply moveL_transport_V, apply moveL_transport_V, apply moveL_transport_V,
     apply moveL_transport_p,
     apply concat, rotate 1, apply inverse, apply phi_respect_M_comp_aux,
     apply moveL_transport_p, apply moveL_transport_p,
     apply moveL_transport_p, apply moveL_transport_p,
     apply concat, rotate 1, apply inverse, apply assoc₂',
     apply moveL_transport_V, apply moveL_transport_V,
-    apply concat, rotate 1, apply inverse,
-    apply phi_respect_M_comp_aux2,
+    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp_aux2,
     --apply (apD (λ x, comp₂ D₂ x (comp₂ D₂ filleru (ID₁ D₂ a ⁻¹)))),
-    apply concat, rotate 1, apply transp_comp_eq_comp_transp_r,
+    apply concat, rotate 1, apply transp_comp_eq_comp_transp_r_ub,
     apply moveL_transport_p, apply moveL_transport_p,
-    apply concat, rotate 1, apply transp_comp_eq_comp_transp_r,
+    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp_aux3,
+    apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
+    apply transp_comp_eq_comp_transp_l_ub,
+    apply concat, rotate 1, apply transp_comp_eq_comp_transp_r_ub,
     apply moveL_transport_p, apply moveL_transport_p,
+    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp_aux4,
+    apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) x) _)),
+    apply transp_comp_eq_comp_transp_l_ub,
+    apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
+    apply transp_comp_eq_comp_transp_l_ub,
+    apply concat, rotate 1, apply transp_comp_eq_comp_transp_r_ub,
+    apply moveL_transport_V, apply moveL_transport_V, beta,
+    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp_aux5,
+    apply concat, rotate 1,
+    apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) x) _)),
+    apply inverse, apply (id_right₂' fillerv),
+    apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
+    apply transp_comp_eq_comp_transp_l_bu,
+    apply concat, rotate 1, apply transp_comp_eq_comp_transp_r_bu,
+    apply moveL_transport_V, apply moveL_transport_V,
+    apply concat, rotate 1, apply inverse, apply (!assoc₂⁻¹),
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply concat, rotate 1, apply inverse, apply (ap (λ x, comp₂ D₂ _ x)),
+    apply assoc₂',
+    apply concat, rotate 1, apply transp_comp_eq_comp_transp_l_bu,
+    apply moveL_transport_V, apply moveL_transport_V,
+    apply concat,
+    apply (@transport_eq_transport4 (hom y y) (hom y y) (hom y y) (hom y y)
+      (@D₂ y y y y) (hom y x)
+      (λ w, (a ∘ ((lidv ∘ lidu) ∘ (a⁻¹))))
+      (λ w, a ∘ w) (λ w, id) (λ w, id) _ _ (assoc id id (a⁻¹))),
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
   end
 
-  check transp_comp_eq_comp_transp_r
+
   end
 end gamma
-
-exit
