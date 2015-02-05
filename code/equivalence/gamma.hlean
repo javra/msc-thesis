@@ -496,6 +496,15 @@ namespace gamma
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply transport4_set_reduce, repeat ( apply homH ),
   end
 
 
