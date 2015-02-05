@@ -302,6 +302,78 @@ namespace gamma
     apply transport4_set_reduce, apply Pzz, apply Pzz, apply Pzz, apply Pzz,
   end
 
+  --set_option pp.implicit true
+  --set_option pp.notation false
+
+  protected definition phi_respect_M_comp_aux ⦃x y : D₀⦄ (a : hom x y)
+    (lidv lidu : hom x x) (fillerv : D₂ lidv id id id) (filleru : D₂ lidu id id id) :
+  comp₂ D₂
+    (transport (λ x, D₂ _ x id id) (compose_inverse a)
+      (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹))
+         (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv (ID₁ D₂ (a⁻¹))))))
+    (transport (λ x, D₂ _ x id id) (compose_inverse a)
+      (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹))
+        (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))))
+  = (transport (λ x, D₂ _ (x ∘ _) id id) (compose_inverse a)
+      (transport (λ x, D₂ _ ((a ∘ x) ∘ _) id id) (id_left (a⁻¹))
+        (transport (λ x, D₂ _ (_ ∘ x) id id) (compose_inverse a)
+          (transport (λ x, D₂ _ (_ ∘ (a ∘ x)) id id) (id_left (a⁻¹))
+            (comp₂ D₂
+              (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv (ID₁ D₂ (a⁻¹))))
+              (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))))))) :=
+  begin
+    /-generalize (compose_inverse a), intro ci,
+    generalize (id_left (a⁻¹)),
+    apply (eq.rec_on ci),-/
+    exact sorry,
+  end
+
+  protected definition phi_respect_M_comp_aux2 ⦃x y: D₀⦄ {a : hom x y} (lidu : hom x x)
+    (filleru : lidu id id id) (lidv : hom x x) (fillerv : lidv id id id) :=
+  (ap (λ (x : D₂ (a ∘ filleru ∘ a⁻¹) id id id),
+    comp₂ D₂ x (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹)))))
+
+  check moveL_transport_V
+/-
+      apply (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ (M_morphism.filler u) (ID₁ D₂ (a⁻¹)))),
+    apply (transport (λ x, D₂ _ x id id) (compose_inverse a)
+             (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹)) v)),-/
+
+  protected definition assoc₂' ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : D₀⦄
+    ⦃f  : hom a b⦄   ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
+    ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
+    ⦃g₃ : hom c₃ d₃⦄ ⦃h₃ : hom c₂ c₃⦄ ⦃i₃ : hom d₂ d₃⦄
+    (w : D₂ h₃ i₃ g₂ g₃) (v : D₂ h₂ i₂ g₁ g₂) (u : D₂ h₁ i₁ f g₁) :=
+  moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (assoc₂ D₂ w v u))
+
+  protected definition phi_respect_M_comp ⦃x y : D₀⦄ (a : hom x y) (v u : M_morphism x) :
+    phi a (M_morphism.comp v u) = M_morphism.comp (phi a v) (phi a u) :=
+  begin
+    apply (M_morphism.rec_on v), intros (lidv, fillerv),
+    apply (M_morphism.rec_on u), intros (lidu, filleru),
+    --Part I : Equality of lids
+    fapply (M_morphism.congr), --unfold gamma.phi,
+      apply concat, rotate 1, apply inverse,
+      apply (!assoc⁻¹), rotate 1, apply (ap (λ x, a ∘ x)),
+      apply concat,  rotate 1, apply inverse,
+      apply (!assoc⁻¹), rotate 1,
+      apply concat, apply (!assoc⁻¹), apply (ap (λ x, lidv ∘ x)),
+      apply concat, rotate 1, apply inverse, apply assoc, rotate 1,
+      apply concat, rotate 1, apply inverse, apply assoc, rotate 1, apply (ap (λ x, x ∘ a⁻¹)),
+      apply concat, apply (!id_left⁻¹), apply (ap (λ x, x ∘ lidu)),
+      apply inverse, apply inverse_compose,
+    --Part II: Equality of fillers
+    apply moveL_transport_p,
+    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp_aux,
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply concat, rotate 1, apply inverse, apply assoc₂',
+    apply moveL_transport_V, apply moveL_transport_V,
+    apply concat, rotate 1, apply inverse,
+    --apply (apD (λ x, comp₂ D₂ x (comp₂ D₂ filleru (ID₁ D₂ a ⁻¹)))),
+  end
+
   end
 end gamma
 
