@@ -18,4 +18,4 @@ structure xmod [class] {P₀ : Type} (P : groupoid P₀) (M : P₀ → Group)
   (φ_respect_M_comp : Π ⦃p q : P₀⦄ (a : hom p q) (y x : M p),
     φ a (y * x) = (φ a y) * (φ a x))
   (CM1 : Π ⦃p q : P₀⦄ (a : hom p q) (x : M p), μ (φ a x) = a ∘ (μ x) ∘ (a⁻¹))
-  (CM2 : Π ⦃p : P₀⦄ (c x : M p), φ (μ c) x = c * x * (@group.inv (M p) _ c))
+  (CM2 : Π ⦃p : P₀⦄ (c x : M p), φ (μ c) x = c * (x * (@group.inv (M p) _ c)))

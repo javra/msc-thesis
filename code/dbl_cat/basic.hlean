@@ -179,11 +179,12 @@ namespace worm_precat
   end
 
 end
-
+exit
   universe variables l₀ l₁ l₂
   variables {D₀ : Type.{l₀}} [C : precategory.{l₀ (max l₀ l₁)} D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type.{max l₀ l₁ l₂}}
+
 
   definition two_cell_precat [D : worm_precat C D₂]
     : precategory.{(max l₀ l₁) (max l₀ l₁ l₂)} two_cell_ob :=

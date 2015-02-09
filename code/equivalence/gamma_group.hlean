@@ -3,6 +3,7 @@ import ..dbl_gpd.basic ..xmod.decl ..transport4
 open dbl_precat precategory truncation eq nat
 open equiv groupoid morphism sigma sigma.ops prod
 open path_algebra
+set_option apply.class_instance false -- disable class instance resolution in the apply tactic
 
 --TODO make this file compile faster!
 
@@ -37,10 +38,9 @@ namespace gamma
     apply idp,
   end
 
-  protected definition M_morphism.is_hset (a : D₀) :
-    is_hset (M_morphism a) :=
+  protected definition M_morphism.is_hset (a : D₀) : is_hset (M_morphism a) :=
   begin
-    apply trunc_equiv, apply equiv.to_is_equiv, apply M_morphism.sigma_char,
+    apply trunc_equiv, apply equiv.to_is_equiv, apply (M_morphism.sigma_char a),
     apply trunc_sigma, apply !homH,
     intro f, apply (homH' D₂),
   end
