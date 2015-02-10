@@ -3,6 +3,7 @@ import .gamma_mu_phi ..transport4 ..dbl_gpd.basic
 open dbl_precat precategory truncation eq nat
 open equiv groupoid morphism sigma sigma.ops prod
 open path_algebra dbl_gpd
+set_option apply.class_instance false -- disable class instance resolution in the apply tactic
 attribute gamma.M [instance]
 
 set_option pp.beta true
@@ -26,19 +27,51 @@ namespace gamma
   comp₁ D₂ (comp₂ D₂ v (comp₂ D₂ (ID₂ D₂ id) (inv₂ D₂ v)))
     (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ u (ID₁ D₂ (a⁻¹))))
 
-  variables ⦃x : D₀⦄ (a lidu : hom x x)
-    (v : D₂ a id id id) (u : D₂ lidu id id id)
-  check transp_comp_eq_comp_transp_l_bu
-  check (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ u (ID₁ D₂ (a⁻¹))))
+  protected definition compose_inverse₂' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (compose_inverse₂ D₂ u))
 
-  protected definition gamma_CM_horizontal ⦃x : D₀⦄ (a lidu : hom x x)
+  print definition M_morphism.comp
+  protected definition gamma_CM2_horizontal ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :
   gamma_CM2_gadget a lidu v u
   = gamma_CM2_gadget a lidu v u :=
   begin
     apply concat, apply (ap (λ x, comp₁ D₂ (comp₂ D₂ v x) _)), apply id_left₂',
-    apply concat, apply (ap (λ x, comp₁ D₂ x _)), apply (!transp_comp_eq_comp_transp_l_bu⁻¹),
-    apply concat, --apply (!transp_comp_eq_comp_transp_r_bu⁻¹),
+    apply concat, apply (ap (λ x, comp₁ D₂ x _)),
+      apply (!transp_comp₂_eq_comp₂_transp_l_bu⁻¹),
+    apply concat, apply (ap (λ x, comp₁ D₂ x _)),
+    apply (ap (λ x, _ ▹ x)), apply (ap (λ x, _ ▹ x)), apply compose_inverse₂',
+    apply concat, apply (comp₁_transp_eq_comp₁_transp_b (id_left (a⁻¹))),
+    apply concat, apply inverse, apply transp_comp₁_eq_comp₁_transp_b_b,
+    apply moveR_transport_V,
+    apply concat, apply comp₁_transp_eq_comp₁_transp_b,
+    apply concat, apply inverse, apply transp_comp₁_eq_comp₁_transp_b_b,
+    apply moveR_transport_V,
+    apply concat, apply (ap (λ x, comp₁ D₂ x _)), apply inverse, apply zero_unique,
+    apply concat, apply id_left₁',
+    --apply moveR_transport_V, apply moveR_transport_V, apply moveR_transport_p,
+    --apply moveR_transport_p,
+    apply moveL_transport_p, apply moveL_transport_p,
+  end
+
+  check id_left₁'
+  protected definition gamma_CM2_vertical ⦃x : D₀⦄ (a lidu : hom x x)
+    (v : D₂ a id id id) (u : D₂ lidu id id id) :
+  gamma_CM2_gadget a lidu v u
+  = gamma_CM2_gadget a lidu v u :=
+  begin
+    apply concat, apply interchange,
+    apply concat, apply (ap (λ x, comp₂ D₂ x _)), apply id_right₁',
+    apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply interchange,
+    apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply (ap (λ x, comp₂ D₂ x _)),
+      apply (ap (λ x, comp₁ D₂ x _)), apply (!zero_unique⁻¹),
+    apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply (ap (λ x, comp₂ D₂ x _)),
+      apply id_left₁',
+    apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply (ap (λ x, comp₂ D₂ _ x)),
+      apply id_right₁',
   end
 
   protected definition gamma_CM2 ⦃x : D₀⦄ (v u : M_morphism x) :
@@ -49,6 +82,7 @@ namespace gamma
     fapply (M_morphism.congr),
       apply idp,
     apply moveR_transport_p, apply moveR_transport_p, apply moveR_transport_p,
+    unfold M_morphism.filler, unfold M_morphism.comp, unfold M_morphism.inv, esimp,
   end
 
   end

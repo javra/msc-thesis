@@ -337,6 +337,18 @@ namespace gamma
   moveL_transport_V _ _ _ _
     (moveL_transport_V _ _ _ _ (id_right₂ D₂ u))
 
+  protected definition id_left₁' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (id_left₁ D₂ u))
+
+  protected definition id_right₁' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (id_right₁ D₂ u))
+
   protected definition phi_respect_M_comp₂_aux2 ⦃x y: D₀⦄ {a : hom x y} (lidu : hom x x)
     (filleru : D₂ lidu id id id) (lidv : hom x x) (fillerv : D₂ lidv id id id) :=
   ap (λ x, comp₂ D₂ x (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))
