@@ -94,6 +94,30 @@ namespace dbl_precat
     apply (eq.rec_on pg₁), apply idp,
   end
 
+  definition transp_comp₂_eq_comp₂_transp_transp_rl ⦃a b₁ b₂ c d₁ d₂ : D₀⦄
+    {Eh₁ Ei₁ Ei₂ : Type} {eh₁ : Eh₁ → hom a c} {ei₁ : Ei₁ → hom b₁ d₁}
+    {ei₂ : Ei₂ → hom b₂ d₂} [Ei₁_hset : is_hset Ei₁]
+    ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h₁ h₁' : Eh₁⦄ ⦃i₁ i₁' : Ei₁⦄
+    ⦃f₂ : hom b₁ b₂⦄ ⦃g₂ : hom d₁ d₂⦄ ⦃i₂ i₂' : Ei₂⦄
+    (ph₁ : h₁ = h₁') (pi₁ pi₁' : i₁ = i₁') (pi₂ : i₂ = i₂')
+    (v : D₂ f₂ g₂ (ei₁ i₁) (ei₂ i₂)) (u : D₂ f₁ g₁ (eh₁ h₁) (ei₁ i₁)) :
+    transport (λ x, D₂ _ _ (eh₁ x) _) ph₁
+      (transport (λ x, D₂ _ _ _ (ei₂ x)) pi₂
+        (comp₂ D₂ v u))
+    = comp₂ D₂
+        (transport (λ x, D₂ _ _ (ei₁ x) _) pi₁
+          (transport (λ x, D₂ _ _ _ (ei₂ x)) pi₂ v))
+        (transport (λ x, D₂ _ _ (eh₁ x) _) ph₁
+          (transport (λ x, D₂ _ _ _ (ei₁ x)) pi₁' u)) :=
+  begin
+    revert v, revert u, revert pi₁', revert pi₁, revert i₁',
+    apply (eq.rec_on ph₁), apply (eq.rec_on pi₂),
+    intro i₁', intro pi₁, intro pi₁',
+    assert (H : pi₁ = pi₁'), apply @is_hset.elim,
+    intros, apply (eq.rec_on H),
+    apply (eq.rec_on pi₁), apply idp,
+  end
+
   definition transp_comp₁_eq_comp₁_transp_u_rl ⦃y z w : D₀⦄
     {Ef : Type} {ef : Ef → hom z y}
     {Eg : Type} {eg : Eg → hom z y}
@@ -155,3 +179,17 @@ namespace dbl_precat
 
   end
 end dbl_precat
+
+exit
+
+eq
+    (comp₂ D₂
+       (transport (λ (a_0 : hom x x), D₂ lidu (ID x) a_0 (compose (ID x) (ID x)))
+          (inverse (id_left id))
+          (transport (λ (a_0 : hom x x), D₂ lidu (ID x) id a_0) (inverse (id_left (ID x)))
+             u))
+       (transport (λ (a_0 : hom x x), D₂ (inverse a) (inverse id) a_0 (compose id (ID x)))
+          (inverse (id_right id))
+          (transport (λ (a_0 : hom x x), D₂ (inverse a) (inverse id) id a_0)
+             (inverse (id_right id))
+             (inv₂ D₂ v))))

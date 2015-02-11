@@ -205,9 +205,14 @@ namespace gamma
   end
 
   --TODO: Think of something better to prevent such ambiguities
-  definition iso_of_id' {a : D₀} :
-    @morphism.inverse D₀ C a a (ID a) (all_iso (ID a)) = id :=
+  definition IDinv' [reducible] (a : D₀) :=
+  @morphism.inverse D₀ C a a (ID a) (all_iso (ID a))
+
+  definition iso_of_id' {a : D₀} : IDinv' a = id :=
   inverse_eq_intro_left !id_compose
+
+  definition compose_inverse_id' {x : D₀} : compose id (IDinv' x) = id :=
+  (@compose_inverse D₀ C x x (@id D₀ C x) (@all_iso D₀ C x x (@id D₀ C x)))
 
   definition M_morphism.inv_aux ⦃a : D₀⦄ (u : M_morphism a) :
     D₂ ((M_morphism.lid u)⁻¹) id id id :=
