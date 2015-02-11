@@ -30,6 +30,18 @@ namespace dbl_precat
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
+  definition transp_comp₂_eq_comp₂_transp_l_b ⦃y z w : D₀⦄
+    {Eg : Type} {eg : Eg → hom z y} {f1 : hom z y}
+    {g1 g2 : Eg} (filler : D₂ f1 (eg g1) id id) (q : g1 = g2)
+    {f' g' : hom y w} (filler' : D₂ f' g' id id) :
+    transport (λ x, D₂ _ (g' ∘ (eg x)) id id) q
+        (comp₂ D₂ filler' filler)
+    = comp₂ D₂ filler'
+        (transport (λ x, D₂ _ (eg x) id id) q filler) :=
+  begin
+    apply (eq.rec_on q), apply idp,
+  end
+
   definition transp_comp₂_eq_comp₂_transp_r_bu ⦃y z w : D₀⦄
     {Ef : Type} {ef : Ef → hom y z}
     {Eg : Type} {eg : Eg → hom y z}
