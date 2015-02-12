@@ -82,7 +82,7 @@ namespace thin_structure
     (refl ((ID c ∘ ID c) ∘ g ∘ f))) = br_connect (g ∘ f) :=
   begin
     apply br_of_br_square_aux_aux,
-    apply @is_hset.elim, apply !homH,
+    apply is_hset.elim,
   end
 
   definition br_of_br_square ⦃a b c : D₀⦄ (f : @hom D₀ C a b) (g : @hom D₀ C  b c) :
@@ -130,7 +130,7 @@ namespace thin_structure
     (refl ((g ∘ f) ∘ (ID a ∘ ID a)))) = ul_connect (g ∘ f) :=
   begin
     apply ul_of_ul_square_aux_aux,
-    apply @is_hset.elim, apply !homH,
+    apply is_hset.elim,
   end
 
   definition ul_of_ul_square ⦃a b c : D₀⦄ (f : @hom D₀ C a b) (g : @hom D₀ C  b c) :

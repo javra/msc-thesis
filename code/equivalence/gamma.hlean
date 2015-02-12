@@ -45,7 +45,7 @@ namespace gamma
             (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) (a ∘ w) id id) (id_left (a⁻¹))
               (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ u (ID₁ D₂ (a⁻¹)))))))))) :=
   begin
-    apply concat, apply (ap (λ x, comp₁ D₂ (comp₂ D₂ v x) _)), apply id_left₂',
+    apply concat, apply (ap (λ x, comp₁ D₂ (comp₂ D₂ v x) _)), apply gamma.id_left₂',
     apply concat, apply (ap (λ x, comp₁ D₂ x _)),
       apply (!transp_comp₂_eq_comp₂_transp_l_bu⁻¹),
     apply concat, apply (ap (λ x, comp₁ D₂ x _)),
@@ -58,7 +58,7 @@ namespace gamma
     apply concat, apply inverse, apply transp_comp₁_eq_comp₁_transp_b_b,
     apply moveR_transport_V,
     apply concat, apply (ap (λ x, comp₁ D₂ x _)), apply inverse, apply zero_unique,
-    apply concat, apply id_left₁',
+    apply concat, apply gamma.id_left₁',
     apply moveL_transport_p, apply moveL_transport_p,
     apply idp,
   end
@@ -82,14 +82,14 @@ namespace gamma
           (comp₂ D₂ v (comp₂ D₂ u (inv₂ D₂ v))))) :=
   begin
     apply concat, apply interchange,
-    apply concat, apply (ap (λ x, comp₂ D₂ x _)), apply id_right₁',
+    apply concat, apply (ap (λ x, comp₂ D₂ x _)), apply gamma.id_right₁',
     apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply interchange,
     apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply (ap (λ x, comp₂ D₂ x _)),
       apply (ap (λ x, comp₁ D₂ x _)), apply (!zero_unique⁻¹),
     apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply (ap (λ x, comp₂ D₂ x _)),
-      apply id_left₁',
+      apply gamma.id_left₁',
     apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply (ap (λ x, comp₂ D₂ _ x)),
-      apply id_right₁',
+      apply gamma.id_right₁',
     apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply inverse,
       apply transp_comp₂_eq_comp₂_transp_transp_rl, apply homH,
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_transp_rl, apply homH,
@@ -102,7 +102,7 @@ namespace gamma
     (moveR_transport_p _ _ _ _ (gamma_CM2_vertical a lidu v u))
 
   protected definition gamma_CM2 ⦃x : D₀⦄ (v u : M_morphism x) :
-    phi (mu v) u = M_morphism.comp v (M_morphism.comp u (M_morphism.inv v)) :=
+    gamma.phi (gamma.mu v) u = M_morphism.comp v (M_morphism.comp u (M_morphism.inv v)) :=
   begin
     apply (M_morphism.rec_on v), intros (lidv, fillerv),
     apply (M_morphism.rec_on u), intros (lidu, filleru),
@@ -111,7 +111,7 @@ namespace gamma
     apply moveR_transport_p, apply moveR_transport_p, apply moveR_transport_p,
     unfold M_morphism.filler, unfold M_morphism.comp, unfold M_morphism.inv,
     unfold M_morphism.inv_aux, unfold M_morphism.filler,
-    unfold mu, unfold M_morphism.lid, esimp,
+    unfold gamma.mu, unfold M_morphism.lid, esimp,
     apply concat, apply inverse, apply gamma_CM2_horizontal', apply fillerv,
     apply moveL_transport_V, apply moveL_transport_V, apply moveL_transport_V,
     apply moveL_transport_p, apply inverse,
@@ -148,13 +148,13 @@ namespace gamma
   begin
     fapply xmod.mk,
       exact D₀set,
-      intros (x, u), apply (mu u),
-      intros (x, v, u), apply (mu_respect_comp v u),
-      intro x, apply mu_respect_id,
-      intros (x, y, a, u), apply (phi a u),
-      intros (x, u), apply (phi_respect_id u),
-      intros (x, y, z, b, a, u), apply (phi_respect_P_comp b a u),
-      intros (x, y, a, v, u), apply (phi_respect_M_comp a v u),
+      intros (x, u), apply (gamma.mu u),
+      intros (x, v, u), apply (gamma.mu_respect_comp v u),
+      intro x, apply gamma.mu_respect_id,
+      intros (x, y, a, u), apply (gamma.phi a u),
+      intros (x, u), apply (gamma.phi_respect_id u),
+      intros (x, y, z, b, a, u), apply (gamma.phi_respect_P_comp b a u),
+      intros (x, y, a, v, u), apply (gamma.phi_respect_M_comp a v u),
       intros (x, y, a, u), apply (gamma_CM1 a u),
       intros (x, v, u), apply (gamma_CM2 v u),
   end

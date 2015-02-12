@@ -321,15 +321,13 @@ namespace gamma
   (ap (λ w, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv w)) (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))
     (zero_unique D₂ x))
 
-  --set_option pp.implicit true
-  --set_option pp.notation false
   protected definition phi_respect_M_comp ⦃x y : D₀⦄ (a : hom x y) (v u : M_morphism x) :
     phi a (M_morphism.comp v u) = M_morphism.comp (phi a v) (phi a u) :=
   begin
     apply (M_morphism.rec_on v), intros (lidv, fillerv),
     apply (M_morphism.rec_on u), intros (lidu, filleru),
     --Part I : Equality of lids
-    fapply (M_morphism.congr), --unfold gamma.phi,
+    fapply (M_morphism.congr),
       apply concat, rotate 1, apply inverse,
       apply (!assoc⁻¹), rotate 1, apply (ap (λ x, a ∘ x)),
       apply concat,  rotate 1, apply inverse,
@@ -352,7 +350,6 @@ namespace gamma
     apply concat, rotate 1, apply inverse, apply assoc₂',
     apply moveL_transport_V, apply moveL_transport_V,
     apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux2,
-    --apply (apD (λ x, comp₂ D₂ x (comp₂ D₂ filleru (ID₁ D₂ a ⁻¹)))),
     apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_ub,
     apply moveL_transport_p, apply moveL_transport_p,
     apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux3,

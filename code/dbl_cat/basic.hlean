@@ -13,11 +13,8 @@ namespace dbl_precat
       (h : hom a c) (i : hom b d), unit) :=
   begin
     fapply dbl_precat.mk,
-    repeat ( intros ;
-      [ exact ⋆ |
-        [ apply (@is_hprop.elim) | apply trunc_succ ] ;
-        apply trunc_succ ; exact unit_contr ] ),
-    repeat ( intros;  apply idp)
+      repeat ( intros ; [ exact ⋆ |  apply is_hprop.elim | apply trunc_succ ] ),
+      repeat ( intros ;  apply idp)
   end
 
   definition comm_square_dbl_precat : dbl_precat C
@@ -32,8 +29,8 @@ namespace dbl_precat
                                   ... = (i₂ ∘ i₁) ∘ f₁ : assoc),
       intros, exact (calc f ∘ ID a = f : id_right
                                ... = ID b ∘ f : id_left),
-      repeat ( intros ; apply @is_hset.elim ; apply !homH ),
-      intros, apply succ_is_trunc, apply trunc_succ, apply !homH,
+      repeat ( intros ; apply is_hset.elim ),
+      intros, apply succ_is_trunc, --apply trunc_succ, apply !homH,
       intros, exact (calc (i₂ ∘ i₁) ∘ f₁ = i₂ ∘ i₁ ∘ f₁ : assoc
                                      ... = i₂ ∘ g₁ ∘ h₁ : a_2
                                      ... = (i₂ ∘ g₁) ∘ h₁ : assoc
@@ -41,9 +38,9 @@ namespace dbl_precat
                                      ... = g₂ ∘ h₂ ∘ h₁ : assoc),
       intros, exact (calc ID b ∘ f = f : id_left
                                ... = f ∘ ID a : id_right),
-      repeat ( intros ; apply @is_hset.elim ; apply !homH ),
-      intros, apply succ_is_trunc, apply trunc_succ, apply !homH,
-      repeat ( intros ; apply @is_hprop.elim ;  apply succ_is_trunc ;  apply !homH ),
+      repeat ( intros ; apply is_hset.elim ),
+      intros, apply succ_is_trunc, --apply trunc_succ, apply !homH,
+      repeat ( intros ; apply @is_hprop.elim ;  apply succ_is_trunc ),
   end
 
 end dbl_precat

@@ -164,15 +164,7 @@ namespace dbl_gpd
     (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁) (ap ι' g₂)
     (ap ι' h₂) (ap ι' i₂) (ap ι' g₃) (ap ι' h₃) (ap ι' i₃) w v u
 
-  check (ap_pp ι' (h₁ ⬝ h₂) h₃ ▹ ap_pp ι' (i₁ ⬝ i₂) i₃ ▹ fund_dbl_precat_comp X A C ι' ι w
-    (ap_pp ι' h₁ h₂ ▹ ap_pp ι' i₁ i₂ ▹ fund_dbl_precat_comp X A C ι' ι v u))
-  check (fund_dbl_precat_comp_flat X A C (ap ι' f₁) (ap ι' g₂) (ap ι' h₁ ⬝ ap ι' h₂)
-    (ap ι' i₁ ⬝ ap ι' i₂) (ap ι' g₃) (ap ι' h₃) (ap ι' i₃) w
-    (ap_pp ι' h₁ h₂ ▹ ap_pp ι' i₁ i₂ ▹ fund_dbl_precat_comp X A C ι' ι v u))
-  check transport
-  check fund_dbl_precat_assoc'
-  check (fund_dbl_precat_comp_flat X A C
-      (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁) (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u)
+
   definition fund_dbl_precat_assoc'' :=
   transport _ ((fund_dbl_precat_comp_aux2 X A C ι' ι v u)⁻¹) fund_dbl_precat_assoc'
 
@@ -190,8 +182,12 @@ namespace dbl_gpd
     = !ap_pp ▹ !ap_pp ▹ !ap_pp ▹ !ap_pp ▹ (ap (ap ι') (concat_pp_p h₁ h₂ h₃)) :=
   sorry
 
+  definition fund_dbl_precat_assoc_final :
+  (concat_pp_p i₁ i₂ i₃) ▹ ((concat_pp_p h₁ h₂ h₃) ▹ fund_dbl_precat_comp X A C ι' ι w
+    (fund_dbl_precat_comp X A C ι' ι v u))
+  = fund_dbl_precat_comp X A C ι' ι (fund_dbl_precat_comp X A C ι' ι w v) u :=
+  sorry
 
-exit
   definition fundamental_dbl_precat : dbl_precat (fundamental_groupoid X A C ι)
     (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
       ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :=
@@ -199,7 +195,7 @@ exit
     fapply dbl_precat.mk,
       intros, apply (fund_dbl_precat_comp X A C ι' ι), exact a_1, exact a_2,
       intros, exact (concat_1p (ap ι' f)),
-      intros, exact sorry, --apply (fund_dbl_precat_assoc''' X A C ι' ι),
+      intros, /-exact sorry,
       intros, exact sorry,
       intros, exact sorry,
       intros, apply succ_is_trunc, apply succ_is_trunc, exact Xtrunc,
@@ -208,7 +204,7 @@ exit
       intros, exact sorry,
       intros, exact sorry,
       intros, exact sorry,
-      intros, exact sorry,
+      intros, exact sorry,-/
   end
   check dbl_precat.mk
 
