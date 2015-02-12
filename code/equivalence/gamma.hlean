@@ -116,7 +116,7 @@ namespace gamma
     apply moveL_transport_V, apply moveL_transport_V, apply moveL_transport_V,
     apply moveL_transport_p, apply inverse,
     apply concat, apply inverse, apply (ap (λ x, comp₂ D₂ _ x)),
-    apply (ap (λ x, transport.{l l} _ _ x)), apply transp_comp₂_eq_comp₂_transp_l_b,
+    apply (ap (λ x, _ ▹ x)), apply transp_comp₂_eq_comp₂_transp_l_b,
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
     apply moveR_transport_p,
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
@@ -143,7 +143,7 @@ namespace gamma
     apply transport4_set_reduce,
     apply homH, apply homH, apply homH, apply homH,
   end
-
+exit
   protected definition xmod : xmod C (λ x, gamma.M_bundled x) :=
   begin
     fapply xmod.mk,
