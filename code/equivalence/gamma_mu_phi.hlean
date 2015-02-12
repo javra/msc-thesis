@@ -26,7 +26,7 @@ namespace gamma
     mu (v * u) = mu v ∘ mu u :=
   idp
 
-  protected definition mu_respect_id ⦃x : D₀⦄ (u : M_morphism x) : mu 1 = ID x :=
+  protected definition mu_respect_id ⦃x : D₀⦄ : mu 1 = ID x :=
   idp
 
   protected definition phi [reducible] ⦃x y : D₀⦄ (a : hom x y) (u : M_morphism x) :

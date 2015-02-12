@@ -144,5 +144,20 @@ namespace gamma
     apply homH, apply homH, apply homH, apply homH,
   end
 
+  protected definition xmod : xmod C (λ x, gamma.M_bundled x) :=
+  begin
+    fapply xmod.mk,
+      exact D₀set,
+      intros (x, u), apply (mu u),
+      intros (x, v, u), apply (mu_respect_comp v u),
+      intro x, apply mu_respect_id,
+      intros (x, y, a, u), apply (phi a u),
+      intros (x, u), apply (phi_respect_id u),
+      intros (x, y, z, b, a, u), apply (phi_respect_P_comp b a u),
+      intros (x, y, a, v, u), apply (phi_respect_M_comp a v u),
+      intros (x, y, a, u), apply (gamma_CM1 a u),
+      intros (x, v, u), apply (gamma_CM2 v u),
+  end
+
   end
 end gamma

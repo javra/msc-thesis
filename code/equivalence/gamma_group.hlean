@@ -287,5 +287,12 @@ namespace gamma
       intro u, apply (M_morphism.inverse_compose u),
   end
 
+  protected definition M_bundled [reducible] (a : D₀) : Group.{l} :=
+  begin
+    fapply Group.mk,
+      apply (M_morphism a),
+    apply (M a),
+  end
+
   end
 end gamma
