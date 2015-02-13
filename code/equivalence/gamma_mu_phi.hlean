@@ -99,13 +99,6 @@ namespace gamma
     apply transport4_set_reduce
   end
 
-  protected definition inv_pp' ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y) :
-    (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)) = (a⁻¹) ∘ (b⁻¹):=
-  have H1 : (a⁻¹ ∘ b⁻¹) ∘ b ∘ a = a⁻¹ ∘ (b⁻¹ ∘ (b ∘ a)), from assoc (a⁻¹) (b⁻¹) (b ∘ a)⁻¹,
-  have H2 : (a⁻¹) ∘ (b⁻¹ ∘ (b ∘ a)) = a⁻¹ ∘ a, from ap _ (iso.compose_V_pp b a),
-  have H3 : a⁻¹ ∘ a = id, from inverse_compose a,
-  sorry --inverse_eq_intro_left (H1 ⬝ H2 ⬝ H3)
-
   set_option unifier.max_steps 50000
   protected definition phi_respect_P_comp₂_aux ⦃x y z : D₀⦄ (a : hom x y)
     (f1 : hom y x) (f2 : hom y y)
@@ -128,7 +121,7 @@ namespace gamma
 
   protected definition Pbainv ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z) :
     (a⁻¹) ∘ (b⁻¹) = (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)) :=
-  ((inv_pp' b a)⁻¹)
+  ((@iso.inv_pp _ _ _ _ _ b a (!all_iso) (!all_iso) (!all_iso))⁻¹)
 
   protected definition phi_respect_P_comp₂_aux2 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
     (lid : hom x x) (filler : D₂ lid id id id) :
@@ -243,9 +236,6 @@ namespace gamma
     apply transport4_set_reduce,
   end
 
-  --set_option pp.implicit true
-  --set_option pp.notation false
-
   protected definition phi_respect_M_comp₂_aux ⦃x y : D₀⦄ (a : hom x y)
     (lidv lidu : hom x x) (fillerv : D₂ lidv id id id) (filleru : D₂ lidu id id id) :
   comp₂ D₂
@@ -263,12 +253,16 @@ namespace gamma
               (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv (ID₁ D₂ (a⁻¹))))
               (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))))))) :=
   begin
-    /-generalize (compose_inverse a), intro ci,
-    generalize (id_left (a⁻¹)),
-    apply (eq.rec_on ci),-/
-    exact sorry,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_b,
+    apply (ap (λ x, transport _ _ x)),
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_b,
+    apply (ap (λ x, transport _ _ x)),
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
+    apply (ap (λ x, transport _ _ x)),
+    apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
   end
 
+exit
   protected definition assoc₂' ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : D₀⦄
     ⦃f  : hom a b⦄   ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄

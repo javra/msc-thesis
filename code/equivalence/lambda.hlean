@@ -26,7 +26,7 @@ namespace lambda
   set_option unifier.max_steps 20000
 
 
-  protected definition lambda_morphism_comp₁ ⦃a b c₁ d₁ c₂ d₂ : P₀⦄
+  protected definition lambda_morphism.comp₁ ⦃a b c₁ d₁ c₂ d₂ : P₀⦄
     ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
     (v : lambda_morphism g₁ g₂ h₂ i₂) (u : lambda_morphism f₁ g₁ h₁ i₁) :
@@ -70,11 +70,24 @@ namespace lambda
     apply id_left,
   end
 
+  protected definition lambda_morphism.assoc₁ ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : P₀⦄
+    {f : hom a b} {g₁ : c₁ ⟶ d₁} {h₁ : a ⟶ c₁} {i₁ : b ⟶ d₁} {g₂ : c₂ ⟶ d₂}
+    {h₂ : c₁ ⟶ c₂} {i₂ : d₁ ⟶ d₂} {g₃ : c₃ ⟶ d₃} {h₃ : c₂ ⟶ c₃} {i₃ : d₂ ⟶ d₃}
+    (w : lambda_morphism g₂ g₃ h₃ i₃)
+    (v : lambda_morphism g₁ g₂ h₂ i₂)
+    (u : lambda_morphism f g₁ h₁ i₁) :
+    assoc i₃ i₂ i₁ ▹ assoc h₃ h₂ h₁ ▹
+    lambda_morphism.comp₁ w (lambda_morphism.comp₁ v u)
+    = lambda_morphism.comp₁ (lambda_morphism.comp₁ w v) u :=
+  sorry
+
+
+exit
   check dbl_gpd
   protected definition dbl_gpd : dbl_gpd P lambda_morphism :=
   begin
     fapply dbl_gpd.mk,
-      intros, apply (lambda_morphism_comp₁ a_1 a_2),
+      intros, apply (lambda_morphism.comp₁ a_1 a_2),
       intros, apply (lambda_morphism.ID₁ f),
       intros,
   end
