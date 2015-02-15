@@ -23,7 +23,7 @@ context
   end
 
   definition transport_eq_transport4 {E : Type}
-    {f : E → A} {g : E → B} {h : E → C} {i : E → D}
+    (f : E → A) (g : E → B) (h : E → C) (i : E → D)
     {e0 e1 : E} (p : e0 = e1)
     (u : P (f e0) (g e0) (h e0) (i e0)) :
     transport (λ (x : E), P (f x) (g x) (h x) (i x)) p u

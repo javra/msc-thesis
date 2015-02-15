@@ -1,10 +1,10 @@
-import algebra.groupoid
+import algebra.groupoid ..transport4
 import .decl
 
 open dbl_precat precategory truncation eq nat groupoid morphism sigma sigma.ops
 
 namespace dbl_gpd
-  variables (X A C : Type) [Xtrunc : is_trunc 2 X]
+  variables {X A C : Type} [Xtrunc : is_trunc 2 X]
     [Atrunc : is_trunc 1 A] [Cset : is_hset C]
     (ι' : A → X) (ι : C → A)
   include Xtrunc Atrunc Cset
@@ -36,8 +36,8 @@ namespace dbl_gpd
 
   --FLAT VERSIONS
   definition fund_dbl_precat_comp_flat {a₁ b₁ a₂ b₂ a₃ b₃ : X}
-    (f₁ : a₁ = b₁) (g₁ : a₂ = b₂) (h₁ : a₁ = a₂) (i₁ : b₁ = b₂)
-    (g₂ : a₃ = b₃) (h₂ : a₂ = a₃) (i₂ : b₂ = b₃)
+    {f₁ : a₁ = b₁} {g₁ : a₂ = b₂} {h₁ : a₁ = a₂} {i₁ : b₁ = b₂}
+    {g₂ : a₃ = b₃} {h₂ : a₂ = a₃} {i₂ : b₂ = b₃}
     (v : h₂ ⬝ g₂ = g₁ ⬝ i₂)
     (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :
       (h₁ ⬝ h₂) ⬝ g₂ = f₁ ⬝ (i₁ ⬝ i₂) :=
@@ -48,17 +48,15 @@ namespace dbl_gpd
                    ... = f₁ ⬝ (i₁ ⬝ i₂) : concat_pp_p
 
   definition fund_dbl_precat_flat_assoc {a₁ b₁ a₂ b₂ a₃ b₃ a₄ b₄ : X}
-    (f₁ : a₁ = b₁) (g₁ : a₂ = b₂) (h₁ : a₁ = a₂) (i₁ : b₁ = b₂)
-    (g₂ : a₃ = b₃) (h₂ : a₂ = a₃) (i₂ : b₂ = b₃)
-    (g₃ : a₄ = b₄) (h₃ : a₃ = a₄) (i₃ : b₃ = b₄)
+    {f₁ : a₁ = b₁} {g₁ : a₂ = b₂} {h₁ : a₁ = a₂} {i₁ : b₁ = b₂}
+    {g₂ : a₃ = b₃} {h₂ : a₂ = a₃} {i₂ : b₂ = b₃}
+    {g₃ : a₄ = b₄} {h₃ : a₃ = a₄} {i₃ : b₃ = b₄}
     (w : h₃ ⬝ g₃ = g₂ ⬝ i₃)
     (v : h₂ ⬝ g₂ = g₁ ⬝ i₂)
     (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :
       concat_pp_p i₁ i₂ i₃ ▹ (concat_pp_p h₁ h₂ h₃ ▹
-        fund_dbl_precat_comp_flat X A C f₁ g₂ (h₁ ⬝ h₂) (i₁ ⬝ i₂) g₃ h₃ i₃ w
-          (fund_dbl_precat_comp_flat X A C f₁ g₁ h₁ i₁ g₂ h₂ i₂ v u))
-      = fund_dbl_precat_comp_flat X A C f₁ g₁ h₁ i₁ g₃ (h₂ ⬝ h₃) (i₂ ⬝ i₃)
-        (fund_dbl_precat_comp_flat X A C g₁ g₂ h₂ i₂ g₃ h₃ i₃ w v) u :=
+        fund_dbl_precat_comp_flat w (fund_dbl_precat_comp_flat v u))
+      = fund_dbl_precat_comp_flat (fund_dbl_precat_comp_flat w v) u :=
   begin
     revert u, revert f₁, revert h₁, revert i₁,
     revert v, revert g₁, revert h₂, revert i₂,
@@ -74,13 +72,25 @@ namespace dbl_gpd
     apply (eq.rec_on h₁),
     apply idp,
   end
+
+  definition fund_dbl_precat_flat_assoc' {a₁ b₁ a₂ b₂ a₃ b₃ a₄ b₄ : X}
+    {f₁ : a₁ = b₁} {g₁ : a₂ = b₂} {h₁ : a₁ = a₂} {i₁ : b₁ = b₂}
+    {g₂ : a₃ = b₃} {h₂ : a₂ = a₃} {i₂ : b₂ = b₃}
+    {g₃ : a₄ = b₄} {h₃ : a₃ = a₄} {i₃ : b₃ = b₄}
+    (w : h₃ ⬝ g₃ = g₂ ⬝ i₃)
+    (v : h₂ ⬝ g₂ = g₁ ⬝ i₂)
+    (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :=
+  moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (fund_dbl_precat_flat_assoc w v u))
+
 end dbl_gpd
 
+--NON-FLAT VERSIONS
 namespace dbl_gpd
   context
-  parameters (X A C : Type) [Xtrunc : is_trunc 2 X]
+  parameters {X A C : Type} [Xtrunc : is_trunc 2 X]
     [Atrunc : is_trunc 1 A] [Cset : is_hset C]
-    (ι' : A → X) (ι : C → A)
+    {ι' : A → X} {ι : C → A}
     {a₁ b₁ a₂ b₂ a₃ b₃ : C}
     {f₁ : ι a₁ = ι b₁} {g₁ : ι a₂ = ι b₂} {h₁ : ι a₁ = ι a₂} {i₁ : ι b₁ = ι b₂}
     {g₂ : ι a₃ = ι b₃} {h₂ : ι a₂ = ι a₃} {i₂ : ι b₂ = ι b₃}
@@ -100,34 +110,29 @@ namespace dbl_gpd
   definition fund_dbl_precat_comp_aux1
     (v : ap ι' h₂ ⬝ ap ι' g₂ = ap ι' g₁ ⬝ ap ι' i₂)
     (u : ap ι' h₁ ⬝ ap ι' g₁ = ap ι' f₁ ⬝ ap ι' i₁) :
-      ((ap_pp ι' h₁ h₂)⁻¹) ▹ fund_dbl_precat_comp_flat X A C (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
-      (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u =
+      ((ap_pp ι' h₁ h₂)⁻¹) ▹ fund_dbl_precat_comp_flat v u =
       (ap_pp ι' i₁ i₂) ▹ fund_dbl_precat_comp v u :=
   !transport_pV⁻¹
 
   definition fund_dbl_precat_comp_aux2_aux
     (v : ap ι' h₂ ⬝ ap ι' g₂ = ap ι' g₁ ⬝ ap ι' i₂)
     (u : ap ι' h₁ ⬝ ap ι' g₁ = ap ι' f₁ ⬝ ap ι' i₁) :
-      (ap_pp ι' h₁ h₂) ▹ ((ap_pp ι' h₁ h₂)⁻¹) ▹ fund_dbl_precat_comp_flat X A C (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
-      (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u =
+      (ap_pp ι' h₁ h₂) ▹ ((ap_pp ι' h₁ h₂)⁻¹) ▹ fund_dbl_precat_comp_flat v u =
       (ap_pp ι' h₁ h₂) ▹ (ap_pp ι' i₁ i₂) ▹ fund_dbl_precat_comp v u :=
   ap (transport _ (ap_pp ι' h₁ h₂)) (fund_dbl_precat_comp_aux1 v u)
 
   definition fund_dbl_precat_comp_aux2_aux2
     (v : ap ι' h₂ ⬝ ap ι' g₂ = ap ι' g₁ ⬝ ap ι' i₂)
     (u : ap ι' h₁ ⬝ ap ι' g₁ = ap ι' f₁ ⬝ ap ι' i₁) :
-      (ap_pp ι' h₁ h₂) ▹ ((ap_pp ι' h₁ h₂)⁻¹) ▹ fund_dbl_precat_comp_flat X A C (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
-      (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u =
-      fund_dbl_precat_comp_flat X A C (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
-      (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u :=
+      (ap_pp ι' h₁ h₂) ▹ ((ap_pp ι' h₁ h₂)⁻¹) ▹ fund_dbl_precat_comp_flat v u =
+      fund_dbl_precat_comp_flat v u :=
   !transport_pV
 
   definition fund_dbl_precat_comp_aux2
     (v : ap ι' h₂ ⬝ ap ι' g₂ = ap ι' g₁ ⬝ ap ι' i₂)
     (u : ap ι' h₁ ⬝ ap ι' g₁ = ap ι' f₁ ⬝ ap ι' i₁) :
       (ap_pp ι' h₁ h₂) ▹ (ap_pp ι' i₁ i₂) ▹ fund_dbl_precat_comp v u =
-      fund_dbl_precat_comp_flat X A C (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
-      (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u :=
+      fund_dbl_precat_comp_flat v u :=
   begin
     apply concat, rotate 1,
     exact (fund_dbl_precat_comp_aux2_aux2 v u),
@@ -152,42 +157,75 @@ namespace dbl_gpd
   definition fund_dbl_precat_assoc' :
   concat_pp_p (ap ι' i₁) (ap ι' i₂) (ap ι' i₃) ▹
   concat_pp_p (ap ι' h₁) (ap ι' h₂) (ap ι' h₃) ▹
-  fund_dbl_precat_comp_flat X A C
-    (ap ι' f₁) (ap ι' g₂) (ap ι' h₁ ⬝ ap ι' h₂) (ap ι' i₁ ⬝ ap ι' i₂) (ap ι' g₃) (ap ι' h₃) (ap ι' i₃) w
-    (fund_dbl_precat_comp_flat X A C
-      (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁) (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u)
-  = fund_dbl_precat_comp_flat X A C
-      (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁) (ap ι' g₃) (ap ι' h₂ ⬝ ap ι' h₃) (ap ι' i₂ ⬝ ap ι' i₃)
-      (fund_dbl_precat_comp_flat X A C
-        (ap ι' g₁) (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) (ap ι' g₃) (ap ι' h₃) (ap ι' i₃) w v) u :=
-  fund_dbl_precat_flat_assoc X A C
-    (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁) (ap ι' g₂)
-    (ap ι' h₂) (ap ι' i₂) (ap ι' g₃) (ap ι' h₃) (ap ι' i₃) w v u
+  fund_dbl_precat_comp_flat w (fund_dbl_precat_comp_flat v u)
+  = fund_dbl_precat_comp_flat (fund_dbl_precat_comp_flat w v) u :=
+  fund_dbl_precat_flat_assoc w v u
 
 
   definition fund_dbl_precat_assoc'' :=
-  transport _ ((fund_dbl_precat_comp_aux2 X A C ι' ι v u)⁻¹) fund_dbl_precat_assoc'
+  transport _ ((fund_dbl_precat_comp_aux2 v u)⁻¹) fund_dbl_precat_assoc'
 
   definition fund_dbl_precat_assoc''' :=
-  transport _ ((fund_dbl_precat_comp_aux2 X A C ι' ι w v)⁻¹) fund_dbl_precat_assoc''
+  transport _ ((fund_dbl_precat_comp_aux2 w v)⁻¹) fund_dbl_precat_assoc''
 
-  --This seems nasty
-  definition fund_dbl_precat_assoc_concat1 :
-    concat_pp_p (ap ι' i₁) (ap ι' i₂) (ap ι' i₃)
-    = !ap_pp ▹ !ap_pp ▹ !ap_pp ▹ !ap_pp ▹ (ap (ap ι') (concat_pp_p i₁ i₂ i₃)) :=
-  sorry
+  definition fund_dbl_precat_flat_transp1
+    (vu : ap ι' (h₁ ⬝ h₂) ⬝ ap ι' g₂ = ap ι' f₁ ⬝ (ap ι' i₁ ⬝ ap ι' i₂)) :
+  fund_dbl_precat_comp_flat w
+    (transport (λ a_1, (ap ι' (h₁ ⬝ h₂)) ⬝ (ap ι' g₂) = (ap ι' f₁) ⬝ a_1)
+    ((ap_pp ι' i₁ i₂)⁻¹) vu)
+  = transport (λ a_1, _) ((ap_pp ι' i₁ i₂)⁻¹) (fund_dbl_precat_comp_flat w vu) :=
+  begin
+    apply (eq.rec_on ((ap_pp ι' i₁ i₂)⁻¹)), apply idp,
+  end
 
-  definition fund_dbl_precat_assoc_concat2 :
-    concat_pp_p (ap ι' h₁) (ap ι' h₂) (ap ι' h₃)
-    = !ap_pp ▹ !ap_pp ▹ !ap_pp ▹ !ap_pp ▹ (ap (ap ι') (concat_pp_p h₁ h₂ h₃)) :=
-  sorry
+  definition fund_dbl_precat_flat_transp2
+    (vu : ap ι' h₁ ⬝ ap ι' h₂ ⬝ ap ι' g₂ = ap ι' f₁ ⬝ (ap ι' i₁ ⬝ ap ι' i₂)) :
+  fund_dbl_precat_comp_flat w (transport (λ x, x ⬝ _ = _) ((ap_pp ι' h₁ h₂)⁻¹) vu)
+  = transport (λ x, _) ((ap_pp ι' h₁ h₂)⁻¹) (fund_dbl_precat_comp_flat w vu) :=
+  begin
+    apply (eq.rec_on ((ap_pp ι' h₁ h₂)⁻¹)), apply idp,
+  end
 
+  definition fund_dbl_precat_flat_transp3
+    (wv : ap ι' (h₂ ⬝ h₃) ⬝ ap ι' g₃ = ap ι' g₁ ⬝ (ap ι' i₂ ⬝ ap ι' i₃)) :
+  fund_dbl_precat_comp_flat (transport (λ x, _ = _ ⬝ x) ((ap_pp ι' i₂ i₃)⁻¹) wv) u
+  = transport (λ x, _) ((ap_pp ι' i₂ i₃)⁻¹) (fund_dbl_precat_comp_flat wv u) :=
+  begin
+    apply (eq.rec_on ((ap_pp ι' i₂ i₃)⁻¹)), apply idp,
+  end
+
+  definition fund_dbl_precat_flat_transp4
+    (wv : ap ι' h₂ ⬝ ap ι' h₃ ⬝ ap ι' g₃ = ap ι' g₁ ⬝ (ap ι' i₂ ⬝ ap ι' i₃)) :
+  fund_dbl_precat_comp_flat (transport (λ x, x ⬝ _ = _) ((ap_pp ι' h₂ h₃)⁻¹) wv) u
+  = transport (λ x, _) ((ap_pp ι' h₂ h₃)⁻¹) (fund_dbl_precat_comp_flat wv u) :=
+  begin
+    apply (eq.rec_on ((ap_pp ι' h₂ h₃)⁻¹)), apply idp,
+  end
+
+  set_option pp.notation false
   definition fund_dbl_precat_assoc_final :
-  (concat_pp_p i₁ i₂ i₃) ▹ ((concat_pp_p h₁ h₂ h₃) ▹ fund_dbl_precat_comp X A C ι' ι w
-    (fund_dbl_precat_comp X A C ι' ι v u))
-  = fund_dbl_precat_comp X A C ι' ι (fund_dbl_precat_comp X A C ι' ι w v) u :=
-  sorry
+    (concat_pp_p i₁ i₂ i₃) ▹ ((concat_pp_p h₁ h₂ h₃) ▹
+    fund_dbl_precat_comp w (fund_dbl_precat_comp v u))
+    = fund_dbl_precat_comp (fund_dbl_precat_comp w v) u :=
+  begin
+    unfold fund_dbl_precat_comp,
+    apply moveR_transport_p, apply moveR_transport_p,
+    apply moveR_transport_V, apply moveR_transport_V,
+    apply concat, apply fund_dbl_precat_flat_transp1, apply moveR_transport_V,
+    apply concat, apply fund_dbl_precat_flat_transp2, apply moveR_transport_V,
+    apply concat, apply fund_dbl_precat_flat_assoc',
+    apply moveL_transport_p, apply moveL_transport_p, apply moveL_transport_p, apply moveL_transport_p,
+    apply moveL_transport_V, apply moveL_transport_V, apply moveL_transport_p, apply moveL_transport_p,
+    apply inverse,
+    apply concat, apply fund_dbl_precat_flat_transp3, apply moveR_transport_V,
+    apply concat, apply fund_dbl_precat_flat_transp4, apply moveR_transport_V,
+    apply inverse,
+  end
 
+  check transpo
+
+
+exit
   definition fundamental_dbl_precat : dbl_precat (fundamental_groupoid X A C ι)
     (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
       ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :=
@@ -195,16 +233,8 @@ namespace dbl_gpd
     fapply dbl_precat.mk,
       intros, apply (fund_dbl_precat_comp X A C ι' ι), exact a_1, exact a_2,
       intros, exact (concat_1p (ap ι' f)),
-      intros, /-exact sorry,
-      intros, exact sorry,
-      intros, exact sorry,
-      intros, apply succ_is_trunc, apply succ_is_trunc, exact Xtrunc,
-      intros, exact sorry,
-      intros, exact sorry,
-      intros, exact sorry,
-      intros, exact sorry,
-      intros, exact sorry,
-      intros, exact sorry,-/
+      intros, sorry
+      e
   end
   check dbl_precat.mk
 

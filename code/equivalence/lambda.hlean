@@ -1,7 +1,10 @@
 import ..dbl_gpd.decl ..xmod.decl
 set_option apply.class_instance false -- turn off class instance resolution by apply tactic
+set_option pp.beta true
 
 open eq sigma unit groupoid precategory morphism path_algebra xmod
+
+attribute Group.struct [coercion]
 
 namespace lambda
   context
@@ -25,6 +28,17 @@ namespace lambda
   end
   set_option unifier.max_steps 20000
 
+  protected definition lambda_morphism.congr' ⦃a b c d : P₀⦄
+    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    (v u : lambda_morphism f g h i)
+    (p1 : lambda_morphism.m v = lambda_morphism.m u)
+    (p2 : p1 ▹ (lambda_morphism.comm v) = (lambda_morphism.comm u)) : v = u :=
+  begin
+    revert p2, revert p1,
+    apply (lambda_morphism.rec_on v), intros (m_v, comm_v),
+    apply (lambda_morphism.rec_on u), intros (m_u, comm_u),
+    intros (p1, p2), apply lambda_morphism.congr, apply p2,
+  end
 
   protected definition lambda_morphism.comp₁ ⦃a b c₁ d₁ c₂ d₂ : P₀⦄
     ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
@@ -32,14 +46,12 @@ namespace lambda
     (v : lambda_morphism g₁ g₂ h₂ i₂) (u : lambda_morphism f₁ g₁ h₁ i₁) :
     lambda_morphism f₁ g₂ (h₂ ∘ h₁) (i₂ ∘ i₁) :=
   begin
-    apply (lambda_morphism.rec_on v), intros (m_v, comm_v),
-    apply (lambda_morphism.rec_on u), intros (m_u, comm_u),
     fapply lambda_morphism.mk,
-      exact ((φ i₂ m_u) * m_v),
+      exact ((φ i₂ (lambda_morphism.m u)) * (lambda_morphism.m v)),
     apply concat, apply μ_respect_comp,
-    apply concat, apply (ap (λ x, _ ∘ x)), apply comm_v,
+    apply concat, apply (ap (λ x, _ ∘ x)), apply (lambda_morphism.comm v),
     apply concat, apply (ap (λ x, x ∘ _)), apply CM1,
-    apply concat, apply (ap (λ x, (_ ∘ x ∘ _) ∘ _)), apply comm_u,
+    apply concat, apply (ap (λ x, (_ ∘ x ∘ _) ∘ _)), apply (lambda_morphism.comm u),
     apply concat, apply (!assoc⁻¹),
     apply concat, rotate 1, apply assoc, apply (ap (λ x, comp i₂ x)),
     apply concat, apply inverse, apply assoc,
@@ -70,16 +82,39 @@ namespace lambda
     apply id_left,
   end
 
+  --set_option pp.notation false
+  --set_option pp.implicit true
+
+  check @has_mul.mul
+
   protected definition lambda_morphism.assoc₁ ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : P₀⦄
-    {f : hom a b} {g₁ : c₁ ⟶ d₁} {h₁ : a ⟶ c₁} {i₁ : b ⟶ d₁} {g₂ : c₂ ⟶ d₂}
-    {h₂ : c₁ ⟶ c₂} {i₂ : d₁ ⟶ d₂} {g₃ : c₃ ⟶ d₃} {h₃ : c₂ ⟶ c₃} {i₃ : d₂ ⟶ d₃}
+    {f : hom a b} {g₁ : hom c₁ d₁} {h₁ : hom a c₁} {i₁ : hom b d₁} {g₂ : hom c₂ d₂}
+    {h₂ : hom c₁ c₂} {i₂ : hom d₁ d₂} {g₃ : hom c₃ d₃} {h₃ : hom c₂ c₃} {i₃ : hom d₂ d₃}
     (w : lambda_morphism g₂ g₃ h₃ i₃)
     (v : lambda_morphism g₁ g₂ h₂ i₂)
     (u : lambda_morphism f g₁ h₁ i₁) :
     assoc i₃ i₂ i₁ ▹ assoc h₃ h₂ h₁ ▹
     lambda_morphism.comp₁ w (lambda_morphism.comp₁ v u)
     = lambda_morphism.comp₁ (lambda_morphism.comp₁ w v) u :=
-  sorry
+  begin
+    apply (lambda_morphism.rec_on w), intros (mw, commw),
+    apply (lambda_morphism.rec_on v), intros (mv, commv),
+    apply (lambda_morphism.rec_on u), intros (mu, commu),
+    fapply lambda_morphism.congr',
+      apply inverse, apply concat,
+        unfold lambda.lambda_morphism.m, unfold lambda.lambda_morphism.comp₁, esimp,
+        apply (!mul_assoc⁻¹),
+      apply concat, apply (ap (λ x, @has_mul.mul _ (Group.struct (M _))
+            (@has_mul.mul _ (Group.struct (M _)) x _) _)),
+        apply φ_respect_P_comp,
+      apply concat, apply (ap (λ x, x * _)), apply inverse, apply φ_respect_M_comp,
+      apply inverse, apply concat,
+        unfold lambda.lambda_morphism.m, esimp,
+
+  end
+
+
+  --check @lambda_morphism.assoc₁
 
 
 exit

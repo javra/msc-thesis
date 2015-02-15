@@ -14,8 +14,7 @@ namespace dbl_precat
     [G : dbl_precat C D₂]
   include G D₀set C
 
-
-  definition transp_comp₂_eq_comp₂_transp_l_bu ⦃y z w : D₀⦄
+  definition transp_comp₂_eq_comp₂_transp_l_bu {y z w : D₀}
     {Ef : Type} {ef : Ef → hom z y}
     {Eg : Type} {eg : Eg → hom z y}
     {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ (ef f1) (eg g1) id id) (p : f1 = f2) (q : g1 = g2)
@@ -30,7 +29,7 @@ namespace dbl_precat
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
-  definition transp_comp₂_eq_comp₂_transp_l_b ⦃y z w : D₀⦄
+  definition transp_comp₂_eq_comp₂_transp_l_b {y z w : D₀}
     {Eg : Type} {eg : Eg → hom z y} {f1 : hom z y}
     {g1 g2 : Eg} (filler : D₂ f1 (eg g1) id id) (q : g1 = g2)
     {f' g' : hom y w} (filler' : D₂ f' g' id id) :
@@ -42,7 +41,7 @@ namespace dbl_precat
     apply (eq.rec_on q), apply idp,
   end
 
-  definition transp_comp₂_eq_comp₂_transp_r_b ⦃y z w : D₀⦄
+  definition transp_comp₂_eq_comp₂_transp_r_b {y z w : D₀}
     {Eg : Type} {eg : Eg → hom y w} {f1 : hom y w}
     {g1 g2 : Eg} (filler : D₂ f1 (eg g1) id id) (q : g1 = g2)
     {f' g' : hom z y} (filler' : D₂ f' g' id id) :
@@ -54,7 +53,7 @@ namespace dbl_precat
     apply (eq.rec_on q), apply idp,
   end
 
-  definition transp_comp₂_eq_comp₂_transp_r_bu ⦃y z w : D₀⦄
+  definition transp_comp₂_eq_comp₂_transp_r_bu {y z w : D₀}
     {Ef : Type} {ef : Ef → hom y z}
     {Eg : Type} {eg : Eg → hom y z}
     {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ (ef f1) (eg g1) id id) (p : f1 = f2) (q : g1 = g2)
@@ -68,7 +67,7 @@ namespace dbl_precat
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
-  definition transp_comp₂_eq_comp₂_transp_l_ub ⦃y z w : D₀⦄
+  definition transp_comp₂_eq_comp₂_transp_l_ub {y z w : D₀}
     {Ef : Type} {ef : Ef → hom z y}
     {Eg : Type} {eg : Eg → hom z y}
     {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ (ef f1) (eg g1) id id) (p : f1 = f2) (q : g1 = g2)
@@ -83,7 +82,7 @@ namespace dbl_precat
     apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
   end
 
-  definition transp_comp₂_eq_comp₂_transp_r_ub ⦃y z w : D₀⦄
+  definition transp_comp₂_eq_comp₂_transp_r_ub {y z w : D₀}
     {Ef : Type} {ef : Ef → hom y z}
     {Eg : Type} {eg : Eg → hom y z}
     {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ (ef f1) (eg g1) id id) (p : f1 = f2) (q : g1 = g2)
@@ -97,20 +96,20 @@ namespace dbl_precat
     apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
   end
 
-  definition comp₁_transp_eq_comp₁_transp_b ⦃a b c₁ d₁ c₂ d₂ : D₀⦄
+  definition comp₁_transp_eq_comp₁_transp_b {a b c₁ d₁ c₂ d₂ : D₀}
     {E : Type} {e : E → hom c₁ d₁}
-    ⦃f₁ : hom a b⦄ ⦃g₁ g₁' : E⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
-    ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
+    {f₁ : hom a b} {g₁ g₁' : E} {h₁ : hom a c₁} {i₁ : hom b d₁}
+    {g₂ : hom c₂ d₂} {h₂ : hom c₁ c₂} {i₂ : hom d₁ d₂}
     (pg₁ : g₁ = g₁') (v : D₂ (e g₁') g₂ h₂ i₂) (u : D₂ f₁ (e g₁) h₁ i₁) :
     comp₁ D₂ (transport (λ x, D₂ (e x) g₂ h₂ i₂) (pg₁⁻¹) v) u = comp₁ D₂ v (pg₁ ▹ u) :=
   begin
     revert u, revert v, apply (eq.rec_on pg₁), intros, apply idp,
   end
 
-  definition transp_comp₁_eq_comp₁_transp_b_b ⦃a b c₁ d₁ c₂ d₂ : D₀⦄
+  definition transp_comp₁_eq_comp₁_transp_b_b {a b c₁ d₁ c₂ d₂ : D₀}
     {E : Type} {e : E → hom c₂ d₂}
-    ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
-    ⦃g₂ g₂' : E⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
+    {f₁ : hom a b} {g₁ : hom c₁ d₁} {h₁ : hom a c₁} {i₁ : hom b d₁}
+    {g₂ g₂' : E} {h₂ : hom c₁ c₂} {i₂ : hom d₁ d₂}
     (pg₁ : g₂ = g₂') (v : D₂ g₁ (e g₂) h₂ i₂) (u : D₂ f₁ g₁ h₁ i₁) :
     transport (λ x, D₂ _ (e x) _ _) pg₁ (comp₁ D₂ v u)
     = comp₁ D₂ (transport (λ x, D₂ _ (e x) _ _) pg₁ v) u :=
@@ -118,11 +117,11 @@ namespace dbl_precat
     apply (eq.rec_on pg₁), apply idp,
   end
 
-  definition transp_comp₂_eq_comp₂_transp_transp_rl ⦃a b₁ b₂ c d₁ d₂ : D₀⦄
+  definition transp_comp₂_eq_comp₂_transp_transp_rl {a b₁ b₂ c d₁ d₂ : D₀}
     {Eh₁ Ei₁ Ei₂ : Type} {eh₁ : Eh₁ → hom a c} {ei₁ : Ei₁ → hom b₁ d₁}
     {ei₂ : Ei₂ → hom b₂ d₂} [Ei₁_hset : is_hset Ei₁]
-    ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h₁ h₁' : Eh₁⦄ ⦃i₁ i₁' : Ei₁⦄
-    ⦃f₂ : hom b₁ b₂⦄ ⦃g₂ : hom d₁ d₂⦄ ⦃i₂ i₂' : Ei₂⦄
+    {f₁ : hom a b₁} {g₁ : hom c d₁} {h₁ h₁' : Eh₁} {i₁ i₁' : Ei₁}
+    {f₂ : hom b₁ b₂} {g₂ : hom d₁ d₂} {i₂ i₂' : Ei₂}
     (ph₁ : h₁ = h₁') (pi₁ pi₁' : i₁ = i₁') (pi₂ : i₂ = i₂')
     (v : D₂ f₂ g₂ (ei₁ i₁) (ei₂ i₂)) (u : D₂ f₁ g₁ (eh₁ h₁) (ei₁ i₁)) :
     transport (λ x, D₂ _ _ (eh₁ x) _) ph₁
@@ -142,7 +141,7 @@ namespace dbl_precat
     apply (eq.rec_on pi₁), apply idp,
   end
 
-  definition transp_comp₁_eq_comp₁_transp_u_rl ⦃y z w : D₀⦄
+  definition transp_comp₁_eq_comp₁_transp_u_rl {y z w : D₀}
     {Ef : Type} {ef : Ef → hom z y}
     {Eg : Type} {eg : Eg → hom z y}
     {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ id id (ef f1) (eg g1)) (p : f1 = f2) (q : g1 = g2)
@@ -158,7 +157,7 @@ namespace dbl_precat
   end
 
 
-  definition transp_comp₁_eq_comp₁_transp_b_rl ⦃y z w : D₀⦄
+  definition transp_comp₁_eq_comp₁_transp_b_rl {y z w : D₀}
     {Ef : Type} {ef : Ef → hom y z}
     {Eg : Type} {eg : Eg → hom y z}
     {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ id id (ef f1) (eg g1)) (p : f1 = f2) (q : g1 = g2)
@@ -172,7 +171,7 @@ namespace dbl_precat
     apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
   end
 
-  definition transp_comp₁_eq_comp₁_transp_u_lr ⦃y z w : D₀⦄
+  definition transp_comp₁_eq_comp₁_transp_u_lr {y z w : D₀}
     {Ef : Type} {ef : Ef → hom z y}
     {Eg : Type} {eg : Eg → hom z y}
     {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ id id (ef f1) (eg g1)) (p : f1 = f2) (q : g1 = g2)
@@ -187,7 +186,7 @@ namespace dbl_precat
     apply (eq.rec_on p), apply (eq.rec_on q), apply idp,
   end
 
-  definition transp_comp₁_eq_comp₁_transp_b_lr ⦃y z w : D₀⦄
+  definition transp_comp₁_eq_comp₁_transp_b_lr {y z w : D₀}
     {Ef : Type} {ef : Ef → hom y z}
     {Eg : Type} {eg : Eg → hom y z}
     {f1 f2 : Ef} {g1 g2 : Eg} (filler : D₂ id id (ef f1) (eg g1)) (p : f1 = f2) (q : g1 = g2)
@@ -203,17 +202,3 @@ namespace dbl_precat
 
   end
 end dbl_precat
-
-exit
-
-eq
-    (comp₂ D₂
-       (transport (λ (a_0 : hom x x), D₂ lidu (ID x) a_0 (compose (ID x) (ID x)))
-          (inverse (id_left id))
-          (transport (λ (a_0 : hom x x), D₂ lidu (ID x) id a_0) (inverse (id_left (ID x)))
-             u))
-       (transport (λ (a_0 : hom x x), D₂ (inverse a) (inverse id) a_0 (compose id (ID x)))
-          (inverse (id_right id))
-          (transport (λ (a_0 : hom x x), D₂ (inverse a) (inverse id) id a_0)
-             (inverse (id_right id))
-             (inv₂ D₂ v))))
