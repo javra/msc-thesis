@@ -124,6 +124,16 @@ namespace dbl_gpd
   moveL_transport_V _ _ _ _
     (moveL_transport_V _ _ _ _ (fund_dbl_precat_flat_assoc₁ w v u))
 
+  definition fund_dbl_precat_flat_assoc₂' {a₁ a₂ a₃ a₄ b₁ b₂ b₃ b₄ : X}
+    {f₁ : a₁ = a₂} {g₁ : b₁ = b₂} {h₁ : a₁ = b₁} {i₁ : a₂ = b₂}
+    {f₂ : a₂ = a₃} {g₂ : b₂ = b₃} {i₂ : a₃ = b₃}
+    {f₃ : a₃ = a₄} {g₃ : b₃ = b₄} {i₃ : a₄ = b₄}
+    (w : i₂ ⬝ g₃ = f₃ ⬝ i₃)
+    (v : i₁ ⬝ g₂ = f₂ ⬝ i₂)
+    (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :=
+  moveL_transport_V _ _ _ _
+    (moveL_transport_V _ _ _ _ (fund_dbl_precat_flat_assoc₂ w v u))
+
   definition fund_dbl_precat_flat_id₁ {a b : X} (g : a = b) :
     refl a ⬝ g = g ⬝ refl b :=
   concat_1p g
@@ -242,20 +252,21 @@ namespace dbl_gpd
     (v : (ap ι' h₂) ⬝ (ap ι' g₂) = (ap ι' g₁) ⬝ (ap ι' i₂))
     (u : (ap ι' h₁) ⬝ (ap ι' g₁) = (ap ι' f₁) ⬝ (ap ι' i₁)) :
     (transport (λ a_6, ((ap ι' h₁) ⬝ a_6) ⬝ (ap ι' g₃) = _) (ap_pp ι' h₂ h₃)
-      (transport (λ a_6, _ =  ((ap ι' f₁) ⬝ ((ap ι' i₁) ⬝ a_6))) (ap_pp ι' i₂ i₃)
-        (transport (λ a_6, (a_6 ⬝ (ap ι' g₃)) = _) (ap_pp ι' h₁ (concat h₂ h₃))
-          (transport (λ a_6, _ = (ap ι' f₁) ⬝ a_6) (ap_pp ι' i₁ (concat i₂ i₃))
-            (transport (λ a_6, _ = (ap ι' f₁) ⬝ (ap ι' a_6)) (concat_pp_p i₁ i₂ i₃)
-              (transport (λ a_6, (ap ι' a_6) ⬝ (ap ι' g₃) = _) (concat_pp_p h₁ h₂ h₃)
-                (transport (λ a_6, _ =  (ap ι' f₁) ⬝ a_6) ((ap_pp ι' (concat i₁ i₂) i₃)⁻¹)
-                  (transport (λ a_6, a_6 ⬝ (ap ι' g₃) = _) ((ap_pp ι' (concat h₁ h₂) h₃)⁻¹)
-                    (transport (λ a_6, _ = (ap ι' f₁) ⬝ (a_6 ⬝ (ap ι' i₃))) ((ap_pp ι' i₁ i₂)⁻¹)
-                      (transport (λ a_6, (a_6 ⬝ (ap ι' h₃)) ⬝ (ap ι' g₃) = _) ((ap_pp ι' h₁ h₂)⁻¹)
-                        (transport (λ a_0, a_0 ⬝  (ap ι' g₃) = _)
-                          ((concat_pp_p (ap ι' h₁) (ap ι' h₂) (ap ι' h₃))⁻¹)
-                          (transport (λ a_0, _ = (ap ι' f₁) ⬝ a_0)
-                            ((concat_pp_p (ap ι' i₁) (ap ι' i₂) (ap ι' i₃))⁻¹)
-                            (fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_comp₁ w v) u)))))))))))))
+     (transport (λ a_6, _ =  ((ap ι' f₁) ⬝ ((ap ι' i₁) ⬝ a_6))) (ap_pp ι' i₂ i₃)
+      (transport (λ a_6, (a_6 ⬝ (ap ι' g₃)) = _) (ap_pp ι' h₁ (concat h₂ h₃))
+       (transport (λ a_6, _ = (ap ι' f₁) ⬝ a_6) (ap_pp ι' i₁ (concat i₂ i₃))
+        (transport (λ a_6, _ = (ap ι' f₁) ⬝ (ap ι' a_6)) (concat_pp_p i₁ i₂ i₃)
+         (transport (λ a_6, (ap ι' a_6) ⬝ (ap ι' g₃) = _) (concat_pp_p h₁ h₂ h₃)
+          (transport (λ a_6, _ =  (ap ι' f₁) ⬝ a_6) ((ap_pp ι' (concat i₁ i₂) i₃)⁻¹)
+           (transport (λ a_6, a_6 ⬝ (ap ι' g₃) = _) ((ap_pp ι' (concat h₁ h₂) h₃)⁻¹)
+            (transport (λ a_6, _ = (ap ι' f₁) ⬝ (a_6 ⬝ (ap ι' i₃))) ((ap_pp ι' i₁ i₂)⁻¹)
+             (transport (λ a_6, (a_6 ⬝ (ap ι' h₃)) ⬝ (ap ι' g₃) = _) ((ap_pp ι' h₁ h₂)⁻¹)
+              (transport (λ a_0, a_0 ⬝  (ap ι' g₃) = _)
+                ((concat_pp_p (ap ι' h₁) (ap ι' h₂) (ap ι' h₃))⁻¹)
+                (transport (λ a_0, _ = (ap ι' f₁) ⬝ a_0)
+                   ((concat_pp_p (ap ι' i₁) (ap ι' i₂) (ap ι' i₃))⁻¹)
+                   (fund_dbl_precat_flat_comp₁
+                     (fund_dbl_precat_flat_comp₁ w v) u)))))))))))))
      = (fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_comp₁ w v) u) :=
   begin
     reverts (u, v, w),
@@ -291,15 +302,12 @@ namespace dbl_gpd
     apply inverse,
     apply concat, apply fund_dbl_precat_flat_transp3, apply moveR_transport_V,
     apply concat, apply fund_dbl_precat_flat_transp4, apply moveR_transport_V,
-    apply inverse,
-    apply fund_dbl_precat_assoc₁_aux,
+    apply inverse, apply fund_dbl_precat_assoc₁_aux,
   end
 
   definition fund_dbl_precat_id₁ [reducible] {a b : C} (f : ι a = ι b) :
     ap ι' (refl (ι a)) ⬝ ap ι' f = ap ι' f ⬝ ap ι' (refl (ι b)) :=
   concat_1p (ap ι' f)
-
-
 
   definition fund_dbl_precat_id₁_left_aux (a b c d : A)
     (f : a = b) (g : c = d) (h : a = c) (i : b = d)
@@ -414,22 +422,63 @@ namespace dbl_gpd
     apply (eq.rec_on ((ap_pp ι' f₁ f₂)⁻¹)), apply idp,
   end
 
-  /-definition fund_dbl_precat_flat_transp7
-    (wv : ap ι' (h₂ ⬝ h₃) ⬝ ap ι' g₃ = ap ι' g₁ ⬝ (ap ι' i₂ ⬝ ap ι' i₃)) :
-  fund_dbl_precat_flat_comp₁ (transport (λ x, _ = _ ⬝ x) ((ap_pp ι' i₂ i₃)⁻¹) wv) u
-  = transport (λ x, _) ((ap_pp ι' i₂ i₃)⁻¹) (fund_dbl_precat_flat_comp₁ wv u) :=
+  definition fund_dbl_precat_flat_transp7
+    (wv : ap ι' i₁ ⬝ (ap ι' g₂ ⬝ ap ι' g₃) = ap ι' (f₂ ⬝ f₃) ⬝ ap ι' i₃) :
+  fund_dbl_precat_flat_comp₂ (transport (λ x, _ ⬝ x = _) ((ap_pp ι' g₂ g₃)⁻¹) wv) u
+  = transport (λ x, _) ((ap_pp ι' g₂ g₃)⁻¹) (fund_dbl_precat_flat_comp₂ wv u) :=
   begin
-    apply (eq.rec_on ((ap_pp ι' i₂ i₃)⁻¹)), apply idp,
-  end-/
+    apply (eq.rec_on ((ap_pp ι' g₂ g₃)⁻¹)), apply idp,
+  end
 
-  /-definition fund_dbl_precat_flat_transp8
-    (wv : ap ι' h₂ ⬝ ap ι' h₃ ⬝ ap ι' g₃ = ap ι' g₁ ⬝ (ap ι' i₂ ⬝ ap ι' i₃)) :
-  fund_dbl_precat_flat_comp₁ (transport (λ x, x ⬝ _ = _) ((ap_pp ι' h₂ h₃)⁻¹) wv) u
-  = transport (λ x, _) ((ap_pp ι' h₂ h₃)⁻¹) (fund_dbl_precat_flat_comp₁ wv u) :=
+  definition fund_dbl_precat_flat_transp8
+    (wv : ap ι' i₁ ⬝ (ap ι' g₂ ⬝ ap ι' g₃) = (ap ι' f₂ ⬝ ap ι' f₃) ⬝ ap ι' i₃) :
+  fund_dbl_precat_flat_comp₂ (transport (λ x, _ = x ⬝ _) ((ap_pp ι' f₂ f₃)⁻¹) wv) u
+  = transport (λ x, _) ((ap_pp ι' f₂ f₃)⁻¹) (fund_dbl_precat_flat_comp₂ wv u) :=
   begin
-    apply (eq.rec_on ((ap_pp ι' h₂ h₃)⁻¹)), apply idp,
-  end-/
+    apply (eq.rec_on ((ap_pp ι' f₂ f₃)⁻¹)), apply idp,
+  end
 
+  definition fund_dbl_precat_assoc₂_aux {a₁ a₂ a₃ a₄ b₁ b₂ b₃ b₄ : A}
+    {f₁ : a₁ = a₂} {g₁ : b₁ = b₂} {h₁ : a₁ = b₁} {i₁ : a₂ = b₂}
+    {f₂ : a₂ = a₃} {g₂ : b₂ = b₃} {i₂ : a₃ = b₃}
+    {f₃ : a₃ = a₄} {g₃ : b₃ = b₄} {i₃ : a₄ = b₄}
+    (w : (ap ι' i₂) ⬝ (ap ι' g₃) = (ap ι' f₃) ⬝ (ap ι' i₃))
+    (v : (ap ι' i₁) ⬝ (ap ι' g₂) = (ap ι' f₂) ⬝ (ap ι' i₂))
+    (u : (ap ι' h₁) ⬝ (ap ι' g₁) = (ap ι' f₁) ⬝ (ap ι' i₁)) :
+    (transport (λ a_6, _ = (((ap ι' f₁) ⬝ a_6) ⬝ (ap ι' i₃))) (ap_pp ι' f₂ f₃)
+     (transport (λ a_6, (ap ι' h₁) ⬝ ((ap ι' g₁) ⬝ a_6) = _) (ap_pp ι' g₂ g₃)
+      (transport (λ a_6, _ = a_6 ⬝ (ap ι' i₃)) (ap_pp ι' f₁ (f₂ ⬝ f₃))
+       (transport (λ a_6, (ap ι' h₁) ⬝ a_6 = _) (ap_pp ι' g₁ (g₂ ⬝ g₃))
+        (transport (λ a_6, (ap ι' h₁) ⬝ (ap ι' a_6) = _) (concat_pp_p g₁ g₂ g₃)
+         (transport (λ a_6, _ = (ap ι' a_6) ⬝ (ap ι' i₃)) (concat_pp_p f₁ f₂ f₃)
+          (transport (λ a_6, (ap ι' h₁) ⬝ a_6 = _) ((ap_pp ι' (concat g₁ g₂) g₃)⁻¹)
+           (transport (λ a_6, _ = a_6 ⬝ (ap ι' i₃)) ((ap_pp ι' (concat f₁ f₂) f₃)⁻¹)
+            (transport (λ a_6, (ap ι' h₁) ⬝ (a_6 ⬝ (ap ι' g₃)) = _) ((ap_pp ι' g₁ g₂)⁻¹)
+             (transport (λ a_6, _ = (a_6 ⬝ (ap ι' f₃)) ⬝ (ap ι' i₃)) ((ap_pp ι' f₁ f₂)⁻¹)
+              (transport (λ a_1, _ = a_1 ⬝ (ap ι' i₃))
+                ((concat_pp_p (ap ι' f₁) (ap ι' f₂) (ap ι' f₃))⁻¹)
+                (transport (λ a_0, (ap ι' h₁) ⬝ a_0 = _)
+                  ((concat_pp_p (ap ι' g₁) (ap ι' g₂) (ap ι' g₃))⁻¹)
+                  (fund_dbl_precat_flat_comp₂
+                    (fund_dbl_precat_flat_comp₂ w v) u)))))))))))))
+    = (fund_dbl_precat_flat_comp₂ (fund_dbl_precat_flat_comp₂ w v) u) :=
+  begin
+    reverts (u, v, w),
+    revert i₃, revert g₃, revert f₃,
+    revert i₂, revert g₂, revert f₂,
+    revert i₁, revert g₁, revert f₁,
+    intro f₁, apply (eq.rec_on f₁),
+    intro g₁, apply (eq.rec_on g₁),
+    intro i₁,
+    intro f₂, apply (eq.rec_on f₂),
+    intro g₂, apply (eq.rec_on g₂),
+    intro i₂,
+    intro f₃, apply (eq.rec_on f₃),
+    intro g₃, apply (eq.rec_on g₃),
+    intros, apply idp,
+  end
+
+  set_option pp.notation false
   definition fund_dbl_precat_assoc₂ :
     (concat_pp_p g₁ g₂ g₃) ▹ (concat_pp_p f₁ f₂ f₃) ▹
       (fund_dbl_precat_comp₂ w (fund_dbl_precat_comp₂ v u))
@@ -441,6 +490,14 @@ namespace dbl_gpd
     apply concat, apply fund_dbl_precat_flat_transp5, apply moveR_transport_V,
     apply concat, apply fund_dbl_precat_flat_transp6, apply moveR_transport_V,
     apply concat, apply fund_dbl_precat_flat_assoc₂',
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply moveL_transport_V, apply moveL_transport_V,
+    apply moveL_transport_V, apply moveL_transport_V,
+    apply inverse,
+    apply concat, apply fund_dbl_precat_flat_transp7, apply moveR_transport_V,
+    apply concat, apply fund_dbl_precat_flat_transp8, apply moveR_transport_V,
+    apply inverse, apply fund_dbl_precat_assoc₂_aux,
   end
 
   definition fund_dbl_precat_id₂ [reducible] {a b : C} (f : ι a = ι b) :
