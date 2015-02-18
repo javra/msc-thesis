@@ -210,6 +210,49 @@ namespace dbl_gpd
   moveL_transport_V _ _ _ _
     (moveL_transport_V _ _ _ _ (fund_dbl_precat_flat_id₂_right u))
 
+  section
+  variables
+    {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : X}
+    {f₀₀ : a₀₀ = a₀₁} {f₀₁ : a₀₁ = a₀₂} {f₁₀ : a₁₀ = a₁₁} {f₁₁ : a₁₁ = a₁₂}
+    {f₂₀ : a₂₀ = a₂₁} {f₂₁ : a₂₁ = a₂₂} {g₀₀ : a₀₀ = a₁₀} {g₀₁ : a₀₁ = a₁₁}
+    {g₀₂ : a₀₂ = a₁₂} {g₁₀ : a₁₀ = a₂₀} {g₁₁ : a₁₁ = a₂₁} {g₁₂ : a₁₂ = a₂₂}
+    (x : g₁₁ ⬝ f₂₁ = f₁₁ ⬝ g₁₂) (w : g₁₀ ⬝ f₂₀ = f₁₀ ⬝ g₁₁)
+    (v : g₀₁ ⬝ f₁₁ = f₀₁ ⬝ g₀₂) (u : g₀₀ ⬝ f₁₀ = f₀₀ ⬝ g₀₁)
+
+  definition fund_dbl_precat_flat_interchange_vert_horiz :=
+    fund_dbl_precat_flat_comp₂ (fund_dbl_precat_flat_comp₁ x v)
+      (fund_dbl_precat_flat_comp₁ w u)
+
+  definition fund_dbl_precat_flat_interchange_horiz_vert :=
+    fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_comp₂ x w)
+      (fund_dbl_precat_flat_comp₂ v u)
+
+  definition fund_dbl_precat_flat_interchange :
+    fund_dbl_precat_flat_interchange_vert_horiz x w v u
+    = fund_dbl_precat_flat_interchange_horiz_vert x w v u :=
+  begin
+    revert v, revert f₀₁, revert g₀₂,
+    revert u, revert f₀₀, revert g₀₁, revert g₀₀,
+    revert x, revert f₁₁, revert g₁₂, revert f₂₁,
+    revert w, revert f₁₀, revert g₁₁, revert g₁₀,
+    apply (eq.rec_on f₂₀),
+    intro g₁₀, apply (eq.rec_on g₁₀),
+    intro g₁₁, apply (eq.rec_on g₁₁),
+    intro f₁₀, intro w, apply (eq.rec_on w),
+    intro f₂₁, apply (eq.rec_on f₂₁),
+    intro g₁₂, apply (eq.rec_on g₁₂),
+    intro f₁₁, intro x, apply (eq.rec_on x),
+    intro g₀₀, apply (eq.rec_on g₀₀),
+    intro g₀₁, apply (eq.rec_on g₀₁),
+    intro f₀₀, intro u, apply (eq.rec_on u),
+    intro g₀₂, apply (eq.rec_on g₀₂),
+    intro f₀₁, apply (eq.rec_on f₀₁),
+    intro v, apply (eq.rec_on v),
+    apply idp,
+  end
+
+  end
+
 end dbl_gpd
 
 --NON-FLAT VERSIONS
@@ -228,6 +271,109 @@ namespace dbl_gpd
     (ι' (ι a₁)) (ι' (ι b₁)) (ι' (ι a₂)) (ι' (ι b₂)) (ι' (ι a₃)) (ι' (ι b₃))
     (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
     (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u
+
+  --HALF-FlAT VERSION FOR THE INTERCHANGE LAW
+  context
+  parameters (X A C : Type) [Xtrunc : is_trunc 2 X]
+    [Atrunc : is_trunc 1 A] [Cset : is_hset C]
+    {ι' : A → X}
+    {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : A}
+    {f₀₀ : a₀₀ = a₀₁} {f₀₁ : a₀₁ = a₀₂}
+    {f₁₀ : a₁₀ = a₁₁} {f₁₁ : a₁₁ = a₁₂}
+    {f₂₀ : a₂₀ = a₂₁} {f₂₁ : a₂₁ = a₂₂}
+    {g₀₀ : a₀₀ = a₁₀} {g₀₁ : a₀₁ = a₁₁}
+    {g₀₂ : a₀₂ = a₁₂} {g₁₀ : a₁₀ = a₂₀}
+    {g₁₁ : a₁₁ = a₂₁} {g₁₂ : a₁₂ = a₂₂}
+    (x : ap ι' g₁₁ ⬝ ap ι' f₂₁ = ap ι' f₁₁ ⬝ ap ι' g₁₂)
+    (w : ap ι' g₁₀ ⬝ ap ι' f₂₀ = ap ι' f₁₀ ⬝ ap ι' g₁₁)
+    (v : ap ι' g₀₁ ⬝ ap ι' f₁₁ = ap ι' f₀₁ ⬝ ap ι' g₀₂)
+    (u : ap ι' g₀₀ ⬝ ap ι' f₁₀ = ap ι' f₀₀ ⬝ ap ι' g₀₁)
+  include Xtrunc Atrunc Cset
+
+  definition fund_dbl_precat_interchange_aux :
+    (fund_dbl_precat_flat_comp₁
+       (transport (λ a_0, _ ⬝ a_0 = _) ((ap_pp ι' f₂₀ f₂₁)⁻¹)
+          (transport (λ a_1, _ = a_1 ⬝ _) ((ap_pp ι' f₁₀ f₁₁)⁻¹)
+             (fund_dbl_precat_flat_comp₂ x w)))
+       (transport (λ a_0, _ ⬝ a_0 = _) ((ap_pp ι' f₁₀ f₁₁)⁻¹)
+          (transport (λ a_1, _ = a_1 ⬝ _) ((ap_pp ι' f₀₀ f₀₁)⁻¹)
+             (fund_dbl_precat_flat_comp₂ v u))))
+    = ((ap_pp ι' f₂₀ f₂₁)⁻¹) ▹ ((ap_pp ι' f₀₀ f₀₁)⁻¹) ▹
+      (fund_dbl_precat_flat_comp₁
+        (fund_dbl_precat_flat_comp₂ x w)
+        (fund_dbl_precat_flat_comp₂ v u)) :=
+  begin
+    reverts (g₀₀, g₀₁, g₀₂, g₁₀, g₁₁, g₁₂, u, v, w, x),
+    reverts (f₀₁, f₁₁, f₂₁),
+    apply (eq.rec_on f₀₀),
+    apply (eq.rec_on f₁₀),
+    apply (eq.rec_on f₂₀),
+    intros (f₀₁, f₁₁, f₂₁),
+    apply (eq.rec_on f₀₁),
+    apply (eq.rec_on f₁₁),
+    apply (eq.rec_on f₂₁),
+    intros, apply idp,
+  end
+
+  definition fund_dbl_precat_interchange_aux2 :
+    (fund_dbl_precat_flat_comp₂
+       (transport (λ a_1, _ = _ ⬝ a_1) ((ap_pp ι' g₀₂ g₁₂)⁻¹)
+          (transport (λ a_0, a_0 ⬝ _ = _) ((ap_pp ι' g₀₁ g₁₁)⁻¹)
+             (fund_dbl_precat_flat_comp₁ x v)))
+       (transport (λ a_1, _ = _ ⬝ a_1) ((ap_pp ι' g₀₁ g₁₁)⁻¹)
+          (transport (λ a_0, a_0 ⬝ _ = _) ((ap_pp ι' g₀₀ g₁₀)⁻¹)
+             (fund_dbl_precat_flat_comp₁ w u))))
+    = ((ap_pp ι' g₀₂ g₁₂)⁻¹) ▹ ((ap_pp ι' g₀₀ g₁₀)⁻¹) ▹
+      (fund_dbl_precat_flat_comp₂
+        (fund_dbl_precat_flat_comp₁ x v)
+        (fund_dbl_precat_flat_comp₁ w u)) :=
+  begin
+    reverts (f₀₀, f₁₀, f₂₀, f₀₁, f₁₁, f₂₁, u, v, w, x),
+    reverts (g₁₀, g₁₁, g₁₂),
+    apply (eq.rec_on g₀₀),
+    apply (eq.rec_on g₀₁),
+    apply (eq.rec_on g₀₂),
+    intros (g₁₀, g₁₁, g₁₂),
+    apply (eq.rec_on g₁₀),
+    apply (eq.rec_on g₁₁),
+    apply (eq.rec_on g₁₂),
+    intros, apply idp,
+  end
+
+  set_option unifier.max_steps 50000
+  definition fund_dbl_precat_interchange_aux3 :
+    (transport (λ a_6, a_6 ⬝ _ = _) (ap_pp ι' g₀₀ g₁₀)
+     (transport (λ a_6, _ = _ ⬝ a_6) (ap_pp ι' g₀₂ g₁₂)
+      (transport (λ x, _ = x ⬝ _) (ap_pp ι' f₀₀ f₀₁)
+       (transport (λ x, _ ⬝ x = _) (ap_pp ι' f₂₀ f₂₁)
+        (transport (λ x, _ = _ ⬝ x) ((ap_pp ι' g₀₂ g₁₂)⁻¹)
+         (transport (λ x, x ⬝ _ = _) ((ap_pp ι' g₀₀ g₁₀)⁻¹)
+          (transport (λ x, _ ⬝ x = _) ((ap_pp ι' f₂₀ f₂₁)⁻¹)
+           (transport (λ x, _ = x ⬝ _) ((ap_pp ι' f₀₀ f₀₁)⁻¹)
+            (fund_dbl_precat_flat_interchange_vert_horiz x w v u)))))))))
+   = (fund_dbl_precat_flat_comp₂ (fund_dbl_precat_flat_comp₁ x v)
+       (fund_dbl_precat_flat_comp₁ w u)) :=
+  begin
+    reverts (u, v, w, x),
+    reverts (f₁₀, f₁₁, g₀₁, g₁₁),
+    reverts (f₂₀, f₂₁),
+    reverts (g₀₂, g₁₂),
+    reverts (g₀₀, g₁₀),
+    revert f₀₁, apply (eq.rec_on f₀₀),
+    intro f₀₁, apply (eq.rec_on f₀₁),
+    intro g₀₀, apply (eq.rec_on g₀₀),
+    intro g₁₀, apply (eq.rec_on g₁₀),
+    intro g₀₂, apply (eq.rec_on g₀₂),
+    intro g₁₂, apply (eq.rec_on g₁₂),
+    intro f₂₀, apply (eq.rec_on f₂₀),
+    intros,
+    apply moveR_transport_p, apply moveR_transport_p,
+    apply moveR_transport_p, apply moveR_transport_p,
+    apply idp,
+  end
+  set_option unifier.max_steps 20000
+
+  end
 
   --DEFINITIONS FOR THE VERTICAL WORM PRECATEGORY
   context
@@ -643,7 +789,6 @@ namespace dbl_gpd
     apply idp,
   end
 
-  set_option pp.notation false
   definition fund_dbl_precat_id_comp₂ (a b c : C)
     (f : ι a = ι b) (g : ι b = ι c) :
     fund_dbl_precat_id₁ X A C ι' ι (f ⬝ g)
@@ -656,8 +801,36 @@ namespace dbl_gpd
     apply fund_dbl_precat_id_comp₂_aux,
   end
 
-  --set_option pp.implicit true
-  --set_option pp.notation false
+  variables {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : C}
+    {f₀₀ : ι a₀₀ = ι a₀₁} {f₀₁ : ι a₀₁ = ι a₀₂}
+    {f₁₀ : ι a₁₀ = ι a₁₁} {f₁₁ : ι a₁₁ = ι a₁₂}
+    {f₂₀ : ι a₂₀ = ι a₂₁} {f₂₁ : ι a₂₁ = ι a₂₂}
+    {g₀₀ : ι a₀₀ = ι a₁₀} {g₀₁ : ι a₀₁ = ι a₁₁}
+    {g₀₂ : ι a₀₂ = ι a₁₂} {g₁₀ : ι a₁₀ = ι a₂₀}
+    {g₁₁ : ι a₁₁ = ι a₂₁} {g₁₂ : ι a₁₂ = ι a₂₂}
+    (x : ap ι' g₁₁ ⬝ ap ι' f₂₁ = ap ι' f₁₁ ⬝ ap ι' g₁₂)
+    (w : ap ι' g₁₀ ⬝ ap ι' f₂₀ = ap ι' f₁₀ ⬝ ap ι' g₁₁)
+    (v : ap ι' g₀₁ ⬝ ap ι' f₁₁ = ap ι' f₀₁ ⬝ ap ι' g₀₂)
+    (u : ap ι' g₀₀ ⬝ ap ι' f₁₀ = ap ι' f₀₀ ⬝ ap ι' g₀₁)
+
+  definition fund_dbl_precat_interchange :
+    fund_dbl_precat_comp₁ (fund_dbl_precat_comp₂ x w)
+      (fund_dbl_precat_comp₂ v u) = fund_dbl_precat_comp₂ (fund_dbl_precat_comp₁ x v)
+      (fund_dbl_precat_comp₁ w u) :=
+  begin
+    unfold fund_dbl_precat_comp₂, unfold fund_dbl_precat_comp₁,
+    apply moveR_transport_V, apply moveR_transport_V,
+    apply concat, apply fund_dbl_precat_interchange_aux,
+    apply moveR_transport_V, apply moveR_transport_V,
+    apply concat, apply inverse, apply fund_dbl_precat_flat_interchange,
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply moveL_transport_p, apply moveL_transport_p,
+    apply moveL_transport_V, apply moveL_transport_V,
+    apply inverse, apply concat, apply fund_dbl_precat_interchange_aux2,
+    apply moveR_transport_V, apply moveR_transport_V,
+    apply inverse, apply fund_dbl_precat_interchange_aux3,
+  end
+
   definition fundamental_dbl_precat : dbl_precat (fundamental_groupoid)
     (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
       ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :=
@@ -678,9 +851,8 @@ namespace dbl_gpd
       intros, apply fund_dbl_precat_id_comp₁,
       intros, apply fund_dbl_precat_id_comp₂,
       intros, apply idp,
-      intros,
+      intros, apply fund_dbl_precat_interchange,
   end
-  check dbl_precat.mk
 
   end
 end dbl_gpd
