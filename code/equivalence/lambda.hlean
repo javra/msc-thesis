@@ -110,20 +110,44 @@ namespace lambda
   begin
     fapply lambda_morphism.congr_transports,
       apply inverse, apply concat, apply (!mul_assoc⁻¹),
-      apply concat, apply (ap (λ x, @has_mul.mul _ (Group.struct (M _))
-            (@has_mul.mul _ (Group.struct (M _)) x _) _)),
-        apply φ_respect_P_comp,
+      apply concat, apply (ap (λ x, (x * _) * _)), apply φ_respect_P_comp,
       apply (ap (λ x, x * _)), apply inverse, apply φ_respect_M_comp,
     apply is_hset.elim,
   end
 
-  check dbl_gpd
+  protected definition lambda_morphism.id_left₁ ⦃a b c d : P₀⦄
+    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    (u : lambda_morphism f g h i) :
+    id_left i ▹ id_left h ▹ lambda_morphism.comp₁ (lambda_morphism.ID₁ g) u = u :=
+  begin
+    apply (lambda_morphism.rec_on u), intros (mu, commu),
+    fapply lambda_morphism.congr_transports,
+      apply concat, apply (ap (λ x, x * _)), apply φ_respect_id,
+      apply mul_right_id,
+    apply is_hset.elim,
+  end
+
+  protected definition lambda_morphism.id_right₁ ⦃a b c d : P₀⦄
+    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    (u : lambda_morphism f g h i) :
+    id_right i ▹ id_right h ▹ lambda_morphism.comp₁ u (lambda_morphism.ID₁ f) = u :=
+  begin
+    apply (lambda_morphism.rec_on u), intros (mu, commu),
+    fapply lambda_morphism.congr_transports,
+      apply concat, apply (ap (λ x, x * _)), apply φ_respect_one,
+      apply mul_left_id,
+    apply is_hset.elim,
+  end
+
   protected definition dbl_gpd : dbl_gpd P lambda_morphism :=
   begin
     fapply dbl_gpd.mk,
       intros, apply (lambda_morphism.comp₁ a_1 a_2),
       intros, apply (lambda_morphism.ID₁ f),
-      intros, apply (lambda_morphism.assoc₁),
+      intros, apply lambda_morphism.assoc₁,
+      intros, apply lambda_morphism.id_left₁,
+      intros, apply lambda_morphism.id_right₁,
+      intros,
   end
 
   end
