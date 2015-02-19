@@ -309,6 +309,33 @@ namespace lambda
     = lambda_morphism.comp₂ (lambda_morphism.comp₁ x v) (lambda_morphism.comp₁ w u) :=
   begin
     fapply lambda_morphism.congr,
+      unfold lambda.lambda_morphism.comp₂, esimp,
+      unfold lambda.lambda_morphism.comp₁, esimp,
+      apply concat, apply (ap (λ x, x * _)), apply φ_respect_M_comp,
+      apply inverse, apply concat, apply (ap (λ x, _ * x)), apply φ_respect_M_comp,
+      apply concat, apply mul_assoc,
+      apply inverse, apply concat, apply mul_assoc,
+      apply (ap (λ x, φ g₁₂ (lambda_morphism.m v) * x)),
+      apply concat, apply (!mul_assoc⁻¹),
+      apply inverse, apply concat,  apply (!mul_assoc⁻¹),
+      apply (ap (λ x, x * φ f₂₁ (lambda_morphism.m w))),
+      apply mul_inv_eq_imp_eq_mul,
+      apply concat, apply mul_assoc,
+      apply concat, apply inverse, apply (@CM2 P₀ P M MM _ _ _),
+      apply concat, apply (ap (λ x, φ x _)), apply (lambda_morphism.comm x),
+      apply concat, apply inverse, apply φ_respect_P_comp,
+      apply concat, apply inverse, apply φ_respect_P_comp,
+      apply inverse, apply concat, apply inverse, apply φ_respect_P_comp, apply inverse,
+      apply (ap (λ x, φ x _)),
+      apply concat, apply (ap (λ x, (x ∘ _) ∘ _)), apply assoc,
+      apply concat, apply (ap (λ x, x ∘ _)), apply (!assoc⁻¹),
+      apply concat, apply (ap (λ x, (_ ∘ x) ∘ _)), apply (!assoc⁻¹),
+      apply concat, apply (ap (λ x, (_ ∘ _ ∘ x) ∘ _)), apply inverse_compose,
+      apply concat, apply (ap (λ x, (_ ∘ x) ∘ _)), apply id_right,
+      apply concat, apply (!assoc⁻¹),
+      apply concat, apply (ap (λ x, _ ∘ x)), apply inverse_compose,
+      apply id_right,
+    apply is_hset.elim,
   end
 
   end
@@ -331,7 +358,7 @@ namespace lambda
       intros, apply lambda_morphism.id_comp₁,
       intros, apply lambda_morphism.id_comp₂,
       intros, apply lambda_morphism.zero_unique,
-      intros,
+      intros, apply lambda_morphism.interchange,
   end
 
   end
