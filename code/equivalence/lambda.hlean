@@ -3,6 +3,7 @@ set_option apply.class_instance false -- turn off class instance resolution by a
 set_option pp.beta true
 
 open eq sigma truncation unit precategory morphism path_algebra xmod groupoid
+open equiv sigma.ops
 
 attribute Group.struct [coercion]
 
@@ -17,9 +18,33 @@ namespace lambda
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :=
   (m : M d) (comm : μ' m = i ∘ f ∘ h⁻¹ ∘ g⁻¹)
 
+  definition lambda_morphism.sigma_char ⦃a b c d : P₀⦄
+    (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :
+    (Σ (m : M d), μ' m = i ∘ f ∘ h⁻¹ ∘ g⁻¹) ≃ (lambda_morphism f g h i) :=
+  begin
+    fapply equiv.mk,
+      intro S, apply (lambda_morphism.mk S.1 S.2),
+    fapply is_equiv.adjointify,
+        intro u, apply (lambda_morphism.rec_on u), intros (mu, commu),
+        apply (sigma.mk mu commu),
+      intro u, apply (lambda_morphism.rec_on u), intros (mu, commu),
+      apply idp,
+    intro S, apply (sigma.rec_on S), intros (mu, commu),
+    apply idp,
+  end
+
+  definition lambda_morphism.is_hset ⦃a b c d : P₀⦄
+    (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :
+    is_hset (lambda_morphism f g h i) :=
+  begin
+    apply trunc_equiv, apply equiv.to_is_equiv, apply lambda_morphism.sigma_char,
+    apply trunc_sigma, apply group.carrier_hset, apply Group.struct,
+    intros, apply trunc_succ, apply succ_is_trunc, apply !homH,
+  end
+
   include P MM
 
-  protected definition lambda_morphism.congr ⦃a b c d : P₀⦄
+  definition lambda_morphism.congr ⦃a b c d : P₀⦄
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     {m1 m2 : M d} (comm1 : μ' m1 = i ∘ f ∘ h⁻¹ ∘ g⁻¹)
     (comm2 : μ' m2 = i ∘ f ∘ h⁻¹ ∘ g⁻¹)
@@ -29,7 +54,7 @@ namespace lambda
   begin
     apply (eq.rec_on p2), apply (eq.rec_on p1), apply idp,
   end
-  protected definition lambda_morphism.congr' ⦃a b c d : P₀⦄
+  definition lambda_morphism.congr' ⦃a b c d : P₀⦄
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (v u : lambda_morphism f g h i)
     (p1 : lambda_morphism.m v = lambda_morphism.m u)
@@ -84,6 +109,37 @@ namespace lambda
     apply concat, apply (ap (λ x, comp x _)), apply id_right,
     apply concat, apply assoc, apply (ap (λ x, comp x _)),
     apply inverse, apply iso.inv_pp,
+  end
+
+  protected definition lambda_morphism.comp₂ ⦃a b₁ c d₁ b₂ d₂ : P₀⦄
+    ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h₁ : hom a c⦄ ⦃i₁ : hom b₁ d₁⦄
+    ⦃f₂ : hom b₁ b₂⦄ ⦃g₂ : hom d₁ d₂⦄ ⦃i₂ : hom b₂ d₂⦄
+    (v : lambda_morphism f₂ g₂ i₁ i₂) (u : lambda_morphism f₁ g₁ h₁ i₁) :
+    lambda_morphism (f₂ ∘ f₁) (g₂ ∘ g₁) h₁ i₂ :=
+  begin
+    fapply lambda_morphism.mk,
+      exact ((lambda_morphism.m v) * φ g₂ (lambda_morphism.m u)),
+    apply concat, apply μ_respect_comp,
+    apply concat, apply (ap (λ x, x ∘ _)), apply (lambda_morphism.comm v),
+    apply concat, apply (ap (λ x, _ ∘ x)), apply CM1,
+    apply concat, apply (ap (λ x, _ ∘ (_ ∘ x ∘ _))), apply (lambda_morphism.comm u),
+    apply concat, apply (!assoc⁻¹), apply (ap (λ x, comp i₂ x)),
+    apply concat, apply assoc,
+    apply concat, apply (ap (λ x, x ∘ _)), apply (!assoc⁻¹),
+    apply concat, apply (ap (λ x, (_ ∘ x) ∘ _)), apply (!assoc⁻¹),
+    apply concat, apply (ap (λ x, (_ ∘ _ ∘ x) ∘ _)), apply inverse_compose,
+    apply concat, apply (ap (λ x, (_ ∘ x) ∘ _)), apply id_right,
+    apply concat, apply (ap (λ x, _ ∘ x)), apply (!assoc⁻¹),
+    apply concat, apply assoc,
+    apply concat, apply (ap (λ x, x ∘ _)), apply (!assoc⁻¹),
+    apply concat, apply (ap (λ x, (_ ∘ x) ∘ _)), apply inverse_compose,
+    apply concat, apply (ap (λ x, x ∘ _)), apply id_right,
+    apply inverse, apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply iso.inv_pp,
+      apply all_iso, apply all_iso,
+    apply concat, apply (!assoc⁻¹),
+    apply inverse, apply concat, apply (ap (λ x, _ ∘ x)), apply (!assoc⁻¹),
+    apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply (!assoc⁻¹),
+    apply idp,
   end
 
   protected definition lambda_morphism.ID₁ ⦃a b : P₀⦄ (f : hom a b) :
@@ -147,7 +203,8 @@ namespace lambda
       intros, apply lambda_morphism.assoc₁,
       intros, apply lambda_morphism.id_left₁,
       intros, apply lambda_morphism.id_right₁,
-      intros,
+      intros, apply lambda_morphism.is_hset,
+      intros, apply (lambda_morphism.comp₂ a_1 a_2),
   end
 
   end
