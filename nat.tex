@@ -21,7 +21,8 @@ can define a (small) category $C$ by giving a tuple $(ob_C, hom_C, \partial^-,
 \item $hom_C$ is a set that contains all morphisms,
 \item $\partial^-$ and $\partial^+ : hom_C \to ob_C$
 are maps assigning to each morphism $f$ its domain and codomain,
-\item $\epsilon : ob_C \to mor_C$ gives the identity morphism at each element,
+\item $\epsilon : ob_C \to mor_C$ gives the identity morphism at each element
+(this implies $\partial^- \circ_C \epsilon = \partial^+ \circ_C \epsilon = \id$),
 \item and $\circ_C$
 denotes the composition of morphisms as a partial function $hom_C \times hom_C
 \to hom_C$, defined for all $(g, f) \in hom_C \times hom_C$ where
@@ -33,7 +34,7 @@ morphisms correspond to line we will call $\partial^-$ and $\partial^+$
 to as \textbf{degeneracy map}.
 
 \begin{defn}
-A \textbf{double category} $D$ is given by the following Data:
+A \textbf{double category} $D$ is given by the following data:
 Three sets $D_0$, $D_1$, and $D_2$, respectively called \textbf{0-, 1- and
 2-cells}, together with
 maps $\partial^-$, $\partial^+$, $\epsilon$, $\circ_D$,
@@ -67,14 +68,14 @@ identities}:
 \partial^+_2 \circ \epsilon_1 &= \epsilon \circ \partial^+\text{, and}
 \end{aligned}
 \end{equation}
-\begin{equation}
+\begin{equation} \label{eq:zero-unique-ident}
 \epsilon_1 \circ \epsilon = \epsilon_2 \circ \epsilon \eqqcolon 0\text{.}	 \\
 \end{equation}
 
 The boundary and degeneracy maps of the vertical category are
 furthermore assumed to be linear %TODO
 in the composition of the horizontal category, and vice versa:
-\begin{equation}
+\begin{equation} \label{eq:linear-ident}
 \begin{aligned}
 \partial^-_2(v \circ_1 u) &= \partial^-_2(v) \circ_D \partial^-_2(u)\text{,} \\
 \partial^+_2(v \circ_1 u) &= \partial^+_2(v) \circ_D \partial^+_2(u)\text{,} \\
@@ -105,7 +106,7 @@ As seen in figure \ref{fig:corner-ident}, the four identities \ref{eq:corner-ide
 correspond to the well-definedness of the corners of a given square $u \in D_2$.
 
 \begin{figure} \label{fig:corner-ident} \centering
-\begin{tikzpicture}[auto,scale=2,color=black]
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
 \node(UL) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above left: 
 	{\scriptsize{$\partial^- (\upperf (u)) = \partial^- (\leftf (u))$}}}] at (0,1) {};
 \node(UR) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above right: 
@@ -118,10 +119,79 @@ correspond to the well-definedness of the corners of a given square $u \in D_2$.
 \draw (UR) -- (BR) node [right, midway] {$\rightf(u)$};
 \draw (BR) -- (BL) node [below, midway] {$\lowerf(u)$};
 \draw (BL) -- (UL) node [left, midway] {$\leftf(u)$};
+\node at (0.5,0.5) {$u$};
 \end{tikzpicture}
 \caption{A square $u \in D_2$ and its iterated faces.}
 \end{figure}
 
+The next four equations~\ref{eq:degen-ident} tell us that for any line $f \in D_1$,
+besides the identities
+$\partial^\pm_1(\epsilon_1(f)) = f$ and
+$\partial^\pm_2(\epsilon_2(f)) = f$ which follow from the definition of a
+category, the remaining two faces of a \emph{degenerate square} are defined as
+consisting of the suitable degenerate lines. Figure \ref{fig:degen-ident}
+illustrates the cases of both the vertical and the horizontal category. Equation
+\ref{eq:zero-unique-ident} is to make sure that in the case where we take the degenerate
+square of a line which is itself degenerate and end up with a square with all four
+faces degenerate, it doesn't matter if we chose the vertical or the horizontal
+degeneracy but that instead we receive a unique zero-element for each $x \in D_0$.
+
+\begin{figure} \label{fig:degen-ident} \centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\node(UL) [fill,circle,inner sep=0pt,minimum size=5pt] at (0,1) {};
+\node(UR) [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node(BL) [fill,circle,inner sep=0pt,minimum size=5pt] at (0,0) {};
+\node(BR) [fill,circle,inner sep=0pt,minimum size=5pt] at (1,0) {};
+\draw (UL) -- (UR) node [above, midway] {$f$};
+\draw[double] (UR) -- (BR) node [right, midway] {$\epsilon(\partial^+(f))$};
+\draw (BR) -- (BL) node [below, midway] {$f$};
+\draw[double] (BL) -- (UL) node [left, midway] {$\epsilon(\partial^-(f))$};
+\node at (0.5,0.5) {$\epsilon_1(f)$};
+
+\node(UL) [fill,circle,inner sep=0pt,minimum size=5pt] at (3,1) {};
+\node(UR) [fill,circle,inner sep=0pt,minimum size=5pt] at (4,1) {};
+\node(BL) [fill,circle,inner sep=0pt,minimum size=5pt] at (3,0) {};
+\node(BR) [fill,circle,inner sep=0pt,minimum size=5pt] at (4,0) {};
+\draw[double] (UL) -- (UR) node [above, midway] {$\epsilon(\partial^-(f))$};
+\draw (UR) -- (BR) node [right, midway] {$f$};
+\draw[double] (BR) -- (BL) node [below, midway] {$\epsilon(\partial^+(f))$};
+\draw (BL) -- (UL) node [left, midway] {$f$};
+\node at (3.5,0.5) {$\epsilon_2(f)$};
+\end{tikzpicture}
+\caption{Degenerate squares of the vertical and horizontal category for a given
+line $f \in D_1$. Degenerate lines are drawn as double lines.} %%TODO "double lines"?
+\end{figure}
+
+The linearity condition~\ref{eq:linear-ident} serves to define the two faces of
+a composite square that are not already fixed by the definition of vertical and
+horizontal category.
+
+\begin{figure} \label{fig:interchange} \centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\foreach \x in {0,1,2} {
+	\foreach \y in {0,1,2} {
+		\node[fill,circle,inner sep=0pt,minimum size=5pt] at (\x,\y) {};
+		
+	}
+	\draw (\x,0) -- (\x,1) -- (\x,2);
+	\draw (0,\x) -- (1,\x) -- (2,\x);
+}
+\node at (0.5,1.5) {$u$};
+\node at (1.5,1.5) {$v$};
+\node at (0.5,0.5) {$w$};
+\node at (1.5,0.5) {$x$};
+\end{tikzpicture}
+\caption{The grid we use to illustrate the composition $(x \circ_2 w) \circ_1 (v \circ_2 u)$
+as well as $(x \circ_1 v) \circ_2 (w \circ_1 u)$, which are identical by the
+interchange law.}
+\end{figure}
+
+The interchange law can be applied to four squares that are composable as a 
+$2 \times 2$-grid to another square.
+It makes sure that the result of the composition does not depend on whether we
+first compose horizontally and then vertically or the other way round.
+By this, it justifies to illustrate such compositions, as well as compositions
+of larger ``grids'', as shown in figure \ref{fig:interchange}.
 
 
 
