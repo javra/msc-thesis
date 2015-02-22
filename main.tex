@@ -24,6 +24,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \usepackage{cleveref}
 \usepackage{aliascnt}
 \usepackage{mathtools}
+
 \pagestyle{fancyplain}
 
 \def\defthm#1#2#3{
@@ -37,6 +38,11 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \crefname{thm}{Theorem}{Theorems}
 \theoremstyle{definition}
 \defthm{defn}{Definition}{Definitions}
+
+\newcommand{\upperf}{\partial^-_1}
+\newcommand{\lowerf}{\partial^+_1}
+\newcommand{\leftf}{\partial^-_2}
+\newcommand{\rightf}{\partial^+_2}
 
 \begin{document}
 

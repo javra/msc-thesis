@@ -29,8 +29,8 @@ $\partial^+(f) = \partial^-(g)$.
 \end{itemize}
 In line with the geometric interpretation that objects correspond to points while
 morphisms correspond to line we will call $\partial^-$ and $\partial^+$
-\textbf{boundary maps} while $\epsilon$ will often be referred to as
-\textbf{degeneracy map}.
+\textbf{boundary} or \textbf{face maps} while $\epsilon$ will often be referred
+to as \textbf{degeneracy map}.
 
 \begin{defn}
 A \textbf{double category} $D$ is given by the following Data:
@@ -51,7 +51,7 @@ $(D_1, D_2, \partial^-_2, \partial^+_2, \epsilon_2, \circ_2)$.
 
 The mentioned maps are required to satisfy the following \textbf{cubical
 identities}:
-\begin{equation}
+\begin{equation} \label{eq:corner-ident}
 \begin{aligned}
 \partial^- \circ \partial^-_1 &= \partial^- \circ \partial^-_2\text{,} \\
 \partial^- \circ \partial^+_1 &= \partial^+ \circ \partial^-_2\text{,} \\
@@ -59,7 +59,7 @@ identities}:
 \partial^+ \circ \partial^+_1 &= \partial^+ \circ \partial^+_2\text{,}
 \end{aligned}
 \end{equation}
-\begin{equation}
+\begin{equation} \label{eq:degen-ident}
 \begin{aligned}
 \partial^-_1 \circ \epsilon_2 &= \epsilon \circ \partial^-\text{,} \\
 \partial^+_1 \circ \epsilon_2 &= \epsilon \circ \partial^+\text{,} \\
@@ -91,8 +91,36 @@ For each $u, v, w, x \in D_2$,
 \begin{equation}
 (x \circ_2 w) \circ_1 (v \circ_2 u) = (x \circ_1 v) \circ_2 (w \circ_1 u)
 \end{equation}
-has to hold as soon as it is well-defined.
+has to hold if it is well-defined.
 \end{defn}
+
+Especially the identities \ref{eq:corner-ident}, \ref{eq:degen-ident} and the
+interchange law might seem arbitrary but their intended meaning becomes more clear
+when considering the following geometric interpretation of a double category: We
+regard $D_0$ as a set of points, $D_1$ as a set of line segments and
+the elements in $D_2$ as squares. Then, $\upperf(u)$, $\lowerf(u)$, $\leftf(u)$ and
+$\rightf(u)$ correspond to the upper, lower, left and right face of a square $u$.
+
+As seen in figure \ref{fig:corner-ident}, the four identities \ref{eq:corner-ident}
+correspond to the well-definedness of the corners of a given square $u \in D_2$.
+
+\begin{figure} \label{fig:corner-ident} \centering
+\begin{tikzpicture}[auto,scale=2,color=black]
+\node(UL) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above left: 
+	{\scriptsize{$\partial^- (\upperf (u)) = \partial^- (\leftf (u))$}}}] at (0,1) {};
+\node(UR) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above right: 
+	{\scriptsize{$\partial^+ (\upperf (u)) = \partial^- (\rightf (u))$}}}] at (1,1) {};
+\node(BL) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]below left:
+	{\scriptsize{$\partial^- (\upperf (u)) = \partial^- (\leftf (u))$}}}] at (0,0) {};
+\node(BR) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]below right:
+	{\scriptsize{$\partial^+ (\lowerf (u)) = \partial^+ (\rightf (u))$}}}] at (1,0) {};
+\draw (UL) -- (UR) node [above, midway] {$\upperf(u)$};
+\draw (UR) -- (BR) node [right, midway] {$\rightf(u)$};
+\draw (BR) -- (BL) node [below, midway] {$\lowerf(u)$};
+\draw (BL) -- (UL) node [left, midway] {$\leftf(u)$};
+\end{tikzpicture}
+\caption{A square $u \in D_2$ and its iterated faces.}
+\end{figure}
 
 
 
