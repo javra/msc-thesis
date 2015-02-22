@@ -1,4 +1,4 @@
-\documentclass[11pt]{report}
+\documentclass[12pt]{report}
 %TODO: page layout
 \usepackage[backref=page,
 unicode,
@@ -21,16 +21,31 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \usepackage{amssymb,amsmath,amsthm,mathrsfs,wasysym}
 \usepackage{enumitem,mathtools,xspace}
 \usepackage[nottoc]{tocbibind}
+\usepackage{cleveref}
+\usepackage{aliascnt}
+\usepackage{mathtools}
 \pagestyle{fancyplain}
+
+\def\defthm#1#2#3{
+	\newaliascnt{#1}{thm}
+	\newtheorem{#1}[#1]{#2}
+	\aliascntresetthe{#1}
+	\crefname{#1}{#2}{#3}
+}
+
+\newtheorem{thm}{Theorem}[section]
+\crefname{thm}{Theorem}{Theorems}
+\theoremstyle{definition}
+\defthm{defn}{Definition}{Definitions}
 
 \begin{document}
 
-\title{Master Thesis}
+\title{Formalization of Non-Abelian Topology for Homotopy Type Theory}
 \author{\begin{tabular}{r@{ }l} 
 Author:      & Jakob von Raumer \\[1ex] 
 Supervisors at CMU: & Prof. Jeremy Avigad\\
              & Prof. Steve Awodey \\
-Supervisors at KIT : & Prof. Dr Gregor Snelting\\
+Supervisors at KIT : & Prof. Dr. Gregor Snelting\\
 			& Prof. Frank Herrlich
 \end{tabular}}
 
