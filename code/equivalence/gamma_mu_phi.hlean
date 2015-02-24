@@ -1,7 +1,7 @@
 import .gamma_group ..transport4 ..dbl_gpd.basic ..dbl_cat.transports
 
 open dbl_precat precategory is_trunc eq nat
-open equiv groupoid morphism sigma sigma.ops prod
+open equiv morphism groupoid sigma sigma.ops prod
 open path_algebra dbl_gpd
 attribute gamma.M [instance]
 
@@ -173,7 +173,10 @@ namespace gamma
     ((assoc a (lid ∘ (a⁻¹)) (b⁻¹))⁻¹)
     ((assoc a (id ∘ (a⁻¹)) (b⁻¹))⁻¹) (ID₁ D₂ b)
 
-  set_option unifier.max_steps 40000
+  set_option unifier.max_steps 50000
+  --set_option pp.full_names true
+  --set_option pp.notation false
+  --set_option pp.implicit true
   protected definition phi_respect_P_comp ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y)
     (u : M_morphism x) : phi (b ∘ a) u = phi b (phi a u) :=
   begin
@@ -202,7 +205,7 @@ namespace gamma
       apply (eq.rec_on (Pbainv a b)), apply idp,
     apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ b) (ID₁ D₂ a))
       (comp₂ D₂ filler x)) P2),
-    assert (P4 : ID₁ D₂ (a⁻¹ ∘ b⁻¹) = comp₂ D₂ (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹))),
+    assert (P4 : ID₁ D₂ ((@morphism.inverse D₀ C _ _ a (!all_iso)) ∘ (@morphism.inverse D₀ C _ _ b (!all_iso))) = comp₂ D₂ (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹))),
       apply id_comp₂,
     apply (transport (λ x, _ = comp₂ D₂ _ (comp₂ D₂ filler ((Pbainv a b) ▹ x))) (P4⁻¹)),
     apply concat, rotate 3, apply inverse, apply phi_respect_P_comp₂_aux2,
@@ -261,8 +264,6 @@ namespace gamma
     apply (ap (λ x, transport _ _ x)),
     apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
   end
-
-  check transp_comp
 
   protected definition assoc₂' ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : D₀⦄
     ⦃f  : hom a b⦄   ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
