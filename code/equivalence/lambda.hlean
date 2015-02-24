@@ -5,7 +5,7 @@ set_option pp.beta true
 open eq sigma is_trunc unit precategory morphism path_algebra xmod groupoid
 open equiv sigma.ops
 
-attribute Group.struct [coercion]
+
 
 namespace lambda
   context
@@ -14,6 +14,7 @@ namespace lambda
 
   set_option class.trace_instances true
   abbreviation μ' := (@μ P₀ P M MM)
+  abbreviation φ' := (@φ P₀ P M MM)
 
   structure lambda_morphism ⦃a b c d : P₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :=
@@ -339,6 +340,35 @@ namespace lambda
 
   end
 
+  set_option apply.class_instance true
+  protected definition lambda_morphism.inv₁ {a b c d : P₀}
+    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    (u : lambda_morphism f g h i) :
+    lambda_morphism g f (h⁻¹) (i⁻¹) :=
+  begin
+    assert (muinv : Group.carrier (M d)),
+      apply (has_inv.inv (lambda_morphism.m u)),
+    assert (mm : Group.carrier (M b)),
+      apply (φ' (i⁻¹) muinv),
+    fapply lambda_morphism.mk,
+      apply (φ' (i⁻¹) ((lambda_morphism.m u)⁻¹)),
+    apply concat, apply CM1,--apply (CM1 (i⁻¹) ((lambda_morphism.m u)⁻¹)),
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)),
+      apply (@μ_respect_inv P₀ P M MM d (lambda_morphism.m u)),
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply (ap (λ x, morphism.inverse x)),
+      apply (lambda_morphism.comm u),
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.iso.con_inv,
+    --TODO create similar self contained examples for rewriting
+    --rewrite [{(i ∘ f ∘ h⁻¹ ∘ g⁻¹)⁻¹}(@morphism.iso.con_inv _ _ _ _ _ i (f ∘ (h⁻¹) ∘ (g⁻¹)) (!all_iso) (!all_iso) (!all_iso))],
+    apply concat, apply (ap (λ x, _ ∘ x)), apply inverse, apply assoc,
+    apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply compose_inverse,
+    apply concat, apply (ap (λ x, _ ∘ x)), apply id_right,
+    apply concat, apply (ap (λ x, _ ∘ x)), apply morphism.iso.con_inv,
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.iso.con_inv,
+    apply concat, apply (ap (λ x, _ ∘ x)), apply inverse, apply assoc,
+    apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.inverse_involutive,
+  end
+
   protected definition dbl_gpd : dbl_gpd P lambda_morphism :=
   begin
     fapply dbl_gpd.mk,
@@ -358,6 +388,7 @@ namespace lambda
       intros, apply lambda_morphism.id_comp₂,
       intros, apply lambda_morphism.zero_unique,
       intros, apply lambda_morphism.interchange,
+      intros, apply lambda_morphism.inv₁,
   end
 
   end

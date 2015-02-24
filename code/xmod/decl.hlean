@@ -18,13 +18,16 @@ structure xmod [class] {P₀ : Type} [P : groupoid P₀] (M : P₀ → Group)
   (φ_respect_M_comp : Π ⦃p q : P₀⦄ (a : hom p q) (y x : M p),
     φ a (y * x) = (φ a y) * (φ a x))
   (CM1 : Π ⦃p q : P₀⦄ (a : hom p q) (x : M p), μ (φ a x) = a ∘ (μ x) ∘ (a⁻¹))
-  (CM2 : Π ⦃p : P₀⦄ (c x : M p), φ (μ c) x = c * (x * (@group.inv (M p) _ c)))
+  (CM2 : Π ⦃p : P₀⦄ (c x : M p), φ (μ c) x = c * (x * (@has_inv.inv (M p) _ c)))
 
 --Some really basic facts
 namespace xmod
   variables {P₀ : Type} [P : groupoid P₀] (M : P₀ → Group)
   variable [MM : xmod M]
   include P MM
+
+  definition μ_respect_inv ⦃p : P₀⦄ (a : M p) : μ P (a⁻¹) = (μ P a)⁻¹ :=
+  sorry
 
   definition φ_respect_one ⦃p q : P₀⦄ (a : hom p q) : @φ P₀ P M MM p q a 1 = 1 :=
   begin
