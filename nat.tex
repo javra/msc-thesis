@@ -190,11 +190,25 @@ The interchange law can be applied to four squares that are composable as a
 $2 \times 2$-grid to another square.
 It makes sure that the result of the composition does not depend on whether we
 first compose horizontally and then vertically or the other way round.
-By this, it justifies to illustrate such compositions, as well as compositions
-of larger ``grids'', as shown in figure \ref{fig:interchange}.
+By this, it justifies to illustrate such compositions, as well as larger, iterated ones,
+by ``grids'' like the one shown in figure \ref{fig:interchange}.
 
+Starting from a given 1-skeleton it is easy to find some very simple
+but nevertheless very useful and recurring examples for double categories:
 
-
+\begin{example}
+Let $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ a category. The
+\textbf{square double category} on $C$ is defined by setting
+\begin{align*}
+D_2 \coloneqq \left\{ (f, g, h, i) \right| &\partial^+(f) = \partial^-(i), 
+	\partial^+(i) = \partial^+(g), \\ %TODO: Make { bigger
+	&\left.\partial^-(g) = \partial^+(h), 
+	\partial^-(h) = \partial^-(f) \right\} \subseteq D_1^4
+\end{align*}
+and $\upperf$, $\lowerf$, $\leftf$, $\rightf$ to be the four projections on
+this set. (To keep things consistent, I will always state the faces of a square
+in the order upper, lower, left and right.)
+\end{example}
 
 
 

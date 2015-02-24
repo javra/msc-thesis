@@ -1,6 +1,6 @@
 import .gamma_group ..transport4 ..dbl_gpd.basic ..dbl_cat.transports
 
-open dbl_precat precategory truncation eq nat
+open dbl_precat precategory is_trunc eq nat
 open equiv groupoid morphism sigma sigma.ops prod
 open path_algebra dbl_gpd
 attribute gamma.M [instance]
@@ -46,7 +46,7 @@ namespace gamma
     = transport (λ x, D₂ x _ id id) ((id_left lid)⁻¹)
       (transport (λ x, D₂ lid x id id) ((id_left bottom)⁻¹) filler) :=
   begin
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply id_left₂,
   end
 
@@ -56,7 +56,7 @@ namespace gamma
     = transport (λ x, D₂ x _ id id) ((id_right lid)⁻¹)
       (transport (λ x, D₂ lid x id id) ((id_right bottom)⁻¹) filler) :=
   begin
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply id_right₂,
   end
 
@@ -76,16 +76,16 @@ namespace gamma
       apply concat, apply (ap (λ x, _ ∘ x)),
       apply (@iso_of_id' D₀ D₀set C D₂ G),
       apply id_right,
-    apply moveR_transport_p, apply moveR_transport_p, apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply (transport (λ x, comp₂ D₂ x _ = _) ((zero_unique D₂ y)⁻¹)),
     apply concat, apply phi_respect_id_aux,
-    apply moveR_transport_V, apply moveR_transport_V,
-    apply concat,  apply (moveL_transport_V _ _ _ _
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply concat,  apply (eq_inv_tr_of_tr_eq _ _ _ _
       (apD (λ x, comp₂ D₂ filler (ID₁ D₂ x)) (@iso_of_id' D₀ D₀set C D₂ G y))),
-    apply moveR_transport_V,
+    apply inv_tr_eq_of_eq_tr,
     apply (transport (λ x, comp₂ D₂ _ x = _) ((zero_unique D₂ y)⁻¹)),
     apply concat, apply phi_respect_id_aux2,
-    apply moveR_transport_V, apply moveR_transport_V, apply inverse,
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr, apply inverse,
     apply concat,
     apply (@transport_eq_transport4 _ _ _ _ (@D₂ y y y y) (hom y y)
       (λ x, lid) (λ x, x) (λ x, id) (λ x, id) _ _ (id_right id)),
@@ -121,7 +121,7 @@ namespace gamma
 
   protected definition Pbainv ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z) :
     (a⁻¹) ∘ (b⁻¹) = (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)) :=
-  ((@iso.inv_pp _ _ _ _ _ b a (!all_iso) (!all_iso) (!all_iso))⁻¹)
+  ((@iso.con_inv _ _ _ _ _ b a (!all_iso) (!all_iso) (!all_iso))⁻¹)
 
   protected definition phi_respect_P_comp₂_aux2 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
     (lid : hom x x) (filler : D₂ lid id id id) :
@@ -141,8 +141,8 @@ namespace gamma
     (lid : hom x x) (filler : D₂ lid id id id) :=
   ap (λ x, comp₂ D₂ (ID₁ D₂ b)
     (comp₂ D₂ (ID₁ D₂ a) x))
-    (moveL_transport_V _ _ _ _
-    (moveL_transport_V _ _ _ _ (assoc₂ D₂ filler (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹)))))
+    (eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (assoc₂ D₂ filler (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹)))))
 
   protected definition phi_respect_P_comp₂_aux4 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
     (f1 f2 g1 g2 : hom z x) (filler : D₂ f1 f2 id id) (p : f1 = g1) (q : f2 = g2) :
@@ -161,8 +161,8 @@ namespace gamma
   protected definition phi_respect_P_comp₂_aux5 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
     (lid : hom x x) (filler : D₂ lid id id id) :=
   ap (λ x, comp₂ D₂ (ID₁ D₂ b) x)
-    (moveL_transport_V _ _ _ _
-      (moveL_transport_V _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _
+      (eq_inv_tr_of_tr_eq _ _ _ _
         (assoc₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filler (ID₁ D₂ (a⁻¹))) (ID₁ D₂ (b⁻¹)))))
 
   protected definition phi_respect_P_comp₂_aux7 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
@@ -187,12 +187,12 @@ namespace gamma
       apply concat, rotate 3, apply assoc, apply (ap (λ x, x ∘ (b⁻¹))),
       apply concat, rotate 3, apply (!assoc⁻¹), apply (ap (λ x, a ∘ x)),
       apply (ap (λ x, x ∘ (a⁻¹))), apply idp,
-    apply moveL_transport_p, apply moveL_transport_p,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply inverse,
     apply concat,
     apply phi_respect_P_comp₂_aux,
-    apply moveL_transport_V, apply moveL_transport_V, apply moveL_transport_p,
-    apply moveL_transport_p, apply moveL_transport_p,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq, apply eq_tr_of_inv_tr_eq,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     assert (P1 : ID₁ D₂ (b ∘ a) = comp₂ D₂ (ID₁ D₂ b) (ID₁ D₂ a)),
       apply id_comp₂,
     apply (transport (λ x, _ = comp₂ D₂ x _) (P1⁻¹)),
@@ -206,15 +206,15 @@ namespace gamma
       apply id_comp₂,
     apply (transport (λ x, _ = comp₂ D₂ _ (comp₂ D₂ filler ((Pbainv a b) ▹ x))) (P4⁻¹)),
     apply concat, rotate 3, apply inverse, apply phi_respect_P_comp₂_aux2,
-    apply moveL_transport_p,
+    apply eq_tr_of_inv_tr_eq,
     apply concat, rotate 3, apply assoc₂,
-    apply moveL_transport_p, apply moveL_transport_p,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply concat, rotate 3, apply inverse, apply phi_respect_P_comp₂_aux3,
     apply concat, rotate 3, apply phi_respect_P_comp₂_aux4,
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat, rotate 3, apply inverse, apply phi_respect_P_comp₂_aux5,
     apply concat, rotate 3, apply phi_respect_P_comp₂_aux7,
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat,
     apply (@transport_eq_transport4 (hom z z) (hom z z) (hom z z) (hom z z)
           (@D₂ z z z z) (hom z y)
@@ -269,32 +269,32 @@ namespace gamma
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
     ⦃g₃ : hom c₃ d₃⦄ ⦃h₃ : hom c₂ c₃⦄ ⦃i₃ : hom d₂ d₃⦄
     (w : D₂ h₃ i₃ g₂ g₃) (v : D₂ h₂ i₂ g₁ g₂) (u : D₂ h₁ i₁ f g₁) :=
-  moveL_transport_V _ _ _ _
-    (moveL_transport_V _ _ _ _ (assoc₂ D₂ w v u))
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (assoc₂ D₂ w v u))
 
   protected definition id_left₂' ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i) :=
-  moveL_transport_V _ _ _ _
-    (moveL_transport_V _ _ _ _ (id_left₂ D₂ u))
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (id_left₂ D₂ u))
 
   protected definition id_right₂' ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i) :=
-  moveL_transport_V _ _ _ _
-    (moveL_transport_V _ _ _ _ (id_right₂ D₂ u))
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (id_right₂ D₂ u))
 
   protected definition id_left₁' ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i) :=
-  moveL_transport_V _ _ _ _
-    (moveL_transport_V _ _ _ _ (id_left₁ D₂ u))
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (id_left₁ D₂ u))
 
   protected definition id_right₁' ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i) :=
-  moveL_transport_V _ _ _ _
-    (moveL_transport_V _ _ _ _ (id_right₁ D₂ u))
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (id_right₁ D₂ u))
 
   protected definition phi_respect_M_comp₂_aux2 ⦃x y: D₀⦄ {a : hom x y} (lidu : hom x x)
     (filleru : D₂ lidu id id id) (lidv : hom x x) (fillerv : D₂ lidv id id id) :=
@@ -333,32 +333,32 @@ namespace gamma
       apply concat, apply (!id_left⁻¹), apply (ap (λ x, x ∘ lidu)),
       apply inverse, apply inverse_compose,
     --Part II: Equality of fillers
-    apply moveR_transport_p, apply moveR_transport_p, apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply concat, apply (ap (λ x, comp₂ D₂ (ID₁ D₂ a) x)),
     apply inverse, apply transp_comp₂_eq_comp₂_transp_r_ub,
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_ub,
-    apply moveL_transport_V, apply moveL_transport_V, apply moveL_transport_V,
-    apply moveL_transport_p,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
+    apply eq_tr_of_inv_tr_eq,
     apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux,
-    apply moveL_transport_p, apply moveL_transport_p,
-    apply moveL_transport_p, apply moveL_transport_p,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply concat, rotate 1, apply inverse, apply assoc₂',
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux2,
     apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_ub,
-    apply moveL_transport_p, apply moveL_transport_p,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux3,
     apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
     apply transp_comp₂_eq_comp₂_transp_l_ub,
     apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_ub,
-    apply moveL_transport_p, apply moveL_transport_p,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux4,
     apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) x) _)),
     apply transp_comp₂_eq_comp₂_transp_l_ub,
     apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
     apply transp_comp₂_eq_comp₂_transp_l_ub,
     apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_ub,
-    apply moveL_transport_V, apply moveL_transport_V, beta,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq, beta,
     apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux5,
     apply concat, rotate 1,
     apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) x) _)),
@@ -366,13 +366,13 @@ namespace gamma
     apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
     apply transp_comp₂_eq_comp₂_transp_l_bu,
     apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_bu,
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat, rotate 1, apply inverse, apply (!assoc₂⁻¹),
-    apply moveL_transport_p, apply moveL_transport_p,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply concat, rotate 1, apply inverse, apply (ap (λ x, comp₂ D₂ _ x)),
     apply assoc₂',
     apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_l_bu,
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat,
     apply (@transport_eq_transport4 (hom y y) (hom y y) (hom y y) (hom y y)
       (@D₂ y y y y) (hom y x)

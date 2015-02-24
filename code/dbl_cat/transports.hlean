@@ -1,6 +1,6 @@
 import .decl .basic
 
-open dbl_precat precategory truncation
+open dbl_precat precategory is_trunc
 open morphism eq
 
 namespace dbl_precat

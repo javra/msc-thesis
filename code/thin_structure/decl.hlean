@@ -1,13 +1,14 @@
 import types.pi types.sigma
 import ..dbl_cat.decl ..dbl_cat.basic
 
-open eq dbl_precat precategory truncation morphism
+open eq dbl_precat precategory is_trunc morphism
 
 namespace dbl_precat
   variables {D₀ : Type} [C : precategory D₀]
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
     Type) [D : dbl_precat C D₂]
 
+  include D
   set_option unifier.max_steps 23574
   set_option pp.beta true
   structure thin_structure [class] (thin : Π ⦃a b c d : D₀⦄

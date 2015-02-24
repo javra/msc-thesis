@@ -1,7 +1,7 @@
 import ..dbl_gpd.basic ..xmod.decl ..transport4
 
-open dbl_precat precategory truncation eq nat
-open equiv groupoid morphism sigma sigma.ops prod
+open dbl_precat precategory is_trunc eq nat
+open equiv morphism groupoid sigma sigma.ops prod
 open path_algebra
 set_option apply.class_instance false -- disable class instance resolution in the apply tactic
 
@@ -40,8 +40,8 @@ namespace gamma
 
   protected definition M_morphism.is_hset (a : D₀) : is_hset (M_morphism a) :=
   begin
-    apply trunc_equiv, apply equiv.to_is_equiv, apply (M_morphism.sigma_char a),
-    apply trunc_sigma, apply !homH,
+    apply is_trunc_is_equiv_closed, apply equiv.to_is_equiv, apply (M_morphism.sigma_char a),
+    apply is_trunc_sigma, apply !homH,
     intro f, apply (homH' D₂),
   end
 
@@ -167,7 +167,7 @@ namespace gamma
         (assoc (M_morphism.lid (M_morphism.mk w1 w2))
           (M_morphism.lid (M_morphism.mk v1 v2)) (M_morphism.lid (M_morphism.mk u1 u2)))
         (id_left id)),
-      apply moveL_transport_p,
+      apply eq_tr_of_inv_tr_eq,
       apply concat, apply M_morphism.assoc_aux3,
       apply assoc₂,
   end
@@ -209,14 +209,14 @@ namespace gamma
   @morphism.inverse D₀ C a a (ID a) (all_iso (ID a))
 
   definition iso_of_id' {a : D₀} : IDinv' a = id :=
-  inverse_eq_intro_left !id_compose
+  !id_inverse
 
   definition compose_inverse_id' {x : D₀} : compose id (IDinv' x) = id :=
   (@compose_inverse D₀ C x x (@id D₀ C x) (@all_iso D₀ C x x (@id D₀ C x)))
 
   definition M_morphism.inv_aux ⦃a : D₀⦄ (u : M_morphism a) :
     D₂ ((M_morphism.lid u)⁻¹) id id id :=
-  iso_of_id' ▹ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler  u))
+  (@id_inverse D₀ C a (!all_iso)) ▹ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler  u))
 
   definition M_morphism.inv [reducible] ⦃a : D₀⦄ (u : M_morphism a) :
     M_morphism a :=

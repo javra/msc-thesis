@@ -1,7 +1,7 @@
 import types.pi types.sigma
 import .decl
 
-open eq dbl_precat precategory truncation morphism
+open eq dbl_precat precategory is_trunc morphism
 attribute compose [reducible]
 
 namespace thin_structure
@@ -32,11 +32,11 @@ namespace thin_structure
     (id_left f) ▹ ((id_right f) ▹
     (comp₂ D₂ (br_connect f) (ul_connect f))) = ID₁ D₂ f :=
   begin
-    apply moveR_transport_p, apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     fapply concat,
       apply (thin_structure.thin_comp₂ D thin),
       apply inverse, apply !assoc,
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat,
       apply !ID₁_of_ul_br_aux,
       apply is_hset.elim,
@@ -55,11 +55,11 @@ namespace thin_structure
     (id_left f) ▹ ((id_right f) ▹
     (comp₁ D₂ (br_connect f) (ul_connect f))) = ID₂ D₂ f :=
   begin
-    apply moveR_transport_p, apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     fapply concat,
       apply (thin_structure.thin_comp₁ D thin),
       apply !assoc,
-    apply moveL_transport_V, apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat,
       apply !ID₂_of_br_ul_aux,
       apply is_hset.elim,
@@ -90,7 +90,7 @@ namespace thin_structure
     (comp₁ D₂ (comp₂ D₂ (br_connect g) (ID₂ D₂ g)) (comp₂ D₂ (ID₁ D₂ g) (br_connect f)))
       = br_connect (g ∘ f) :=
   begin
-    apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr,
     assert (line2_commute : (id ∘ id) ∘ g = id ∘ g ∘ id),
       exact (calc (id ∘ id) ∘ g = id ∘ g : @id_left D₀ C
                            ... = (id ∘ g) ∘ id : id_right
@@ -112,7 +112,7 @@ namespace thin_structure
     apply concat, exact (ap (λx, comp₁ D₂ (thin (g ∘ id) (id ∘ id) g id line2_commute) x) (line1_thin⁻¹)),
     apply concat, apply (thin_structure.thin_comp₁ D thin),
       apply idp,
-    apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq,
     apply br_of_br_square_aux,
   end
 
@@ -138,7 +138,7 @@ namespace thin_structure
     (comp₂ D₂ (comp₁ D₂ (ul_connect g) (ID₂ D₂ f)) (comp₁ D₂ (ID₁ D₂ f) (ul_connect f)))
       = ul_connect (g ∘ f) :=
   begin
-    apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr,
     assert (col1_commute : f ∘ id ∘ id = (id ∘ f) ∘ id),
       exact (calc f ∘ id ∘ id = f ∘ id : @id_left D₀ C
                          ... = id ∘ (f ∘ id) : id_left
@@ -160,7 +160,7 @@ namespace thin_structure
     apply concat, exact (ap (λx, comp₂ D₂ x (thin id f (id ∘ id) (id ∘ f) col1_commute)) (col2_thin⁻¹)),
     apply concat, apply (thin_structure.thin_comp₂ D thin),
       apply idp,
-    apply moveL_transport_V,
+    apply eq_inv_tr_of_tr_eq,
     apply ul_of_ul_square_aux,
   end
 

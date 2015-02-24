@@ -1,6 +1,6 @@
 import algebra.groupoid algebra.group
 
-open groupoid precategory morphism function eq truncation path_algebra
+open groupoid precategory morphism function eq is_trunc path_algebra
 attribute compose [reducible]
 
 structure xmod_aux [class] {P₀ : Type} [P : groupoid P₀] (M : P₀ → Group) : Type :=
@@ -30,8 +30,8 @@ namespace xmod
   begin
     assert (H : @φ P₀ P M MM p q a 1 * 1 = (@φ P₀ P M MM p q a 1) * (@φ P₀ P M MM p q a 1)),
       apply eq.inverse, apply concat, apply eq.inverse, apply φ_respect_M_comp,
-      apply concat, apply (ap (λ x, φ a x)), apply mul_left_id,
-      apply eq.inverse, apply mul_right_id,
+      apply concat, apply (ap (λ x, φ a x)), apply one_mul,
+      apply eq.inverse, apply mul_one,
     apply eq.inverse, apply (mul_left_cancel H),
   end
 

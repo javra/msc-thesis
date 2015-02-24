@@ -1,5 +1,5 @@
 import algebra.precategory.basic algebra.precategory.morphism
-open precategory morphism truncation eq sigma sigma.ops unit
+open precategory morphism is_trunc eq sigma sigma.ops unit
 
 context
   parameter {D₀ : Type}

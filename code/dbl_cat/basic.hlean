@@ -1,7 +1,7 @@
 import types.sigma types.pi
 import .decl
 
-open precategory morphism truncation eq sigma sigma.ops unit nat
+open precategory morphism is_trunc eq sigma sigma.ops unit nat
 open equiv pi
 
 namespace dbl_precat
@@ -13,7 +13,7 @@ namespace dbl_precat
       (h : hom a c) (i : hom b d), unit) :=
   begin
     fapply dbl_precat.mk,
-      repeat ( intros ; [ exact ⋆ |  apply is_hprop.elim | apply trunc_succ ] ),
+      repeat ( intros ; [ exact ⋆ |  apply is_hprop.elim | apply is_trunc_succ ] ),
       repeat ( intros ;  apply idp)
   end
 
@@ -30,7 +30,7 @@ namespace dbl_precat
       intros, exact (calc f ∘ ID a = f : id_right
                                ... = ID b ∘ f : id_left),
       repeat ( intros ; apply is_hset.elim ),
-      intros, apply succ_is_trunc, --apply trunc_succ, apply !homH,
+      intros, apply is_trunc_eq, --apply is_trunc_succ, apply !homH,
       intros, exact (calc (i₂ ∘ i₁) ∘ f₁ = i₂ ∘ i₁ ∘ f₁ : assoc
                                      ... = i₂ ∘ g₁ ∘ h₁ : a_2
                                      ... = (i₂ ∘ g₁) ∘ h₁ : assoc
@@ -39,8 +39,8 @@ namespace dbl_precat
       intros, exact (calc ID b ∘ f = f : id_left
                                ... = f ∘ ID a : id_right),
       repeat ( intros ; apply is_hset.elim ),
-      intros, apply succ_is_trunc, --apply trunc_succ, apply !homH,
-      repeat ( intros ; apply @is_hprop.elim ;  apply succ_is_trunc ),
+      intros, apply is_trunc_eq, --apply is_trunc_succ, apply !homH,
+      repeat ( intros ; apply @is_hprop.elim ;  apply is_trunc_eq ),
   end
 
 end dbl_precat
@@ -76,8 +76,16 @@ namespace worm_precat
       (h : hom a c) (i : hom b d), Type}
     [D : worm_precat C D₂]
 
+  --include C D
 
-  structure two_cell_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : hom vo1 vo2)
+  structure two_cell_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : @hom D₀ C vo1 vo2)
+
+  check @two_cell_ob
+exit
+  structure two_cell_connect (Sf Sg : two_cell_ob) : Type :=
+  (vc1 : @hom D₀ C (two_cell_ob.vo1 Sf) (two_cell_ob.vo1 Sg))
+  (vc2 : @hom D₀ C (two_cell_ob.vo2 Sf) (two_cell_ob.vo2 Sg))
+  (vc3 : D₂ (two_cell_ob.vo3 Sf) (two_cell_ob.vo3 Sg) vc1 vc2)
 
   definition two_cell_ob_sigma_char : (Σ (a b : D₀), hom a b) ≃ two_cell_ob :=
   begin
@@ -92,11 +100,6 @@ namespace worm_precat
     apply (sigma.rec_on S'), intros (b, f),
     apply idp,
   end
-
-  structure two_cell_connect (Sf Sg : two_cell_ob) : Type :=
-  (vc1 : hom (two_cell_ob.vo1 Sf) (two_cell_ob.vo1 Sg))
-  (vc2 : hom (two_cell_ob.vo2 Sf) (two_cell_ob.vo2 Sg))
-  (vc3 : D₂ (two_cell_ob.vo3 Sf) (two_cell_ob.vo3 Sg) vc1 vc2)
 
   open two_cell_ob two_cell_connect
 
@@ -188,10 +191,10 @@ exit
   begin
     fapply precategory.mk.{(max l₀ l₁) (max l₀ l₁ l₂)},
                 intros (Sf, Sg), exact (@two_cell_connect D₀ C D₂ Sf Sg),
-              intros (Sf, Sg), apply trunc_equiv, apply equiv.to_is_equiv,
+              intros (Sf, Sg), apply is_trunc_is_equiv_closed, apply equiv.to_is_equiv,
               exact (@two_cell_connect_sigma_char D₀ C D₂ Sf Sg),
-              apply trunc_sigma, apply !homH,
-              intro f, apply trunc_sigma, apply !homH,
+              apply is_trunc_sigma, apply !homH,
+              intro f, apply is_trunc_sigma, apply !homH,
               intro g, apply (@homH' D₀ C D₂ D),
             intros (Sf, Sg, Sh, Sv, Su), apply (two_cell_comp Sv Su),
           intro Sf, exact (@two_cell_id D₀ C D₂ D Sf),

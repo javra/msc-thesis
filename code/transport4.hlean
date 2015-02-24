@@ -1,4 +1,4 @@
-open eq truncation
+open eq is_trunc
 
 context
   parameters {A B C D : Type} (P : A → B → C → D → Type)

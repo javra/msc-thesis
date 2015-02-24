@@ -1,6 +1,6 @@
 import .gamma_mu_phi ..transport4 ..dbl_gpd.basic ..dbl_cat.transports
 
-open dbl_precat precategory truncation eq nat
+open dbl_precat precategory is_trunc eq nat
 open equiv groupoid morphism sigma sigma.ops prod
 open path_algebra dbl_gpd
 set_option apply.class_instance false -- disable class instance resolution in the apply tactic
@@ -31,8 +31,8 @@ namespace gamma
   protected definition compose_inverse₂' ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i) :=
-  moveL_transport_V _ _ _ _
-    (moveL_transport_V _ _ _ _ (compose_inverse₂ D₂ u))
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (compose_inverse₂ D₂ u))
 
   protected definition gamma_CM2_horizontal ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :
@@ -53,24 +53,24 @@ namespace gamma
       apply (ap (λ x, transport.{l l} _ _ x)), apply compose_inverse₂',
     apply concat, apply (comp₁_transp_eq_comp₁_transp_b (id_left (a⁻¹))),
     apply concat, apply inverse, apply transp_comp₁_eq_comp₁_transp_b_b,
-    apply moveR_transport_V,
+    apply inv_tr_eq_of_eq_tr,
     apply concat, apply comp₁_transp_eq_comp₁_transp_b,
     apply concat, apply inverse, apply transp_comp₁_eq_comp₁_transp_b_b,
-    apply moveR_transport_V,
+    apply inv_tr_eq_of_eq_tr,
     apply concat, apply (ap (λ x, comp₁ D₂ x _)), apply inverse, apply zero_unique,
     apply concat, apply gamma.id_left₁',
-    apply moveL_transport_p, apply moveL_transport_p,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply idp,
   end
 
   protected definition gamma_CM2_horizontal' ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :=
-  moveR_transport_V _ _ _ _
-    (moveR_transport_V _ _ _ _
-      (moveR_transport_p _ _ _ _
-        (moveR_transport_p _ _ _ _
-          (moveR_transport_p _ _ _ _
-            (moveR_transport_p _ _ _ _ (gamma_CM2_horizontal a lidu v u))))))
+  inv_tr_eq_of_eq_tr _ _ _ _
+    (inv_tr_eq_of_eq_tr _ _ _ _
+      (tr_eq_of_eq_inv_tr _ _ _ _
+        (tr_eq_of_eq_inv_tr _ _ _ _
+          (tr_eq_of_eq_inv_tr _ _ _ _
+            (tr_eq_of_eq_inv_tr _ _ _ _ (gamma_CM2_horizontal a lidu v u))))))
 
   protected definition gamma_CM2_vertical ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :
@@ -98,8 +98,8 @@ namespace gamma
 
   protected definition gamma_CM2_vertical' ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :=
-  moveR_transport_p _ _ _ _
-    (moveR_transport_p _ _ _ _ (gamma_CM2_vertical a lidu v u))
+  tr_eq_of_eq_inv_tr _ _ _ _
+    (tr_eq_of_eq_inv_tr _ _ _ _ (gamma_CM2_vertical a lidu v u))
 
   protected definition gamma_CM2 ⦃x : D₀⦄ (v u : M_morphism x) :
     gamma.phi (gamma.mu v) u = M_morphism.comp v (M_morphism.comp u (M_morphism.inv v)) :=
@@ -108,21 +108,21 @@ namespace gamma
     apply (M_morphism.rec_on u), intros (lidu, filleru),
     fapply (M_morphism.congr),
       apply idp,
-    apply moveR_transport_p, apply moveR_transport_p, apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     unfold M_morphism.filler, unfold M_morphism.comp, unfold M_morphism.inv,
     unfold M_morphism.inv_aux, unfold M_morphism.filler,
     unfold gamma.mu, unfold M_morphism.lid, esimp,
     apply concat, apply inverse, apply gamma_CM2_horizontal', apply fillerv,
-    apply moveL_transport_V, apply moveL_transport_V, apply moveL_transport_V,
-    apply moveL_transport_p, apply inverse,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
+    apply eq_tr_of_inv_tr_eq, apply inverse,
     apply concat, apply inverse, apply (ap (λ x, comp₂ D₂ _ x)),
     apply (ap (λ x, transport.{l l} _ _ x)), apply transp_comp₂_eq_comp₂_transp_l_b,
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
-    apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr,
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
-    apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr,
     apply concat, apply inverse, apply gamma_CM2_vertical',
-    apply moveR_transport_p, apply moveR_transport_p,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply inverse,
     apply concat, apply (@transport_eq_transport4 _ _ _ _ (@D₂ x x x x) (hom x x)
       (λ w, lidv ∘ (lidu ∘ (lidv⁻¹))) (λ w, id ∘ (id ∘ IDinv' x)) (λ w, w) (λ w, id ∘ id)

@@ -2,7 +2,7 @@ import ..dbl_gpd.decl ..xmod.decl
 set_option apply.class_instance false -- turn off class instance resolution by apply tactic
 set_option pp.beta true
 
-open eq sigma truncation unit precategory morphism path_algebra xmod groupoid
+open eq sigma is_trunc unit precategory morphism path_algebra xmod groupoid
 open equiv sigma.ops
 
 attribute Group.struct [coercion]
@@ -10,6 +10,7 @@ attribute Group.struct [coercion]
 namespace lambda
   context
   parameters {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} [MM : xmod M]
+  include P MM
 
   set_option class.trace_instances true
   abbreviation μ' := (@μ P₀ P M MM)
@@ -37,12 +38,10 @@ namespace lambda
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :
     is_hset (lambda_morphism f g h i) :=
   begin
-    apply trunc_equiv, apply equiv.to_is_equiv, apply lambda_morphism.sigma_char,
-    apply trunc_sigma, apply group.carrier_hset, apply Group.struct,
-    intros, apply trunc_succ, apply succ_is_trunc, apply !homH,
+    apply is_trunc_is_equiv_closed, apply equiv.to_is_equiv, apply lambda_morphism.sigma_char,
+    apply is_trunc_sigma, apply group.carrier_hset, apply Group.struct,
+    intros, apply is_trunc_succ, apply is_trunc_eq, apply !homH,
   end
-
-  include P MM
 
   definition lambda_morphism.congr ⦃a b c d : P₀⦄
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
@@ -123,7 +122,7 @@ namespace lambda
       apply inverse_compose,
     apply concat, apply (ap (λ x, comp x _)), apply id_right,
     apply concat, apply assoc, apply (ap (λ x, comp x _)),
-    apply inverse, apply iso.inv_pp,
+    apply inverse, apply iso.con_inv,
   end
 
   protected definition lambda_morphism.comp₂ ⦃a b₁ c d₁ b₂ d₂ : P₀⦄
@@ -149,7 +148,7 @@ namespace lambda
     apply concat, apply (ap (λ x, x ∘ _)), apply (!assoc⁻¹),
     apply concat, apply (ap (λ x, (_ ∘ x) ∘ _)), apply inverse_compose,
     apply concat, apply (ap (λ x, x ∘ _)), apply id_right,
-    apply inverse, apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply iso.inv_pp,
+    apply inverse, apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply iso.con_inv,
       apply all_iso, apply all_iso,
     apply concat, apply (!assoc⁻¹),
     apply inverse, apply concat, apply (ap (λ x, _ ∘ x)), apply (!assoc⁻¹),
@@ -163,7 +162,7 @@ namespace lambda
     fapply lambda_morphism.mk,
       apply 1,
     apply concat, apply μ_respect_id, apply inverse,
-    apply concat, apply (ap (λ x, _ ∘ _ ∘ x ∘ _)), apply iso_of_id,
+    apply concat, apply (ap (λ x, _ ∘ _ ∘ x ∘ _)), apply id_inverse,
     apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply id_left,
     apply concat, apply (ap (λ x, _ ∘ x)), apply compose_inverse,
     apply id_left,
@@ -175,7 +174,7 @@ namespace lambda
     fapply lambda_morphism.mk,
       apply 1,
     apply concat, apply μ_respect_id, apply inverse,
-    apply concat, apply (ap (λ x, _ ∘ _ ∘ _ ∘ x)), apply iso_of_id,
+    apply concat, apply (ap (λ x, _ ∘ _ ∘ _ ∘ x)), apply id_inverse,
     apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply id_right,
     apply concat, apply (ap (λ x, _ ∘ x)), apply id_left,
     apply compose_inverse,
@@ -224,7 +223,7 @@ namespace lambda
     apply (lambda_morphism.rec_on u), intros (mu, commu),
     fapply lambda_morphism.congr_transports,
       apply concat, apply (ap (λ x, x * _)), apply φ_respect_id,
-      apply mul_right_id,
+      apply mul_one,
     apply is_hset.elim,
   end
 
@@ -236,7 +235,7 @@ namespace lambda
     apply (lambda_morphism.rec_on u), intros (mu, commu),
     fapply lambda_morphism.congr_transports',
       apply concat, apply (ap (λ x, _ * x)), apply φ_respect_id,
-      apply mul_left_id,
+      apply one_mul,
     apply is_hset.elim,
   end
 
@@ -248,7 +247,7 @@ namespace lambda
     apply (lambda_morphism.rec_on u), intros (mu, commu),
     fapply lambda_morphism.congr_transports,
       apply concat, apply (ap (λ x, x * _)), apply φ_respect_one,
-      apply mul_left_id,
+      apply one_mul,
     apply is_hset.elim,
   end
 
@@ -260,7 +259,7 @@ namespace lambda
     apply (lambda_morphism.rec_on u), intros (mu, commu),
     fapply lambda_morphism.congr_transports',
       apply concat, apply (ap (λ x, _ * x)), apply φ_respect_one,
-      apply mul_right_id,
+      apply mul_one,
     apply is_hset.elim,
   end
 
@@ -271,7 +270,7 @@ namespace lambda
   begin
     fapply lambda_morphism.congr,
       apply inverse, apply concat, apply (ap (λ x, x * _)), apply φ_respect_one,
-      apply mul_left_id,
+      apply one_mul,
     apply is_hset.elim,
   end
 
@@ -282,7 +281,7 @@ namespace lambda
   begin
     fapply lambda_morphism.congr,
       apply inverse, apply concat, apply (ap (λ x, _ * x)), apply φ_respect_one,
-      apply mul_left_id,
+      apply one_mul,
     apply is_hset.elim,
   end
 
@@ -319,7 +318,7 @@ namespace lambda
       apply concat, apply (!mul_assoc⁻¹),
       apply inverse, apply concat,  apply (!mul_assoc⁻¹),
       apply (ap (λ x, x * φ f₂₁ (lambda_morphism.m w))),
-      apply mul_inv_eq_imp_eq_mul,
+      apply eq_mul_of_mul_inv_eq,
       apply concat, apply mul_assoc,
       apply concat, apply inverse, apply (@CM2 P₀ P M MM _ _ _),
       apply concat, apply (ap (λ x, φ x _)), apply (lambda_morphism.comm x),

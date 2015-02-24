@@ -1,7 +1,7 @@
 import algebra.precategory.morphism
 import .decl ..thin_structure.basic
 
-open eq dbl_precat precategory truncation morphism groupoid
+open eq dbl_precat precategory is_trunc morphism groupoid
 
 namespace dbl_gpd
   context
