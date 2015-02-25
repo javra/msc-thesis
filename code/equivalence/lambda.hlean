@@ -460,6 +460,56 @@ namespace lambda
     exact p,
   end
 
+  protected definition lambda_morphism.thin_ID₁ {a b : P₀}
+    (f : hom a b) :
+    lambda_morphism.T f f (ID a) (ID b) (id_right f ⬝ id_left f ⁻¹)
+    = lambda_morphism.ID₁ f :=
+  begin
+    fapply lambda_morphism.congr,
+      apply idp,
+    apply is_hset.elim,
+  end
+
+  protected definition lambda_morphism.thin_ID₂ {a b : P₀}
+    (f : hom a b) :
+    lambda_morphism.T (ID a) (ID b) f f (id_left f ⬝ id_right f ⁻¹)
+    = lambda_morphism.ID₂ f :=
+  begin
+    fapply lambda_morphism.congr,
+      apply idp,
+    apply is_hset.elim,
+  end
+
+  protected definition lambda_morphism.thin_comp₁ {a b c₁ d₁ c₂ d₂ : P₀}
+    {f₁ : hom a b} {g₁ : hom c₁ d₁} {h₁ : hom a c₁} {i₁ : hom b d₁}
+    {g₂ : hom c₂ d₂} {h₂ : hom c₁ c₂} {i₂ : hom d₁ d₂}
+    (pv : g₂ ∘ h₂ = i₂ ∘ g₁) (pu : g₁ ∘ h₁ = i₁ ∘ f₁)
+    (px : g₂ ∘ (h₂ ∘ h₁) = (i₂ ∘ i₁) ∘ f₁) :
+    lambda_morphism.comp₁ (lambda_morphism.T g₁ g₂ h₂ i₂ pv)
+      (lambda_morphism.T f₁ g₁ h₁ i₁ pu)
+    = lambda_morphism.T f₁ g₂ (h₂ ∘ h₁) (i₂ ∘ i₁) px :=
+  begin
+    fapply lambda_morphism.congr,
+      apply concat, apply (ap (λ x, x * _)), apply φ_respect_one,
+      apply mul_one,
+    apply is_hset.elim,
+  end
+
+  protected definition lambda_morphism.thin_comp₂ {a b c₁ d₁ c₂ d₂ : P₀}
+    {f₁ : hom a b} {g₁ : hom c₁ d₁} {h₁ : hom a c₁} {i₁ : hom b d₁}
+    {g₂ : hom c₂ d₂} {h₂ : hom c₁ c₂} {i₂ : hom d₁ d₂}
+    (pv : i₂ ∘ g₁ = g₂ ∘ h₂) (pu : i₁ ∘ f₁ = g₁ ∘ h₁)
+    (px : (i₂ ∘ i₁) ∘ f₁ = g₂ ∘ (h₂ ∘ h₁)) :
+    lambda_morphism.comp₂ (lambda_morphism.T h₂ i₂ g₁ g₂ pv)
+      (lambda_morphism.T h₁ i₁ f₁ g₁ pu)
+    = lambda_morphism.T (h₂ ∘ h₁) (i₂ ∘ i₁) f₁ g₂ px :=
+  begin
+    fapply lambda_morphism.congr,
+      apply concat, apply (ap (λ x, _ * x)), apply φ_respect_one,
+      apply one_mul,
+    apply is_hset.elim,
+  end
+
   protected definition dbl_gpd : dbl_gpd P lambda_morphism :=
   begin
     fapply dbl_gpd.mk,
@@ -486,6 +536,11 @@ namespace lambda
       intros, apply lambda_morphism.inverse_compose₂,
       intros, apply lambda_morphism.compose_inverse₂,
       intros, apply (lambda_morphism.T f g h i a_1),
+    intros, fapply dbl_precat.thin_structure.mk,
+      intros, apply lambda_morphism.thin_ID₁,
+      intros, apply lambda_morphism.thin_ID₂,
+      intros, apply lambda_morphism.thin_comp₁,
+      intros, apply lambda_morphism.thin_comp₂,
   end
 
   end
