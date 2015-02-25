@@ -392,7 +392,6 @@ namespace lambda
     apply is_hset.elim,
   end
 
-  --set_option pp.notation false
   protected definition lambda_morphism.inv₂ {a b c d : P₀}
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (u : lambda_morphism f g h i) :
@@ -414,6 +413,51 @@ namespace lambda
     apply concat, apply (ap (λ x, x ∘ _)), apply compose_inverse,
     apply concat, apply id_left,
     apply (ap (λ x, x ∘ _)), apply morphism.inverse_involutive,
+  end
+
+  protected definition lambda_morphism.inverse_compose₂ {a b c d : P₀}
+    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    (u : lambda_morphism f g h i) :
+    inverse_compose g ▹ inverse_compose f ▹
+    lambda_morphism.comp₂ (lambda_morphism.inv₂ u) u
+    = lambda_morphism.ID₂ h :=
+  begin
+    fapply lambda_morphism.congr_transports',
+      apply concat, apply inverse, apply φ_respect_M_comp,
+      apply concat, apply (ap (λ x, φ _ x)), apply mul_left_inv,
+      apply φ_respect_one,
+    apply is_hset.elim,
+  end
+
+  protected definition lambda_morphism.compose_inverse₂ {a b c d : P₀}
+    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    (u : lambda_morphism f g h i) :
+    compose_inverse g ▹ compose_inverse f ▹
+    lambda_morphism.comp₂ u (lambda_morphism.inv₂ u)
+    = lambda_morphism.ID₂ i :=
+  begin
+    fapply lambda_morphism.congr_transports',
+      unfold lambda.lambda_morphism.inv₂, esimp,
+      apply concat, apply (ap (λ x, _ * x)), apply inverse, apply φ_respect_P_comp,
+      apply concat, apply (ap (λ x, _ * φ x _)), apply compose_inverse,
+      apply concat, apply (ap (λ x, _ * x)), apply φ_respect_id,
+      apply mul_right_inv,
+    apply is_hset.elim,
+  end
+
+  protected definition lambda_morphism.T ⦃a b c d : P₀⦄
+    (f : a ⟶ b) (g : c ⟶ d) (h : a ⟶ c) (i : b ⟶ d) (p : g ∘ h = i ∘ f) :
+    lambda_morphism f g h i :=
+  begin
+    fapply lambda_morphism.mk,
+      apply has_one.one,
+    apply concat, apply μ_respect_id,
+    apply inverse, apply concat, apply assoc,
+    apply concat, apply assoc, apply inverse,
+    apply iso.eq_con_inv_of_con_eq,
+    apply concat, apply id_left,
+    apply iso.eq_con_inv_of_con_eq,
+    exact p,
   end
 
   protected definition dbl_gpd : dbl_gpd P lambda_morphism :=
@@ -438,7 +482,10 @@ namespace lambda
       intros, apply (lambda_morphism.inv₁ a_1),
       intros, apply lambda_morphism.inverse_compose₁,
       intros, apply lambda_morphism.compose_inverse₁,
-      intros,
+      intros, apply (lambda_morphism.inv₂ a_1),
+      intros, apply lambda_morphism.inverse_compose₂,
+      intros, apply lambda_morphism.compose_inverse₂,
+      intros, apply (lambda_morphism.T f g h i a_1),
   end
 
   end
