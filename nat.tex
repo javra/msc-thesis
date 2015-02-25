@@ -198,7 +198,8 @@ but nevertheless very useful and recurring examples for double categories:
 
 \begin{example}
 Let $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ a category. The
-\textbf{square double category} on $C$ is defined by setting
+\textbf{square double category} on $C$ is defined by setting $D_0 \coloneqq C_0$,
+$D_1 \coloneqq C_0$ and
 \begin{align*}
 D_2 \coloneqq \left\{ (f, g, h, i) \right| &\partial^+(f) = \partial^-(i), 
 	\partial^+(i) = \partial^+(g), \\ %TODO: Make { bigger
@@ -207,8 +208,37 @@ D_2 \coloneqq \left\{ (f, g, h, i) \right| &\partial^+(f) = \partial^-(i),
 \end{align*}
 and $\upperf$, $\lowerf$, $\leftf$, $\rightf$ to be the four projections on
 this set. (To keep things consistent, I will always state the faces of a square
-in the order upper, lower, left and right.)
+in the order upper, lower, left and right.) The degenerate squares are the obvious
+quadruples $(f, f, \id, \id)$ and $(\id, \id, f, f)$ for a morphism $f \in C_1$.
+Composing two squares $(f, g_1, h_1, i_1)$ and $(g_1, g_2, h_2, i_2)$ vertically
+yields a square $(f, g_2, h_2 \circ_C h_1, i_2 \circ_C i_1)$.
+
+Note that $f$, $g$, $h$, and $i$ do not have to form a \emph{commutative} square ---
+the square double category on $C$ rather collects all possible squares in $C$.
 \end{example}
+
+\begin{example}
+Let again be $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ a category.
+We restrict the square double category on $C$ to commutative squares and receive
+the \textbf{commutative square double category} on $C$:
+\begin{align*}
+D_0 &\coloneqq C_0 \text{,} \\
+D_1 &\coloneqq C_1 \text{ and } \\
+D_2 &\coloneqq \left\{ (f, g, h, i) \middle| \text{$f$, $g$, $h$, and $i$ form a
+	 square and } g \circ_C h = i \circ_C f \right\} \text{.}
+\end{align*}
+
+Faces and degeneracies are trivial, for defining the the vertical composition of
+two squares $(f, g_1, h_1, i_1)$ and $(g_1, g_2, h_2, i_2)$, one receives the
+commutativity of the composed square by
+\begin{align*}
+g_2 \circ_C h_2 \circ_C h_1 &= i_2 \circ_C g_1 \circ_C h_1 \\
+	&= i_2 \circ_C i_1 \circ_C f
+\end{align*}
+and analogously for the horizontal composition.
+
+\end{example}
+
 
 
 
