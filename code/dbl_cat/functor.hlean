@@ -1,11 +1,12 @@
 import .decl
 import algebra.precategory.functor
 
-open eq functor precategory morphism dbl_precat functor Dbl_precat
+open eq functor precategory morphism dbl_precat functor Dbl_precat prod equiv sigma.ops
 set_option pp.beta true
 
 namespace dbl_precat
 
+  section
   variables (D E : Dbl_precat)
   include D E
   variables (catF : functor (cat D) (cat E))
@@ -53,6 +54,7 @@ namespace dbl_precat
           (twoF (comp₂ (two_cell D) v u)))
       = comp₂ (two_cell E) (twoF v) (twoF u)
   set_option unifier.max_steps 20000
+  end
 
   structure dbl_functor (D E : Dbl_precat) :=
     (catF : functor (cat D) (cat E))
@@ -63,14 +65,37 @@ namespace dbl_precat
     (respect_id₂ : respect_id₂_type D E catF twoF)
     (respect_comp₂ : respect_comp₂_type D E catF twoF)
 
+  set_option unifier.max_steps 500000 --TODO: really??
+  definition dbl_functor_sigma_char (D E : Dbl_precat) :
+    (Σ (catF : functor (cat D) (cat E))
+       (twoF : Π ⦃a b c d : cat D⦄
+         ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+         two_cell D f g h i → two_cell E (catF f) (catF g) (catF h) (catF i)),
+       (respect_id₁_type D E catF twoF) ×
+       (respect_comp₁_type D E catF twoF) ×
+       (respect_id₂_type D E catF twoF) ×
+       (respect_comp₂_type D E catF twoF)) ≃ (dbl_functor D E) :=
+  begin
+    fapply equiv.mk,
+      intro S, fapply dbl_functor.mk,
+        apply (S.1), exact (@S.2.1), exact (pr1 @S.2.2),
+        exact (pr1 (pr2 @S.2.2)), exact (pr1 (pr2 (pr2 @S.2.2))),
+        exact (pr2 (pr2 (pr2 @S.2.2))),
+    fapply is_equiv.adjointify,
+        intro F, apply (dbl_functor.rec_on F), intros,
+        apply (sigma.mk catF (sigma.mk twoF
+          (respect_id₁ , (respect_comp₁, (respect_id₂, respect_comp₂))))),
+      intro F, apply (dbl_functor.rec_on F), intros, apply idp,
+    intro S, apply (sigma.rec_on S), intros (catF, S'),
+    apply (sigma.rec_on S'), intros (twoF, S''),
+    apply (prod.rec_on S''), intros (respect_id₁, S'''),
+    apply (prod.rec_on S'''), intros (respect_comp₁, S''''),
+    apply (prod.rec_on S''''), intros (respect_id₂, respect_comp₂),
+    apply idp,
+  end
+  set_option unifier.max_steps 20000
+
+
+
+
 end dbl_precat
-
-
-
-
-exit
-  (obF : C → D)
-  (homF : Π ⦃a b : C⦄, hom a b → hom (obF a) (obF b))
-  (respect_id : Π (a : C), homF (ID a) = ID (obF a))
-  (respect_comp : Π {a b c : C} (g : hom b c) (f : hom a b),
-    homF (g ∘ f) = homF g ∘ homF f)
