@@ -74,8 +74,10 @@ structure dbl_precat [class] {D₀ : Type} (C : precategory D₀)
     (v : D₂ f₀₁ f₁₁ g₀₁ g₀₂) (u : D₂ f₀₀ f₁₀ g₀₀ g₀₁),
     comp₁ (comp₂ x w) (comp₂ v u) = comp₂ (comp₁ x v) (comp₁ w u))
 
-inductive Dbl_precat : Type :=
-mk : Π {D₀ : Type} (C : precategory D₀)
-  (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b)
-    (g : hom c d) (h : hom a c) (i : hom b d), Type),
-  dbl_precat C D₂ → Dbl_precat
+structure Dbl_precat : Type :=
+  (cat : Precategory)
+  (two_cell : Π ⦃a b c d : cat⦄ (f : hom a b)
+    (g : hom c d) (h : hom a c) (i : hom b d), Type)
+  (struct : dbl_precat cat two_cell)
+
+attribute Dbl_precat.struct [instance]
