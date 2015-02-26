@@ -196,7 +196,7 @@ by ``grids'' like the one shown in figure \ref{fig:interchange}.
 Starting from a given 1-skeleton it is easy to find some very simple
 but nevertheless very useful and recurring examples for double categories:
 
-\begin{example}
+\begin{example} \label{def:sq-dbl-cat}
 Let $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ a category. The
 \textbf{square double category} on $C$ is defined by setting $D_0 \coloneqq C_0$,
 $D_1 \coloneqq C_0$ and
@@ -215,9 +215,10 @@ yields a square $(f, g_2, h_2 \circ_C h_1, i_2 \circ_C i_1)$.
 
 Note that $f$, $g$, $h$, and $i$ do not have to form a \emph{commutative} square ---
 the square double category on $C$ rather collects all possible squares in $C$.
+We denote the square double category on $C$ as $\square'C$.
 \end{example}
 
-\begin{example}
+\begin{example} \label{def:comm-sq-dbl-cat}
 Let again be $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ a category.
 We restrict the square double category on $C$ to commutative squares and receive
 the \textbf{commutative square double category} on $C$:
@@ -235,9 +236,31 @@ commutativity of the composed square by
 g_2 \circ_C h_2 \circ_C h_1 &= i_2 \circ_C g_1 \circ_C h_1 \\
 	&= i_2 \circ_C i_1 \circ_C f
 \end{align*}
-and analogously for the horizontal composition.
-
+and analogously for the horizontal composition. We write $\square C$ for the
+commutative square double category on $C$.
 \end{example}
+
+For the purpose of building a category of double categories we have to define what
+it means for a map to preserve the structure of a double category:
+
+\begin{defn} \label{def:dbl-functor}
+A \textbf{double functor} $F$ between double categories $D$ and $E$ is a triple of maps
+$(F_0, F_1, F_2)$ where $F_0 : D_0 \to E_0$, $F_1 : D_1 \to E_1$ and $F_2 : D_2
+\to E_2$ such that $(F_0,F_1)$ is a functor between the 1-skeleton of $D$ and $E$
+and $(F_1,F_2)$ is a functor between both the vertical and horizontal category
+of $D$ and $E$. That means that all faces and degeneracies commute with with $F_1$
+resp. $F_2$.
+\end{defn}
+
+\begin{lemma} \label{def:cat-of-dbl-cat}
+Double functors turn the set of all double categories into a category $\DCat$.
+Its initial object is the empty double category, its terminal object consists of the
+double category $D$ with $D_0 = D_1 = D_2 = \{\ast\}$.
+\hfill $\square$
+\end{lemma}
+
+%TODO parts of the proof? pushouts?
+
 
 
 
