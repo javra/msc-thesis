@@ -108,6 +108,34 @@ namespace dbl_precat
     (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
 
   context
+  parameters {D E : Dbl_precat} (F : dbl_functor D E)
+    ⦃a b c₁ d₁ c₂ d₂ : cat D⦄
+    ⦃f : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
+    ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
+    (v : two_cell D g₁ g₂ h₂ i₂)
+    (u : two_cell D f g₁ h₁ i₁)
+
+  definition respect_comp₁' :=
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₁ F v u))
+
+  end
+
+  context
+  parameters {D E : Dbl_precat} (F : dbl_functor D E)
+    ⦃a b₁ c d₁ b₂ d₂ : cat D⦄
+    ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h : hom a c⦄ ⦃i₁ : hom b₁ d₁⦄
+    ⦃f₂ : hom b₁ b₂⦄ ⦃g₂ : hom d₁ d₂⦄ ⦃i₂ : hom b₂ d₂⦄
+    (v : two_cell D f₂ g₂ i₁ i₂)
+    (u : two_cell D f₁ g₁ h i₁)
+
+  definition respect_comp₂' :=
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₂ F v u))
+
+  end
+
+  context
   parameters
     {D E : Dbl_precat} (F : dbl_functor D E)
     {a b c d : cat D}
@@ -137,12 +165,6 @@ namespace dbl_precat
 
   end
 
-  variables (C D E : Dbl_precat)
-    (G : dbl_functor D E) (F : dbl_functor C D) (a b : cat C) (f : hom a b)
-  check (ID₁ (two_cell D)
-       (homF (catF F) f))
-  check respect_id₂'
-  --set_option pp.notation false
   definition dbl_functor_compose (C D E : Dbl_precat)
     (G : dbl_functor D E) (F : dbl_functor C D) : dbl_functor C E :=
   begin
@@ -155,12 +177,27 @@ namespace dbl_precat
         apply concat, apply twoF_transport_r, apply tr_eq_of_eq_inv_tr,
         apply concat, apply respect_id₁',
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+        apply inverse,
+        apply concat, apply (transport_eq_transport4 _
+          (λ x, homF (catF G) (homF (catF F) f)) (λ x, homF (catF G) (homF (catF F) f))
+          (λ x, ID (obF (catF G) (obF (catF F) a))) (λ x, x)),
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply transport4_set_reduce,
+      intros, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply (ap (λ x, twoF G x)), apply respect_comp₁',
+        apply concat, apply twoF_transport_l, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply twoF_transport_r, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply respect_comp₁',
+        apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         unfold functor.compose, esimp,
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
-          (λ x, homF (catF G) (homF (catF F) f))
-          (λ x, homF (catF G) (homF (catF F) f))
-          (λ x, ID (obF (catF G) (obF (catF F) a)))
+          (λ x, homF (catF G) (homF (catF F) f)) (λ x, homF (catF G) (homF (catF F) g₂))
+          (λ x, comp (homF (catF G) (homF (catF F) h₂)) (homF (catF G) (homF (catF F) h₁)))
           (λ x, x)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -168,7 +205,40 @@ namespace dbl_precat
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply transport4_set_reduce,
+      intros, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply (ap (λ x, twoF G x)), apply respect_id₂',
+        apply concat, apply twoF_transport_u, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply twoF_transport_b, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply respect_id₂',
+        apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+        apply inverse,
+        apply concat, apply (transport_eq_transport4 _
+          (λ x, ID (obF (catF G) (obF (catF F) a))) (λ x, x)
+          (λ x, homF (catF G) (homF (catF F) f)) (λ x, homF (catF G) (homF (catF F) f))),
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply transport4_set_reduce,
+      intros, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply (ap (λ x, twoF G x)), apply respect_comp₂',
+        apply concat, apply twoF_transport_u, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply twoF_transport_b, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply respect_comp₂',
+        apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+        unfold functor.compose, esimp,
+        apply inverse,
+        apply concat, apply (transport_eq_transport4 _
+          (λ x, comp (homF (catF G) (homF (catF F) _)) (homF (catF G) (homF (catF F) _)))
+          (λ x, x)
+          (λ x, homF (catF G) (homF (catF F) _)) (λ x, homF (catF G) (homF (catF F) _))),
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply transport4_set_reduce,
   end
-
 
 end dbl_precat
