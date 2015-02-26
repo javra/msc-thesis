@@ -1,4 +1,4 @@
-import .decl
+import .decl ..transport4
 import algebra.precategory.functor
 
 open eq functor precategory morphism dbl_precat functor Dbl_precat prod equiv sigma.ops
@@ -13,20 +13,20 @@ namespace dbl_precat
     (twoF : Π ⦃a b c d : cat D⦄ ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
       two_cell D f g h i → two_cell E (catF f) (catF g) (catF h) (catF i))
 
-  definition respect_id₁_type : Type := Π ⦃a b : cat D⦄ ⦃f : hom a b⦄,
+  definition respect_id₁_type [reducible] : Type := Π ⦃a b : cat D⦄ (f : hom a b),
     transport (λ x, two_cell E _ _ _ x) (respect_id catF b)
       (transport (λ x, two_cell E _ _ x _) (respect_id catF a)
         (twoF (ID₁ (two_cell D) f)))
     = ID₁ (two_cell E) (catF f)
 
-  definition respect_id₂_type : Type := Π ⦃a b : cat D⦄ ⦃f : hom a b⦄,
+  definition respect_id₂_type [reducible] : Type := Π ⦃a b : cat D⦄ (f : hom a b),
     transport (λ x, two_cell E _ x _ _) (respect_id catF b)
       (transport (λ x, two_cell E x _ _ _) (respect_id catF a)
         (twoF (ID₂ (two_cell D) f)))
     = ID₂ (two_cell E) (catF f)
 
   set_option unifier.max_steps 80000 --TODO make this go away
-  definition respect_comp₁_type : Type := Π ⦃a b c₁ d₁ c₂ d₂ : cat D⦄
+  definition respect_comp₁_type [reducible] : Type := Π ⦃a b c₁ d₁ c₂ d₂ : cat D⦄
     ⦃f : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
     (v : two_cell D g₁ g₂ h₂ i₂)
@@ -40,7 +40,7 @@ namespace dbl_precat
           (twoF (comp₁ (two_cell D) v u)))
       = comp₁ (two_cell E) (@twoF c₁ d₁ c₂ d₂ g₁ g₂ h₂ i₂ v) (twoF u)
 
-  definition respect_comp₂_type : Type := Π ⦃a b₁ c d₁ b₂ d₂ : cat D⦄
+  definition respect_comp₂_type [reducible] : Type := Π ⦃a b₁ c d₁ b₂ d₂ : cat D⦄
     ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h : hom a c⦄ ⦃i₁ : hom b₁ d₁⦄
     ⦃f₂ : hom b₁ b₂⦄ ⦃g₂ : hom d₁ d₂⦄ ⦃i₂ : hom b₂ d₂⦄
     (v : two_cell D f₂ g₂ i₁ i₂)
@@ -95,14 +95,80 @@ namespace dbl_precat
   end
   set_option unifier.max_steps 20000
 
+  open dbl_functor
+
+  definition respect_id₁' {D E : Dbl_precat} (F : dbl_functor D E)
+    {a b : cat D} (f : hom a b) :=
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₁ F f))
+
+  definition respect_id₂' {D E : Dbl_precat} (F : dbl_functor D E)
+    {a b : cat D} (f : hom a b) :=
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
+
+  context
+  parameters
+    {D E : Dbl_precat} (F : dbl_functor D E)
+    {a b c d : cat D}
+    {f f': hom a b} {g g': hom c d} {h h': hom a c} {i i': hom b d}
+    (pf : f = f') (pg : g = g') (ph : h = h') (pi : i = i')
+    (u : two_cell D f g h i)
+
+  definition twoF_transport_u : twoF F (pf ▹ u) = pf ▹ (twoF F u) :=
+  begin
+    apply (eq.rec_on pf), apply idp,
+  end
+
+  definition twoF_transport_b : twoF F (pg ▹ u) = pg ▹ (twoF F u) :=
+  begin
+    apply (eq.rec_on pg), apply idp,
+  end
+
+  definition twoF_transport_l : twoF F (ph ▹ u) = ph ▹ (twoF F u) :=
+  begin
+    apply (eq.rec_on ph), apply idp,
+  end
+
+  definition twoF_transport_r : twoF F (pi ▹ u) = pi ▹ (twoF F u) :=
+  begin
+    apply (eq.rec_on pi), apply idp,
+  end
+
+  end
+
+  variables (C D E : Dbl_precat)
+    (G : dbl_functor D E) (F : dbl_functor C D) (a b : cat C) (f : hom a b)
+  check (ID₁ (two_cell D)
+       (homF (catF F) f))
+  check respect_id₂'
+  --set_option pp.notation false
   definition dbl_functor_compose (C D E : Dbl_precat)
     (G : dbl_functor D E) (F : dbl_functor C D) : dbl_functor C E :=
   begin
     fapply dbl_functor.mk,
-      apply (functor.compose (catF G) (catF F)),a asdf
+      apply (functor.compose (catF G) (catF F)),
+      intros, apply (twoF G (twoF F a_1)),
+      intros, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply (ap (λ x, twoF G x)), apply respect_id₁',
+        apply concat, apply twoF_transport_l, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply twoF_transport_r, apply tr_eq_of_eq_inv_tr,
+        apply concat, apply respect_id₁',
+        apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+        unfold functor.compose, esimp,
+        apply inverse,
+        apply concat, apply (transport_eq_transport4 _
+          (λ x, homF (catF G) (homF (catF F) f))
+          (λ x, homF (catF G) (homF (catF F) f))
+          (λ x, ID (obF (catF G) (obF (catF F) a)))
+          (λ x, x)),
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply concat, apply transport4_transport_acc,
+        apply transport4_set_reduce,
   end
-
-
 
 
 end dbl_precat
