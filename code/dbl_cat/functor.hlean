@@ -95,6 +95,13 @@ namespace dbl_precat
   end
   set_option unifier.max_steps 20000
 
+  definition dbl_functor_compose (C D E : Dbl_precat)
+    (G : dbl_functor D E) (F : dbl_functor C D) : dbl_functor C E :=
+  begin
+    fapply dbl_functor.mk,
+      apply (functor.compose (catF G) (catF F)),a asdf
+  end
+
 
 
 
