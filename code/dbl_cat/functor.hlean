@@ -165,7 +165,7 @@ namespace dbl_precat
 
   end
 
-  definition dbl_functor_compose (C D E : Dbl_precat)
+  definition dbl_functor_compose {C D E : Dbl_precat}
     (G : dbl_functor D E) (F : dbl_functor C D) : dbl_functor C E :=
   begin
     fapply dbl_functor.mk,
@@ -239,6 +239,17 @@ namespace dbl_precat
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply transport4_set_reduce,
+  end
+
+  definition dbl_functor_id (C : Dbl_precat) : dbl_functor C C :=
+  begin
+    fapply dbl_functor.mk,
+      apply functor.id,
+      intros, apply a_1,
+      intros, apply idp,
+      intros, apply idp,
+      intros, apply idp,
+      intros, apply idp,
   end
 
 end dbl_precat
