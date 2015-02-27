@@ -1,8 +1,35 @@
 import .decl ..transport4
 import algebra.precategory.functor
 
-open eq functor precategory morphism dbl_precat functor Dbl_precat prod equiv sigma.ops
+open eq
 set_option pp.beta true
+
+--TODO delete the following after the newest floris commits
+  section
+    variables {A : Type} {B : A → Type} {C : Πa, B a → Type} {D : Πa b, C a b → Type}
+              {E : Πa b c, D a b c → Type} {F : Type}
+    variables {a a' : A}
+              {b : B a} {b' : B a'}
+              {c : C a b} {c' : C a' b'}
+              {d : D a b c} {d' : D a' b' c'}
+
+    definition apD011' [reducible] (f : Πa, B a → F) (Ha : a = a') (Hb : (Ha ▹ b) = b')
+        : f a b = f a' b' :=
+    eq.rec_on Hb (eq.rec_on Ha idp)
+
+    definition apD0111' (f : Πa b, C a b → F) (Ha : a = a') (Hb : (Ha ▹ b) = b')
+      (Hc : apD011' C Ha Hb ▹ c = c')
+        : f a b c = f a' b' c' :=
+    eq.rec_on Hc (eq.rec_on Hb (eq.rec_on Ha idp))
+
+    definition apD01111 (f : Πa b c, D a b c → F) (Ha : a = a') (Hb : (Ha ▹ b) = b')
+      (Hc : apD011' C Ha Hb ▹ c = c') (Hd : apD0111' D Ha Hb Hc ▹ d = d')
+        : f a b c d = f a' b' c' d' :=
+    eq.rec_on Hd (eq.rec_on Hc (eq.rec_on Hb (eq.rec_on Ha idp)))
+  end
+
+open functor precategory morphism dbl_precat functor
+open Dbl_precat prod equiv sigma.ops is_trunc
 
 namespace dbl_precat
 
@@ -95,8 +122,50 @@ namespace dbl_precat
   end
   set_option unifier.max_steps 20000
 
+
+  context
+  parameters (D E : Dbl_precat)
+    (catF1 catF2 : functor (cat D) (cat E))
+    (twoF1 : Π ⦃a b c d : cat D⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell D f g h i → two_cell E (catF1 f) (catF1 g) (catF1 h) (catF1 i))
+    (twoF2 : Π ⦃a b c d : cat D⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell D f g h i → two_cell E (catF2 f) (catF2 g) (catF2 h) (catF2 i))
+
+  definition respect_id₁1_type [reducible] := respect_id₁_type D E catF1
+  definition respect_id₁2_type [reducible] := respect_id₁_type D E catF2
+  definition respect_comp₁1_type [reducible] := respect_comp₁_type D E catF1
+  definition respect_comp₁2_type [reducible] := respect_comp₁_type D E catF2
+  definition respect_id₂1_type [reducible] := respect_id₂_type D E catF1
+  definition respect_id₂2_type [reducible] := respect_id₂_type D E catF2
+  definition respect_comp₂1_type [reducible] := respect_comp₂_type D E catF1
+  definition respect_comp₂2_type [reducible] := respect_comp₂_type D E catF2
+
+  definition dbl_functor.congr (p1 : catF1 = catF2) (p2 : p1 ▹ twoF1 = twoF2) :
+    Π (respect_id₁1 : respect_id₁1_type twoF1)
+    (respect_id₁2 : respect_id₁2_type twoF2)
+    (respect_comp₁1 : respect_comp₁1_type twoF1)
+    (respect_comp₁2 : respect_comp₁2_type twoF2)
+    (respect_id₂1 : respect_id₂1_type twoF1)
+    (respect_id₂2 : respect_id₂2_type twoF2)
+    (respect_comp₂1 : respect_comp₂1_type twoF1)
+    (respect_comp₂2 : respect_comp₂2_type twoF2),
+    dbl_functor.mk catF1 twoF1 respect_id₁1 respect_comp₁1 respect_id₂1 respect_comp₂1
+    = dbl_functor.mk catF2 twoF2 respect_id₁2 respect_comp₁2 respect_id₂2 respect_comp₂2 :=
+  begin
+    apply (eq.rec_on p2), apply (eq.rec_on p1),
+    intros, apply (ap01111 (λ f g h i, dbl_functor.mk catF1 twoF1 f g h i)),
+      repeat (
+        repeat ( apply funext.eq_of_homotopy ; intros ) ;
+        apply (@is_hset.elim _ (!(homH' (two_cell E)))) ),
+  end
+
+  end
+
   open dbl_functor
 
+exit
   definition respect_id₁' {D E : Dbl_precat} (F : dbl_functor D E)
     {a b : cat D} (f : hom a b) :=
   eq_inv_tr_of_tr_eq _ _ _ _
