@@ -59,10 +59,10 @@ namespace dbl_precat
     (v : two_cell D g₁ g₂ h₂ i₂)
     (u : two_cell D f g₁ h₁ i₁),
       transport
-        (λ x, two_cell E (homF catF f) (homF catF g₂) (homF catF h₂ ∘ homF catF h₁) x)
+        (λ x, two_cell E (to_fun_hom catF f) (to_fun_hom catF g₂) (to_fun_hom catF h₂ ∘ to_fun_hom catF h₁) x)
         (respect_comp catF i₂ i₁)
         (transport
-          (λ x, two_cell E (homF catF f) (homF catF g₂) x (homF catF (i₂ ∘ i₁)))
+          (λ x, two_cell E (to_fun_hom catF f) (to_fun_hom catF g₂) x (to_fun_hom catF (i₂ ∘ i₁)))
           (respect_comp catF h₂ h₁)
           (twoF (comp₁ (two_cell D) v u)))
       = comp₁ (two_cell E) (@twoF c₁ d₁ c₂ d₂ g₁ g₂ h₂ i₂ v) (twoF u)
@@ -73,10 +73,10 @@ namespace dbl_precat
     (v : two_cell D f₂ g₂ i₁ i₂)
     (u : two_cell D f₁ g₁ h i₁),
       transport
-        (λ x, two_cell E (homF catF f₂ ∘ homF catF f₁) x (homF catF h) (homF catF i₂))
+        (λ x, two_cell E (to_fun_hom catF f₂ ∘ to_fun_hom catF f₁) x (to_fun_hom catF h) (to_fun_hom catF i₂))
         (respect_comp catF g₂ g₁)
         (transport
-          (λ x, two_cell E x (homF catF (g₂ ∘ g₁)) (homF catF h) (homF catF i₂))
+          (λ x, two_cell E x (to_fun_hom catF (g₂ ∘ g₁)) (to_fun_hom catF h) (to_fun_hom catF i₂))
           (respect_comp catF f₂ f₁)
           (twoF (comp₂ (two_cell D) v u)))
       = comp₂ (two_cell E) (twoF v) (twoF u)
@@ -165,7 +165,6 @@ namespace dbl_precat
 
   open dbl_functor
 
-exit
   definition respect_id₁' {D E : Dbl_precat} (F : dbl_functor D E)
     {a b : cat D} (f : hom a b) :=
   eq_inv_tr_of_tr_eq _ _ _ _
@@ -234,7 +233,7 @@ exit
 
   end
 
-  definition dbl_functor_compose {C D E : Dbl_precat}
+  definition dbl_functor_compose [reducible] {C D E : Dbl_precat}
     (G : dbl_functor D E) (F : dbl_functor C D) : dbl_functor C E :=
   begin
     fapply dbl_functor.mk,
@@ -248,8 +247,8 @@ exit
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
-          (λ x, homF (catF G) (homF (catF F) f)) (λ x, homF (catF G) (homF (catF F) f))
-          (λ x, ID (obF (catF G) (obF (catF F) a))) (λ x, x)),
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f)) (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
+          (λ x, ID (to_fun_ob (catF G) (to_fun_ob (catF F) a))) (λ x, x)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -265,8 +264,8 @@ exit
         unfold functor.compose, esimp,
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
-          (λ x, homF (catF G) (homF (catF F) f)) (λ x, homF (catF G) (homF (catF F) g₂))
-          (λ x, comp (homF (catF G) (homF (catF F) h₂)) (homF (catF G) (homF (catF F) h₁)))
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f)) (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) g₂))
+          (λ x, comp (to_fun_hom (catF G) (to_fun_hom (catF F) h₂)) (to_fun_hom (catF G) (to_fun_hom (catF F) h₁)))
           (λ x, x)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -282,8 +281,8 @@ exit
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
-          (λ x, ID (obF (catF G) (obF (catF F) a))) (λ x, x)
-          (λ x, homF (catF G) (homF (catF F) f)) (λ x, homF (catF G) (homF (catF F) f))),
+          (λ x, ID (to_fun_ob (catF G) (to_fun_ob (catF F) a))) (λ x, x)
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f)) (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -299,9 +298,9 @@ exit
         unfold functor.compose, esimp,
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
-          (λ x, comp (homF (catF G) (homF (catF F) _)) (homF (catF G) (homF (catF F) _)))
+          (λ x, comp (to_fun_hom (catF G) (to_fun_hom (catF F) _)) (to_fun_hom (catF G) (to_fun_hom (catF F) _)))
           (λ x, x)
-          (λ x, homF (catF G) (homF (catF F) _)) (λ x, homF (catF G) (homF (catF F) _))),
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) _)) (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) _))),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,

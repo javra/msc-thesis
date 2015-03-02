@@ -212,7 +212,7 @@ namespace gamma
   !id_inverse
 
   definition compose_inverse_id' {x : D₀} : compose id (IDinv' x) = id :=
-  (@compose_inverse D₀ C x x (@id D₀ C x) (@all_iso D₀ C x x (@id D₀ C x)))
+  (@right_inverse D₀ C x x (@id D₀ C x) (@all_iso D₀ C x x (@id D₀ C x)))
 
   definition M_morphism.inv_aux ⦃a : D₀⦄ (u : M_morphism a) :
     D₂ ((M_morphism.lid u)⁻¹) id id id :=
@@ -244,7 +244,7 @@ namespace gamma
   definition M_morphism.inverse_compose_aux4 {a : D₀} (u : M_morphism a) :=
   ap (λ x, (transport (λ (a_2 : hom a a), D₂ (ID a) a_2 id id) (id_left id)
        (transport (λ (a_3 : hom a a), D₂ a_3 (compose id id) id id)
-          (inverse_compose (M_morphism.lid u)) x)))
+          (left_inverse (M_morphism.lid u)) x)))
     (M_morphism.inverse_compose_aux1 u)
 
   definition M_morphism.inverse_compose_aux5 {a : D₀}
@@ -262,13 +262,13 @@ namespace gamma
     apply idp,
   end
 
-  definition M_morphism.inverse_compose ⦃a : D₀⦄ (u : M_morphism a) :
+  definition M_morphism.left_inverse ⦃a : D₀⦄ (u : M_morphism a) :
     M_morphism.comp (M_morphism.inv u) u = M_morphism.one a :=
   begin
     apply (M_morphism.rec_on u), intros (lid, filler),
     fapply (M_morphism.congr),
-      apply inverse_compose,
-      apply concat, rotate 3, apply (weak_dbl_gpd.inverse_compose₂ D₂ filler),
+      apply left_inverse,
+      apply concat, rotate 3, apply (weak_dbl_gpd.left_inverse₂ D₂ filler),
       apply concat, apply transport_commute,
       apply concat, apply M_morphism.inverse_compose_aux4,
       apply M_morphism.inverse_compose_aux5,
@@ -284,7 +284,7 @@ namespace gamma
       intro u, apply (M_morphism.id_left u),
       intro u, apply (M_morphism.id_right u),
       intro u, apply (M_morphism.inv u),
-      intro u, apply (M_morphism.inverse_compose u),
+      intro u, apply (M_morphism.left_inverse u),
   end
 
   protected definition M_bundled [reducible] (a : D₀) : Group.{l} :=

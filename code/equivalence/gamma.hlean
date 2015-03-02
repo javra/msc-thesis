@@ -28,11 +28,11 @@ namespace gamma
   comp₁ D₂ (comp₂ D₂ v (comp₂ D₂ (ID₂ D₂ id) (inv₂ D₂ v)))
     (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ u (ID₁ D₂ (a⁻¹))))
 
-  protected definition compose_inverse₂' ⦃a b c d : D₀⦄
+  protected definition right_inverse₂' ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i) :=
   eq_inv_tr_of_tr_eq _ _ _ _
-    (eq_inv_tr_of_tr_eq _ _ _ _ (compose_inverse₂ D₂ u))
+    (eq_inv_tr_of_tr_eq _ _ _ _ (right_inverse₂ D₂ u))
 
   protected definition gamma_CM2_horizontal ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :
@@ -41,7 +41,7 @@ namespace gamma
     (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) w (id ∘ id) (id ∘ id)) ((compose_inverse_id')⁻¹)
       (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) id w (id ∘ id)) ((id_left id)⁻¹)
         (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) id id w) ((id_left id)⁻¹)
-          (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) w id id) (compose_inverse a)
+          (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) w id id) (right_inverse a)
             (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) (a ∘ w) id id) (id_left (a⁻¹))
               (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ u (ID₁ D₂ (a⁻¹)))))))))) :=
   begin
@@ -50,7 +50,7 @@ namespace gamma
       apply (!transp_comp₂_eq_comp₂_transp_l_bu⁻¹),
     apply concat, apply (ap (λ x, comp₁ D₂ x _)),
     apply (ap (λ x, transport.{l l} _ _ x)),
-      apply (ap (λ x, transport.{l l} _ _ x)), apply compose_inverse₂',
+      apply (ap (λ x, transport.{l l} _ _ x)), apply right_inverse₂',
     apply concat, apply (comp₁_transp_eq_comp₁_transp_b (id_left (a⁻¹))),
     apply concat, apply inverse, apply transp_comp₁_eq_comp₁_transp_b_b,
     apply inv_tr_eq_of_eq_tr,

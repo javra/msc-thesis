@@ -17,15 +17,15 @@ namespace dbl_gpd
 
   definition ID₁_inverse_compose ⦃a b : D₀⦄ (f : hom a b) :
     comp₂ D₂ (ID₁ D₂ (f⁻¹)) (ID₁ D₂ f) =
-    transport (λ x, D₂ _ x id id) ((inverse_compose f)⁻¹)
-      (transport (λ x, D₂ x _ id id) ((inverse_compose f)⁻¹) (ID₁ D₂ (ID a))) :=
+    transport (λ x, D₂ _ x id id) ((left_inverse f)⁻¹)
+      (transport (λ x, D₂ x _ id id) ((left_inverse f)⁻¹) (ID₁ D₂ (ID a))) :=
   sorry
 
   definition ur_connect ⦃a b : D₀⦄ (f : hom a b) : D₂ (ID b) f (f⁻¹) (ID b) :=
-  thin (ID b) f (f⁻¹) (ID b) (compose_inverse f ⬝ id_left (ID b)⁻¹)
+  thin (ID b) f (f⁻¹) (ID b) (right_inverse f ⬝ id_left (ID b)⁻¹)
 
   definition bl_connect ⦃a b : D₀⦄ (f : hom a b) : D₂ f (ID a) (ID a) (f⁻¹) :=
-  thin f (ID a) (ID a) (f⁻¹) (id_left (ID a) ⬝ (inverse_compose f)⁻¹)
+  thin f (ID a) (ID a) (f⁻¹) (id_left (ID a) ⬝ (left_inverse f)⁻¹)
 
   end
 end dbl_gpd

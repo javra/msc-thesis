@@ -36,7 +36,7 @@ namespace gamma
       apply (a ∘ (M_morphism.lid u) ∘ a⁻¹),
     assert (v : D₂ (a ∘ (M_morphism.lid u) ∘ a⁻¹) (a ∘ id ∘ a⁻¹) id id),
       apply (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ (M_morphism.filler u) (ID₁ D₂ (a⁻¹)))),
-    apply (transport (λ x, D₂ _ x id id) (compose_inverse a)
+    apply (transport (λ x, D₂ _ x id id) (right_inverse a)
              (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹)) v)),
   end
 
@@ -121,7 +121,7 @@ namespace gamma
 
   protected definition Pbainv ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z) :
     (a⁻¹) ∘ (b⁻¹) = (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)) :=
-  ((@iso.con_inv _ _ _ _ _ b a (!all_iso) (!all_iso) (!all_iso))⁻¹)
+  ((@iso.comp_inverse _ _ _ _ _ b a (!all_iso) (!all_iso) (!all_iso))⁻¹)
 
   protected definition phi_respect_P_comp₂_aux2 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
     (lid : hom x x) (filler : D₂ lid id id id) :
@@ -242,15 +242,15 @@ namespace gamma
   protected definition phi_respect_M_comp₂_aux ⦃x y : D₀⦄ (a : hom x y)
     (lidv lidu : hom x x) (fillerv : D₂ lidv id id id) (filleru : D₂ lidu id id id) :
   comp₂ D₂
-    (transport (λ x, D₂ _ x id id) (compose_inverse a)
+    (transport (λ x, D₂ _ x id id) (right_inverse a)
       (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹))
          (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv (ID₁ D₂ (a⁻¹))))))
-    (transport (λ x, D₂ _ x id id) (compose_inverse a)
+    (transport (λ x, D₂ _ x id id) (right_inverse a)
       (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹))
         (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filleru (ID₁ D₂ (a⁻¹))))))
-  = (transport (λ x, D₂ _ (x ∘ _) id id) (compose_inverse a)
+  = (transport (λ x, D₂ _ (x ∘ _) id id) (right_inverse a)
       (transport (λ x, D₂ _ ((a ∘ x) ∘ _) id id) (id_left (a⁻¹))
-        (transport (λ x, D₂ _ (_ ∘ x) id id) (compose_inverse a)
+        (transport (λ x, D₂ _ (_ ∘ x) id id) (right_inverse a)
           (transport (λ x, D₂ _ (_ ∘ (a ∘ x)) id id) (id_left (a⁻¹))
             (comp₂ D₂
               (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ fillerv (ID₁ D₂ (a⁻¹))))
@@ -332,7 +332,7 @@ namespace gamma
       apply concat, rotate 1, apply inverse, apply assoc, rotate 1,
       apply concat, rotate 1, apply inverse, apply assoc, rotate 1, apply (ap (λ x, x ∘ a⁻¹)),
       apply concat, apply (!id_left⁻¹), apply (ap (λ x, x ∘ lidu)),
-      apply inverse, apply inverse_compose,
+      apply inverse, apply left_inverse,
     --Part II: Equality of fillers
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply concat, apply (ap (λ x, comp₂ D₂ (ID₁ D₂ a) x)),

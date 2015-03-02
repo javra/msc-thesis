@@ -14,32 +14,32 @@ context
   Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
     D₂ f g h i → D₂ g f (h⁻¹) (i⁻¹)
 
-  definition inverse_compose₁_type [D : dbl_precat C D₂] (inv₁ : inv₁_type) : Type :=
+  definition left_inverse₁_type [D : dbl_precat C D₂] (inv₁ : inv₁_type) : Type :=
   Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (u : D₂ f g h i),
-    (inverse_compose i) ▹ ((inverse_compose h) ▹
+    (left_inverse i) ▹ ((left_inverse h) ▹
     (@comp₁ D₀ C D₂ D a b c d a b f g h i f (h⁻¹) (i⁻¹) (inv₁ u) u)) = ID₁ D₂ f
 
-  definition compose_inverse₁_type [D : dbl_precat C D₂] (inv₁ : inv₁_type) : Type :=
+  definition right_inverse₁_type [D : dbl_precat C D₂] (inv₁ : inv₁_type) : Type :=
   Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (u : D₂ f g h i),
-    (compose_inverse i) ▹ ((compose_inverse h) ▹
+    (right_inverse i) ▹ ((right_inverse h) ▹
     (@comp₁ D₀ C D₂ D c d a b c d g f (h⁻¹) (i⁻¹) g h i u (inv₁ u))) = ID₁ D₂ g
 
   definition inv₂_type : Type :=
   Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
     D₂ f g h i → D₂ (f⁻¹) (g⁻¹) i h
 
-  definition inverse_compose₂_type [D : dbl_precat C D₂] (inv₂ : inv₂_type) : Type :=
+  definition left_inverse₂_type [D : dbl_precat C D₂] (inv₂ : inv₂_type) : Type :=
   Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (u : D₂ f g h i),
-    (inverse_compose g) ▹ ((inverse_compose f) ▹
+    (left_inverse g) ▹ ((left_inverse f) ▹
     (@comp₂ D₀ C D₂ D _ _ _ _ _ _ _ _ _ _ _ _ _ (inv₂ u) u)) = ID₂ D₂ h
 
-  definition compose_inverse₂_type [D : dbl_precat C D₂] (inv₂ : inv₂_type) : Type :=
+  definition right_inverse₂_type [D : dbl_precat C D₂] (inv₂ : inv₂_type) : Type :=
   Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (u : D₂ f g h i),
-    (compose_inverse g) ▹ ((compose_inverse f) ▹
+    (right_inverse g) ▹ ((right_inverse f) ▹
     (@comp₂ D₀ C D₂ D _ _ _ _ _ _ _ _ _ _ _ _ _ u (inv₂ u))) = ID₂ D₂ i
 
 end
@@ -49,11 +49,11 @@ structure weak_dbl_gpd [class] {D₀ : Type}
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type)
   extends D : dbl_precat C D₂ :=
 (inv₁ : inv₁_type C D₂)
-(inverse_compose₁ : @inverse_compose₁_type D₀ C D₂ D inv₁)
-(compose_inverse₁ : @compose_inverse₁_type D₀ C D₂ D inv₁)
+(left_inverse₁ : @left_inverse₁_type D₀ C D₂ D inv₁)
+(right_inverse₁ : @right_inverse₁_type D₀ C D₂ D inv₁)
 (inv₂ : inv₂_type C D₂)
-(inverse_compose₂ : @inverse_compose₂_type D₀ C D₂ D inv₂)
-(compose_inverse₂ : @compose_inverse₂_type D₀ C D₂ D inv₂)
+(left_inverse₂ : @left_inverse₂_type D₀ C D₂ D inv₂)
+(right_inverse₂ : @right_inverse₂_type D₀ C D₂ D inv₂)
 
 structure dbl_gpd [class]  {D₀ : Type}
   (C : groupoid D₀)
