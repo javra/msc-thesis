@@ -15,10 +15,10 @@ context
     (u : P a0 b0 c0 d0) :
     transport4 pa pb pc pd u = u :=
   begin
-    assert (Ppa : idp = pa), apply is_hset.elim, apply (transport _ Ppa),
-    assert (Ppb : idp = pb), apply is_hset.elim, apply (transport _ Ppb),
-    assert (Ppc : idp = pc), apply is_hset.elim, apply (transport _ Ppc),
-    assert (Ppd : idp = pd), apply is_hset.elim, apply (transport _ Ppd),
+    assert Ppa : idp = pa, apply is_hset.elim, apply (transport _ Ppa),
+    assert Ppb : idp = pb, apply is_hset.elim, apply (transport _ Ppb),
+    assert Ppc : idp = pc, apply is_hset.elim, apply (transport _ Ppc),
+    assert Ppd : idp = pd, apply is_hset.elim, apply (transport _ Ppd),
     apply idp,
   end
 

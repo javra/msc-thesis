@@ -2,7 +2,7 @@ import algebra.groupoid
 import ..dbl_cat.basic ..thin_structure.basic
 
 --open dbl_precat precategory
-open eq function precategory morphism groupoid dbl_precat
+open eq function iso category dbl_precat
 
 context
   parameters

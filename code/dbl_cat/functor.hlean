@@ -1,35 +1,10 @@
 import .decl ..transport4
 import algebra.precategory.functor
 
-open eq
-set_option pp.beta true
-
---TODO delete the following after the newest floris commits
-  section
-    variables {A : Type} {B : A → Type} {C : Πa, B a → Type} {D : Πa b, C a b → Type}
-              {E : Πa b c, D a b c → Type} {F : Type}
-    variables {a a' : A}
-              {b : B a} {b' : B a'}
-              {c : C a b} {c' : C a' b'}
-              {d : D a b c} {d' : D a' b' c'}
-
-    definition apD011' [reducible] (f : Πa, B a → F) (Ha : a = a') (Hb : (Ha ▹ b) = b')
-        : f a b = f a' b' :=
-    eq.rec_on Hb (eq.rec_on Ha idp)
-
-    definition apD0111' (f : Πa b, C a b → F) (Ha : a = a') (Hb : (Ha ▹ b) = b')
-      (Hc : apD011' C Ha Hb ▹ c = c')
-        : f a b c = f a' b' c' :=
-    eq.rec_on Hc (eq.rec_on Hb (eq.rec_on Ha idp))
-
-    definition apD01111 (f : Πa b c, D a b c → F) (Ha : a = a') (Hb : (Ha ▹ b) = b')
-      (Hc : apD011' C Ha Hb ▹ c = c') (Hd : apD0111' D Ha Hb Hc ▹ d = d')
-        : f a b c d = f a' b' c' d' :=
-    eq.rec_on Hd (eq.rec_on Hc (eq.rec_on Hb (eq.rec_on Ha idp)))
-  end
-
-open functor precategory morphism dbl_precat functor
+open eq functor category dbl_precat functor
 open Dbl_precat prod equiv sigma.ops is_trunc
+
+set_option pp.beta true
 
 namespace dbl_precat
 
@@ -92,7 +67,6 @@ namespace dbl_precat
     (respect_id₂ : respect_id₂_type D E catF twoF)
     (respect_comp₂ : respect_comp₂_type D E catF twoF)
 
-  set_option unifier.max_steps 500000 --TODO: really??
   definition dbl_functor_sigma_char (D E : Dbl_precat) :
     (Σ (catF : functor (cat D) (cat E))
        (twoF : Π ⦃a b c d : cat D⦄
@@ -104,24 +78,27 @@ namespace dbl_precat
        (respect_comp₂_type D E catF twoF)) ≃ (dbl_functor D E) :=
   begin
     fapply equiv.mk,
-      intro S, fapply dbl_functor.mk,
+      begin
+        intro S, fapply dbl_functor.mk,
         apply (S.1), exact (@S.2.1), exact (pr1 @S.2.2),
         exact (pr1 (pr2 @S.2.2)), exact (pr1 (pr2 (pr2 @S.2.2))),
-        exact (pr2 (pr2 (pr2 @S.2.2))),
-    fapply is_equiv.adjointify,
-        intro F, apply (dbl_functor.rec_on F), intros,
-        apply (sigma.mk catF (sigma.mk twoF
-          (respect_id₁ , (respect_comp₁, (respect_id₂, respect_comp₂))))),
-      intro F, apply (dbl_functor.rec_on F), intros, apply idp,
-    intro S, apply (sigma.rec_on S), intros (catF, S'),
-    apply (sigma.rec_on S'), intros (twoF, S''),
-    apply (prod.rec_on S''), intros (respect_id₁, S'''),
-    apply (prod.rec_on S'''), intros (respect_comp₁, S''''),
-    apply (prod.rec_on S''''), intros (respect_id₂, respect_comp₂),
-    apply idp,
+        exact (pr2 (pr2 (pr2 @S.2.2)))
+      end,
+      begin
+        fapply is_equiv.adjointify,
+          {intro F, cases F,
+           apply (sigma.mk catF (sigma.mk twoF
+                   (respect_id₁ , (respect_comp₁, (respect_id₂, respect_comp₂)))))},
+          {intro F, cases F, apply idp},
+          {intro S,
+           cases S    with (catF, S'),
+           cases S'   with (twoF, S''),
+           cases S''  with (respect_id₁, S'''),
+           cases S''' with (respect_comp₁, S''''),
+           cases S'''',
+           apply idp}
+      end
   end
-  set_option unifier.max_steps 20000
-
 
   context
   parameters (D E : Dbl_precat)
@@ -157,7 +134,7 @@ namespace dbl_precat
     apply (eq.rec_on p2), apply (eq.rec_on p1),
     intros, apply (ap01111 (λ f g h i, dbl_functor.mk catF1 twoF1 f g h i)),
       repeat (
-        repeat ( apply funext.eq_of_homotopy ; intros ) ;
+        repeat ( apply eq_of_homotopy ; intros ) ;
         apply (@is_hset.elim _ (!(homH' (two_cell E)))) ),
   end
 

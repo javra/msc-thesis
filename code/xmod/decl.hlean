@@ -1,6 +1,6 @@
-import algebra.groupoid algebra.group algebra.precategory.to_fun
+import algebra.groupoid algebra.group
 
-open to_fun eq category is_trunc path_algebra
+open iso eq category is_trunc path_algebra
 attribute comp [reducible]
 
 structure xmod_aux [class] {P₀ : Type} [P : groupoid P₀] (M : P₀ → Group) : Type :=
@@ -26,7 +26,6 @@ namespace xmod
   variable [MM : xmod M]
   include P MM
 
-  set_option class.trace_instances true
   definition μ_respect_inv ⦃p : P₀⦄ (a : M p) : μ P (has_inv.inv a) = (μ P a)⁻¹ :=
   begin
     assert H : (@μ P₀ P M MM p (has_inv.inv a)) ∘ (μ P a) = ((μ P a)⁻¹) ∘ (μ P a),
@@ -34,12 +33,12 @@ namespace xmod
       apply concat, apply (ap (λ x, μ P x)), apply mul_left_inv,
       apply concat, apply μ_respect_id,
       apply eq.inverse, apply left_inverse,
-    apply is_epi.elim, exact H,
+    apply epi.elim, exact H,
   end
 
   definition φ_respect_one ⦃p q : P₀⦄ (a : hom p q) : @φ P₀ P M MM p q a 1 = 1 :=
   begin
-    assert (H : @φ P₀ P M MM p q a 1 * 1 = (@φ P₀ P M MM p q a 1) * (@φ P₀ P M MM p q a 1)),
+    assert H : @φ P₀ P M MM p q a 1 * 1 = (@φ P₀ P M MM p q a 1) * (@φ P₀ P M MM p q a 1),
       apply eq.inverse, apply concat, apply eq.inverse, apply φ_respect_M_comp,
       apply concat, apply (ap (λ x, φ a x)), apply one_mul,
       apply eq.inverse, apply mul_one,

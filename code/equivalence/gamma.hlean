@@ -1,11 +1,10 @@
 import .gamma_mu_phi ..transport4 ..dbl_gpd.basic ..dbl_cat.transports
 
-open dbl_precat precategory is_trunc eq nat
-open equiv groupoid morphism sigma sigma.ops prod
+open dbl_precat eq iso category is_trunc nat
+open equiv sigma sigma.ops prod
 open path_algebra dbl_gpd
 set_option apply.class_instance false -- disable class instance resolution in the apply tactic
 attribute gamma.M [instance]
-attribute compose [reducible]
 
 set_option pp.beta true
 namespace gamma
@@ -38,7 +37,7 @@ namespace gamma
     (v : D₂ a id id id) (u : D₂ lidu id id id) :
   gamma_CM2_gadget a lidu v u
   = (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) (id ∘ w) (id ∘ id) (id ∘ id)) ((id_left _)⁻¹)
-    (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) w (id ∘ id) (id ∘ id)) ((compose_inverse_id')⁻¹)
+    (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) w (id ∘ id) (id ∘ id)) ((comp.right_inverse _)⁻¹)
       (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) id w (id ∘ id)) ((id_left id)⁻¹)
         (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) id id w) ((id_left id)⁻¹)
           (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) w id id) (right_inverse a)
@@ -75,9 +74,9 @@ namespace gamma
   protected definition gamma_CM2_vertical ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :
   gamma_CM2_gadget a lidu v u
-  = (transport (λ (w : hom x x), D₂ (a ∘ (lidu ∘ (a⁻¹))) (id ∘ (id ∘ IDinv' x)) w (id ∘ id))
+  = (transport (λ (w : hom x x), D₂ (a ∘ (lidu ∘ (a⁻¹))) (id ∘ (id ∘ _)) w (id ∘ id))
        ((id_right id)⁻¹)
-       (transport (λ (w : hom x x), D₂ (a ∘ (lidu ∘ (a⁻¹))) (id ∘ (id ∘ IDinv' x)) id w)
+       (transport (λ (w : hom x x), D₂ (a ∘ (lidu ∘ (a⁻¹))) (id ∘ (id ∘ _)) id w)
           ((id_right id)⁻¹)
           (comp₂ D₂ v (comp₂ D₂ u (inv₂ D₂ v))))) :=
   begin
@@ -91,8 +90,8 @@ namespace gamma
     apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply (ap (λ x, comp₂ D₂ _ x)),
       apply gamma.id_right₁',
     apply concat, apply (ap (λ x, comp₂ D₂ _ x)), apply inverse,
-      apply transp_comp₂_eq_comp₂_transp_transp_rl, apply homH,
-    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_transp_rl, apply homH,
+      apply transp_comp₂_eq_comp₂_transp_transp_rl,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_transp_rl,
     apply idp,
   end
 
@@ -125,7 +124,7 @@ namespace gamma
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply inverse,
     apply concat, apply (@transport_eq_transport4 _ _ _ _ (@D₂ x x x x) (hom x x)
-      (λ w, lidv ∘ (lidu ∘ (lidv⁻¹))) (λ w, id ∘ (id ∘ IDinv' x)) (λ w, w) (λ w, id ∘ id)
+      (λ w, lidv ∘ (lidu ∘ (lidv⁻¹))) (λ w, id ∘ (id ∘ _)) (λ w, w) (λ w, id ∘ id)
       _ _ ((id_right id)⁻¹)),
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
@@ -144,7 +143,7 @@ namespace gamma
     apply homH, apply homH, apply homH, apply homH,
   end
 
-  protected definition xmod : xmod C (λ x, gamma.M_bundled x) :=
+  protected definition xmod : xmod (λ x, gamma.M_bundled x) :=
   begin
     fapply xmod.mk,
       exact D₀set,

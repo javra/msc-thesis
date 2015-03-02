@@ -1,11 +1,10 @@
 import algebra.precategory.basic algebra.precategory.morphism
-open precategory morphism is_trunc eq sigma sigma.ops unit
+open category is_trunc eq sigma sigma.ops unit
 
 context
   parameter {D₀ : Type}
   parameter (C  : precategory D₀)
   parameter (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type)
-  attribute compose [reducible]
 
   definition comp₁_type [reducible]  : Type :=
   Π ⦃a b c₁ d₁ c₂ d₂ : D₀⦄
@@ -79,6 +78,6 @@ structure Dbl_precat : Type :=
   (two_cell : Π ⦃a b c d : cat⦄ (f : hom a b)
     (g : hom c d) (h : hom a c) (i : hom b d), Type)
   (struct : dbl_precat cat two_cell)
-  (obj_set : is_hset (objects cat)) --TODO: make this all consistent...
+  (obj_set : is_hset (carrier cat)) --TODO: make this all consistent...
 
 attribute Dbl_precat.struct [instance]

@@ -1,8 +1,7 @@
 import ..dbl_gpd.basic ..xmod.decl ..transport4
 
-open dbl_precat precategory is_trunc eq nat
-open equiv morphism groupoid sigma sigma.ops prod
-open path_algebra
+open dbl_precat eq iso category is_trunc nat
+open equiv sigma sigma.ops prod path_algebra
 set_option apply.class_instance false -- disable class instance resolution in the apply tactic
 
 --TODO make this file compile faster!
@@ -92,7 +91,7 @@ namespace gamma
     transport (λ x, D₂ (lid1 ∘ x) _ id id) p (comp₂ D₂ filler1 filler2)
     = comp₂ D₂ filler1 (p ▹ filler2) :=
   begin
-    apply (eq.rec_on p), apply idp,
+    cases p, apply idp,
   end
 
   protected definition M_morphism.assoc_ur_transport {a : D₀} {lid1 lid2 f1 f2 g : hom a a}
@@ -100,7 +99,7 @@ namespace gamma
     transport (λ x, D₂ (x ∘ lid2) _ id id) p (comp₂ D₂ filler1 filler2)
     = comp₂ D₂ (p ▹ filler1) filler2 :=
   begin
-    apply (eq.rec_on p), apply idp,
+    cases p, apply idp,
   end
 
   protected definition M_morphism.assoc_aux {a : D₀} (w v u : M_morphism a) :
@@ -109,7 +108,7 @@ namespace gamma
     (comp₂ D₂ (M_morphism.filler w) (comp₂ D₂ (M_morphism.filler v)
       (M_morphism.filler u))) :=
   begin
-    apply (!M_morphism.assoc_bl_transport⁻¹),
+    apply eq.inverse, apply M_morphism.assoc_bl_transport,
   end
 
   protected definition M_morphism.assoc_aux2 {a : D₀} (w v u : M_morphism a) :
@@ -128,9 +127,9 @@ namespace gamma
       (transport (λ x, D₂ lid (g ∘ x) id id) p filler)
     = transport (λ x, D₂ lid x id id) r filler :=
   begin
-    revert r, revert p, apply (eq.rec_on q),
-    intro p, apply (eq.rec_on p),
-    intro r, assert (P : idp = r),
+    revert r, revert p, cases q,
+    intro p, cases p,
+    intro r, assert P : idp = r,
       apply is_hset.elim,
     apply (transport _ P),
     apply idp,
@@ -156,7 +155,7 @@ namespace gamma
       apply transport_commute,
       apply (ap (transport (λ (a_2 : hom a a), D₂ _ a_2 id id) (id_left id))),
       apply concat,
-      apply (ap (transport (λ (a_3 : hom a a), D₂ a_3 (compose id id) id id)
+      apply (ap (transport (λ (a_3 : hom a a), D₂ a_3 (id ∘ id) id id)
        (assoc (M_morphism.lid (M_morphism.mk w1 w2)) (M_morphism.lid (M_morphism.mk v1 v2))
          (M_morphism.lid (M_morphism.mk u1 u2))))),
       apply M_morphism.assoc_aux,
@@ -204,16 +203,6 @@ namespace gamma
       apply idp,
   end
 
-  --TODO: Think of something better to prevent such ambiguities
-  definition IDinv' [reducible] (a : D₀) :=
-  @morphism.inverse D₀ C a a (ID a) (all_iso (ID a))
-
-  definition iso_of_id' {a : D₀} : IDinv' a = id :=
-  !id_inverse
-
-  definition compose_inverse_id' {x : D₀} : compose id (IDinv' x) = id :=
-  (@right_inverse D₀ C x x (@id D₀ C x) (@all_iso D₀ C x x (@id D₀ C x)))
-
   definition M_morphism.inv_aux ⦃a : D₀⦄ (u : M_morphism a) :
     D₂ ((M_morphism.lid u)⁻¹) id id id :=
   (@id_inverse D₀ C a (!all_iso)) ▹ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler  u))
@@ -237,13 +226,13 @@ namespace gamma
 
   definition M_morphism.inverse_compose_aux1 {a : D₀} (u : M_morphism a) :
     (comp₂ D₂ (M_morphism.filler (M_morphism.inv u)) (M_morphism.filler u))
-    = iso_of_id' ▹
+    = !id_inverse ▹
     (comp₂ D₂ (weak_dbl_gpd.inv₂ D₂ (M_morphism.filler u)) (M_morphism.filler u)) :=
-  (M_morphism.inverse_compose_aux_aux u u iso_of_id')
+  (M_morphism.inverse_compose_aux_aux u u !id_inverse)
 
   definition M_morphism.inverse_compose_aux4 {a : D₀} (u : M_morphism a) :=
   ap (λ x, (transport (λ (a_2 : hom a a), D₂ (ID a) a_2 id id) (id_left id)
-       (transport (λ (a_3 : hom a a), D₂ a_3 (compose id id) id id)
+       (transport (λ (a_3 : hom a a), D₂ a_3 (id ∘ id) id id)
           (left_inverse (M_morphism.lid u)) x)))
     (M_morphism.inverse_compose_aux1 u)
 
@@ -257,8 +246,8 @@ namespace gamma
   begin
     revert p1, revert p2, revert p3, revert p4, apply (eq.rec_on p5),
     intro p4, apply (eq.rec_on p4), intro p3, apply (eq.rec_on p3), intro p2, intro p1,
-    assert (p1refl : idp = p1), apply is_hset.elim, apply (transport _ p1refl),
-    assert (p2refl : idp = p2), apply is_hset.elim, apply (transport _ p2refl),
+    assert p1refl : idp = p1, apply is_hset.elim, apply (transport _ p1refl),
+    assert p2refl : idp = p2, apply is_hset.elim, apply (transport _ p2refl),
     apply idp,
   end
 

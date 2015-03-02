@@ -2,12 +2,12 @@ import .decl .functor
 import algebra.category.basic
 set_option pp.beta true
 
-open eq morphism is_trunc Dbl_precat Precategory equiv prod sigma pi functor
+open eq is_trunc Dbl_precat category equiv prod sigma pi functor
 
 namespace dbl_precat
 
   set_option apply.class_instance false
-  definition is_hset_dbl_functor (D E : Dbl_precat) (Dset : is_hset (objects (cat E))) :
+  definition is_hset_dbl_functor (D E : Dbl_precat) (Dset : is_hset (carrier (cat E))) :
     is_hset (dbl_functor D E) :=
   begin
     apply is_trunc_equiv_closed,
@@ -21,10 +21,9 @@ namespace dbl_precat
     repeat ( apply is_trunc_pi ; intros), apply is_trunc_eq,
       apply is_trunc_succ, apply (homH' (two_cell E)),
   end
-
+exit
   --set_option pp.implicit true
   universe variables l₁ l₂ l₃
-  check @dbl_functor.congr
   definition cat_dbl_precat : category.{(max l₁ l₂ l₃)+1 (max l₁ l₂ l₃)}
     Dbl_precat.{l₁ l₂ l₃} :=
   begin
@@ -37,8 +36,9 @@ namespace dbl_precat
       intros (B, C, D, E, H, G, F),
         fapply (dbl_functor.congr B E),
           apply functor.assoc,
-          repeat ( apply funext.eq_of_homotopy ; intros),
+          repeat ( apply eq_of_homotopy ; intros),
           --apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+          exact sorry,
   end
 
 end dbl_precat

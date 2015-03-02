@@ -2,10 +2,8 @@ import ..dbl_gpd.decl ..xmod.decl
 set_option apply.class_instance false -- turn off class instance resolution by apply tactic
 --set_option pp.beta true
 
-open eq sigma is_trunc unit precategory morphism path_algebra xmod groupoid
+open eq sigma is_trunc unit iso category path_algebra xmod
 open equiv sigma.ops
-
-
 
 namespace lambda
   context
@@ -108,7 +106,7 @@ namespace lambda
     apply concat, apply (ap (λ x, x ∘ _)), apply CM1,
     apply concat, apply (ap (λ x, (_ ∘ x ∘ _) ∘ _)), apply (lambda_morphism.comm u),
     apply concat, apply (!assoc⁻¹),
-    apply concat, rotate 1, apply assoc, apply (ap (λ x, comp i₂ x)),
+    apply concat, rotate 3, apply assoc, apply (ap (λ x, comp i₂ x)),
     apply concat, apply inverse, apply assoc,
     apply concat, apply inverse, apply assoc, apply (ap (λ x, comp i₁ x)),
     apply concat, apply inverse, apply assoc, apply (ap (λ x, comp f₁ x)),
@@ -350,18 +348,16 @@ namespace lambda
     apply concat, apply CM1,
     apply concat, apply (ap (λ x, _ ∘ x ∘ _)),
       apply (μ_respect_inv M (lambda_morphism.m u)),
-    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply (ap (λ x, morphism.inverse x)),
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply (ap (λ x, iso.inverse x)),
       apply (lambda_morphism.comm u),
-    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.iso.comp_inverse,
-    --TODO create similar self contained examples for rewriting
-    --rewrite [{(i ∘ f ∘ h⁻¹ ∘ g⁻¹)⁻¹}(@morphism.iso.comp_inverse _ _ _ _ _ i (f ∘ (h⁻¹) ∘ (g⁻¹)) (!all_iso) (!all_iso) (!all_iso))],
-    apply concat, apply (ap (λ x, _ ∘ x)), apply inverse, apply assoc,
-    apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply right_inverse,
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply iso.comp_inverse,
+    apply concat, apply (ap (λ x, _ ∘ x)), apply eq.inverse, apply assoc,
+    apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply iso.right_inverse,
     apply concat, apply (ap (λ x, _ ∘ x)), apply id_right,
-    apply concat, apply (ap (λ x, _ ∘ x)), apply morphism.iso.comp_inverse,
-    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.iso.comp_inverse,
-    apply concat, apply (ap (λ x, _ ∘ x)), apply inverse, apply assoc,
-    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.inverse_involutive,
+    apply concat, apply (ap (λ x, _ ∘ x)), apply iso.comp_inverse,
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply iso.comp_inverse,
+    apply concat, apply (ap (λ x, _ ∘ x)), apply eq.inverse, apply assoc,
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)),      apply iso.inverse_involutive,
     apply idp,
   end
 
@@ -401,18 +397,18 @@ namespace lambda
       apply (φ (g⁻¹) (has_inv.inv (lambda_morphism.m u))),
     apply concat, apply CM1,
     apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply μ_respect_inv,
-    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply (ap (λ x, morphism.inverse x)),
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply (ap (λ x, iso.inverse x)),
       apply (lambda_morphism.comm u),
-    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.iso.comp_inverse,
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply iso.comp_inverse,
     apply concat, apply (ap (λ x, _ ∘ x)), apply inverse, apply assoc,
-    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.iso.comp_inverse,
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply iso.comp_inverse,
     apply concat, apply (ap (λ x, _ ∘ x)), apply inverse, apply assoc,
-    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply morphism.iso.comp_inverse,
+    apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply iso.comp_inverse,
     apply concat, apply (ap (λ x, _ ∘ x)), apply inverse, apply assoc,
     apply concat, apply assoc,
     apply concat, apply (ap (λ x, x ∘ _)), apply right_inverse,
     apply concat, apply id_left,
-    apply (ap (λ x, x ∘ _)), apply morphism.inverse_involutive,
+    apply (ap (λ x, x ∘ _)), apply iso.inverse_involutive,
   end
 
   protected definition lambda_morphism.left_inverse₂ {a b c d : P₀}
@@ -460,9 +456,8 @@ namespace lambda
     exact p,
   end
 
-  protected definition lambda_morphism.thin_ID₁ {a b : P₀}
-    (f : hom a b) :
-    lambda_morphism.T f f (ID a) (ID b) (id_right f ⬝ id_left f ⁻¹)
+  protected definition lambda_morphism.thin_ID₁ {a b : P₀} (f : hom a b) :
+    lambda_morphism.T f f (ID a) (ID b) (id_right f ⬝ (id_left f)⁻¹)
     = lambda_morphism.ID₁ f :=
   begin
     fapply lambda_morphism.congr,
@@ -470,9 +465,8 @@ namespace lambda
     apply is_hset.elim,
   end
 
-  protected definition lambda_morphism.thin_ID₂ {a b : P₀}
-    (f : hom a b) :
-    lambda_morphism.T (ID a) (ID b) f f (id_left f ⬝ id_right f ⁻¹)
+  protected definition lambda_morphism.thin_ID₂ {a b : P₀} (f : hom a b) :
+    lambda_morphism.T (ID a) (ID b) f f (id_left f ⬝ (id_right f)⁻¹)
     = lambda_morphism.ID₂ f :=
   begin
     fapply lambda_morphism.congr,

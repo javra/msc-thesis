@@ -1,7 +1,7 @@
 import .gamma_group ..transport4 ..dbl_gpd.basic ..dbl_cat.transports
 
-open dbl_precat precategory is_trunc eq nat
-open equiv morphism groupoid sigma sigma.ops prod
+open dbl_precat eq iso category is_trunc nat
+open equiv sigma sigma.ops prod
 open path_algebra dbl_gpd
 attribute gamma.M [instance]
 
@@ -34,7 +34,7 @@ namespace gamma
   begin
     fapply M_morphism.mk,
       apply (a ∘ (M_morphism.lid u) ∘ a⁻¹),
-    assert (v : D₂ (a ∘ (M_morphism.lid u) ∘ a⁻¹) (a ∘ id ∘ a⁻¹) id id),
+    assert v : D₂ (a ∘ (M_morphism.lid u) ∘ a⁻¹) (a ∘ id ∘ a⁻¹) id id,
       apply (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ (M_morphism.filler u) (ID₁ D₂ (a⁻¹)))),
     apply (transport (λ x, D₂ _ x id id) (right_inverse a)
              (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹)) v)),
@@ -74,14 +74,14 @@ namespace gamma
     fapply (M_morphism.congr),
       apply concat, apply id_left,
       apply concat, apply (ap (λ x, _ ∘ x)),
-      apply (@iso_of_id' D₀ D₀set C D₂ G),
+      apply id_inverse,
       apply id_right,
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply (transport (λ x, comp₂ D₂ x _ = _) ((zero_unique D₂ y)⁻¹)),
     apply concat, apply phi_respect_id_aux,
     apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
     apply concat,  apply (eq_inv_tr_of_tr_eq _ _ _ _
-      (apD (λ x, comp₂ D₂ filler (ID₁ D₂ x)) (@iso_of_id' D₀ D₀set C D₂ G y))),
+      (apD (λ x, comp₂ D₂ filler (ID₁ D₂ x)) (!id_inverse))),
     apply inv_tr_eq_of_eq_tr,
     apply (transport (λ x, comp₂ D₂ _ x = _) ((zero_unique D₂ y)⁻¹)),
     apply concat, apply phi_respect_id_aux2,
@@ -120,7 +120,7 @@ namespace gamma
   end
 
   protected definition Pbainv ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z) :
-    (a⁻¹) ∘ (b⁻¹) = (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)) :=
+    (a⁻¹) ∘ (b⁻¹) = (b ∘ a)⁻¹ :=
   ((@iso.comp_inverse _ _ _ _ _ b a (!all_iso) (!all_iso) (!all_iso))⁻¹)
 
   protected definition phi_respect_P_comp₂_aux2 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
@@ -180,8 +180,6 @@ namespace gamma
   protected definition phi_respect_P_comp ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y)
     (u : M_morphism x) : phi (b ∘ a) u = phi b (phi a u) :=
   begin
-    assert (bainv : hom z x),
-      exact (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso)),
     apply (M_morphism.rec_on u), intros (lid, filler),
     fapply (M_morphism.congr),
       apply (transport _ (Pbainv a b)),
@@ -196,16 +194,16 @@ namespace gamma
     apply phi_respect_P_comp₂_aux,
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
-    assert (P1 : ID₁ D₂ (b ∘ a) = comp₂ D₂ (ID₁ D₂ b) (ID₁ D₂ a)),
+    assert P1 : ID₁ D₂ (b ∘ a) = comp₂ D₂ (ID₁ D₂ b) (ID₁ D₂ a),
       apply id_comp₂,
     apply (transport (λ x, _ = comp₂ D₂ x _) (P1⁻¹)),
     apply concat, rotate 3, apply inverse,
-    assert (P2 : ID₁ D₂ (@morphism.inverse D₀ C x z (b ∘ a) (!all_iso))
-      = (Pbainv a b) ▹ ID₁ D₂ ((a⁻¹) ∘ (b⁻¹))),
+    assert P2 : ID₁ D₂ (b ∘ a)⁻¹ʰ
+      = (Pbainv a b) ▹ ID₁ D₂ ((a⁻¹ʰ) ∘ (b⁻¹ʰ)),
       apply (eq.rec_on (Pbainv a b)), apply idp,
     apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ b) (ID₁ D₂ a))
       (comp₂ D₂ filler x)) P2),
-    assert (P4 : ID₁ D₂ ((@morphism.inverse D₀ C _ _ a (!all_iso)) ∘ (@morphism.inverse D₀ C _ _ b (!all_iso))) = comp₂ D₂ (ID₁ D₂ (a⁻¹)) (ID₁ D₂ (b⁻¹))),
+    assert P4 : ID₁ D₂ (a⁻¹ʰ ∘ b⁻¹ʰ) = comp₂ D₂ (ID₁ D₂ (a⁻¹ʰ)) (ID₁ D₂ (b⁻¹ʰ)),
       apply id_comp₂,
     apply (transport (λ x, _ = comp₂ D₂ _ (comp₂ D₂ filler ((Pbainv a b) ▹ x))) (P4⁻¹)),
     apply concat, rotate 3, apply inverse, apply phi_respect_P_comp₂_aux2,
@@ -324,13 +322,13 @@ namespace gamma
     apply (M_morphism.rec_on u), intros (lidu, filleru),
     --Part I : Equality of lids
     fapply (M_morphism.congr),
-      apply concat, rotate 1, apply inverse,
-      apply (!assoc⁻¹), rotate 1, apply (ap (λ x, a ∘ x)),
-      apply concat,  rotate 1, apply inverse,
-      apply (!assoc⁻¹), rotate 1,
+      apply concat, rotate 4, apply inverse,
+      apply (!assoc⁻¹), rotate 3, apply (ap (λ x, a ∘ x)),
+      apply concat,  rotate 4, apply inverse,
+      apply (!assoc⁻¹), rotate 3,
       apply concat, apply (!assoc⁻¹), apply (ap (λ x, lidv ∘ x)),
-      apply concat, rotate 1, apply inverse, apply assoc, rotate 1,
-      apply concat, rotate 1, apply inverse, apply assoc, rotate 1, apply (ap (λ x, x ∘ a⁻¹)),
+      apply concat, rotate 4, apply inverse, apply assoc, rotate 3,
+      apply concat, rotate 4, apply inverse, apply assoc, rotate 3, apply (ap (λ x, x ∘ a⁻¹)),
       apply concat, apply (!id_left⁻¹), apply (ap (λ x, x ∘ lidu)),
       apply inverse, apply left_inverse,
     --Part II: Equality of fillers
@@ -340,39 +338,39 @@ namespace gamma
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_ub,
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply eq_tr_of_inv_tr_eq,
-    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux,
+    apply concat, rotate 3, apply inverse, apply phi_respect_M_comp₂_aux,
     apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
     apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
-    apply concat, rotate 1, apply inverse, apply assoc₂',
+    apply concat, rotate 3, apply inverse, apply assoc₂',
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
-    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux2,
-    apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_ub,
+    apply concat, rotate 3, apply inverse, apply phi_respect_M_comp₂_aux2,
+    apply concat, rotate 3, apply transp_comp₂_eq_comp₂_transp_r_ub,
     apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
-    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux3,
-    apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
+    apply concat, rotate 3, apply inverse, apply phi_respect_M_comp₂_aux3,
+    apply concat, rotate 3, apply (ap (λ x, comp₂ D₂ x _)),
     apply transp_comp₂_eq_comp₂_transp_l_ub,
-    apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_ub,
+    apply concat, rotate 3, apply transp_comp₂_eq_comp₂_transp_r_ub,
     apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
-    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux4,
-    apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) x) _)),
+    apply concat, rotate 3, apply inverse, apply phi_respect_M_comp₂_aux4,
+    apply concat, rotate 3, apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) x) _)),
     apply transp_comp₂_eq_comp₂_transp_l_ub,
-    apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
+    apply concat, rotate 3, apply (ap (λ x, comp₂ D₂ x _)),
     apply transp_comp₂_eq_comp₂_transp_l_ub,
-    apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_ub,
+    apply concat, rotate 3, apply transp_comp₂_eq_comp₂_transp_r_ub,
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq, beta,
-    apply concat, rotate 1, apply inverse, apply phi_respect_M_comp₂_aux5,
-    apply concat, rotate 1,
+    apply concat, rotate 3, apply inverse, apply phi_respect_M_comp₂_aux5,
+    apply concat, rotate 3,
     apply (ap (λ x, comp₂ D₂ (comp₂ D₂ (ID₁ D₂ a) x) _)),
     apply inverse, apply (id_right₂' fillerv),
-    apply concat, rotate 1, apply (ap (λ x, comp₂ D₂ x _)),
+    apply concat, rotate 3, apply (ap (λ x, comp₂ D₂ x _)),
     apply transp_comp₂_eq_comp₂_transp_l_bu,
-    apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_r_bu,
+    apply concat, rotate 3, apply transp_comp₂_eq_comp₂_transp_r_bu,
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
-    apply concat, rotate 1, apply inverse, apply (!assoc₂⁻¹),
+    apply concat, rotate 3, apply inverse, apply (!assoc₂⁻¹),
     apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
-    apply concat, rotate 1, apply inverse, apply (ap (λ x, comp₂ D₂ _ x)),
+    apply concat, rotate 3, apply inverse, apply (ap (λ x, comp₂ D₂ _ x)),
     apply assoc₂',
-    apply concat, rotate 1, apply transp_comp₂_eq_comp₂_transp_l_bu,
+    apply concat, rotate 3, apply transp_comp₂_eq_comp₂_transp_l_bu,
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat,
     apply (@transport_eq_transport4 (hom y y) (hom y y) (hom y y) (hom y y)

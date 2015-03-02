@@ -1,7 +1,7 @@
 import types.sigma types.pi
 import .decl
 
-open precategory morphism is_trunc eq sigma sigma.ops unit nat
+open category is_trunc eq sigma sigma.ops unit nat
 open equiv pi
 
 namespace dbl_precat
@@ -40,7 +40,7 @@ namespace dbl_precat
                                ... = f ∘ ID a : id_right),
       repeat ( intros ; apply is_hset.elim ),
       intros, apply is_trunc_eq, --apply is_trunc_succ, apply !homH,
-      repeat ( intros ; apply @is_hprop.elim ;  apply is_trunc_eq ),
+      repeat ( intros ; apply is_hset.elim ),
   end
 
 end dbl_precat

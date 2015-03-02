@@ -1,7 +1,6 @@
 import .decl .basic
 
-open dbl_precat precategory is_trunc
-open morphism eq
+open dbl_precat category is_trunc eq
 
 namespace dbl_precat
   context
@@ -136,7 +135,7 @@ namespace dbl_precat
     revert v, revert u, revert pi₁', revert pi₁, revert i₁',
     apply (eq.rec_on ph₁), apply (eq.rec_on pi₂),
     intro i₁', intro pi₁, intro pi₁',
-    assert (H : pi₁ = pi₁'), apply @is_hset.elim,
+    assert H : pi₁ = pi₁', apply @is_hset.elim,
     intros, apply (eq.rec_on H),
     apply (eq.rec_on pi₁), apply idp,
   end

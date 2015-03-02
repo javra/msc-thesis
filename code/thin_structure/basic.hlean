@@ -1,8 +1,7 @@
 import types.pi types.sigma
 import .decl
 
-open eq dbl_precat precategory is_trunc morphism
-attribute compose [reducible]
+open eq dbl_precat category is_trunc
 
 namespace thin_structure
   context
@@ -91,20 +90,22 @@ namespace thin_structure
       = br_connect (g ∘ f) :=
   begin
     apply tr_eq_of_eq_inv_tr,
-    assert (line2_commute : (id ∘ id) ∘ g = id ∘ g ∘ id),
+    assert line2_commute : (id ∘ id) ∘ g = id ∘ g ∘ id,
       exact (calc (id ∘ id) ∘ g = id ∘ g : @id_left D₀ C
                            ... = (id ∘ g) ∘ id : id_right
                            ... = id ∘ (g ∘ id) : assoc),
-    assert (line2_thin : thin (g ∘ id) (id ∘ id) g id line2_commute = comp₂ D₂ (br_connect g) (ID₂ D₂ g)),
-      assert (line2_aux : ID₂ D₂ g = thin id id g g (!id_left ⬝ !id_right⁻¹)),
+    assert line2_thin : thin (g ∘ id) (id ∘ id) g id line2_commute
+      = comp₂ D₂ (br_connect g) (ID₂ D₂ g),
+      assert line2_aux : ID₂ D₂ g = thin id id g g (!id_left ⬝ !id_right⁻¹),
         apply inverse, apply (thin_structure.thin_id₂ D thin),
       apply inverse, apply concat, exact (ap (λx, comp₂ D₂ (br_connect g) x) line2_aux),
       apply (thin_structure.thin_comp₂ D thin),
-    assert (line1_commute : (g ∘ id) ∘ f = id ∘ g ∘ f),
+    assert line1_commute : (g ∘ id) ∘ f = id ∘ g ∘ f,
       exact (calc (g ∘ ID b) ∘ f = g ∘ f : @id_right D₀ C
                             ... = ID c ∘ g ∘ f : id_left),
-    assert (line1_thin : thin (g ∘ f) (g ∘ id) f id line1_commute = comp₂ D₂ (ID₁ D₂ g) (br_connect f)),
-      assert (line1_aux : ID₁ D₂ g = thin g g id id (!id_right ⬝ !id_left⁻¹)),
+    assert line1_thin : thin (g ∘ f) (g ∘ id) f id line1_commute
+      = comp₂ D₂ (ID₁ D₂ g) (br_connect f),
+      assert line1_aux : ID₁ D₂ g = thin g g id id (!id_right ⬝ !id_left⁻¹),
         apply inverse, apply (thin_structure.thin_id₁ D thin),
       apply inverse, apply concat, exact (ap (λx, comp₂ D₂ x (br_connect f)) line1_aux),
       apply (thin_structure.thin_comp₂ D thin),
@@ -139,20 +140,22 @@ namespace thin_structure
       = ul_connect (g ∘ f) :=
   begin
     apply tr_eq_of_eq_inv_tr,
-    assert (col1_commute : f ∘ id ∘ id = (id ∘ f) ∘ id),
+    assert col1_commute : f ∘ id ∘ id = (id ∘ f) ∘ id,
       exact (calc f ∘ id ∘ id = f ∘ id : @id_left D₀ C
                          ... = id ∘ (f ∘ id) : id_left
                          ... = (id ∘ f) ∘ id : assoc),
-    assert (col1_thin : thin id f (id ∘ id) (id ∘ f) col1_commute = comp₁ D₂ (ID₁ D₂ f) (ul_connect f)),
-      assert (col1_aux : ID₁ D₂ f = thin f f id id (!id_right ⬝ !id_left⁻¹)),
+    assert col1_thin : thin id f (id ∘ id) (id ∘ f) col1_commute
+      = comp₁ D₂ (ID₁ D₂ f) (ul_connect f),
+      assert col1_aux : ID₁ D₂ f = thin f f id id (!id_right ⬝ !id_left⁻¹),
         apply inverse, apply (thin_structure.thin_id₁ D thin),
       apply inverse, apply concat, exact (ap (λx, comp₁ D₂ x (ul_connect f)) col1_aux),
       apply (thin_structure.thin_comp₁ D thin),
-    assert (col2_commute : g ∘ id ∘ f = (g ∘ f) ∘ id),
+    assert col2_commute : g ∘ id ∘ f = (g ∘ f) ∘ id,
       exact (calc g ∘ id ∘ f = g ∘ f : @id_left D₀ C
                         ... = (g ∘ f) ∘ id : id_right),
-    assert (col2_thin : thin id g (id ∘ f) (g ∘ f) col2_commute = comp₁ D₂ (ul_connect g) (ID₂ D₂ f)),
-      assert (col2_aux : ID₂ D₂ f = thin id id f f (!id_left ⬝ !id_right⁻¹)),
+    assert col2_thin : thin id g (id ∘ f) (g ∘ f) col2_commute
+      = comp₁ D₂ (ul_connect g) (ID₂ D₂ f),
+      assert col2_aux : ID₂ D₂ f = thin id id f f (!id_left ⬝ !id_right⁻¹),
         apply inverse, apply (thin_structure.thin_id₂ D thin),
       apply inverse, apply concat, exact (ap (λx, comp₁ D₂ (ul_connect g) x) col2_aux),
       apply (thin_structure.thin_comp₁ D thin),
