@@ -107,7 +107,7 @@ $u \in D_2$ will be referred to as \textbf{shell} of this square.
 As seen in figure \ref{fig:corner-ident}, the four identities \ref{eq:corner-ident}
 correspond to the well-definedness of the corners of a given square $u \in D_2$.
 
-\begin{figure} \label{fig:corner-ident} \centering
+\begin{figure} \centering
 \begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
 \node(UL) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above left: 
 	{\scriptsize{$\partial^- (\upperf (u)) = \partial^- (\leftf (u))$}}}] at (0,1) {};
@@ -124,6 +124,7 @@ correspond to the well-definedness of the corners of a given square $u \in D_2$.
 \node at (0.5,0.5) {$u$};
 \end{tikzpicture}
 \caption{A square $u \in D_2$ and its iterated faces.}
+\label{fig:corner-ident}
 \end{figure}
 
 The next four equations~\ref{eq:degen-ident} tell us that for any line $f \in D_1$,
@@ -138,7 +139,7 @@ square of a line which is itself degenerate and end up with a square with all fo
 faces degenerate, it doesn't matter if we chose the vertical or the horizontal
 degeneracy but that instead we receive a unique zero-element for each $x \in D_0$.
 
-\begin{figure} \label{fig:degen-ident} \centering
+\begin{figure} \centering
 \begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
 \node(UL) [fill,circle,inner sep=0pt,minimum size=5pt] at (0,1) {};
 \node(UR) [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
@@ -162,13 +163,14 @@ degeneracy but that instead we receive a unique zero-element for each $x \in D_0
 \end{tikzpicture}
 \caption{Degenerate squares of the vertical and horizontal category for a given
 line $f \in D_1$. Degenerate lines are drawn as double lines.} %%TODO "double lines"?
+\label{fig:degen-ident}
 \end{figure}
 
 The linearity condition~\ref{eq:linear-ident} serves to define the two faces of
 a composite square that are not already fixed by the definition of vertical and
 horizontal category.
 
-\begin{figure} \label{fig:interchange} \centering
+\begin{figure} \centering
 \begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
 \foreach \x in {0,1,2} {
 	\foreach \y in {0,1,2} {
@@ -186,6 +188,7 @@ horizontal category.
 \caption{The grid we use to illustrate the composition $(x \circ_2 w) \circ_1 (v \circ_2 u)$
 as well as $(x \circ_1 v) \circ_2 (w \circ_1 u)$, which are identical by the
 interchange law.}
+\label{fig:interchange}
 \end{figure}
 
 The interchange law can be applied to four squares that are composable as a 
@@ -300,7 +303,7 @@ We denote the lower right connection of $f$ with $\Gamma^-(f)$ and the upper lef
 connection with $\Gamma^+(f)$.
 \end{defn}
 
-\begin{figure} \label{fig:connections} \centering
+\begin{figure} \centering
 \begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
 \node(UL) [fill,circle,inner sep=0pt,minimum size=5pt] at (0,1) {};
 \node(UR) [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
@@ -323,6 +326,7 @@ connection with $\Gamma^+(f)$.
 \node at (3.5,0.5) {$\Gamma^+(f)$};
 \end{tikzpicture}
 \caption{Lower right and upper left connection of a morphism $f$.} %%TODO "double lines"?
+\label{fig:connections}
 \end{figure}
 
 We observe that connections are composable in the following sense:
@@ -340,14 +344,72 @@ $\partial^+(f) = \partial^-(g)$. Then,
 \end{align}
 \end{lemma}
 \begin{proof}
-As one can easily check (see figure \ref{fig:transport-laws}) for each of the equations,
+As one can easily check (see figures \ref{fig:transport-law-minus},
+\ref{fig:transport-law-plus}) for each of the equations,
 the composed squares are well defined and have the faces of the square on the left
 hand side coincide with those of the square on the right hand side.
 The composite squares are thin because they are a composition of thin squares.
 Then, the theorem follows from the uniqueness of thin fillers.
 \end{proof}
 
-%TODO illustration of transport laws
+\begin{figure} \centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\draw[double] (0,0) -- (2,0) -- (2,2);
+\draw[double] (0,1) -- (1,1) -- (1,2);
+\draw (0,0) -- (0,2) -- (2,2);
+\draw (1,0) -- (1,1) -- (2,1);
+\foreach \x in {0,1,2} {
+	\foreach \y in {0,1,2} {
+		\node[fill,circle,inner sep=0pt,minimum size=5pt] at (\x,\y) {};
+		
+	}
+}
+\node at (0.5,1.5) {$\Gamma^-(f)$};
+\node at (1.5,1.5) {$\epsilon_1(g)$};
+\node at (0.5,0.5) {$\epsilon_2(g)$};
+\node at (1.5,0.5) {$\Gamma^-(g)$};
+\node at (2.5,1) {$=$};
+\draw[double] (3,0.5) -- (4,0.5) -- (4,1.5);
+\draw (3,0.5) -- (3,1.5) -- (4,1.5);
+\node[fill,circle,inner sep=0pt,minimum size=5pt] at (3,0.5) {};
+\node[fill,circle,inner sep=0pt,minimum size=5pt] at (4,0.5) {};
+\node[fill,circle,inner sep=0pt,minimum size=5pt] at (3,1.5) {};
+\node[fill,circle,inner sep=0pt,minimum size=5pt] at (4,1.5) {};
+\node at (3.5,1) {$\Gamma^-(g \circ f)$};
+\end{tikzpicture}
+\caption{Illustration of the transport law for $\Gamma^-(g \circ f)$.}
+\label{fig:transport-law-minus}
+\end{figure}
+
+\begin{figure} \centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\draw (0,0) -- (2,0) -- (2,2);
+\draw (0,1) -- (1,1) -- (1,2);
+\draw[double] (0,0) -- (0,2) -- (2,2);
+\draw[double] (1,0) -- (1,1) -- (2,1);
+\foreach \x in {0,1,2} {
+	\foreach \y in {0,1,2} {
+		\node[fill,circle,inner sep=0pt,minimum size=5pt] at (\x,\y) {};
+		
+	}
+}
+\node at (0.5,1.5) {$\Gamma^+(f)$};
+\node at (1.5,1.5) {$\epsilon_2(f)$};
+\node at (0.5,0.5) {$\epsilon_1(f)$};
+\node at (1.5,0.5) {$\Gamma^+(g)$};
+\node at (2.5,1) {$=$};
+\draw (3,0.5) -- (4,0.5) -- (4,1.5);
+\draw[double] (3,0.5) -- (3,1.5) -- (4,1.5);
+\node[fill,circle,inner sep=0pt,minimum size=5pt] at (3,0.5) {};
+\node[fill,circle,inner sep=0pt,minimum size=5pt] at (4,0.5) {};
+\node[fill,circle,inner sep=0pt,minimum size=5pt] at (3,1.5) {};
+\node[fill,circle,inner sep=0pt,minimum size=5pt] at (4,1.5) {};
+\node at (3.5,1) {$\Gamma^+(g \circ f)$};
+\end{tikzpicture}
+\caption{Illustration of the transport law for $\Gamma^+(g \circ f)$.}
+\label{fig:transport-law-plus}
+\end{figure}
+
 
 
 
