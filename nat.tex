@@ -101,6 +101,8 @@ when considering the following geometric interpretation of a double category: We
 regard $D_0$ as a set of points, $D_1$ as a set of line segments and
 the elements in $D_2$ as squares. Then, $\upperf(u)$, $\lowerf(u)$, $\leftf(u)$ and
 $\rightf(u)$ correspond to the upper, lower, left and right face of a square $u$.
+The whole set of faces of a given square
+$u \in D_2$ will be referred to as \textbf{shell} of this square.
 
 As seen in figure \ref{fig:corner-ident}, the four identities \ref{eq:corner-ident}
 correspond to the well-definedness of the corners of a given square $u \in D_2$.
@@ -218,10 +220,11 @@ the square double category on $C$ rather collects all possible squares in $C$.
 We denote the square double category on $C$ as $\square'C$.
 \end{example}
 
-\begin{example} \label{def:comm-sq-dbl-cat}
+\begin{example} \label{def:shell-dbl-cat}
 Let again be $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ a category.
 We restrict the square double category on $C$ to commutative squares and receive
-the \textbf{commutative square double category} on $C$:
+the \textbf{commutative square double category} or \textbf{shell double category}
+on $C$:
 \begin{align*}
 D_0 &\coloneqq C_0 \text{,} \\
 D_1 &\coloneqq C_1 \text{ and } \\
@@ -258,19 +261,93 @@ Its initial object is the empty double category, its terminal object consists of
 double category $D$ with $D_0 = D_1 = D_2 = \{\ast\}$.
 \hfill $\square$
 \end{lemma}
+%TODO parts of the proof? pushouts?
 
 \section{Thin structures and connections}
 
-%TODO motivation for thin structures
+We will now enrich double category with even more data: We need a notion for
+what it means for a square to be \emph{thin}. When defining the fundamental double
+category of a space these thin squares will correspond to those actual geometric
+squares in the considered space which are homotopic to degenerate squares.
 
-\begin{defn}
+\begin{defn} \label{def:thin-structure}
 Let $D$ be a double category on a category $C = (C_0, C_1)$. Then, a \textbf{thin
 structure} on $D$ is a functor $T : \square C \to D$ which on the 1-skeleton is the
 identity.
+
+Equivalently, we can describe a thin structure by marking certain two-cells as
+\textbf{thin} in way such that:
+\begin{enumerate}
+\item Every commutative shell has a unique thin filler.
+\item The horizontal and vertical composition of two thin squares is thin.
+\item Degenerate squares are thin.
+\end{enumerate}
 \end{defn}
 
+In a double category $D$ without a defined thin structure we have
+$\epsilon_1(f)$ and $\epsilon_2(f)$ as two ways to receive a square from a given
+morphism $f \in D_1$. A thin structure adds two more canonical ways of turning
+a line into a square:
 
-%TODO parts of the proof? pushouts?
+\begin{defn} \label{def:connections}
+Let $D$ be a double category with a thin structure and $f \in D_1$ a morphism.
+Then, the \textbf{lower right connection} of $f$ is the thin square with $f$ 
+as its upper and left face and $\epsilon(\partial^+(f))$ as its lower and right face.
+Analogously, the \textbf{upper left connection} of $f$ is the thin square with
+$f$ on the bottom and right face and $\epsilon(\partial^-(f))$ on the upper and
+left side. (See figure \ref{fig:connections}.)
+We denote the lower right connection of $f$ with $\Gamma^-(f)$ and the upper left
+connection with $\Gamma^+(f)$.
+\end{defn}
+
+\begin{figure} \label{fig:connections} \centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\node(UL) [fill,circle,inner sep=0pt,minimum size=5pt] at (0,1) {};
+\node(UR) [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node(BL) [fill,circle,inner sep=0pt,minimum size=5pt] at (0,0) {};
+\node(BR) [fill,circle,inner sep=0pt,minimum size=5pt] at (1,0) {};
+\draw (UL) -- (UR) node [above, midway] {$f$};
+\draw[double] (UR) -- (BR) node [right, midway] {$\epsilon(\partial^+(f))$};
+\draw[double] (BR) -- (BL) node [below, midway] {$\epsilon(\partial^+(f))$};
+\draw (BL) -- (UL) node [left, midway] {$f$};
+\node at (0.5,0.5) {$\Gamma^-(f)$};
+
+\node(UL) [fill,circle,inner sep=0pt,minimum size=5pt] at (3,1) {};
+\node(UR) [fill,circle,inner sep=0pt,minimum size=5pt] at (4,1) {};
+\node(BL) [fill,circle,inner sep=0pt,minimum size=5pt] at (3,0) {};
+\node(BR) [fill,circle,inner sep=0pt,minimum size=5pt] at (4,0) {};
+\draw[double] (UL) -- (UR) node [above, midway] {$\epsilon(\partial^-(f))$};
+\draw (UR) -- (BR) node [right, midway] {$f$};
+\draw (BR) -- (BL) node [below, midway] {$f$};
+\draw[double] (BL) -- (UL) node [left, midway] {$\epsilon(\partial^-(f))$};
+\node at (3.5,0.5) {$\Gamma^+(f)$};
+\end{tikzpicture}
+\caption{Lower right and upper left connection of a morphism $f$.} %%TODO "double lines"?
+\end{figure}
+
+We observe that connections are composable in the following sense:
+
+\begin{lemma}[Transport laws]
+Let $D$ a double category with thin structure and $f, g \in D_1$ with
+$\partial^+(f) = \partial^-(g)$. Then,
+\begin{align}
+\Gamma^-(g \circ f)
+	&= (\Gamma^-(g) \circ_2 \epsilon_2(g)) \circ_1 (\epsilon_1(g) \circ_2 \Gamma^-(f))
+	\text{ and } \\
+\Gamma^+(g \circ f)
+	&= (\Gamma^+(g) \circ_2 \epsilon_1(f)) \circ_1 (\epsilon_2(f) \circ_2 \Gamma^+(f))
+	\text{.}
+\end{align}
+\end{lemma}
+\begin{proof}
+As one can easily check (see figure \ref{fig:transport-laws}) for each of the equations,
+the composed squares are well defined and have the faces of the square on the left
+hand side coincide with those of the square on the right hand side.
+The composite squares are thin because they are a composition of thin squares.
+Then, the theorem follows from the uniqueness of thin fillers.
+\end{proof}
+
+%TODO illustration of transport laws
 
 
 

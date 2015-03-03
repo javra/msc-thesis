@@ -1,4 +1,4 @@
-\documentclass[12pt]{report}
+\documentclass[12pt,openany]{book}
 %TODO: page layout
 \usepackage[backref=page,
 unicode,
@@ -25,7 +25,10 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \usepackage{aliascnt}
 \usepackage{mathtools}
 
-\pagestyle{fancyplain}
+\fancyhead[LO]{\leftmark}
+\fancyhead[RE]{\rightmark}
+\fancyhead[LE,RO]{\thepage}
+\pagestyle{fancy}
 
 \def\defthm#1#2#3{
 	\newaliascnt{#1}{thm}
