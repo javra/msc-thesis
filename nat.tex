@@ -410,6 +410,28 @@ Then, the theorem follows from the uniqueness of thin fillers.
 \label{fig:transport-law-plus}
 \end{figure}
 
+\section{Double groupoids}
+
+In general, paths in topological spaces are non-oriented or can be reverse.
+Our algebraic structures describing paths and squares should reflect this behavior
+by the property that also its morphisms and two-cells should be reversible.
+Categories $C$ in which for each morphism $f \in C_1$ there exists an inverse
+$f\inv \in C_1$ are called \emph{groupoids}. We apply the same to the two-cells of a
+double category, which can be inverted vertically as well as horizontally.
+
+\begin{defn} \label{def:weak-dbl-gpd}
+A \textbf{weak double groupoid} is a double category $D$ where all three categories
+--- the 1-skeleton, the vertical category and the horizontal category --- are
+groupoids. The vertical and horizontal inverses of a square $u \in D_2$ will
+be denoted by $\invv$ and $\invh$.
+
+For a double category to be a \textbf{double groupoid} we further require it to
+come with a fixed thin structure.
+\end{defn}
+
+Note, that the three notions of inversion do not exist without any interaction
+but instead yield the following  laws:
+
 
 
 
