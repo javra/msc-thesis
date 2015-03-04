@@ -73,8 +73,8 @@ identities}:
 \end{equation}
 
 The boundary and degeneracy maps of the vertical category are
-furthermore assumed to be linear %TODO
-in the composition of the horizontal category, and vice versa:
+furthermore assumed to be a homomorphism with respect to
+the composition of the horizontal category, and vice versa:
 \begin{equation} \label{eq:linear-ident}
 \begin{aligned}
 \partial^-_2(v \circ_1 u) &= \partial^-_2(v) \circ_D \partial^-_2(u)\text{,} \\
@@ -331,7 +331,7 @@ connection with $\Gamma^+(f)$.
 
 We observe that connections are composable in the following sense:
 
-\begin{lemma}[Transport laws]
+\begin{lemma}[Transport laws] \label{thm:dbl-cat-transport}
 Let $D$ a double category with thin structure and $f, g \in D_1$ with
 $\partial^+(f) = \partial^-(g)$. Then,
 \begin{align}
@@ -422,18 +422,66 @@ double category, which can be inverted vertically as well as horizontally.
 \begin{defn} \label{def:weak-dbl-gpd}
 A \textbf{weak double groupoid} is a double category $D$ where all three categories
 --- the 1-skeleton, the vertical category and the horizontal category --- are
-groupoids. The vertical and horizontal inverses of a square $u \in D_2$ will
-be denoted by $\invv$ and $\invh$.
+groupoids. The inverses of a square $u \in D_2$ in the vertical and horizontal category 
+will be denoted by $\invv$ and $\invh$ and can be seen as flipping the square
+along horizontal, resp. vertical, line.
 
 For a double category to be a \textbf{double groupoid} we further require it to
 come with a fixed thin structure.
 \end{defn}
 
 Note, that the three notions of inversion do not exist without any interaction
-but instead yield the following  laws:
+but instead yield the following laws:
 
+\begin{lemma}[Coherence of inverses] \label{thm:dbl-gpd-inv} %TODO
+Let $D$ be a weak double groupoid, $a \in D_1$ and $u \in D_2$. Then,
+\begin{equation} \label{eq:inv-coherence1}
+\begin{aligned}
+\epsilon_1(a) \circ_2 \epsilon_1(a\inv)
+	&= \epsilon_2(a) \circ_1 \epsilon_2(a\inv)
+	= 0(\partial^-(a)) \text{,} \\
+\epsilon_1(a\inv) \circ_2 \epsilon_1(a)
+	&= \epsilon_2(a\inv) \circ_1 \epsilon_2(a)
+	= 0(\partial^+(a)) \text{,}
+\end{aligned}
+\end{equation}
 
+\begin{equation} \label{eq:inv-coherence2}
+\begin{aligned}
+\upperf(\invh(u)) &= \upperf(u)\inv \text{,} \\
+\lowerf(\invh(u)) &= \lowerf(u)\inv \text{,} \\
+\leftf(\invv(u)) &= \leftf(u)\inv \text{,} \\
+\rightf(\invv(u)) &= \rightf(u)\inv \text{,}
+\end{aligned}
+\end{equation}
 
+\begin{equation} \label{eq:inv-coherence3}
+\begin{aligned}
+\epsilon_1(a\inv) &= \invh(\epsilon_1(a)) \text{, and } \\
+\epsilon_2(a\inv) &= \invv(\epsilon_2(a)) \text{.}
+\end{aligned}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+All equations follow
+from the fact that the face maps and degeneracies are homomorphic and thus also respect inverses.
+\end{proof}
+
+After observing that we can ``rotate'' a square by 180 degrees in two ways, by first
+taking the vertical and then the horizontal inverse or vice versa, we can prove
+that those are actually one and the same:
+
+\begin{lemma} \label{thm:rotate-180}
+For any weak double groupoid $D$ and square $u \in D_2$,
+\begin{equation*}
+\invv(\invh(u)) = \invh(\invv(u)) \text{.}
+\end{equation*}
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
 
 
 
