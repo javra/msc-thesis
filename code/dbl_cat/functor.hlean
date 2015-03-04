@@ -224,7 +224,8 @@ namespace dbl_precat
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f)) (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
           (λ x, ID (to_fun_ob (catF G) (to_fun_ob (catF F) a))) (λ x, x)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -241,8 +242,10 @@ namespace dbl_precat
         unfold functor.compose, esimp,
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f)) (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) g₂))
-          (λ x, comp (to_fun_hom (catF G) (to_fun_hom (catF F) h₂)) (to_fun_hom (catF G) (to_fun_hom (catF F) h₁)))
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) g₂))
+          (λ x, comp (to_fun_hom (catF G) (to_fun_hom (catF F) h₂))
+            (to_fun_hom (catF G) (to_fun_hom (catF F) h₁)))
           (λ x, x)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -259,7 +262,8 @@ namespace dbl_precat
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
           (λ x, ID (to_fun_ob (catF G) (to_fun_ob (catF F) a))) (λ x, x)
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f)) (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))),
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -275,9 +279,11 @@ namespace dbl_precat
         unfold functor.compose, esimp,
         apply inverse,
         apply concat, apply (transport_eq_transport4 _
-          (λ x, comp (to_fun_hom (catF G) (to_fun_hom (catF F) _)) (to_fun_hom (catF G) (to_fun_hom (catF F) _)))
+          (λ x, comp (to_fun_hom (catF G) (to_fun_hom (catF F) _))
+            (to_fun_hom (catF G) (to_fun_hom (catF F) _)))
           (λ x, x)
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) _)) (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) _))),
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) _))
+          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) _))),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -295,6 +301,60 @@ namespace dbl_precat
       intros, apply idp,
       intros, apply idp,
       intros, apply idp,
+  end
+
+  context
+  parameters
+    {B E : Dbl_precat}
+    (F G : dbl_functor B E)
+    (p : catF F = catF G)
+
+  definition dbl_functor_assoc_aux_lhs :=
+  (transport
+    (λ (a : functor (cat B) (cat E)),
+       Π ⦃a_1 b c d : carrier (cat B)⦄
+       ⦃f : hom a_1 b⦄ ⦃g : hom c d⦄ ⦃h : hom a_1 c⦄ ⦃i : hom b d⦄,
+       two_cell B f g h i →
+       two_cell E (to_fun_hom a f) (to_fun_hom a g) (to_fun_hom a h) (to_fun_hom a i))
+       p
+       (λ ⦃a b c d : carrier (cat B)⦄
+         ⦃f : hom a b⦄ ⦃g : hom  c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+         (a_1 : two_cell B f g h i),
+         twoF F a_1))
+
+  definition dbl_functor_assoc_aux_rhs :=
+  λ ⦃a b c d : carrier (cat B)⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom  b d⦄
+    (a_1 : two_cell B f g h i),
+    twoF G a_1
+
+  set_option pp.notation false
+  --set_option pp.universes true
+  definition dbl_functor_assoc_aux1 :
+    dbl_functor_assoc_aux_lhs = dbl_functor_assoc_aux_rhs :=
+  begin
+    cases F with (F1, F2, F3, F4, F5, F6),
+    cases G with (G1, G2, G3, G4, G5, G6),
+    cases p,
+    unfold catF, esimp, clear e_2, clear p,
+    assert q : F2 = G2,
+      exact sorry,
+    cases q, apply idp,
+  end
+
+  end
+exit
+  definition dbl_functor_assoc {B C D E : Dbl_precat}
+    (H : dbl_functor D E) (G : dbl_functor C D) (F : dbl_functor B C) :
+    dbl_functor_compose H (dbl_functor_compose G F)
+    = dbl_functor_compose (dbl_functor_compose H G) F :=
+  begin
+    fapply (dbl_functor.congr B E),
+      apply functor.assoc,
+    unfold dbl_functor_compose, esimp,
+    apply (dbl_functor_assoc_aux1
+      (dbl_functor_compose H (dbl_functor_compose G F))
+      (dbl_functor_compose (dbl_functor_compose H G) F)),
   end
 
 end dbl_precat

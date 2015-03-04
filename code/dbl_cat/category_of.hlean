@@ -21,7 +21,7 @@ namespace dbl_precat
     repeat ( apply is_trunc_pi ; intros), apply is_trunc_eq,
       apply is_trunc_succ, apply (homH' (two_cell E)),
   end
-exit
+
   --set_option pp.implicit true
   universe variables l₁ l₂ l₃
   definition cat_dbl_precat : category.{(max l₁ l₂ l₃)+1 (max l₁ l₂ l₃)}
@@ -34,11 +34,10 @@ exit
       intros (C, D, E, G, F), apply (dbl_functor_compose G F),
       intro D, apply (dbl_functor_id D),
       intros (B, C, D, E, H, G, F),
-        fapply (dbl_functor.congr B E),
-          apply functor.assoc,
-          repeat ( apply eq_of_homotopy ; intros),
-          --apply (@is_hset.elim _ (!(homH' (two_cell E)))),
-          exact sorry,
+        --fapply (dbl_functor.congr B E),
+          --apply functor.assoc,
+          --repeat ( apply eq_of_homotopy ; intros),
+
   end
 
 end dbl_precat
