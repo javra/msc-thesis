@@ -465,7 +465,37 @@ Let $D$ be a weak double groupoid, $a \in D_1$ and $u \in D_2$. Then,
 
 \begin{proof}
 All equations follow
-from the fact that the face maps and degeneracies are homomorphic and thus also respect inverses.
+from the fact that the face maps and degeneracies are homomorphic and thus also
+respect inverses.
+\end{proof}
+
+We can furthermore proof that our intuition is right assuming that horizontally
+inverting the vertical composition of squares is equal to composing the inverted
+squares:
+
+\begin{lemma}[Distributivity of inverses] For a weak double groupoid $D$ and
+$v, u \in D_2$ the following equations hold as soon as they are well defined:
+\begin{equation} \label{eq:inv-distrib}
+\begin{aligned}
+\invv(v \circ_2 u) &= \invv(v) \circ_2 \invv(u) \text{ and } \\
+\invh(v \circ_1 u) &= \invh(v) \circ_1 \invh(u) \text{.}
+\end{aligned}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+We only prove the first equation since the second one results from transposition
+of the situation and is provable analogously.
+Using the above calculations and the interchange law we see that
+\begin{align*}
+(\invv(v) \circ_2 \invv(u)) \circ_1 (v \circ_2 u)
+= 	& (\invv(v) \circ_1 v) \circ_2 (\invv(u) \circ_1 u) \\
+= 	& \epsilon_1(\upperf(v)) \circ_2 \epsilon_1(\upperf(u)) \\
+=	& \epsilon_1(\upperf(v) \circ \upperf(u)) \\
+=	& \epsilon_1(\upperf(v \circ_2 u)) \\
+=	& \invv(v \circ_2 u) \circ_1 (v \circ_2 u) \text{.}
+\end{align*}
+Cancelling out $v \circ_2 u$ gives the desired result.
 \end{proof}
 
 After observing that we can ``rotate'' a square by 180 degrees in two ways, by first
@@ -480,7 +510,14 @@ For any weak double groupoid $D$ and square $u \in D_2$,
 \end{lemma}
 
 \begin{proof}
-
+Similar to the last proof we calculate that
+\begin{align*}
+\invv(\invh(u)) \circ_2 \invv(u)
+	&= \invv(\invh(u) \circ_2 u) \\
+	&= \invv(\epsilon_2(\leftf(u))) \\
+	&= \epsilon_2(\leftf(u)\inv) \\
+	&= \invh(\invv(u)) \circ_2 \invv(u) \text{.}
+\end{align*}
 \end{proof}
 
 
