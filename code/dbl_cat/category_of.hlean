@@ -33,10 +33,7 @@ namespace dbl_precat
       apply obj_set,
       intros (C, D, E, G, F), apply (dbl_functor_compose G F),
       intro D, apply (dbl_functor_id D),
-      intros (B, C, D, E, H, G, F),
-        --fapply (dbl_functor.congr B E),
-          --apply functor.assoc,
-          --repeat ( apply eq_of_homotopy ; intros),
+      intros (B, C, D, E, H, G, F), apply (dbl_functor_assoc),
 
   end
 

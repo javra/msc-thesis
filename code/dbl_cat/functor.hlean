@@ -306,10 +306,21 @@ namespace dbl_precat
   context
   parameters
     {B E : Dbl_precat}
-    (F G : dbl_functor B E)
-    (p : catF F = catF G)
+    (F1 G1 : functor (cat B) (cat E))
+    (p : F1 = G1)
+    (F2 : Π ⦃a b c d : carrier (cat B)⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell B f g h i →
+      two_cell E (to_fun_hom F1 f) (to_fun_hom F1 g) (to_fun_hom F1 h) (to_fun_hom F1 i))
 
-  definition dbl_functor_assoc_aux_lhs :=
+  abbreviation G2 [reducible] := transport
+    (λ H, Π ⦃a b c d : carrier (cat B)⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell B f g h i →
+      two_cell E (to_fun_hom H f) (to_fun_hom H g) (to_fun_hom H h) (to_fun_hom H i))
+    p F2
+
+  abbreviation dbl_functor_assoc_aux_lhs :=
   (transport
     (λ (a : functor (cat B) (cat E)),
        Π ⦃a_1 b c d : carrier (cat B)⦄
@@ -319,42 +330,45 @@ namespace dbl_precat
        p
        (λ ⦃a b c d : carrier (cat B)⦄
          ⦃f : hom a b⦄ ⦃g : hom  c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
-         (a_1 : two_cell B f g h i),
-         twoF F a_1))
+         (a_1 : two_cell B f g h i), F2 a_1))
 
-  definition dbl_functor_assoc_aux_rhs :=
+  abbreviation dbl_functor_assoc_aux_rhs :=
   λ ⦃a b c d : carrier (cat B)⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom  b d⦄
-    (a_1 : two_cell B f g h i),
-    twoF G a_1
+    (a_1 : two_cell B f g h i), G2 a_1
 
-  set_option pp.notation false
-  --set_option pp.universes true
   definition dbl_functor_assoc_aux1 :
     dbl_functor_assoc_aux_lhs = dbl_functor_assoc_aux_rhs :=
   begin
-    cases F with (F1, F2, F3, F4, F5, F6),
-    cases G with (G1, G2, G3, G4, G5, G6),
-    cases p,
-    unfold catF, esimp, clear e_2, clear p,
-    assert q : F2 = G2,
-      exact sorry,
-    cases q, apply idp,
+    cases p, apply idp,
   end
 
   end
-exit
-  definition dbl_functor_assoc {B C D E : Dbl_precat}
+
+  set_option pp.notation false
+  --set_option unifier.max_steps 50000
+  definition dbl_functor_assoc{B C D E : Dbl_precat}
     (H : dbl_functor D E) (G : dbl_functor C D) (F : dbl_functor B C) :
     dbl_functor_compose H (dbl_functor_compose G F)
     = dbl_functor_compose (dbl_functor_compose H G) F :=
   begin
     fapply (dbl_functor.congr B E),
       apply functor.assoc,
-    unfold dbl_functor_compose, esimp,
-    apply (dbl_functor_assoc_aux1
+    --unfold dbl_functor_compose, esimp,
+    /-cases F with (F1, F2, F3, F4, F5, F6),
+    cases G with (G1, G2, G3, G4, G5, G6),
+    cases H with (H1, H2, H3, H4, H5, H6),
+    cases F1 with (F11, F12, F13, F14),
+    cases G1 with (G11, G12, G13, G14),
+    cases H1 with (H11, H12, H13, H14),
+    unfold catF, unfold to_fun_hom, esimp,-/
+    /-apply (dbl_functor_assoc_aux1
       (dbl_functor_compose H (dbl_functor_compose G F))
-      (dbl_functor_compose (dbl_functor_compose H G) F)),
+      (dbl_functor_compose (dbl_functor_compose H G) F)),-/
+    unfold catF, unfold dbl_functor_compose, esimp,
+    exact sorry,
   end
 
 end dbl_precat
+
+exit
