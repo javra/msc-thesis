@@ -521,8 +521,48 @@ Similar to the last proof we calculate that
 \end{proof}
 
 %TODO S-lemmas
-%TODO square and shell double groupoid
-%TODO fundamental double groupoid of a space
+Of course, the two basic examples we saw for double categories extend to
+double groupoids:
+\begin{lemma}[Square and shell double groupoids] \label{thm:shell-dbl-gpd}
+If C is a groupoid, then the square double category $\square' C$ and the
+shell double category $\square C$ are double groupoids.
+\end{lemma}
+
+\begin{proof}
+It is easily seen for both cases that $\invv(f, g, h, i) \coloneqq (g, f, h\inv, i\inv)$
+and $\invh(f, g, h, i) \coloneqq (f\inv, g\inv, i, h)$ provide valid inverses.
+Thin squares in both double categories are exactly those in $(\square C)_2$,
+which makes $\square C$ a double groupoids with all squares thin. %TODO a "thin double gpd"?
+\end{proof}
+
+We will now take a look at the most important example of a double groupoid: The
+double groupoid of a triple of spaces. It extends and generalizes the definition
+of the fundamental group and the second homotopy group of a space.
+
+\begin{defn} \label{def:filtered-dbl-gpd}
+Let $C \subseteq A \subseteq X$ be a triple of topological spaces. The
+\textbf{filtered map double groupoid} $R(X, A, C)$ of $X$, $A$ and $C$ is the
+double groupoid with
+\begin{itemize}
+\item $R(X, A, C)_0 = C$,
+\item $R(X, A, C)_1 = \left\{ \sigma : (I, \partial I) \to (A, C) \right\}$ and
+\item $R(X, A, C)_2 = \left\{ \alpha : (I^2, \partial I^2, \partial^2 I^2)
+	\to (X, A, C) \right\}$.
+\end{itemize}
+In other words, the points in $R(X, A, C)$ are the points in $C$ , the lines
+are paths in $A$ with endpoints located in $C$ and the two-cells are squares
+in $X$ which have faces in $A$ and corners in $C$.
+
+Note, that in the case of $C = \{ \ast \}$ the 1-skeleton becomes the loop space
+based in $\ast$ and in the case of $C = A = \{ \ast \}$ our two-cells end up to
+be maps $\mathbb{S}^2 \to X$ based in $\ast$.
+
+To make this a double groupoid we have to state faces, degeneracies, compositions
+and inversions. They might be well known to the reader who is familiar with homotopy
+since they are just an extension of the operation that definies the loop group in
+classical homotopy theory:
+
+\end{defn}
 
 \section{Crossed Modules over Groups}
 
