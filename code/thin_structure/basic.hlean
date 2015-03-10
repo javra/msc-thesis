@@ -3,7 +3,7 @@ import .decl
 
 open eq dbl_precat category is_trunc
 
-namespace thin_structure
+namespace dbl_gpd
   context
   parameters {D₀ : Type} [C : precategory D₀]
   {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
@@ -168,4 +168,4 @@ namespace thin_structure
   end
 
   end
-end thin_structure
+end dbl_gpd

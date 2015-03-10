@@ -64,17 +64,10 @@ structure dbl_gpd [class]  {D₀ : Type}
 (T : @thin_structure D₀ C D₂ (@weak_dbl_gpd.to_dbl_precat D₀ C D₂ D) thin)
 
 structure Dbl_gpd : Type :=
-  (cat : Groupoid)
-  (two_cell : Π ⦃a b c d : cat⦄ (f : hom a b)
+  (gpd : Groupoid)
+  (two_cell : Π ⦃a b c d : gpd⦄ (f : hom a b)
     (g : hom c d) (h : hom a c) (i : hom b d), Type)
-  (struct : dbl_gpd cat two_cell)
-  (obj_set : is_hset (carrier cat)) --TODO: make this all consistent...
+  (struct : dbl_gpd gpd two_cell)
+  (obj_set : is_hset (carrier gpd)) --TODO: make this all consistent...
 
-attribute Dbl_precat.struct [instance]
-
-/-definition Dbl_gpd.to_Dbl_precat [coercion] [reducible] (D : Dbl_gpd) : Dbl_precat :=
-Dbl_precat.mk (groupoid.to_precategory (Dbl_gpd.cat D))
-  (Dbl_gpd.two_cell D)
-  (weak_dbl_gpd.to_dbl_precat (dbl_gpd.to_weak_dbl_gpd (Dbl_gpd.struct D)))
-  (Dbl_gpd.obj_set D)-/
---Precategory.mk (Groupoid.carrier C) C
+attribute Dbl_gpd.struct [instance]
