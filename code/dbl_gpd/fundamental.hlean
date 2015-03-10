@@ -49,6 +49,16 @@ namespace dbl_gpd
                  ... = (f₁ ⬝ i₁) ⬝ i₂ : u
                  ... = f₁ ⬝ (i₁ ⬝ i₂) : con.assoc
 
+  definition fund_dbl_precat_flat_inv₁ {a b c d : X}
+    {f : a = b} {g : c = d} {h : a = c} {i : b = d}
+    (u : h ⬝ g = f ⬝ i) :
+    h⁻¹ ⬝ f = g ⬝ i⁻¹ :=
+  begin
+    apply inv_con_eq_of_eq_con,
+    apply inverse, apply concat, apply inverse, apply con.assoc,
+    apply con_inv_eq_of_eq_con, exact u,
+  end
+
   definition fund_dbl_precat_flat_comp₂ {a₁ a₂ a₃ b₁ b₂ b₃ : X}
     {f₁ : a₁ = a₂} {g₁ : b₁ = b₂} {h₁ : a₁ = b₁} {i₁ : a₂ = b₂}
     {f₂ : a₂ = a₃} {g₂ : b₂ = b₃} {i₂ : a₃ = b₃}
@@ -212,6 +222,29 @@ namespace dbl_gpd
   eq_inv_tr_of_tr_eq _ _ _ _
     (eq_inv_tr_of_tr_eq _ _ _ _ (fund_dbl_precat_flat_id₂_right u))
 
+  definition fund_dbl_precat_flat_left_inverse₁ {a b c d : X}
+    {f : a = b} {g : c = d} {h : a = c} {i : b = d}
+    (u : h ⬝ g = f ⬝ i) :
+  transport (λ x, _ = f ⬝ x) (con.right_inv i)
+    (transport (λ x, x ⬝ _ = _) (con.right_inv h)
+      (fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_inv₁ u) u))
+  = (idp_con f) :=
+  begin
+    revert u, revert f, revert g, revert h,
+    apply (eq.rec_on i),
+    intro h, apply (eq.rec_on h),
+    intro f, apply (eq.rec_on f),
+    intro g, apply (eq.rec_on g),
+    intro u, apply (eq.rec_on u),
+    apply idp,
+  end
+
+  definition fund_dbl_precat_flat_left_inverse₁' {a b c d : X}
+    {f : a = b} {g : c = d} {h : a = c} {i : b = d}
+    (u : h ⬝ g = f ⬝ i) :=
+  eq_inv_tr_of_tr_eq _ _ _ _
+    (eq_inv_tr_of_tr_eq _ _ _ _ (fund_dbl_precat_flat_left_inverse₁ u))
+
   section
   variables
     {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : X}
@@ -273,6 +306,18 @@ namespace dbl_gpd
     (ι' (ι a₁)) (ι' (ι b₁)) (ι' (ι a₂)) (ι' (ι b₂)) (ι' (ι a₃)) (ι' (ι b₃))
     (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
     (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u
+
+  definition fund_dbl_precat_inv₁ [reducible] {X A C : Type} [Xtrunc : is_trunc 2 X]
+    [Atrunc : is_trunc 1 A] [Cset : is_hset C]
+    {ι' : A → X} {ι : C → A}
+    {a b c d : C}
+    {f : ι a = ι b} {g : ι c = ι d} {h : ι a = ι c} {i : ι b = ι d}
+    (u : ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :
+    ap ι' h⁻¹ ⬝ ap ι' f = ap ι' g ⬝ ap ι' i⁻¹ :=
+  ((ap_inv ι' i)⁻¹) ▹  ((ap_inv ι' h)⁻¹) ▹
+  @fund_dbl_precat_flat_inv₁ X A C Xtrunc Atrunc Cset
+  (ι' (ι a)) (ι' (ι b)) (ι' (ι c)) (ι' (ι d))
+  (ap ι' f) (ap ι' g) (ap ι' h) (ap ι' i) u
 
   --HALF-FlAT VERSION FOR THE INTERCHANGE LAW
   context
@@ -505,7 +550,7 @@ namespace dbl_gpd
 
   definition fund_dbl_precat_id₁_left (a b c d : C)
     (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d)
-    (u : (ap ι' h) ⬝  (ap ι' g) = (ap ι' f) ⬝ (ap ι' i)) :
+    (u : (ap ι' h) ⬝ (ap ι' g) = (ap ι' f) ⬝ (ap ι' i)) :
     transport (λ a_2, _ = (ap ι' f) ⬝ (ap ι' a_2)) (con_idp i)
      (transport (λ a_4, (ap ι' a_4) ⬝ (ap ι' g) = _) (con_idp h)
        (fund_dbl_precat_comp₁ (fund_dbl_precat_id₁ g) u)) = u :=
@@ -537,7 +582,7 @@ namespace dbl_gpd
 
   definition fund_dbl_precat_id₁_right (a b c d : C)
     (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d)
-    (u : (ap ι' h) ⬝  (ap ι' g) = (ap ι' f) ⬝ (ap ι' i)) :
+    (u : (ap ι' h) ⬝ (ap ι' g) = (ap ι' f) ⬝ (ap ι' i)) :
     (transport (λ a_2, _ = (ap ι' f) ⬝ (ap ι' a_2)) (idp_con i)
       (transport (λ a_3, (ap ι' a_3) ⬝ (ap ι' g) = _) (idp_con h)
         (fund_dbl_precat_comp₁ u (fund_dbl_precat_id₁ f))))
@@ -744,6 +789,56 @@ namespace dbl_gpd
     apply inverse, apply fund_dbl_precat_id₂_right_aux,
   end
 
+  set_option pp.notation false
+  definition fund_dbl_precat_left_inverse₁_aux1 {a b c d : A}
+    {f : a = b} {g : c = d} {h : a = c} {i : b = d}
+    (u : ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :
+    fund_dbl_precat_flat_comp₁
+      (transport (λ x, _ = _ ⬝ x) (inverse (ap_inv ι' i))
+        (transport (λ x, x ⬝ _ = _) (inverse (ap_inv ι' h))
+             (fund_dbl_precat_flat_inv₁ u)))
+      u
+    = (inverse (ap_inv ι' i)) ▹ (inverse (ap_inv ι' h)) ▹
+      fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_inv₁ u) u :=
+  begin
+    cases i, cases h, apply idp,
+  end
+
+  definition fund_dbl_precat_left_inverse₁_aux2 {a b c d : A}
+    {f : a = b} {h : a = c} {i : b = d} :
+    (transport (λ x, _ = _ ⬝ x) (con.right_inv (ap ι' i))
+     (transport (λ x, x ⬝ _ = _) (con.right_inv (ap ι' h))
+      (transport (λ x, (_ ⬝ x) ⬝ _ = _) (ap_inv ι' h)
+       (transport (λ x, _ = _ ⬝ (_ ⬝ x)) (ap_inv ι' i)
+        (transport (λ x, x ⬝ _ = _) (ap_con ι' h (inverse h))
+         (transport (λ x, _ = _ ⬝ x) (ap_con ι' i (inverse i))
+          (transport (λ x, (ap ι' x) ⬝ _ = _) (inverse (con.right_inv h))
+           (transport (λ x, (ap ι' idp) ⬝ (ap ι' f) = (ap ι' f) ⬝ (ap ι' x))
+             (inverse (con.right_inv i))
+             (idp_con (ap ι' f))))))))))
+    = idp_con (ap ι' f) :=
+  begin
+    cases f, cases h, cases i, apply idp,
+  end
+
+  definition fund_dbl_precat_left_inverse₁ {a b c d : C}
+    {f : ι a = ι b} {g : ι c = ι d} {h : ι a = ι c} {i : ι b = ι d}
+    (u : ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :
+    transport (λ x, _ = ap ι' f ⬝ ap ι' x) (con.right_inv i)
+      (transport (λ x, ap ι' x ⬝ ap ι' f = _) (con.right_inv h)
+          (fund_dbl_precat_comp₁ (fund_dbl_precat_inv₁ u) u))
+    = fund_dbl_precat_id₁ X A C ι' ι f :=
+  begin
+    unfold fund_dbl_precat_comp₁, unfold fund_dbl_precat_id₁, unfold fund_dbl_precat_inv₁,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply concat, apply fund_dbl_precat_left_inverse₁_aux1,
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply concat, apply fund_dbl_precat_flat_left_inverse₁',
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply inverse, apply fund_dbl_precat_left_inverse₁_aux2,
+  end
+
   end
 
   context
@@ -831,12 +926,12 @@ namespace dbl_gpd
     apply inverse, apply fund_dbl_precat_interchange_aux3,
   end
 
-
-  definition fundamental_dbl_precat : dbl_precat (fundamental_groupoid)
+  set_option pp.notation false
+  definition fundamental_dbl_precat : dbl_gpd (fundamental_groupoid)
     (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
       ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :=
   begin
-    fapply dbl_precat.mk,
+    fapply dbl_gpd.mk,
       intros, apply (fund_dbl_precat_comp₁ a_1 a_2),
       intros, apply (@fund_dbl_precat_id₁ X A C Xtrunc Atrunc Cset ι' ι a b f),
       intros, apply fund_dbl_precat_assoc₁,
@@ -853,7 +948,11 @@ namespace dbl_gpd
       intros, apply fund_dbl_precat_id_comp₂,
       intros, apply idp,
       intros, apply fund_dbl_precat_interchange,
+      intros, apply (fund_dbl_precat_inv₁ a_1),
+      intros, apply fund_dbl_precat_left_inverse₁,
   end
+
+  check @dbl_gpd
 
   end
 end dbl_gpd
