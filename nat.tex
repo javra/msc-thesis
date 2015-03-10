@@ -702,6 +702,29 @@ and degenerate squares on the equator.
 
 \section{Crossed Modules over Groups}
 
+\begin{figure} \centering
+\begin{tikzpicture}[scale=1.5]
+\draw (0,0) circle (1);
+\draw (0,0) circle (2);
+\draw (0,1) -- (0,2);
+\begin{scope} \clip (0,0) circle (2);
+	\draw[double] (0,1) -- (-2,3);
+	\draw[double] (0,1) -- (2,3);
+\end{scope}
+\node at (0,0) {$\alpha$};
+\node [fill,circle,inner sep=0pt,minimum size=5pt,label=below:$x$] at (0,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt,label=above:$x$] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt,label=above:$x$] at (0.84,1.82) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt,label=above:$x$] at (-.84,1.82) {};
+\node at (-.1,1.5) {$l$};
+\node at (-.35,2.1) {$l$};
+\node at (.35,2.15) {$l\inv$}; %TODO improve this drawing
+\end{tikzpicture}
+\caption{Pasting a loop $l$ to a disk $\alpha$.}
+\label{fig:xmod-motivation}
+\end{figure}
+
+
 %TODO: cite whitehead
 The motivation to introduce crossed modules as a tool for the analysis of the
 homotopy properties of a topological space comes from observing that in the
@@ -720,30 +743,44 @@ element $[\alpha] \in \pi_2(X, A, x)$ and
 extending the disk like illustrated in figure \ref{fig:xmod-motivation}.
 \end{enumerate}
 These two means of interaction can furthermore be observed to fulfil more algebraic
-requirements that will captured in the definition of a crossed module.
-%TODO state those requirements?
+requirements that will be captured in the definition of a crossed module:
+\begin{itemize}
+\item The boundary of an representative which was created by pasting $l \in \pi_1(A, x)$
+to a disk $[\alpha] \in \pi_2(X, A, x)$ is the
+concatenation of paths $l\inv \cdot \partial \alpha \cdot l$.
+\item The disk resulting from pasting the boundary of a disk $\beta \in \pi_2(X, A, x)$
+to a disk $\alpha \in \pi_2(X, A, x)$ is homotopic to the composition
+$\beta\inv \cdot \alpha \cdot \beta$ in $\pi_2(X, A, x)$.
+\end{itemize}
+So the boundary map and the action resemble the \emph{conjucation} of group elements
+in two different ways. This motivates to bundle these properties into a new algebraic
+structure:
 
-\begin{figure} \centering
-\begin{tikzpicture}[scale=1.5]
-\draw (0,0) circle (1);
-\draw (0,0) circle (2);
-\draw (0,1) -- (0,2);
-\begin{scope} \clip (0,0) circle (2);
-	\draw[double] (0,1) -- (-2,3);
-	\draw[double] (0,1) -- (2,3);
-\end{scope}
-\node at (0,0) {$\alpha$};
-\node [fill,circle,inner sep=0pt,minimum size=5pt,label=below:$x$] at (0,1) {};
-\node [fill,circle,inner sep=0pt,minimum size=5pt,label=above:$x$] at (0,2) {};
-\node [fill,circle,inner sep=0pt,minimum size=5pt,label=above:$x$] at (0.84,1.82) {};
-\node [fill,circle,inner sep=0pt,minimum size=5pt,label=above:$x$] at (-.84,1.82) {};
-\node at (-.1,1.5) {$l$};
-\node at (-.35,2.1) {$l$};
-\node at (.35,2.1) {$l$}; %TODO improve this drawing
-\end{tikzpicture}
-\caption{Pasting a loop $l$ to a disk $\alpha$.}
-\label{fig:xmod-motivation}
-\end{figure}
+\begin{defn}[Crossed module over a group]
+Let $P$ be a group. A \textbf{crossed module} on $P$ is another group $M$ toghether
+with a group homomorphism $\mu : M \to P$ and a group action $\phi$ of $P$ on
+$M$ such that:
+\begin{enumerate}
+\item For all $a \in P$, $x \in M$:
+\begin{equation} \label{eq:gp-CM1}
+\mu(\phi(a,x)) = a\inv \cdot \mu(x) \cdot a \text{.}
+\end{equation}
+\item For all $x, c \in M$ :
+\begin{equation} \label{eq:gp-CM2}
+\phi(\mu(c),x) = c\inv \cdot x \cdot c \text{.}
+\end{equation}
+\end{enumerate}
+\end{defn}
+
+Crossed modules are not only motivated by geometric examples but also used to
+capture a very common, purely group theoretic constellation:
+
+\begin{example}[Normal subgroup crossed module]
+Let $G$ be a group and $N \subseteq G$ a normal subgroup of $G$. Then $N$ is made a
+crossed module on $G$ by the inclusion map $i : N \to G$ and the conjugation action
+of $G$ on $N$.
+\end{example}
+%TODO talk about computations on xmod/g
 
 \section{Crossed Modules over Groupoids}
 
