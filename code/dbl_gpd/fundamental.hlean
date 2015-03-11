@@ -9,7 +9,6 @@ namespace dbl_gpd
     {ι' : A → X} {ι : C → A}
   include Xtrunc Atrunc Cset
 
-  set_option pp.beta true
   definition square_rec_on {a b c d : X}
     {f : a = b} {g : c = d} {h : a = c} {i : b = d}
     (u : h ⬝ g = f ⬝ i)
@@ -169,11 +168,7 @@ namespace dbl_gpd
     (u : h ⬝ g = f ⬝ i) :
     fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_id₁ g) u = u :=
   begin
-    revert u, revert f, revert h, revert i,
-    apply (eq.rec_on g),
-    intro i, apply (eq.rec_on i),
-    intros, apply (eq.rec_on u),
-    apply idp,
+    cases g, cases i, cases u, apply idp,
   end
 
   definition fund_dbl_precat_flat_id₂_left {a b c d : X}
@@ -181,11 +176,7 @@ namespace dbl_gpd
     (u : h ⬝ g = f ⬝ i) :
     fund_dbl_precat_flat_comp₂ (fund_dbl_precat_flat_id₂ i) u = u :=
   begin
-    revert u, revert h, revert f, revert g,
-    apply (eq.rec_on i),
-    intro g, apply (eq.rec_on g),
-    intros, apply (eq.rec_on u),
-    apply idp,
+    cases i, cases g, cases u, apply idp,
   end
 
   definition fund_dbl_precat_flat_id₁_right {a b c d : X}
@@ -1132,6 +1123,110 @@ namespace dbl_gpd
     apply fund_dbl_precat_id_comp₂_aux,
   end
 
+  definition fund_dbl_precat_thin {a b c d : C}
+    {f : ι a = ι b} {g : ι c = ι d} {h : ι a = ι c} {i : ι b = ι d}
+    (comm : h ⬝ g = f ⬝ i) :
+    ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i :=
+  calc ap ι' h ⬝ ap ι' g = ap ι' (h ⬝ g) : ap_con
+                    ... = ap ι' (f ⬝ i) : comm
+                    ... = ap ι' f ⬝ ap ι' i : ap_con
+
+  definition fund_dbl_precat_thin_id₁_aux {a b : A} (f : a = b) :
+    (ap_con ι' idp f)⁻¹
+    ⬝ (transport (λ x, _ = ap ι' x) (idp_con f ⬝ (con_idp f)⁻¹)
+       (refl (ap ι' (concat idp f)))) ⬝ (ap_con ι' f idp)
+    = idp_con (ap ι' f) :=
+  begin
+    cases f, apply idp,
+  end
+
+  definition fund_dbl_precat_thin_id₁ {a b : C} (f : ι a = ι b) :
+    fund_dbl_precat_thin ((idp_con f) ⬝ (con_idp f)⁻¹)
+    = fund_dbl_precat_id₁ X A C ι' ι f :=
+  begin
+    esimp {fund_dbl_precat_thin, fund_dbl_precat_id₁},
+    apply fund_dbl_precat_thin_id₁_aux,
+  end
+
+  definition fund_dbl_precat_thin_id₂_aux {a b : A} (f : a = b) :
+    (ap_con ι' f idp)⁻¹
+    ⬝ (transport (λ x, _ = ap ι' x) ((con_idp f) ⬝ (idp_con f)⁻¹)
+       (refl (ap ι' (concat f idp)))) ⬝ (ap_con ι' idp f)
+    = (idp_con (ap ι' f))⁻¹ :=
+  begin
+    cases f, apply idp,
+  end
+
+  definition fund_dbl_precat_thin_id₂ {a b : C} (f : ι a = ι b) :
+    fund_dbl_precat_thin ((con_idp f) ⬝ (idp_con f)⁻¹)
+    = fund_dbl_precat_id₂ X A C ι' ι f :=
+  begin
+    esimp {fund_dbl_precat_thin, fund_dbl_precat_id₂},
+    apply fund_dbl_precat_thin_id₂_aux,
+  end
+
+  /-set_option pp.implicit true
+  set_option pp.max_steps 50000
+  set_option pp.max_depth 10000
+  set_option pp.indent 0-/
+  definition fund_dbl_precat_thin_comp₁_aux  {a b c₁ d₁ c₂ d₂ : A}
+    (f₁ : a = b) (g₁ : c₁ = d₁) (h₁ : a = c₁) (i₁ : b = d₁)
+    (g₂ : c₂ = d₂) (h₂ : c₁ = c₂) (i₂ : d₁ = d₂)
+    (pv : h₂ ⬝ g₂ = g₁ ⬝ i₂) (pu : h₁ ⬝ g₁ = f₁ ⬝ i₁)
+    (px : (h₁ ⬝ h₂) ⬝ g₂ = f₁ ⬝ (i₁ ⬝ i₂)) :
+    transport (λ x, _ = _ ⬝ x) (inverse (ap_con ι' i₁ i₂))
+      (transport (λ x, x ⬝ _ = _) (inverse (ap_con ι' h₁ h₂))
+          (fund_dbl_precat_flat_comp₁
+             (concat
+                (concat (inverse (ap_con ι' h₂ g₂))
+                   (transport (λ x, eq (ap ι' (concat h₂ g₂)) (ap ι' x)) pv
+                      (refl (ap ι' (concat h₂ g₂)))))
+                (ap_con ι' g₁ i₂))
+             (concat
+                (concat (inverse (ap_con ι' h₁ g₁))
+                   (transport (λ x, _ = ap ι' x) pu (refl (ap ι' (concat h₁ g₁)))))
+                (ap_con ι' f₁ i₁))))
+    = (concat
+       (concat (inverse (ap_con ι' (concat h₁ h₂) g₂))
+          (transport (λ x, eq (ap ι' (concat (concat h₁ h₂) g₂)) (ap ι' x)) px
+             (refl (ap ι' (concat (concat h₁ h₂) g₂)))))
+       (ap_con ι' f₁ (concat i₁ i₂))) :=
+  begin
+    esimp {fund_dbl_precat_flat_comp₁},
+    cases i₂, cases i₁,
+    cases h₂, cases h₁,
+    cases g₂, cases px, cases pv,
+    assert P1 : pu = (refl (refl d₂)),
+      exact (@is_hset.elim (d₂ = d₂) (@is_trunc_eq A 0 Atrunc d₂ d₂)
+        (refl d₂) (refl d₂) pu (refl (refl d₂))),
+    rewrite P1,
+  end
+
+  set_option pp.notation false
+  definition fund_dbl_precat_thin_comp₁ {a b c₁ d₁ c₂ d₂ : C}
+    (f₁ : ι a = ι b) (g₁ : ι c₁ = ι d₁) (h₁ : ι  a = ι c₁) (i₁ : ι b = ι d₁)
+    (g₂ : ι c₂ = ι d₂) (h₂ : ι c₁ = ι c₂) (i₂ : ι d₁ = ι d₂)
+    (pv : h₂ ⬝ g₂ = g₁ ⬝ i₂) (pu : h₁ ⬝ g₁ = f₁ ⬝ i₁)
+    (px : (h₁ ⬝ h₂) ⬝ g₂ = f₁ ⬝ (i₁ ⬝ i₂)) :
+    fund_dbl_precat_comp₁ (fund_dbl_precat_thin pv) (fund_dbl_precat_thin pu)
+    = fund_dbl_precat_thin px :=
+  begin
+    esimp {fund_dbl_precat_thin, fund_dbl_precat_comp₁},
+    exact sorry, --apply fund_dbl_precat_thin_comp₁_aux,
+  end
+
+  definition fund_dbl_precat_thin_comp₂ {a b c₁ d₁ c₂ d₂ : C}
+    (f₁ : ι a = ι b) (g₁ : ι c₁ = ι d₁) (h₁ : ι a = ι c₁) (i₁ : ι b = ι d₁)
+    (g₂ : ι c₂ = ι d₂) (h₂ : ι c₁ = ι c₂) (i₂ : ι d₁ = ι d₂)
+    (pv : g₁ ⬝ i₂ = h₂ ⬝ g₂) (pu : f₁ ⬝ i₁ = h₁ ⬝ g₁)
+    (px : f₁ ⬝ (i₁ ⬝ i₂) = (h₁ ⬝ h₂) ⬝ g₂) :
+    fund_dbl_precat_comp₂ (fund_dbl_precat_thin pv) (fund_dbl_precat_thin pu)
+    = fund_dbl_precat_thin px :=
+  begin
+    esimp {fund_dbl_precat_thin, fund_dbl_precat_comp₂},
+    exact sorry,
+  end
+
   variables {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : C}
     {f₀₀ : ι a₀₀ = ι a₀₁} {f₀₁ : ι a₀₁ = ι a₀₂}
     {f₁₀ : ι a₁₀ = ι a₁₁} {f₁₁ : ι a₁₁ = ι a₁₂}
@@ -1162,7 +1257,6 @@ namespace dbl_gpd
     apply inverse, apply fund_dbl_precat_interchange_aux3,
   end
 
-  set_option pp.notation false
   definition fundamental_dbl_precat : dbl_gpd (fundamental_groupoid)
     (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
       ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :=
@@ -1190,9 +1284,13 @@ namespace dbl_gpd
       intros, apply (fund_dbl_precat_inv₂ a_1),
       intros, apply fund_dbl_precat_left_inverse₂,
       intros, apply fund_dbl_precat_right_inverse₂,
+      intros, apply (fund_dbl_precat_thin a_1),
+    fapply thin_structure.mk,
+      intros, apply fund_dbl_precat_thin_id₁,
+      intros, apply fund_dbl_precat_thin_id₂,
+      intros, apply fund_dbl_precat_thin_comp₁,
+      intros, apply fund_dbl_precat_thin_comp₂,
   end
-
-  check @dbl_gpd
 
   end
 end dbl_gpd
