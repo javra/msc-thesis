@@ -1165,40 +1165,60 @@ namespace dbl_gpd
     apply fund_dbl_precat_thin_id₂_aux,
   end
 
-  /-set_option pp.implicit true
-  set_option pp.max_steps 50000
-  set_option pp.max_depth 10000
-  set_option pp.indent 0-/
-  definition fund_dbl_precat_thin_comp₁_aux  {a b c₁ d₁ c₂ d₂ : A}
+  attribute is_trunc_eq [instance]
+  definition fund_dbl_precat_thin_comp₁_aux {a b c₁ d₁ c₂ d₂ : A}
     (f₁ : a = b) (g₁ : c₁ = d₁) (h₁ : a = c₁) (i₁ : b = d₁)
     (g₂ : c₂ = d₂) (h₂ : c₁ = c₂) (i₂ : d₁ = d₂)
     (pv : h₂ ⬝ g₂ = g₁ ⬝ i₂) (pu : h₁ ⬝ g₁ = f₁ ⬝ i₁)
     (px : (h₁ ⬝ h₂) ⬝ g₂ = f₁ ⬝ (i₁ ⬝ i₂)) :
     transport (λ x, _ = _ ⬝ x) (inverse (ap_con ι' i₁ i₂))
       (transport (λ x, x ⬝ _ = _) (inverse (ap_con ι' h₁ h₂))
-          (fund_dbl_precat_flat_comp₁
-             (concat
-                (concat (inverse (ap_con ι' h₂ g₂))
-                   (transport (λ x, eq (ap ι' (concat h₂ g₂)) (ap ι' x)) pv
-                      (refl (ap ι' (concat h₂ g₂)))))
-                (ap_con ι' g₁ i₂))
-             (concat
-                (concat (inverse (ap_con ι' h₁ g₁))
-                   (transport (λ x, _ = ap ι' x) pu (refl (ap ι' (concat h₁ g₁)))))
-                (ap_con ι' f₁ i₁))))
-    = (concat
-       (concat (inverse (ap_con ι' (concat h₁ h₂) g₂))
-          (transport (λ x, eq (ap ι' (concat (concat h₁ h₂) g₂)) (ap ι' x)) px
+        (fund_dbl_precat_flat_comp₁
+          (((ap_con ι' h₂ g₂)⁻¹ ⬝
+            (transport (λ x, eq (ap ι' (concat h₂ g₂)) (ap ι' x)) pv
+              (refl (ap ι' (concat h₂ g₂))))) ⬝ (ap_con ι' g₁ i₂))
+           (((ap_con ι' h₁ g₁)⁻¹ ⬝
+             (transport (λ x, _ = ap ι' x) pu (refl (ap ι' (concat h₁ g₁)))))
+               ⬝ (ap_con ι' f₁ i₁))))
+    = (((ap_con ι' (concat h₁ h₂) g₂)⁻¹
+          ⬝ (transport (λ x, eq (ap ι' (concat (concat h₁ h₂) g₂)) (ap ι' x)) px
              (refl (ap ι' (concat (concat h₁ h₂) g₂)))))
-       (ap_con ι' f₁ (concat i₁ i₂))) :=
+       ⬝ (ap_con ι' f₁ (concat i₁ i₂))) :=
   begin
     esimp {fund_dbl_precat_flat_comp₁},
     cases i₂, cases i₁,
     cases h₂, cases h₁,
     cases g₂, cases px, cases pv,
     assert P1 : pu = (refl (refl d₂)),
-      exact (@is_hset.elim (d₂ = d₂) (@is_trunc_eq A 0 Atrunc d₂ d₂)
-        (refl d₂) (refl d₂) pu (refl (refl d₂))),
+      apply @is_hset.elim,
+    rewrite P1,
+  end
+
+  definition fund_dbl_precat_thin_comp₂_aux {a b c₁ d₁ c₂ d₂ : A}
+    (f₁ : a = b) (g₁ : c₁ = d₁) (h₁ : a = c₁) (i₁ : b = d₁)
+    (g₂ : c₂ = d₂) (h₂ : c₁ = c₂) (i₂ : d₁ = d₂)
+    (pv : g₁ ⬝ i₂ = h₂ ⬝ g₂) (pu : f₁ ⬝ i₁ = h₁ ⬝ g₁)
+    (px : f₁ ⬝ (i₁ ⬝ i₂) = (h₁ ⬝ h₂) ⬝ g₂) :
+    (transport (λ x, _ ⬝ x = _) (inverse (ap_con ι' i₁ i₂))
+      (transport (λ x, _ = x ⬝ _) (inverse (ap_con ι' h₁ h₂))
+        (fund_dbl_precat_flat_comp₂
+          (((ap_con ι' g₁ i₂)⁻¹ ⬝
+            (transport (λ x, eq (ap ι' (concat g₁ i₂)) (ap ι' x)) pv
+              (refl (ap ι' (concat g₁ i₂))))) ⬝ (ap_con ι' h₂ g₂))
+          (((ap_con ι' f₁ i₁)⁻¹ ⬝
+             (transport (λ x, eq (ap ι' (concat f₁ i₁)) (ap ι' x)) pu
+               (refl (ap ι' (concat f₁ i₁))))) ⬝ (ap_con ι' h₁ g₁)))))
+    = (((ap_con ι' f₁ (concat i₁ i₂))⁻¹ ⬝
+          (transport (λ x, eq (ap ι' (concat f₁ (concat i₁ i₂))) (ap ι' x)) px
+             (refl (ap ι' (concat f₁ (concat i₁ i₂))))))
+       ⬝ (ap_con ι' (concat h₁ h₂) g₂)) :=
+  begin
+    esimp {fund_dbl_precat_flat_comp₂},
+    cases i₂, cases i₁,
+    cases h₂, cases h₁,
+    cases g₂, cases px, cases pv,
+    assert P1 : pu = (refl (refl d₂)),
+      apply @is_hset.elim,
     rewrite P1,
   end
 
@@ -1212,7 +1232,7 @@ namespace dbl_gpd
     = fund_dbl_precat_thin px :=
   begin
     esimp {fund_dbl_precat_thin, fund_dbl_precat_comp₁},
-    exact sorry, --apply fund_dbl_precat_thin_comp₁_aux,
+    apply fund_dbl_precat_thin_comp₁_aux,
   end
 
   definition fund_dbl_precat_thin_comp₂ {a b c₁ d₁ c₂ d₂ : C}
@@ -1224,7 +1244,7 @@ namespace dbl_gpd
     = fund_dbl_precat_thin px :=
   begin
     esimp {fund_dbl_precat_thin, fund_dbl_precat_comp₂},
-    exact sorry,
+    apply fund_dbl_precat_thin_comp₂_aux,
   end
 
   variables {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : C}
