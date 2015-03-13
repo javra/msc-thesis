@@ -50,9 +50,21 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newcommand{\rightf}{\partial^+_2}
 \newcommand{\inv}{^{-1}}
 \newcommand{\DCat}{\mathbf{DCat}}
+\newcommand{\DGpd}{\mathbf{DGpd}}
+\newcommand{\XMod}{\mathbf{XMod}}
 \DeclareMathOperator{\id}{id}
 \DeclareMathOperator{\invv}{inv_1}
 \DeclareMathOperator{\invh}{inv_2}
+
+\renewcommand{\backrefalt}[4]{
+	\ifcase #1
+		(No citations.)
+	\or
+		(Cited on page\ #2.)
+	\else
+		(Cited on pages\ #2.)
+	\fi
+}
 
 \begin{document}
 
