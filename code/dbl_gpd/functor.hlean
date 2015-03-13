@@ -137,6 +137,83 @@ namespace dbl_gpd
 
   end
 
+  context
+  parameters (D E : Dbl_gpd)
+    (catF1 catF2 : functor (gpd D) (gpd E))
+    (twoF1 : Π ⦃a b c d : gpd D⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell D f g h i → two_cell E (catF1 f) (catF1 g) (catF1 h) (catF1 i))
+    (twoF2 : Π ⦃a b c d : gpd D⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell D f g h i → two_cell E (catF2 f) (catF2 g) (catF2 h) (catF2 i))
+    (p1 : to_fun_ob catF1 = to_fun_ob catF2)
+    (p2 : transport
+      (λ x, Π (a b : carrier (gpd D)), hom a b → hom (x a) (x b)) p1
+      (to_fun_hom catF1) = to_fun_hom catF2)
+    (p3 : apD011 (λ Hob Hhom,
+                  Π ⦃a b c d : carrier (gpd D)⦄
+                    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+                    two_cell D f g h i →
+                    @two_cell E (Hob a) (Hob b) (Hob c) (Hob d)
+                     (Hhom a b f) (Hhom c d g) (Hhom a c h) (Hhom b d i))
+          p1 p2 ▹ twoF1 = twoF2)
+
+  parameters
+    (respect_id₁1 : proof respect_id₁_type D E catF1 qed twoF1)
+    (respect_id₁2 : proof respect_id₁_type D E catF2 qed twoF2)
+    (respect_comp₁1 : proof respect_comp₁_type D E catF1 qed twoF1)
+    (respect_comp₁2 : proof respect_comp₁_type D E catF2 qed twoF2)
+    (respect_id₂1 : proof respect_id₂_type D E catF1 qed  twoF1)
+    (respect_id₂2 : proof respect_id₂_type D E catF2 qed twoF2)
+    (respect_comp₂1 : proof respect_comp₂_type D E catF1 qed twoF1)
+    (respect_comp₂2 : proof respect_comp₂_type D E catF2 qed twoF2)
+
+  include p1 p2 p3
+  set_option pp.notation false
+  set_option pp.implicit true
+  set_option pp.max_depth 10000
+  set_option pp.max_steps 100000
+  set_option pp.indent 0-/
+  definition dbl_functor.congr' :
+    dbl_functor.mk catF1 twoF1 respect_id₁1 respect_comp₁1 respect_id₂1 respect_comp₂1
+    = dbl_functor.mk catF2 twoF2 respect_id₁2 respect_comp₁2 respect_id₂2 respect_comp₂2 :=
+  begin
+    cases catF1 with (catF11, catF12, catF13, catF14),
+    cases catF2 with (catF21, catF22, catF23, catF24), esimp,
+    cases p1, cases p2, cases p3,
+    assert Pcat : functor.mk catF21 catF22 catF13 @catF14
+                = functor.mk catF21 catF22 catF23 @catF24,
+      apply (apD01111 functor.mk idp idp !is_hprop.elim !is_hprop.elim),
+    assert P2 : catF13 = catF23,
+      apply is_hprop.elim,
+    cases P2,
+    assert P3 : @catF14 = @catF24,
+      apply is_hprop.elim,
+    cases P3,
+    assert P4 : respect_id₁1 = respect_id₁2,
+      repeat ( apply eq_of_homotopy ; intros ),
+      apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+    cases P4,
+    assert P5 : respect_comp₁1 = respect_comp₁2,
+      repeat ( apply eq_of_homotopy ; intros ),
+      apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+    cases P5,
+    assert P6 : respect_id₂1 = respect_id₂2,
+      repeat ( apply eq_of_homotopy ; intros ),
+      apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+    cases P6,
+    assert P7 : respect_comp₂1 = respect_comp₂2,
+      repeat ( apply eq_of_homotopy ; intros ),
+      apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+    cases P7,
+    apply idp,
+  end
+
+  check @is_hset.elim
+
+  end
+
+exit
   open dbl_functor
 
   definition respect_id₁' {D E : Dbl_gpd} (F : dbl_functor D E)
@@ -386,16 +463,41 @@ namespace dbl_gpd
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (u : two_cell D f g h i), alg_congr_s f g h i u)
 
-  definition functor.alg_congr : F = G :=
-  sorry
+  include p q all_s
+  set_option pp.notation false
+  protected definition alg_congr : F = G :=
+  begin
+    cases F with (F1, F2, F3, F4, F5, F6),
+    cases G with (G1, G2, G3, G4, G5, G6),
+    fapply congr,
+      fapply functor_eq_mk,
+        intro a, exact (p a),
+        intros (a, b, f),
+  end
 
   end
 
-exit
+
   set_option pp.notation false
   --set_option unifier.max_steps 50000
-  definition dbl_functor_assoc{B C D E : Dbl_gpd}
-    (H : dbl_functor D E) (G : dbl_functor C D) (F : dbl_functor B C) :
+  context
+  parameters {B C D E : Dbl_gpd}
+    (H : dbl_functor D E) (G : dbl_functor C D) (F : dbl_functor B C)
+
+  definition dbl_functor_assoc_aux1 := (apD (λ (a : functor (gpd B) (gpd E)),
+          Π ⦃a_1 b c d : carrier (gpd B)⦄ ⦃f : hom a_1 b⦄ ⦃g : hom c d⦄
+          ⦃h : hom a_1 c⦄ ⦃i : hom b d⦄,
+            two_cell B f g h i → two_cell E (to_fun_hom a f) (to_fun_hom a g) (to_fun_hom a h) (to_fun_hom a i))
+        (functor.assoc (catF H) (catF G) (catF F)))
+
+  definition dbl_functor_assoc_aux2 (a b : gpd B) (f : hom a b) :
+   to_fun_hom (catF (dbl_functor_compose H (dbl_functor_compose G F))) f
+   = to_fun_hom (catF (dbl_functor_compose (dbl_functor_compose H G) F)) f :=
+  begin
+    apply idp,
+  end
+exit
+  definition dbl_functor_assoc :
     dbl_functor_compose H (dbl_functor_compose G F)
     = dbl_functor_compose (dbl_functor_compose H G) F :=
   begin
@@ -413,7 +515,21 @@ exit
       (dbl_functor_compose H (dbl_functor_compose G F))
       (dbl_functor_compose (dbl_functor_compose H G) F)),-/
     unfold catF, unfold dbl_functor_compose, esimp,
-    exact sorry,
+    apply eq_of_homotopy, intro a,
+    apply eq_of_homotopy, intro b,
+    apply eq_of_homotopy, intro c,
+    apply eq_of_homotopy, intro d,
+    apply eq_of_homotopy, intro f,
+    apply eq_of_homotopy, intro g,
+    apply eq_of_homotopy, intro h,
+    apply eq_of_homotopy, intro i,
+    apply eq_of_homotopy, intro u,
+    apply concat,
+    --exact sorry,
+  end
+
+  check @transport_eq_transport4
+
   end
 
   end
