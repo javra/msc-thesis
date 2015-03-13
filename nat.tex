@@ -700,7 +700,7 @@ and degenerate squares on the equator.
 \label{fig:fund-dbl-gpd-sphere}
 \end{figure}
 
-\section{Crossed Modules over Groups}
+\section{Crossed Modules}
 
 \begin{figure} \centering
 \begin{tikzpicture}[scale=1.5]
@@ -781,10 +781,46 @@ crossed module on $G$ by the inclusion map $i : N \to G$ and the conjugation act
 of $G$ on $N$.
 \end{example}
 %TODO talk about computations on xmod/g
+%TODO more easy examples
 
-\section{Crossed Modules over Groupoids}
+Now we are not interested in the absolute and relative homotopy groups based in
+one point but want to adapt the structure to fit well to the concept of fundamental
+\emph{groupoids} instead of fundamental groups.
+This obvious choice to achieve this is, unsurprisingly, to replace the base group $P$ in
+the definition of a crossed module by a groupoid:
+
+\begin{defn}[Crossed module over a groupoid] \label{def:xmod-gpd}
+Let $P$ be a groupoid.
+A \textbf{crossed module} over $P$ is a group $M_p$
+for every $p \in P$ together with
+with a family of group homomorphisms $(\mu_p : M_p \to \hom_P(p,p))_{p \in P}$
+and a map $\phi$ which is a \emph{groupoid action} of $P$ on $M$ in the sense that
+it maps a pair $(a,x)$, where $a \in \hom_P(p,q)$ and $x \in M_p$, to an element
+of $M_q$ such that $\phi(\id_p,x) = x$, $\phi(b \circ_P a, x) = \phi(b,(\phi(a,x))$
+and $\phi(a, y \cdot_{M_p} x) = \phi(a,y) \cdot_{M_q} \phi(a,x)$ for all
+$p, q, r \in P, x,y \in M_p, a \in \hom_P(p,q)$ and $b \in \hom_P(q,r)$.
+
+And, just in the case of crossed modules over a group, we require $\mu$ and $\phi$
+to fulfil the following two essential equations:
+\begin{enumerate}
+\item For all $a \in \hom_P(p,q)$ and $x \in M_p$:
+\begin{equation} \label{eq:gp-CM1}
+\mu(\phi(a,x)) = a \circ \mu(x) \circ a\inv \in \hom_P(q,q) \text{.}
+\end{equation}
+\item For all $c, x \in M_p$ :
+\begin{equation} \label{eq:gp-CM2}
+\phi(\mu(c),x) = c \cdot x \cdot c\inv \in M_p \text{.}
+\end{equation}
+\end{enumerate}
+\end{defn}
+
+
+
+
 
 \section{Double Groupoids and Crossed Modules are Equivalent}
+
+\section{The 2-dimensional Seifert-van Kampen theorem for spaces}
 
 
 
