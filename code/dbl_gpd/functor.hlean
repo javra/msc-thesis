@@ -1,7 +1,7 @@
 import algebra.precategory.functor .decl ..transport4 ..dbl_gpd.basic
 
 open eq iso iso.iso category functor dbl_gpd dbl_precat equiv Dbl_gpd
-open prod prod.ops sigma sigma.ops is_trunc
+open prod prod.ops sigma sigma.ops pi is_trunc
 
 namespace dbl_gpd
 
@@ -169,11 +169,6 @@ namespace dbl_gpd
     (respect_comp₂2 : proof respect_comp₂_type D E catF2 qed twoF2)
 
   include p1 p2 p3
-  set_option pp.notation false
-  set_option pp.implicit true
-  set_option pp.max_depth 10000
-  set_option pp.max_steps 100000
-  set_option pp.indent 0-/
   definition dbl_functor.congr' :
     dbl_functor.mk catF1 twoF1 respect_id₁1 respect_comp₁1 respect_id₂1 respect_comp₂1
     = dbl_functor.mk catF2 twoF2 respect_id₁2 respect_comp₁2 respect_id₂2 respect_comp₂2 :=
@@ -181,9 +176,6 @@ namespace dbl_gpd
     cases catF1 with (catF11, catF12, catF13, catF14),
     cases catF2 with (catF21, catF22, catF23, catF24), esimp,
     cases p1, cases p2, cases p3,
-    assert Pcat : functor.mk catF21 catF22 catF13 @catF14
-                = functor.mk catF21 catF22 catF23 @catF24,
-      apply (apD01111 functor.mk idp idp !is_hprop.elim !is_hprop.elim),
     assert P2 : catF13 = catF23,
       apply is_hprop.elim,
     cases P2,
@@ -209,11 +201,8 @@ namespace dbl_gpd
     apply idp,
   end
 
-  check @is_hset.elim
-
   end
 
-exit
   open dbl_functor
 
   definition respect_id₁' {D E : Dbl_gpd} (F : dbl_functor D E)
@@ -464,8 +453,9 @@ exit
     (u : two_cell D f g h i), alg_congr_s f g h i u)
 
   include p q all_s
-  set_option pp.notation false
-  protected definition alg_congr : F = G :=
+  --set_option pp.notation false
+  --TODO: complete this!!
+  /-protected definition alg_congr : F = G :=
   begin
     cases F with (F1, F2, F3, F4, F5, F6),
     cases G with (G1, G2, G3, G4, G5, G6),
@@ -473,7 +463,7 @@ exit
       fapply functor_eq_mk,
         intro a, exact (p a),
         intros (a, b, f),
-  end
+  end-/
 
   end
 
@@ -496,42 +486,17 @@ exit
   begin
     apply idp,
   end
-exit
+
   definition dbl_functor_assoc :
     dbl_functor_compose H (dbl_functor_compose G F)
     = dbl_functor_compose (dbl_functor_compose H G) F :=
   begin
-    fapply (dbl_functor.congr B E),
-      apply functor.assoc,
-    --unfold dbl_functor_compose, esimp,
-    /-cases F with (F1, F2, F3, F4, F5, F6),
-    cases G with (G1, G2, G3, G4, G5, G6),
-    cases H with (H1, H2, H3, H4, H5, H6),
-    cases F1 with (F11, F12, F13, F14),
-    cases G1 with (G11, G12, G13, G14),
-    cases H1 with (H11, H12, H13, H14),
-    unfold catF, unfold to_fun_hom, esimp,-/
-    /-apply (dbl_functor_assoc_aux1
-      (dbl_functor_compose H (dbl_functor_compose G F))
-      (dbl_functor_compose (dbl_functor_compose H G) F)),-/
-    unfold catF, unfold dbl_functor_compose, esimp,
-    apply eq_of_homotopy, intro a,
-    apply eq_of_homotopy, intro b,
-    apply eq_of_homotopy, intro c,
-    apply eq_of_homotopy, intro d,
-    apply eq_of_homotopy, intro f,
-    apply eq_of_homotopy, intro g,
-    apply eq_of_homotopy, intro h,
-    apply eq_of_homotopy, intro i,
-    apply eq_of_homotopy, intro u,
-    apply concat,
-    --exact sorry,
-  end
-
-  check @transport_eq_transport4
-
+    fapply (dbl_functor.congr' B E),
+        apply idp,
+      apply idp,
+    apply idp,
   end
 
   end
 
-end
+end dbl_gpd
