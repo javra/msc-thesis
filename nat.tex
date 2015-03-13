@@ -412,11 +412,12 @@ Then, the theorem follows from the uniqueness of thin fillers.
 
 \section{Double Groupoids}
 
-In general, paths in topological spaces are non-oriented or can be reverse.
+In general, paths in topological spaces are non-oriented or can be reversed.
 Our algebraic structures describing paths and squares should reflect this behavior
 by the property that also its morphisms and two-cells should be reversible.
 Categories $C$ in which for each morphism $f \in C_1$ there exists an inverse
-$f\inv \in C_1$ are called \emph{groupoids}. We apply the same to the two-cells of a
+$f\inv \in C_1$ are called \emph{groupoids}. We apply this concept not only
+to the 1-skeleton but also to the two-cells of a
 double category, which can be inverted vertically as well as horizontally.
 
 \begin{defn} \label{def:weak-dbl-gpd}
@@ -700,6 +701,19 @@ and degenerate squares on the equator.
 \label{fig:fund-dbl-gpd-sphere}
 \end{figure}
 
+\begin{defn}[Category of double groupoids]
+Since morphisms between groupoids are nothing but functors between their underlying
+categories we can, without changing the definition of morphisms, enhance our
+category $\DCat$ of double categories to a \textbf{category of weak double groupoids}.
+This category is thus a full subcategory of $\DCat$.
+
+But to a greater degree we are interested in the \textbf{category of double
+groupoid} : This is the category $\DGpd$ containing as objects all double groupoids
+and as morphisms all double functors that preserve the attached thin structure in
+the sense that they map thin squares to thin squares.
+
+\end{defn}
+
 \section{Crossed Modules}
 
 \begin{figure} \centering
@@ -763,11 +777,11 @@ $M$ such that:
 \begin{enumerate}
 \item For all $a \in P$, $x \in M$:
 \begin{equation} \label{eq:gp-CM1}
-\mu(\phi(a,x)) = a\inv \cdot \mu(x) \cdot a \text{.}
+\mu(\phi(a,x)) = a \cdot \mu(x) \cdot a\inv \text{.} %TODO should the \invr really be on the right side?
 \end{equation}
 \item For all $x, c \in M$ :
 \begin{equation} \label{eq:gp-CM2}
-\phi(\mu(c),x) = c\inv \cdot x \cdot c \text{.}
+\phi(\mu(c),x) = c \cdot x \cdot c\inv \text{.}
 \end{equation}
 \end{enumerate}
 \end{defn}
@@ -814,11 +828,18 @@ to fulfil the following two essential equations:
 \end{enumerate}
 \end{defn}
 
-
-
-
+With this definition we can extend the example from the beginning of this
+chapter by allowing not only $x$ as an endpoint of the paths considered but every
+point in a set $C \subseteq A$.
+This generalization results in the definition of the \textbf{fundamental crossed
+module} of a triple of spaces $C \subseteq A \subseteq X$.
 
 \section{Double Groupoids and Crossed Modules are Equivalent}
+
+Comparing the fundamental crossed module and the fundamental double groupoid we
+observe that these two structures contain basically the same information.
+In fact, not only those particular examples do, but we can prove that the categories
+$\DGpd$ and $\XMod$ are equivalent.
 
 \section{The 2-dimensional Seifert-van Kampen theorem for spaces}
 
