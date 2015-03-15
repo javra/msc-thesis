@@ -1,4 +1,4 @@
-\documentclass[12pt,openany]{book}
+\documentclass[12pt,openany	]{book}
 %TODO: page layout
 \usepackage[backref=page,
 unicode,
@@ -40,6 +40,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newtheorem{thm}{Theorem}[section]
 \crefname{thm}{Theorem}{Theorems}
 \defthm{lemma}{Lemma}{Lemmas}
+\defthm{corollary}{Corollary}{Corollaries}
 \theoremstyle{definition}
 \defthm{defn}{Definition}{Definitions}
 \defthm{example}{Example}{Examples}
@@ -59,6 +60,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \DeclareMathOperator{\id}{id}
 \DeclareMathOperator{\invv}{inv_1}
 \DeclareMathOperator{\invh}{inv_2}
+\DeclareMathOperator{\obj}{obj}
 
 \renewcommand{\backrefalt}[4]{
 	\ifcase #1
@@ -85,6 +87,13 @@ Supervisors at KIT : & Prof. Dr. Gregor Snelting\\
 
 
 \maketitle
+
+\chapter*{Acknowledgements}
+\thispagestyle{empty}
+
+I like to acknowledge ...
+
+\clearpage
 
 \tableofcontents
 

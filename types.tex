@@ -24,7 +24,7 @@ in line with the actual Lean implementation presented in the next chapter.
 % Here goes stuff about univalent vs non-univalent cats
 % maybe rezk-completion
 
-\begin{defn}[Precategory]
+\begin{defn}[Precategory] \label{def:hott-precat}
 Let $A : \UU$ be a type (the \textbf{object type} or \textbf{carrier}). A
 \textbf{precategory} $C$ on $A$ is constructed by giving the following data:
 \begin{itemize}
@@ -57,6 +57,89 @@ iterated $\Sigma$-Type or as the only constructor of an inducitve type.
 We will later~\ref{rmk:inductives-not-sigmas} see that in formalization practice
 it is favorable to choose to introduce them as new inductive types instead of
 $\Sigma$-Types.
+
+We also observe that, since equalities in sets are mere propositions, we have the
+following lemma:
+\begin{lemma}[Equality of precategories] \label{thm:hott-eq-precat}
+Let $C$ and $D$ Precategories on $A$ with $\hom_D :\equiv \hom_C$, 
+$\comp_C = \comp_D$ and $\id_C = \id_D$.
+Then, $C = D$. \hfill $\qed$
+\end{lemma}
+
+This also justifies that we do not require further coherence conditions on
+associativity (the ``pentagon coherence'') and identity laws. %TODO add further explanation?
+
+\begin{defn} [Functors] \label{def:hott-precat-functor}
+Let $C_A$ and $C_B$ be precategories on types $A$ and $B$.
+A \textbf{functor} $F$ between $C_A$ and $C_B$ is constructed by giving the following:
+\begin{itemize}
+\item Its definition on objects as a instance of $F_{\obj}: A \to B$.
+\item Its definition on morphisms
+\begin{equation*}
+F_{\hom} : \prod_{a,b:A} \prod_{f:\hom_{C_A}(a,b)} \hom_{C_B}(F_{\obj}(a),F_{\obj}(b))\text{.}
+\end{equation*}
+Again we will often leave out the first two arguments for $F_{\hom}$ and moreover
+abbreviating $F_{\hom}$ and $F_{\obj}$ to $F$ whenever the distinction is clear.
+\item A proof in $\prod_{(a:A)} F(\id_{C_A}(a)) = \id_{C_B}(F(a))$ that the identies
+are preserved and
+\item a proof the respects the composition in the respective categories, as an instance
+of
+\begin{equation*}
+\prod_{a,b,c:A} \prod_{g:\hom_{C_A}(b,c)} \prod_{f:\hom_{C_B}(a,b)}
+F(g \circ_{C_A} f) = F(g) \circ_{C_B} F(f)
+\end{equation*}
+\end{itemize}
+\end{defn}
+
+Again, the last two ingredients turn out to be mere propositions, as they are
+of $\Pi$-types over equalities in sets.
+This leads us to the observation that to prove the equality of two functors, it
+suffices to check it on their definitions on objects and morphisms:
+
+\begin{lemma}[Equality of functors]
+Let $A, B : \UU$ and let $C$, $D$ be categories on $A$ and $B$, respectively.
+Let $F$ and $G$ be two functors from $C$ to $D$. If we have
+\begin{align*}
+p &: \prod_{a:A} F(a) = G(a) \text{ and } \\
+q &: \prod_{a,b:A} \prod_{f : \hom_C(a,b)} p(b)_*\left(p(a)_*(F(f))\right) = G(f) \text{,}
+\end{align*}
+then $F = G$. \hfill $\qed$
+\end{lemma}
+
+With this definition of precategories and functors, a lot of structures can be
+instantiated as such.
+For example, the 1-types of a universe $\UU_i$ give us a precategory with morphisms
+between $A, B : \UU_i$ being $A = B$, composition being concatenation of equalities
+and identity being reflexivity.
+But often we will only have to deal with precategories whose carrier is a set".
+
+\begin{defn}[Strict precategory] \label{def:hott-strict-precat}
+A precategory with a set as carrier is called \textbf{strict}.
+\end{defn}
+
+One primary use for strict precategories is the following:
+If we wanted to build a precategory of precategories we encounter the problem that
+functors between two given precategories don't generally form a set!
+Restricting ourselves to strict precategories solves this problem:
+
+\begin{lemma}
+Let $C$ be a precategory and $D$ be a strict precategory.
+Then, the type of functors between $C$ and $D$ forms a set.
+\end{lemma}
+
+\begin{proof}
+For the type of functors to be a set, all parameters should be sets.
+Since the definition on morphisms is a set by definition and,
+as we already observed, the identity witnesses are mere propositions,
+the only critical parameter is the object function.
+But turning the codomain of this function into a set obviously solves the
+problem.
+\end{proof}
+
+\begin{corollary}
+For each pair of universes $(\UU_i, \UU_j)$ there is a precategory of strict
+precategories with carrier in $\UU_i$ and morphism types in $\UU_j$. \hfill $\qed$
+\end{corollary}
 
 \section{Double groupoids in HoTT}
 
