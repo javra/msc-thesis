@@ -1,6 +1,62 @@
+In this this chapter, I will describe how the structures introduced in the previous
+chapter can be translated to homotopy type theory.
+Besides formulating the concepts using dependent types this involves caring about
+the effects of univalence and proof relevance on these definitions.
+What does it mean for two instances of a structure to be propositionally equal?
+What truncation levels should be imposed on the parameters of said structure
+such that algebraic structures bear no unwanted information in their iterated
+equality types?
+
+We start off with defining the notion of a categories, and then continue to
+translate the definitions from the previous chapter appropriately.
+Finally we will show how to apply the definitions to 2-types and define the
+fundamental double groupoid and fundamental crossed module of a presented type.
+
+The standard references for the implementation of categories I will use in this
+chapter are the respective chapter of the HoTT-Book~\cite{hottbook} as well as
+the paper about ``Univalent Categories and the Rezk Completion'' by Benedikt
+Ahrens, Chris Kapulkin and Mike Shulman~\cite{rezk-completion}.
+While most of the time I will stick to the (consistent) notation and terminology
+of both of these, I will deviate sometimes to bring the presentation more
+in line with the actual Lean implementation presented in the next chapter.
+
 \section{Categories in HoTT}
 % Here goes stuff about univalent vs non-univalent cats
 % maybe rezk-completion
+
+\begin{defn}[Precategory]
+Let $A : \UU$ be a type (the \textbf{object type} or \textbf{carrier}). A
+\textbf{precategory} $C$ on $A$ is constructed by giving the following data:
+\begin{itemize}
+\item For each $a, b : A$ a type of morphisms $\hom_C(a, b) : U$ for which we furthermore
+require that $\prod_{(a,b:A)} \isSet(\hom_C(a, b))$.
+\item The composition of morphisms
+\begin{equation*}
+\comp_C : \prod_{a,b,c:A} \hom_C(b, c) \to \hom_C(a, b) \to \hom_C(a, c) \text{.}
+\end{equation*}
+We will most of the leave the first three arguments implicit and just write
+$g \circ_C f$ or $gf$ for $\comp_C(a,b,c,g,f)$.
+\item An identity operator $\id_C : \prod_{(a:A)} \hom_C(a,a)$.
+\item A witness ensuring associativity for all morphisms:
+\begin{equation*}
+\prod_{a,b,c,d:A} \prod_{h:\hom_C(c,d)} \prod_{g:\hom_C(b,c)} \prod_{f:\hom_C(a,b)}
+h \circ_C (g \circ_C f) = (h \circ_C g) \circ_C f
+\end{equation*}
+\item Witnesses that the identiy morphisms are neutral with respect to composition
+from the left and from the right:
+\begin{equation*}
+\prod_{a, b : A} \prod_{f : \hom_C(a, b)}
+\left(\id_C(b) \circ_C f = f\right) \times \left(f \circ_C \id(a) = f\right)
+\end{equation*}
+\end{itemize}
+\end{defn}
+
+As with all the definitions given in this semi-informal style, it is, from a
+theoretical standpoint, equivalent whether to see them as a description of an
+iterated $\Sigma$-Type or as the only constructor of an inducitve type.
+We will later~\ref{rmk:inductives-not-sigmas} see that in formalization practice
+it is favorable to choose to introduce them as new inductive types instead of
+$\Sigma$-Types.
 
 \section{Double groupoids in HoTT}
 

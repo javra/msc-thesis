@@ -43,6 +43,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \theoremstyle{definition}
 \defthm{defn}{Definition}{Definitions}
 \defthm{example}{Example}{Examples}
+\defthm{remark}{Remark}{Remarks}
 
 \newcommand{\upperf}{\partial^-_1}
 \newcommand{\lowerf}{\partial^+_1}
@@ -52,6 +53,9 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newcommand{\DCat}{\mathbf{DCat}}
 \newcommand{\DGpd}{\mathbf{DGpd}}
 \newcommand{\XMod}{\mathbf{XMod}}
+\newcommand{\UU}{\mathcal{U}}
+\newcommand{\isSet}{\mathsf{isSet}}
+\DeclareMathOperator{\comp}{comp}
 \DeclareMathOperator{\id}{id}
 \DeclareMathOperator{\invv}{inv_1}
 \DeclareMathOperator{\invh}{inv_2}
@@ -92,19 +96,19 @@ Supervisors at KIT : & Prof. Dr. Gregor Snelting\\
 
 \input{hott.tex}
 
-\chapter{Non-abelian topology}
+\chapter{Non-Abelian Topology}
 
 \input{nat.tex} 
 
-\chapter{The fundamental crossed module of homotopy types}
+\chapter{Translation and Use in Homotopy Type Theory}
 
 \input{types.tex}
 
-\chapter{A formalization in the Lean theorem prover}
+\chapter{A Formalization in the Lean Theorem Prover}
 
 \input{lean.tex}
 
-\chapter{Future work or such}
+\chapter{Conclusion and Future Work}
 
 \bibliographystyle{alpha}
 \bibliography{references}
