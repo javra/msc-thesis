@@ -155,8 +155,8 @@ when dealing with precategories:
 If we look at the previous two examples of precategories where each object itself
 are types, we can conclude that if two objects are isomorphic in the algebraic sense
 they are equivalent types and thus, by the univalence axiom, equal.
-We want to transfer this as requirement to all categories, extending the general idea of univalence
-which says that isomorphic objects should be treated as equals.
+We want to transfer this as requirement to all categories, extending the general
+idea of univalence which says that isomorphic objects should be treated as equals.
 To make this definition of a \emph{category} as smooth as possible, some helping
 will be necessary.
 
@@ -178,6 +178,28 @@ a \cong b &:\equiv \sum_{f:\hom_C(b,a)} \isIso_C(f) \text{.}
 For each $a, b : A$, $a \cong b$ is a set and for each $f : \hom_C(a, b)$,
 $\isIso(f)$ is a mere proposition. \hfill $\qed$
 \end{lemma}
+
+Equal objects of a category are always isomorphic: %TODO delete this?
+
+\begin{lemma}
+If for two objects $a, b : A$ of a precategory $C$ we have $p : a = b$, then there
+exists
+\begin{equation*}
+\idtoiso_{a,b}(p) : a \cong b \text{,}
+\end{equation*}
+such that $\idtoiso_{a,a}(\refl_a) = \left(\id_C(a),\ldots\right)$. %TODO be sloppier?
+\end{lemma}
+
+\begin{proof}
+Induction on $p$ lets us assume that $p \equiv \refl_a$. But since
+$\id_C(a) \circ_C \id_C(a) = \id_C(a)$ by either of the cancellation laws for
+identities, we get an instance of $a \cong a$.
+\end{proof}
+
+\begin{defn}[Category]
+A \textbf{category} $C$ on $A$ is defined to be a precategory on $A$ extended
+by a proof that for all $a, b : A$, $\idtoiso_{a,b}$ is an equivalence.
+\end{defn}
 
 \section{Double groupoids in HoTT}
 
