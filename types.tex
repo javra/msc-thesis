@@ -138,8 +138,46 @@ problem.
 
 \begin{corollary}
 For each pair of universes $(\UU_i, \UU_j)$ there is a precategory of strict
-precategories with carrier in $\UU_i$ and morphism types in $\UU_j$. \hfill $\qed$
+precategories with carrier in $\UU_i$ and morphism types in $\UU_j$. Morphisms of
+this category are functors, with composition of functors and identity functors
+being defined as obvious. \hfill $\qed$
 \end{corollary}
+
+Another precategory we can consider is the precategory of sets:
+
+\begin{lemma}
+Let $\UU_i$ be a universe. Then, the type of sets in $\UU_i$ forms a precategory
+with morphisms being arbitrary functions.
+\end{lemma}
+
+But the truncation level of the carrier is not the only thing that could be bothersome
+when dealing with precategories:
+If we look at the previous two examples of precategories where each object itself
+are types, we can conclude that if two objects are isomorphic in the algebraic sense
+they are equivalent types and thus, by the univalence axiom, equal.
+We want to transfer this as requirement to all categories, extending the general idea of univalence
+which says that isomorphic objects should be treated as equals.
+To make this definition of a \emph{category} as smooth as possible, some helping
+will be necessary.
+
+\begin{defn}[Isomorphisms]
+Let $C$ be a precategory on a type $A : \UU$. A morphism $f : \hom_C(a, b)$ is
+called an \textbf{isomorphism} if there is a morphism $g : \hom_C(b,a)$ that
+is both a left and a right inverse to $f$.
+Define furthermore $a \cong b$ for $a, b : A$ as the type of all isomorphisms in
+$\hom_C(a, b)$.
+Formally:
+\begin{align*}
+\isIso_C(f) &:\equiv \sum_{g:\hom_C(b,a)}
+	\left(g \circ_C f = \id_C(a)\right) \times \left(f \circ_C g = \id_C(b)\right) \\
+a \cong b &:\equiv \sum_{f:\hom_C(b,a)} \isIso_C(f) \text{.}
+\end{align*}
+\end{defn}
+
+\begin{lemma}
+For each $a, b : A$, $a \cong b$ is a set and for each $f : \hom_C(a, b)$,
+$\isIso(f)$ is a mere proposition. \hfill $\qed$
+\end{lemma}
 
 \section{Double groupoids in HoTT}
 
