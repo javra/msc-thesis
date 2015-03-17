@@ -210,7 +210,7 @@ examples for univalent categories:
 \begin{lemma}
 Precategories on $\UU$ and 	precategories on subtypes of $\UU$ (i.e. on
 $\sum_{(A : \UU)} P(A)$ where $P : \UU \to \UU$ and $\prod_{(A : \UU)} \isProp(P(A))$)
-are univalent. \hfill $\qed$
+with function types as morphisms are univalent. \hfill $\qed$
 \end{lemma}
 
 \begin{lemma}
@@ -228,6 +228,17 @@ For all $a, b : A$, the fact that $a \cong b$ is a set implies that, since
 truncation levels are preserved by equivalences, also $a = b$ is a set.
 But by definition, this proves that $A$ is 1-truncated.
 \end{proof}
+
+A last definition is the one of a groupoid.
+Here, the univalent case is rather uninteresting since the structure of the groupoid
+is completely determined by the carrier. %TODO is this actually true?
+
+\begin{defn}[(Pre-)Groupoids]
+A \textbf{(pre-)groupoid} is a (pre-)category $C$ on $A : \UU$ together with
+\begin{equation*}
+\alliso_C : \prod_{a,b:A} ~ \prod_{f:\hom_C(a,b)} \isIso(f) \text{.}
+\end{equation*}
+\end{defn}
 
 \section{Double groupoids in HoTT}
 
