@@ -39,13 +39,13 @@ $g \circ_C f$ or $gf$ for $\comp_C(a,b,c,g,f)$.
 \item An identity operator $\id_C : \prod_{(a:A)} \hom_C(a,a)$.
 \item A witness ensuring associativity for all morphisms:
 \begin{equation*}
-\prod_{a,b,c,d:A} \prod_{h:\hom_C(c,d)} \prod_{g:\hom_C(b,c)} \prod_{f:\hom_C(a,b)}
+\prod_{a,b,c,d:A} ~ \prod_{h:\hom_C(c,d)} ~ \prod_{g:\hom_C(b,c)} ~ \prod_{f:\hom_C(a,b)}
 h \circ_C (g \circ_C f) = (h \circ_C g) \circ_C f
 \end{equation*}
 \item Witnesses that the identiy morphisms are neutral with respect to composition
 from the left and from the right:
 \begin{equation*}
-\prod_{a, b : A} \prod_{f : \hom_C(a, b)}
+\prod_{a, b : A} ~ \prod_{f : \hom_C(a, b)}
 \left(\id_C(b) \circ_C f = f\right) \times \left(f \circ_C \id(a) = f\right)
 \end{equation*}
 \end{itemize}
@@ -76,7 +76,7 @@ A \textbf{functor} $F$ between $C_A$ and $C_B$ is constructed by giving the foll
 \item Its definition on objects as a instance of $F_{\obj}: A \to B$.
 \item Its definition on morphisms
 \begin{equation*}
-F_{\hom} : \prod_{a,b:A} \prod_{f:\hom_{C_A}(a,b)} \hom_{C_B}(F_{\obj}(a),F_{\obj}(b))\text{.}
+F_{\hom} : \prod_{a,b:A} ~ \prod_{f:\hom_{C_A}(a,b)} \hom_{C_B}(F_{\obj}(a),F_{\obj}(b))\text{.}
 \end{equation*}
 Again we will often leave out the first two arguments for $F_{\hom}$ and moreover
 abbreviating $F_{\hom}$ and $F_{\obj}$ to $F$ whenever the distinction is clear.
@@ -85,7 +85,7 @@ are preserved and
 \item a proof the respects the composition in the respective categories, as an instance
 of
 \begin{equation*}
-\prod_{a,b,c:A} \prod_{g:\hom_{C_A}(b,c)} \prod_{f:\hom_{C_B}(a,b)}
+\prod_{a,b,c:A} ~ \prod_{g:\hom_{C_A}(b,c)} ~ \prod_{f:\hom_{C_B}(a,b)}
 F(g \circ_{C_A} f) = F(g) \circ_{C_B} F(f)
 \end{equation*}
 \end{itemize}
@@ -101,7 +101,7 @@ Let $A, B : \UU$ and let $C$, $D$ be categories on $A$ and $B$, respectively.
 Let $F$ and $G$ be two functors from $C$ to $D$. If we have
 \begin{align*}
 p &: \prod_{a:A} F(a) = G(a) \text{ and } \\
-q &: \prod_{a,b:A} \prod_{f : \hom_C(a,b)} p(b)_*\left(p(a)_*(F(f))\right) = G(f) \text{,}
+q &: \prod_{a,b:A} ~ \prod_{f : \hom_C(a,b)} p(b)_*\left(p(a)_*(F(f))\right) = G(f) \text{,}
 \end{align*}
 then $F = G$. \hfill $\qed$
 \end{lemma}

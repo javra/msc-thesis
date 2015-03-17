@@ -819,11 +819,11 @@ to fulfil the following two essential equations:
 \begin{enumerate}
 \item For all $a \in \hom_P(p,q)$ and $x \in M_p$:
 \begin{equation} \label{eq:gp-CM1}
-\mu(\phi(a,x)) = a \circ \mu(x) \circ a\inv \in \hom_P(q,q) \text{.}
+\mu_q(\phi(a,x)) = a \circ \mu_p(x) \circ a\inv \in \hom_P(q,q) \text{.}
 \end{equation}
 \item For all $c, x \in M_p$ :
 \begin{equation} \label{eq:gp-CM2}
-\phi(\mu(c),x) = c \cdot x \cdot c\inv \in M_p \text{.}
+\phi(\mu_p(c),x) = c \cdot x \cdot c\inv \in M_p \text{.}
 \end{equation}
 \end{enumerate}
 \end{defn}
@@ -833,6 +833,30 @@ chapter by allowing not only $x$ as an endpoint of the paths considered but ever
 point in a set $C \subseteq A$.
 This generalization results in the definition of the \textbf{fundamental crossed
 module} of a triple of spaces $C \subseteq A \subseteq X$.
+
+To make the set of crossed module a category, we need to define what a morphism
+between two crossed modules should be:
+
+\begin{defn}[Morphisms between crossed modules]
+Let $(M_p)_{p \in P}$ be a crossed module over a groupoid $P$, with homomorphism
+$\mu$ and action $\phi$ and let $(N_q)_{q \in Q}$ be a crossed module over $Q$
+with morphism $\mu'$ and action $\phi'$.
+A \textbf{morphism} between $(M_p)_{p \in P}$ and $(N_q)_{q \in Q}$ is a functor $F$
+between $P$ and $Q$ and a function of group homomorphisms $(\psi_p)_{p \in P}$ 
+with $\psi_p : M_p \to N_F(p)$ such that %TODO check if there's more conditions
+\begin{itemize}
+\item $F \circ \mu_p = \mu'_{F(p)} \circ \psi_p$ for all $p \in P$ and
+\item for all $p, q : P$, $a \in \hom_P(p,q)$ and $x : M_p$, the action is preserved:
+\begin{equation*}
+\psi_q(\phi(a,x)) = \phi(f(a),\psi_p(x)) \text{.} %TODO: double check this
+\end{equation*}
+\end{itemize}
+\end{defn}
+
+\begin{defn}[Category of crossed modules]
+All crossed modules on groupoids form a category $\XMod$ using the previously
+defined morphisms. Crossed modules over groups are a full subcategory of $\XMod$.
+\end{defn}
 
 \section{Double Groupoids and Crossed Modules are Equivalent}
 
