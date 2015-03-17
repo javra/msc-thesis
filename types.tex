@@ -197,11 +197,83 @@ identities, we get an instance of $a \cong a$.
 \end{proof}
 
 \begin{defn}[Category]
-A \textbf{category} $C$ on $A$ is defined to be a precategory on $A$ extended
+A \textbf{category} $C$ on $A$ is defined to be a precategory on $A$ which is
+\emph{univalent}: It's accompanied
 by a proof that for all $a, b : A$, $\idtoiso_{a,b}$ is an equivalence.
 \end{defn}
 
+The essential use of this extension is, of course, the inverse that $\idtoiso$
+is assumed to have: Statements about isomorphic objects become statements about
+equal objects and can thus be proven using induction. There are some important
+examples for univalent categories:
+
+\begin{lemma}
+Precategories on $\UU$ and 	precategories on subtypes of $\UU$ (i.e. on
+$\sum_{(A : \UU)} P(A)$ where $P : \UU \to \UU$ and $\prod_{(A : \UU)} \isProp(P(A))$)
+are univalent. \hfill $\qed$
+\end{lemma}
+
+\begin{lemma}
+The precategory of strict precategories is univalent.
+\end{lemma}
+
+%TODO prove this
+
+\begin{lemma} \label{thm:cat-1-type}
+If there is a univalent category on a type $A : \UU$, then $A$ is a 1-type.
+\end{lemma}
+
+\begin{proof}
+For all $a, b : A$, the fact that $a \cong b$ is a set implies that, since
+truncation levels are preserved by equivalences, also $a = b$ is a set.
+But by definition, this proves that $A$ is 1-truncated.
+\end{proof}
+
 \section{Double groupoids in HoTT}
+
+As we saw when introducing (pre-)categories in homotopy type theory, we use
+dependent types to model the type of morphisms. Instead, we could have said that
+a category is defined on a two types $A, H \in \UU$ where $A$ represents the objects
+and $H$ is \emph{one} type of morphisms.
+This would have required us to give functions $\partial^-, \partial^+ : H \to A$
+specifying domain and codomain of morphisms and the composition to be of the type
+\begin{equation*}
+\prod_{g,f:H} \left(\partial^+(f) = \partial^-(g) \to 
+	\sum_{h:H} \left(\partial^-(h)=\partial^-(f)\right)
+		\times \left(\partial^+(h)=\partial^+(g) \right) \right) \text{.}
+\end{equation*}
+The difference of this approach from the one we chose is that morphisms are only
+composable if their respective codomain and domain are \emph{definitionally}
+the same. Both approaches are advantageous in some situations:
+Using dependent types will force us more often to use transports to achieve
+definitional equality on codomain and domain, using $\partial^-$ and $\partial^+$
+requires an identity proof for each composition we want to construct.
+
+For the implementation of double categories and double groupoids I decided to
+adopt the dependently typed concept that's commonly also used to formalize categories.
+Also note that in the following definition we will \emph{not} require the
+1-skeleton of a double category to be univalent since in our intended main
+use of the structures the object type will not be 1-truncated and thus the
+1-skeleton, as seen in lemma~\ref{thm:cat-1-type}, not a univalent category.
+
+\begin{defn}[Double category]
+A \textbf{double category} $D$ is constructed by giving the following components:
+\begin{itemize}
+\item A type $D_0 : \UU$ of objects.
+\item A precategory $C$ on $D_0$. To be consistent with the notation in the last
+chapter, we will write $D_1(a, b) : \UU$ for $\hom_C(a, b)$.
+\item A dependent type of two-cells:
+\begin{equation*}
+D_2 : \prod_{a,b,c,d:D_0} ~ \prod_{f:D_1(a,b)} ~ \prod_{g:D_1(c,d)}
+	~ \prod_{h:D_1(a,c)} ~ \prod_{i:D_1(b,d)} \UU
+\end{equation*}
+We will always leave the first four parameters implicit and write $D_2(f,g,h,i)$
+for the type two-cell with $f$ as its upper face, $g$ as its bottom face,
+$h$ as its left face, and $i$ as its right face.
+\item
+\end{itemize}
+
+\end{defn}
 
 \section{Crossed modules in HoTT}
 
