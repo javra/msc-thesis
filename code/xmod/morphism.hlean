@@ -45,8 +45,24 @@ namespace xmod
         apply (hom_family_hom f), apply (hom_family_hom g),
       intros, apply concat, apply (ap (λ x, to_fun_hom (gpd_functor g) x)),
         apply (mu_commute f), apply (mu_commute g),
-      intros, apply concat, apply (ap (λ x, hom_family _ _ x)),
-        apply (phi_commute f), apply (phi_commute g),
+    intros, apply concat, apply (ap (λ x, hom_family _ _ x)),
+      apply (phi_commute f), apply (phi_commute g),
+  end
+
+  end
+
+  context
+  parameters
+    {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} (X : xmod M)
+
+  definition xmod_morphism_id [reducible] : xmod_morphism X X :=
+  begin
+    fapply xmod_morphism.mk,
+      apply functor.id,
+      intros, apply a,
+      intros, apply idp,
+      intros, apply idp,
+    intros, apply idp,
   end
 
   end
