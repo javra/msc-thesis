@@ -20,6 +20,15 @@ structure xmod [class] {P₀ : Type} [P : groupoid P₀] (M : P₀ → Group)
   (CM1 : Π ⦃p q : P₀⦄ (a : hom p q) (x : M p), μ (φ a x) = a ∘ (μ x) ∘ (a⁻¹))
   (CM2 : Π ⦃p : P₀⦄ (c x : M p), φ (μ c) x = c * (x * (@has_inv.inv (M p) _ c)))
 
+structure Xmod : Type :=
+  (carrier : Type)
+  (gpd : groupoid carrier)
+  (groups : carrier → Group)
+  (struct : @xmod carrier gpd groups)
+
+attribute Xmod.struct [instance]
+attribute Xmod.carrier [coercion]
+
 --Some really basic facts
 namespace xmod
   variables {P₀ : Type} [P : groupoid P₀] (M : P₀ → Group)

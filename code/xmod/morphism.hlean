@@ -1,56 +1,54 @@
 import .decl algebra.precategory.functor types.pi
 
-open xmod category path_algebra functor function eq is_trunc pi
+open xmod Xmod category path_algebra functor function eq is_trunc pi
 
 namespace xmod
 
   context
-  parameters
-    {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} (X : xmod M)
-    {Q₀ : Type} [Q : groupoid Q₀] {N : Q₀ → Group} (Y : xmod N)
-  include P X Q Y
-
-  definition φX [reducible] := @φ P₀ P M X
-  definition φY [reducible] := @φ Q₀ Q N Y
+  parameters (X Y : Xmod)
+  include X Y
 
   structure xmod_morphism : Type :=
-    (gpd_functor : functor (Groupoid.mk P₀ P) (Groupoid.mk Q₀ Q))
-    (hom_family : Π (p : P₀), (M p) → (N (gpd_functor p)))
-    (hom_family_hom : Π (p : P₀) (x y : M p),
+    (gpd_functor : functor (Groupoid.mk X (gpd X)) (Groupoid.mk Y (gpd Y)))
+    (hom_family : Π (p : X), (groups X p) → (groups Y (gpd_functor p)))
+    (hom_family_hom : Π (p : X) (x y : groups X p),
       hom_family p (x * y) = hom_family p x * hom_family p y)
-    (mu_commute : Π (p : P₀) (x : M p),
-      to_fun_hom gpd_functor (μ P x) = μ Q (hom_family p x))
-    (phi_commute : Π (p q : P₀) (a : @hom P₀ P p q) (x : M p),
-      hom_family q (@φ P₀ P M X _ _ a x)
-      = @φ Q₀ Q N Y _ _ (to_fun_hom gpd_functor a) (hom_family p x))
+    (mu_commute : Π (p : X) (x : groups X p),
+      to_fun_hom gpd_functor (μ _ x) = μ _ (hom_family p x))
+    (phi_commute : Π (p q : X) (a : @hom X _ p q) (x : groups X p),
+      hom_family q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
+      = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
+           (to_fun_hom gpd_functor a) (hom_family p x))
 
   end
 
   context
   parameters
-    {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} (X : xmod M)
-    {Q₀ : Type} [Q : groupoid Q₀] {N : Q₀ → Group} (Y : xmod N)
-    (gpd_functor1 gpd_functor2 : functor (Groupoid.mk P₀ P) (Groupoid.mk Q₀ Q))
-    (hom_family1 : Π (p : P₀), (M p) → (N (gpd_functor1 p)))
-    (hom_family2 : Π (p : P₀), (M p) → (N (gpd_functor2 p)))
-    (hom_family_hom1 : Π (p : P₀) (x y : M p),
+    (X Y : Xmod)
+    (gpd_functor1 gpd_functor2 : functor (Groupoid.mk X (gpd X)) (Groupoid.mk Y (gpd Y)))
+    (hom_family1 : Π (p : X), (groups X p) → (groups Y (gpd_functor1 p)))
+    (hom_family_hom1 : Π (p : X) (x y : groups X p),
       hom_family1 p (x * y) = hom_family1 p x * hom_family1 p y)
-    (hom_family_hom2 : Π (p : P₀) (x y : M p),
+    (mu_commute1 : Π (p : X) (x : groups X p),
+      to_fun_hom gpd_functor1 (μ _ x) = μ _ (hom_family1 p x))
+    (phi_commute1 : Π (p q : X) (a : @hom X _ p q) (x : groups X p),
+      hom_family1 q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
+      = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
+           (to_fun_hom gpd_functor1 a) (hom_family1 p x))
+    (hom_family2 : Π (p : X), (groups X p) → (groups Y (gpd_functor2 p)))
+    (hom_family_hom2 : Π (p : X) (x y : groups X p),
       hom_family2 p (x * y) = hom_family2 p x * hom_family2 p y)
-    (mu_commute1 : Π (p : P₀) (x : M p),
-      to_fun_hom gpd_functor1 (μ P x) = μ Q (hom_family1 p x))
-    (mu_commute2 : Π (p : P₀) (x : M p),
-      to_fun_hom gpd_functor2 (μ P x) = μ Q (hom_family2 p x))
-    (phi_commute1 : Π (p q : P₀) (a : @hom P₀ P p q) (x : M p),
-      hom_family1 q (@φ P₀ P M X _ _ a x)
-      = @φ Q₀ Q N Y _ _ (to_fun_hom gpd_functor1 a) (hom_family1 p x))
-    (phi_commute2 : Π (p q : P₀) (a : @hom P₀ P p q) (x : M p),
-      hom_family2 q (@φ P₀ P M X _ _ a x)
-      = @φ Q₀ Q N Y _ _ (to_fun_hom gpd_functor2 a) (hom_family2 p x))
+    (mu_commute2 : Π (p : X) (x : groups X p),
+      to_fun_hom gpd_functor2 (μ _ x) = μ _ (hom_family2 p x))
+    (phi_commute2 : Π (p q : X) (a : @hom X _ p q) (x : groups X p),
+      hom_family2 q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
+      = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
+           (to_fun_hom gpd_functor2 a) (hom_family2 p x))
     (p : to_fun_ob gpd_functor1 = to_fun_ob gpd_functor2)
     (q : transport (λ x, Π a b, hom a b → hom (x a) (x b)) p
       (to_fun_hom gpd_functor1) = to_fun_hom gpd_functor2)
-    (r : transport (λ x, Π p', (M p') → (N (x p'))) p hom_family1 = hom_family2)
+    (r : transport (λ x, Π p', (groups X p') → (groups Y (x p'))) p hom_family1
+         = hom_family2)
 
   include p q r
   definition xmod_morphism_congr :
@@ -86,9 +84,7 @@ namespace xmod
 
   context
   parameters
-    {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} {X : xmod M}
-    {Q₀ : Type} [Q : groupoid Q₀] {N : Q₀ → Group} {Y : xmod N}
-    {R₀ : Type} [R : groupoid R₀] {O : R₀ → Group} {Z : xmod O}
+    {X Y Z : Xmod}
     (g : xmod_morphism Y Z)
     (f : xmod_morphism X Y)
 
@@ -110,11 +106,7 @@ namespace xmod
 
   end
 
-  context
-  parameters
-    {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} (X : xmod M)
-
-  definition xmod_morphism_id [reducible] : xmod_morphism X X :=
+  definition xmod_morphism_id [reducible] (X : Xmod) : xmod_morphism X X :=
   begin
     fapply xmod_morphism.mk,
       apply functor.id,
@@ -124,14 +116,9 @@ namespace xmod
     intros, apply idp,
   end
 
-  end
-
   context
   parameters
-    {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} {X : xmod M}
-    {Q₀ : Type} [Q : groupoid Q₀] {N : Q₀ → Group} {Y : xmod N}
-    {R₀ : Type} [R : groupoid R₀] {O : R₀ → Group} {Z : xmod O}
-    {S₀ : Type} [S : groupoid S₀] {T : S₀ → Group} {W : xmod T}
+    (X Y Z W : Xmod)
     (h : xmod_morphism Z W)
     (g : xmod_morphism Y Z)
     (f : xmod_morphism X Y)
@@ -140,6 +127,28 @@ namespace xmod
     xmod_morphism_comp h (xmod_morphism_comp g f)
     = xmod_morphism_comp (xmod_morphism_comp h g) f :=
   begin
+    fapply xmod_morphism_congr,
+        apply idp,
+      apply idp,
+    repeat (apply eq_of_homotopy ; intros),
+    apply idp,
+  end
+
+  definition xmod_morphism_id_left :
+    xmod_morphism_comp (xmod_morphism_id Y) f = f :=
+  begin
+    cases f,
+    fapply xmod_morphism_congr,
+        apply idp,
+      apply idp,
+    repeat (apply eq_of_homotopy ; intros),
+    apply idp,
+  end
+
+  definition xmod_morphism_id_right :
+    xmod_morphism_comp f (xmod_morphism_id X) = f :=
+  begin
+    cases f,
     fapply xmod_morphism_congr,
         apply idp,
       apply idp,
