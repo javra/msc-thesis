@@ -281,7 +281,31 @@ D_2 : \prod_{a,b,c,d:D_0} ~ \prod_{f:D_1(a,b)} ~ \prod_{g:D_1(c,d)}
 We will always leave the first four parameters implicit and write $D_2(f,g,h,i)$
 for the type two-cell with $f$ as its upper face, $g$ as its bottom face,
 $h$ as its left face, and $i$ as its right face.
-\item
+\item The vertical composition operation: For all $a, b, c_1, d_1, c_2, d_2 : D_0$
+and $f_1 : D_1(a, b)$, $g_1 : D_1(c_1, d_1)$, $h_1 : D_1(a, c_1)$, $i_1 : D_1(b, d_1)$,
+$g_2 : D_1(c_2, d_2)$, $h_2 : D_1(c_1, c_2)$, and $i_2 : D_1(d_1, d_2)$ the composition
+of two cells
+\begin{equation*}
+D_2(g_1, g_2, h_2, i_2) \to D_2(f, g_1, h_1, i_1) 
+	\to D_2(f_1, g_2, h_2 \circ h_1, i_2 \circ i_1) \text{.}
+\end{equation*}
+As this is pretty verbose, we will, from now on, refrain from writing out parameters
+that only serve to can easily be inferred from the rest of the term. %TODO express differently
+
+We will denote the vertical composition of $v : D_2(g_1, g_2, h_2, i_2)$ and
+$u: D_2(f, g_1, h_1, i_1)$ with $v \circ_1 u$ leaving all other information implicit.
+\item The vertical identity $\id_1 : \prod_{(a,b:D_0)} \prod_{(f : D_1(a,b))}
+D_2(f,f,\id_C(a),\id_C(b))$.
+\item For all $w : D_2(g_2,g_3,h_3,i_3)$, $v : D_2(g_1,g_2,h_2,i_2)$,
+and $u : D_2(f,g_1,h_1,i_1)$ a witness for the associativity of the vertical
+composition $\assocv(w, v, u)$ in %TODO hbox
+\begin{equation*}
+\assoc(i_3,i_2,i_1)_*(\assoc(h_3,h_2,h_1)_*(w \circ_1 (v \circ_1 u))) =
+(w \circ_1 v) \circ_1 u \text{,}
+\end{equation*}
+where $\assoc$ is the associativity proof in the 1-skeleton.
+The transport is required since the cells at the left and right side of the equation
+do not definitionally have the same set of faces.
 \end{itemize}
 
 \end{defn}
