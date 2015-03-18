@@ -1,4 +1,4 @@
-import algebra.precategory.functor .decl ..transport4 ..dbl_gpd.basic
+import algebra.precategory.functor .decl ..transport4 ..dbl_gpd.basic arity
 
 open eq iso iso.iso category functor dbl_gpd dbl_precat equiv Dbl_gpd
 open prod prod.ops sigma sigma.ops pi is_trunc
@@ -273,7 +273,7 @@ namespace dbl_gpd
 
   end
 
-  definition dbl_functor_compose [reducible] {C D E : Dbl_gpd}
+  definition dbl_functor.compose [reducible] {C D E : Dbl_gpd}
     (G : dbl_functor D E) (F : dbl_functor C D) : dbl_functor C E :=
   begin
     fapply dbl_functor.mk,
@@ -355,7 +355,7 @@ namespace dbl_gpd
         apply transport4_set_reduce,
   end
 
-  definition dbl_functor_id (C : Dbl_gpd) : dbl_functor C C :=
+  definition dbl_functor.id (C : Dbl_gpd) : dbl_functor C C :=
   begin
     fapply dbl_functor.mk,
       apply functor.id,
@@ -467,29 +467,10 @@ namespace dbl_gpd
 
   end
 
-
-  set_option pp.notation false
-  --set_option unifier.max_steps 50000
-  context
-  parameters {B C D E : Dbl_gpd}
-    (H : dbl_functor D E) (G : dbl_functor C D) (F : dbl_functor B C)
-
-  definition dbl_functor_assoc_aux1 := (apD (λ (a : functor (gpd B) (gpd E)),
-          Π ⦃a_1 b c d : carrier (gpd B)⦄ ⦃f : hom a_1 b⦄ ⦃g : hom c d⦄
-          ⦃h : hom a_1 c⦄ ⦃i : hom b d⦄,
-            two_cell B f g h i → two_cell E (to_fun_hom a f) (to_fun_hom a g) (to_fun_hom a h) (to_fun_hom a i))
-        (functor.assoc (catF H) (catF G) (catF F)))
-
-  definition dbl_functor_assoc_aux2 (a b : gpd B) (f : hom a b) :
-   to_fun_hom (catF (dbl_functor_compose H (dbl_functor_compose G F))) f
-   = to_fun_hom (catF (dbl_functor_compose (dbl_functor_compose H G) F)) f :=
-  begin
-    apply idp,
-  end
-
-  definition dbl_functor_assoc :
-    dbl_functor_compose H (dbl_functor_compose G F)
-    = dbl_functor_compose (dbl_functor_compose H G) F :=
+  definition dbl_functor.assoc {B C D E : Dbl_gpd}
+    (H : dbl_functor D E) (G : dbl_functor C D) (F : dbl_functor B C) :
+    dbl_functor.compose H (dbl_functor.compose G F)
+    = dbl_functor.compose (dbl_functor.compose H G) F :=
   begin
     fapply (dbl_functor.congr' B E),
         apply idp,
@@ -497,6 +478,24 @@ namespace dbl_gpd
     apply idp,
   end
 
+  definition dbl_functor.id_left {B C : Dbl_gpd} (F : dbl_functor B C) :
+    dbl_functor.compose (dbl_functor.id C) F = F :=
+  begin
+    cases F with (F1, F2, F3, F4, F5, F6),
+    fapply (dbl_functor.congr' B C),
+        apply idp,
+      apply idp,
+    apply idp,
+  end
+
+  definition dbl_functor.id_right {B C : Dbl_gpd} (F : dbl_functor B C) :
+    dbl_functor.compose F (dbl_functor.id B) = F :=
+  begin
+    cases F with (F1, F2, F3, F4, F5, F6),
+    fapply (dbl_functor.congr' B C),
+        apply idp,
+      apply idp,
+    apply idp,
   end
 
 end dbl_gpd
