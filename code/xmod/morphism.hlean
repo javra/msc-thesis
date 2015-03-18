@@ -1,6 +1,7 @@
 import .decl algebra.precategory.functor types.pi
 
-open xmod Xmod category path_algebra functor function eq is_trunc pi
+open xmod Xmod category path_algebra functor function eq is_trunc pi prod is_equiv equiv
+open sigma sigma.ops
 
 namespace xmod
 
@@ -19,6 +20,56 @@ namespace xmod
       hom_family q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
       = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
            (to_fun_hom gpd_functor a) (hom_family p x))
+
+  definition xmod_morphism_sigma_char :
+    (Σ (gpd_functor : functor (Groupoid.mk X (gpd X)) (Groupoid.mk Y (gpd Y)))
+      (hom_family : Π (p : X), (groups X p) → (groups Y (gpd_functor p))),
+      (Π (p : X) (x y : groups X p),
+        hom_family p (x * y) = (hom_family p x) * (hom_family p y))
+      × (Π (p : X) (x : groups X p),
+      to_fun_hom gpd_functor (μ _ x) = μ _ (hom_family p x))
+      × (Π (p q : X) (a : @hom X _ p q) (x : groups X p),
+      hom_family q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
+      = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
+           (to_fun_hom gpd_functor a) (hom_family p x))) ≃ xmod_morphism :=
+  begin
+    fapply equiv.mk,
+      intro S, cases S with (S1, S'),
+      cases S' with (S2, S''),
+      cases S'' with (S3, S'''),
+      cases S''' with (S4, S5),
+      apply (xmod_morphism.mk S1 S2 S3 S4 S5),
+    fapply is_equiv.adjointify,
+        intro g, cases g with (g1, g2, g3, g4, g5),
+        apply (sigma.mk g1), apply (sigma.mk g2), apply ((g3, (g4, g5))),
+      intro g, cases g with (g1, g2, g3, g4, g5), apply idp,
+    intro S, cases S with (S1, S'),
+    cases S' with (S2, S''),
+    cases S'' with (S3, S'''),
+    cases S''' with (S4, S5),
+    apply idp,
+  end
+
+  set_option apply.class_instance false
+  definition xmod_morphism_hset :
+    is_hset xmod_morphism :=
+  begin
+    apply is_trunc_equiv_closed,
+      apply xmod_morphism_sigma_char,
+    apply is_trunc_sigma, intros,
+    apply @functor.is_hset_functor, apply (P₀_hset (gpd Y) (groups Y)),
+    intros, apply is_trunc_sigma,
+      repeat (apply is_trunc_pi ; intros),
+      apply (group.carrier_hset (groups Y (to_fun_ob a a_1))),
+    intros, apply is_trunc_prod,
+      repeat (apply is_trunc_pi ; intros), apply is_trunc_eq,
+      apply is_trunc_succ, apply (group.carrier_hset (groups Y (to_fun_ob a a_2))),
+    apply is_trunc_prod,
+      repeat (apply is_trunc_pi ; intros), apply is_trunc_eq,
+      apply is_trunc_succ, apply homH,
+    repeat (apply is_trunc_pi ; intros), apply is_trunc_eq,
+    apply is_trunc_succ, apply (group.carrier_hset (groups Y (to_fun_ob a a_3))),
+  end
 
   end
 
