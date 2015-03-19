@@ -538,4 +538,12 @@ namespace lambda
   end
 
   end
+
+  open Xmod
+  protected definition on_objects (X : Xmod) : Dbl_gpd :=
+  Dbl_gpd.mk (Groupoid.mk (carrier X) (gpd X))
+    (@lambda_morphism (carrier X) (gpd X) (groups X) (struct X))
+    (@dbl_gpd (carrier X) (gpd X) (groups X) (struct X))
+    (P₀_hset (gpd X) (groups X))
+
 end lambda

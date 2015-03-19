@@ -27,6 +27,7 @@ structure Xmod : Type :=
   (struct : @xmod carrier gpd groups)
 
 attribute Xmod.struct [instance]
+attribute Xmod.gpd [instance]
 attribute Xmod.carrier [coercion]
 
 --Some really basic facts
