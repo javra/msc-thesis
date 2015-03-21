@@ -21,6 +21,18 @@ namespace xmod
       = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
            (to_fun_hom gpd_functor a) (hom_family p x))
 
+  definition xmod_morphism_hom_family_id (f : xmod_morphism) (p : X) :
+    xmod_morphism.hom_family f p 1 = 1 :=
+  begin
+    assert H : (xmod_morphism.hom_family f p 1) * (xmod_morphism.hom_family f p 1)
+      = (xmod_morphism.hom_family f p 1) * 1,
+      apply concat, apply inverse, apply xmod_morphism.hom_family_hom,
+      apply concat, apply (ap (λ x, xmod_morphism.hom_family f p x)),
+        apply one_mul,
+      apply inverse, apply mul_one,
+    apply (mul_left_cancel H),
+  end
+
   definition xmod_morphism_sigma_char :
     (Σ (gpd_functor : functor (Groupoid.mk X (gpd X)) (Groupoid.mk Y (gpd Y)))
       (hom_family : Π (p : X), (groups X p) → (groups Y (gpd_functor p))),

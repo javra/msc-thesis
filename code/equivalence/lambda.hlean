@@ -504,7 +504,7 @@ namespace lambda
     apply is_hset.elim,
   end
 
-  protected definition dbl_gpd : dbl_gpd P lambda_morphism :=
+  protected definition dbl_gpd [reducible] : dbl_gpd P lambda_morphism :=
   begin
     fapply dbl_gpd.mk,
       intros, apply (lambda_morphism.comp₁ a_1 a_2),
@@ -540,7 +540,7 @@ namespace lambda
   end
 
   open Xmod
-  protected definition on_objects (X : Xmod) : Dbl_gpd :=
+  protected definition on_objects [reducible] (X : Xmod) : Dbl_gpd :=
   Dbl_gpd.mk (Groupoid.mk (carrier X) (gpd X))
     (@lambda_morphism (carrier X) (gpd X) (groups X) (struct X))
     (@dbl_gpd (carrier X) (gpd X) (groups X) (struct X))
