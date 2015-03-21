@@ -306,9 +306,60 @@ composition $\assocv(w, v, u)$ in %TODO hbox
 where $\assoc$ is the associativity proof in the 1-skeleton.
 The transport is required since the cells at the left and right side of the equation
 do not definitionally have the same set of faces.
-\end{itemize}
+\item For every $u : D_2(f, g, h, i)$ we need proofs $\idLeftv(u)$ and $\idRightv(u)$
+that the following equations hold:
+\begin{align*}
+\idLeft(i)_*(\idLeft(h)_*(\id_1 \circ_1 u)) &= u \text{ and } \\
+\idRight(i)_*(\idRight(h)_*(\id_1 \circ_1 u) &= u \text{.}
+\end{align*}
+Again, the transports are needed to account for the difference in the faces
+in the composition.
+\item Of course, we need a horizontal composition and identity:
+\begin{align*}
+\circ_2 &: \prod_{\ldots} D_2(f,g,h,i) \to D_2(f_2,g_2,i,i_2) 
+	\to D_2(f_2 \circ f,g_2\circ,h,i_2) \\
+\id_2 &: \prod_{a,b:D_0} ~ \prod_{f : D_1(a,b)} D_2(\id_C(a),\id_C(b),f,f)
+\end{align*}
 
+\item Analogously to the ones above, we need the associativiy and identitiy proofs
+for the horizontal composition:
+\begin{align*}
+\assoch &: \assoc(g_3,g_2,g_1)_*(\assoc(f_3,f_2,f_1)_*(w \circ_2 (v \circ_2 u))) =
+	(w \circ_2 v) \circ_1 u \text{,} \\ %TODO hbox
+\idLefth &: \idLeft(g)_*(\idLeft(f)_*(\id_2 \circ_2 u)) = u \text{, and } \\
+\idRighth &: \idRight(g)_*(\idRight(f)_*(\id_2 \circ_2 u) = u \text{,}
+\end{align*}
+for every $u : D_2(f,g,h,i)$, $v : D_2(f_2,g_2,i,i_2)$, and $w : D_2(f_3,g_3,i_2,i_3)$.
+\item For every $f$, $g$, $h$, and $i$, the type of two-cells $D_2(f,g,h,i)$ must
+be a set.
+\item The identities should distribute over the respective other composition
+(compare \ref{eq:linear-ident}):
+\begin{align*}
+\prod_{a,b,c : D_0} ~ \prod_{f : D_1(a,b)} ~ \prod_{g : D_1(b,c)}
+	\id_2 (g \circ f) = \id_2(g) \circ_1 \id_2(f) \\
+\prod_{a,b,c : D_0} ~ \prod_{f : D_1(a,b)} ~ \prod_{g : D_1(b,c)}
+	\id_1 (g \circ f) = \id_1(g) \circ_2 \id_1(f)
+\end{align*}
+\item Corresponding to the equation \ref{eq:zero-unique-ident}, we need a proof
+that there is only one, unique, zero-square for each point:
+\begin{equation*}
+\prod_{a : D_0} \id_1(\id_C(a)) = \id_2(\id_C(a))
+\end{equation*}
+\item Finally, as introduced in equation \ref{eq:interchange}, the interchange
+law should hold:
+\begin{equation*}
+\prod_{\ldots} (x \circ_2 w) \circ_1 (v \circ_2 u) = (x \circ_1 v) \circ_2 (w \circ_1 u)
+\end{equation*}
+Consider that here, the ``\ldots'' indexing the iterated $\Pi$-type hide a list
+9 points in $D_0$, 12 morphisms and four squares!
+\end{itemize}
 \end{defn}
+
+This list of necessary parameters of a double category might seem long at first
+glance, but the fact that we implemented the two-cells as dependent types
+released us from the duty of adding the cubical identities \ref{eq:corner-ident}
+and \ref{eq:degen-ident} propositionally. Not only those, but also the four
+first equations in \ref{eq:linear-ident} hold by definition!
 
 \section{Crossed modules in HoTT}
 
