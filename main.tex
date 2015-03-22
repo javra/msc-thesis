@@ -1,4 +1,4 @@
-\documentclass[12pt,openany]{book}
+\documentclass[12pt,openany,headings=optiontohead]{book}
 %TODO: page layout
 \usepackage[backref=page,
 unicode,
@@ -54,6 +54,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newcommand{\DCat}{\mathbf{DCat}}
 \newcommand{\DGpd}{\mathbf{DGpd}}
 \newcommand{\XMod}{\mathbf{XMod}}
+\newcommand{\unit}{\mathbf{1}}
 \newcommand{\UU}{\mathcal{U}}
 \newcommand{\isProp}{\mathsf{isProp}}
 \newcommand{\isSet}{\mathsf{isSet}}
@@ -75,6 +76,8 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \DeclareMathOperator{\idRight}{idRight}
 \DeclareMathOperator{\idRightv}{idRight_1}
 \DeclareMathOperator{\idRighth}{idRight_2}
+\newcommand{\trunc}[2]{\left\Vert #2\right\Vert_{#1}}
+\newcommand{\squash}[1]{\trunc{}{#1}}
 
 \renewcommand{\backrefalt}[4]{
 	\ifcase #1
@@ -123,7 +126,7 @@ I like to acknowledge ...
 
 \input{nat.tex} 
 
-\chapter{Translation and Use in Homotopy Type Theory}
+\chapter[Translation and Use in HoTT]{Translation and Use in Homotopy Type Theory}
 
 \input{types.tex}
 

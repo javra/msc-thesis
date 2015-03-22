@@ -355,11 +355,45 @@ Consider that here, the ``\ldots'' indexing the iterated $\Pi$-type hide a list
 \end{itemize}
 \end{defn}
 
-This list of necessary parameters of a double category might seem long at first
+This list of necessary parameters of a constructor to a double category might seem long at first
 glance, but the fact that we implemented the two-cells as dependent types
 released us from the duty of adding the cubical identities \ref{eq:corner-ident}
 and \ref{eq:degen-ident} propositionally. Not only those, but also the four
 first equations in \ref{eq:linear-ident} hold by definition!
+
+But how do the basic examples~\ref{def:shell-dbl-cat} of a square double category
+and a shell double category translate into HoTT? Stating them is surprisingly
+straight-forward:
+
+\begin{example}[Square and shell double category]
+The square double category on a category $C$ on a Type $A : \UU$ can be instantiated
+as the double precategory having, of course, $C$ as a one skeleton, and setting
+$D_2(f,g,h,i) :\equiv \unit$.
+By doing this, the type of squares does not contain any more information than its
+arguments.
+For every quadruple of morphisms forming a square, there is exactly one two-cell.
+All necessary conditions to make this a double category hold trivially after
+defining $\id_1(f) \equiv \id_2(f) \equiv (u \circ_1 v) \equiv (u \circ_2 v) :\equiv
+\star : \unit$.
+
+For the commutative square double category, one might be inclined to set
+$D_2(f,g,h,i) :\equiv \squash{g \circ h = i \circ f}$ since each commuting
+set of faces should not be inhabited by more than one element.
+But since morphisms between given objects form a set, the commutativity witness
+is already a mere proposition and we can, without any doubts, define
+$D_2(f,g,h,i) :\equiv (g \circ h = i \circ f)$.
+Composition and identities can be defined like stated in \ref{def:shell-dbl-cat},
+the remaining properties follow easily by the truncation imposed on morphisms
+and two-cells.
+\end{example}
+
+\begin{defn}(Weak double groupoid)
+A \textbf{weak double groupoid} is constructed by giving:
+\begin{itemize}
+\item A precategory $D$ with objects $D_0$, morphisms $D_1$ and two-cells $D_2$.
+\item 
+\end{itemize}
+\end{defn}
 
 \section{Crossed modules in HoTT}
 
