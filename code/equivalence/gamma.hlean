@@ -159,4 +159,10 @@ namespace gamma
   end
 
   end
+
+  open Dbl_gpd
+  protected definition on_objects (G : Dbl_gpd) : Xmod :=
+  Xmod.mk (Groupoid.carrier (gpd G)) (Groupoid.struct (gpd G))
+    (λ x, gamma.M_bundled x) (gamma.xmod (two_cell  G))
+
 end gamma

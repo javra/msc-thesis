@@ -71,3 +71,4 @@ structure Dbl_gpd : Type :=
   (obj_set : is_hset (carrier gpd)) --TODO: make this all consistent...
 
 attribute Dbl_gpd.struct [instance]
+attribute Dbl_gpd.obj_set [instance]
