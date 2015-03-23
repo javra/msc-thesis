@@ -411,7 +411,30 @@ and two-cells.
 A \textbf{weak double groupoid} is constructed by giving:
 \begin{itemize}
 \item A precategory $D$ with objects $D_0$, morphisms $D_1$ and two-cells $D_2$.
-\item 
+\item A proof that the 1-skeleton of $D$ is a pregroupoid.
+\item Vertical and horizontal inverses
+\begin{align*}
+\invv &: \prod_{a,b,c,d:D_0} ~ \prod_{f,g,h,i}
+	D_2(f,g,h,i) \to D_2(g,f,h\inv,i\inv) \text{ and } \\
+\invh &: \prod_{a,b,c,d:D_0} ~ \prod_{f,g,h,i}
+	D_2(f,g,h,i) \to D_2(f\inv,g\inv,i,h)
+\end{align*}
+\item Proofs that $\invv$ and $\invh$ actually are inverses with respect to
+vertical and horizontal composition:
+\begin{align*}
+\leftInvv(u) &: \leftInv(i)_*\big(\leftInv(h)_*(\invv(u) \circ_1 u)\big) =
+	\id_1(f) \text{,} \\
+\rightInvv(u) &: \rightInv(i)_*\big(\rightInv(h)_*(u \circ_1 \invv(u)) \big) =
+	\id_1(g) \text{,} \\
+\leftInvh(u) &: \leftInv(g)_*\big(\leftInv(f)_*(\invh(u) \circ_2 u)\big) =
+	\id_2(h) \text{, and} \\
+\rightInvh(u) &: \rightInv(g)_*\big(\rightInv(f)_*(u \circ_2 \invh(u)) \big) =
+	\id_2(i) \text{,}
+\end{align*}
+for every $u : D_2(f,g,h,i)$.
+Here we again leave implicit most of the arguments.
+$\leftInv$ and $\rightInv$ are the respective witnesses for $\id$ in the 1-skeleton
+of $D$ along which we again have to transport to make the statement well-typed.
 \end{itemize}
 \end{defn}
 
