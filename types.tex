@@ -351,7 +351,8 @@ law should hold:
 \prod_{\ldots} (x \circ_2 w) \circ_1 (v \circ_2 u) = (x \circ_1 v) \circ_2 (w \circ_1 u)
 \end{equation*}
 Consider that here, the ``\ldots'' indexing the iterated $\Pi$-type hide a list
-9 points in $D_0$, 12 morphisms and four squares!
+of 9 points in $D_0$, 12 morphisms and four squares.
+We will continue to hide the indexing of two-cells for the sake of readability.
 \end{itemize}
 \end{defn}
 
@@ -407,7 +408,34 @@ the remaining properties follow easily by the truncation imposed on morphisms
 and two-cells.
 \end{example}
 
-\begin{defn}(Weak double groupoid)
+\begin{defn}[Thin structure]
+We define a \textbf{thin structure} $T$ on a double category $D$ to consist of:
+\begin{itemize}
+\item A dependent function selecting a thin square for each commuting square:
+\begin{equation*}
+\thin : \prod_{a,b,c,d:D_0} ~ \prod_{f:D_1(a,b)} ~ \prod_{g:D_1(c,d)}
+	~ \prod_{h:D_1(a,c)} ~ \prod_{i:D_1(b,c)} g \circ h = i \circ f \to
+	D_2(f,g,h,i)
+\end{equation*}
+\item For each $a,b:D_0$, $f:D_1(a,b)$, and $p : f \circ \id(a) = \id(b) \circ f$,
+$q : \id(b) \circ f = f \circ \id(a)$, we have $\thin(f,f,\id(a),\id(b),p) =
+\id_1(f)$ and $\thin(\id(a),\id(b),f,f,q) = \id_2(f)$.
+We could have abstained from quantifying over the commutativity proofs and just
+used $\idRight(f) \ct \idLeft(f)\inv$ and $\idLeft(f) \ct \idRight(f)\inv$ as
+canonical choices for $p$ and $q$.
+But since $p$ and $q$ are proofs for a mere proposition this would yield in an
+equivalent definition which is a bit easier to instantiate but much less
+convenient to use.
+\item For any adjacent squares $u$ and $v$, $\thin(v) \circ_1 \thin(u)
+= \thin(v \circ_1 u)$ and $\thin(v) \circ_2 \thin(u) = \thin(v \circ_2 u)$ where
+appropriate.
+Here, besides quantifying over 6 object, 7 morphisms, we also quantify over
+every commutativity proof for the shell of $u$, $v$, as well as their respective
+composite.
+\end{itemize}
+\end{defn}
+
+\begin{defn}[Weak double groupoid]
 A \textbf{weak double groupoid} is constructed by giving:
 \begin{itemize}
 \item A precategory $D$ with objects $D_0$, morphisms $D_1$ and two-cells $D_2$.
