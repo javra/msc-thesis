@@ -246,27 +246,32 @@ namespace dbl_gpd
   context
   parameters
     {D E : Dbl_gpd} (F : dbl_functor D E)
-    {a b c d : gpd D}
-    {f f': hom a b} {g g': hom c d} {h h': hom a c} {i i': hom b d}
-    (pf : f = f') (pg : g = g') (ph : h = h') (pi : i = i')
-    (u : two_cell D f g h i)
+    {a b c d : gpd D} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
 
-  definition twoF_transport_u : twoF F (pf ▹ u) = pf ▹ (twoF F u) :=
+  definition twoF_transport_u {I : Type} (e : I → hom a b)
+    {f f' : I} (pf : f = f') (u : two_cell D (e f) g h i) :
+    twoF F (pf ▹ u) = pf ▹ (twoF F u) :=
   begin
     apply (eq.rec_on pf), apply idp,
   end
 
-  definition twoF_transport_b : twoF F (pg ▹ u) = pg ▹ (twoF F u) :=
+  definition twoF_transport_b  {I : Type} (e : I → hom c d)
+    {g g' : I} (pg : g = g') (u : two_cell D f (e g) h i) :
+    twoF F (pg ▹ u) = pg ▹ (twoF F u) :=
   begin
     apply (eq.rec_on pg), apply idp,
   end
 
-  definition twoF_transport_l : twoF F (ph ▹ u) = ph ▹ (twoF F u) :=
+  definition twoF_transport_l  {I : Type} (e : I → hom a c)
+    {h h' : I} (ph : h = h') (u : two_cell D f g (e h) i) :
+    twoF F (ph ▹ u) = ph ▹ (twoF F u) :=
   begin
     apply (eq.rec_on ph), apply idp,
   end
 
-  definition twoF_transport_r : twoF F (pi ▹ u) = pi ▹ (twoF F u) :=
+  definition twoF_transport_r  {I : Type} (e : I → hom b d)
+    {i i' : I} (pi : i = i') (u : two_cell D f g h (e i)) :
+    twoF F (pi ▹ u) = pi ▹ (twoF F u) :=
   begin
     apply (eq.rec_on pi), apply idp,
   end

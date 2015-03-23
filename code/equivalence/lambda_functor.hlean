@@ -6,18 +6,6 @@ namespace lambda
 
   universe variables l1 l2 l3
 
-  protected definition functor_aux {A Z : Type} {B : A → Type}
-    (f : Π (a : A), B a → Z) (a : A) (b : B a) : apD011 f (refl a) (refl b) = (refl (f a b)) :=
-  begin
-    apply idp,
-  end
-
-  protected definition functor_aux2 {A : Type} {P : A → Type} (a : A) (b : P a) :
-    transport P (refl a) b = b :=
-  begin
-    apply idp,
-  end
-
   protected definition functor :
     functor Cat_xmod.{l1 l2 l3} Cat_dbl_gpd.{(max l1 l2) l2 l3} :=
   begin
