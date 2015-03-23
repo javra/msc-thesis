@@ -40,6 +40,39 @@ namespace dbl_precat
     apply (eq.rec_on q), apply idp,
   end
 
+  definition transp_comp₂_eq_comp₂_transp_l_l {a b c d b₂ d₂: D₀}
+    {E : Type} {e : E → hom a c}
+    {f : hom a b} {g : hom c d} {h h' : E} (q : h = h') {i : hom b d}
+    {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
+    (u : D₂ f g (e h) i) (v : D₂ f₂ g₂ i i₂) :
+    transport (λ x, D₂ _ _ (e x) _) q (comp₂ D₂ v u)
+    = comp₂ D₂ v (transport (λ x, D₂ _ _ (e x) _) q u) :=
+  begin
+    apply (eq.rec_on q), apply idp,
+  end
+
+  definition transp_comp₂_eq_comp₂_transp_r_r {a b c d b₂ d₂: D₀}
+    {E : Type} {e : E → hom b₂ d₂}
+    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ i₂' : E}  (q : i₂ = i₂')
+    (u : D₂ f g h i) (v : D₂ f₂ g₂ i (e i₂)) :
+    transport (λ x, D₂ _ _ _ (e x)) q (comp₂ D₂ v u)
+    = comp₂ D₂ (transport (λ x, D₂ _ _ _ (e x)) q v) u :=
+  begin
+    apply (eq.rec_on q), apply idp,
+  end
+
+  definition transp_comp₂_eq_comp₂_transp_inner {a b c d b₂ d₂ : D₀}
+    {E : Type} {e : E → hom b d}
+    {f : hom a b} {g : hom c d} {h : hom a c} {i i' : E} (q : i = i')
+    {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
+    (u : D₂ f g h (e i)) (v : D₂ f₂ g₂ (e i) i₂) :
+    comp₂ D₂ v u = comp₂ D₂ (transport (λ x, D₂ _ _ (e x) _) q v)
+        (transport (λ x, D₂ _ _ _ (e x)) q u) :=
+  begin
+    cases q, apply idp,
+  end
+
   definition transp_comp₂_eq_comp₂_transp_r_b {y z w : D₀}
     {Eg : Type} {eg : Eg → hom y w} {f1 : hom y w}
     {g1 g2 : Eg} (filler : D₂ f1 (eg g1) id id) (q : g1 = g2)
