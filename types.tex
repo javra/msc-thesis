@@ -42,7 +42,7 @@ $g \circ_C f$ or $gf$ for $\comp_C(a,b,c,g,f)$.
 \prod_{a,b,c,d:A} ~ \prod_{h:\hom_C(c,d)} ~ \prod_{g:\hom_C(b,c)} ~ \prod_{f:\hom_C(a,b)}
 h \circ_C (g \circ_C f) = (h \circ_C g) \circ_C f
 \end{equation*}
-\item Witnesses that the identiy morphisms are neutral with respect to composition
+\item Witnesses that the identity morphisms are neutral with respect to composition
 from the left and from the right:
 \begin{equation*}
 \prod_{a, b : A} ~ \prod_{f : \hom_C(a, b)}
@@ -270,7 +270,7 @@ use of the structures the object type will not be 1-truncated and thus the
 \begin{defn}[Double category] \label{def:dbl-cat-hott}
 A \textbf{double category} $D$ is constructed by giving the following components:
 \begin{itemize}
-\item A type $D_0 : \UU$ of objects.
+\item A \emph{set} $D_0 : \UU$ of objects.
 \item A precategory $C$ on $D_0$. To be consistent with the notation in the last
 chapter, we will write $D_1(a, b) : \UU$ for $\hom_C(a, b)$.
 \item A dependent type of two-cells:
@@ -408,6 +408,12 @@ the remaining properties follow easily by the truncation imposed on morphisms
 and two-cells.
 \end{example}
 
+When defining thin structures, we want the uniqueness of a unique filler of a
+commutative shell to be represented by a functional dependency.
+By this, we will have more definitional equalities between thin squares than
+we would get if we defined thin squares to be a mere proposition depending on
+a quadruple of morphisms.
+
 \begin{defn}[Thin structure]
 We define a \textbf{thin structure} $T$ on a double category $D$ to consist of:
 \begin{itemize}
@@ -438,7 +444,7 @@ composite.
 \begin{defn}[Weak double groupoid]
 A \textbf{weak double groupoid} is constructed by giving:
 \begin{itemize}
-\item A precategory $D$ with objects $D_0$, morphisms $D_1$ and two-cells $D_2$.
+\item A double category $D$ with objects $D_0$, morphisms $D_1$ and two-cells $D_2$.
 \item A proof that the 1-skeleton of $D$ is a pregroupoid.
 \item Vertical and horizontal inverses
 \begin{align*}
@@ -465,6 +471,70 @@ $\leftInv$ and $\rightInv$ are the respective witnesses for $\id$ in the 1-skele
 of $D$ along which we again have to transport to make the statement well-typed.
 \end{itemize}
 \end{defn}
+
+Finally, we can define what a double groupoid in homotopy type theory should be:
+
+\begin{defn}[Double groupoid]
+A \textbf{double groupoid} is a weak double groupoid together with a thin
+structure on it.
+\end{defn}
+
+We conclude by noting that our double categories and double group-oids here are
+\emph{strict}, since we defined them to be on set-truncated carriers.
+Of course, we could omit this condition to receive a notion of non-strict double
+categories and double groupoids.
+Most of my formalization does not assume those structures to be strict, but we
+need to include the strictness whenever we want to deal with the \emph{category
+of double categories} or the \emph{category of double groupoids}, because double
+functors will only form a set when their codomain is strict.
+
+Another think one could ask oneself is what it means for a double category to
+be \emph{univalent}.
+The most reasonable condition would be that, besides the 1-skeleton, also the
+vertical and horizontal precategory should be univalent.
+While our main example of a fundamental double groupoid will turn out to be univalent,
+I could not find a way to gain advantage by restricting general considerations
+on double groupoids on univalent ones. %TODO prove this
+
+\begin{defn}[Double functor] \label{defl:dbl-functor-hott}
+A \textbf{double functor} $F$ between double categories $D$ and $E$ shall consist
+of the follwing data:
+\begin{itemize}
+\item A functor between the respective 1-skeleton of $D$ and $E$.
+We will write $F_0$ for the function on objects of $D$ and $F_1$ for the function
+on morphisms of $D$.
+\item For all shells $(f,g,h,i)$ we have a function
+\begin{equation*}
+F_2 : D_2(f,g,h,i) \to D_2(F_1(f),F_1(g),F_1(h),F_1(i))
+\end{equation*}
+\item $F$ respects the vertical and horizontal identities: For all $a,b:D_0$
+and $f:D_1(a,b)$, we have proofs $\respectIdv(f)$ and $\respectIdh(f)$ for
+\begin{align*}
+\respectId(b)_*\big(\respectId(a)_*(F_2(\id_1(f)))\big) &= \id_1(F_1(f)) \text{ and} \\
+\respectId(b)_*\big(\respectId(a)_*(F_2(\id_2(f)))\big) &= \id_2(F_1(f)) \text{.}
+\end{align*}
+\item $F$ is linear with respect to vertical and horizontal composition:
+\begin{align*}
+\respectComp(i_2,i_1)_*\big(\respectComp(h_2,h_1)_*(F_2(v \circ_1 u))\big)
+	&= F_2(v) \circ_1 F_2(u) \text{ and } \\
+\respectComp(g_2,g_1)_*\big(\respectComp(f_2,f_1)_*(F_2(v \circ_2 u))\big)
+	&= F_2(v) \circ_2 F_2(u) \text{,}
+\end{align*}
+wherever the respective composition of $u$ and $v$ is defined and where
+$\respectComp$ is the witness that the functor on the 1-skeletons is linear with
+respect to morphisms in $D_1$.
+\end{itemize}
+\end{defn}
+
+\begin{lemma}
+Double categories and double functors form a univalent category.
+
+Weak double groupoids are a full subcategory of this category.
+\end{lemma}
+
+\begin{proof}
+%TODO
+\end{proof}
 
 \section{Crossed modules in HoTT}
 
