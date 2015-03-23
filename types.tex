@@ -267,7 +267,7 @@ Also note that in the following definition we will \emph{not} require the
 use of the structures the object type will not be 1-truncated and thus the
 1-skeleton, as seen in lemma~\ref{thm:cat-1-type}, not a univalent category.
 
-\begin{defn}[Double category]
+\begin{defn}[Double category] \label{def:dbl-cat-hott}
 A \textbf{double category} $D$ is constructed by giving the following components:
 \begin{itemize}
 \item A type $D_0 : \UU$ of objects.
@@ -358,8 +358,28 @@ Consider that here, the ``\ldots'' indexing the iterated $\Pi$-type hide a list
 This list of necessary parameters of a constructor to a double category might seem long at first
 glance, but the fact that we implemented the two-cells as dependent types
 released us from the duty of adding the cubical identities \ref{eq:corner-ident}
-and \ref{eq:degen-ident} propositionally. Not only those, but also the four
-first equations in \ref{eq:linear-ident} hold by definition!
+and \ref{eq:degen-ident} propositionally.
+Not only those, but also the four first equations in \ref{eq:linear-ident} hold
+by definition!
+Formulating the definition using three different categories would have rendered
+this impossible.
+But it is not the case that the notion of the two categories of two-cells are not
+accessible in the formalization:
+
+\begin{defn}
+We can recover what in definition \ref{def:dbl-cat} we called the \textbf{vertical
+precategory} of a double category $D$ as a category $V$ on $A :\equiv
+\sum_{(a,b : D_0)} D_1(a,b)$ with morphisms
+\begin{equation*}
+\hom_V((a,b,f),(c,d,g)) :\equiv \sum_{h:D_1(a,c)} ~ \sum_{i:D_1(b,d)} D_2(f,g,h,i)
+\end{equation*}
+and composition $(h_2,i_2,v) \circ_V (h_1,i_1,u) :\equiv
+(h_2 \circ h_1, i_2 \circ i_1, v \circ_1 u)$.
+The corresponding category axioms can easily be proved to follow from the ones
+of the 1-skeleton of $D$ and their counterparts in definition \ref{def:dbl-cat-hott}.
+
+The \textbf{horizontal precategory} $H$ of $D$ is defined likewise.
+\end{defn}
 
 But how do the basic examples~\ref{def:shell-dbl-cat} of a square double category
 and a shell double category translate into HoTT? Stating them is surprisingly
