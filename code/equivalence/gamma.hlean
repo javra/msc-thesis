@@ -143,7 +143,7 @@ namespace gamma
     apply homH, apply homH, apply homH, apply homH,
   end
 
-  protected definition xmod : xmod (λ x, gamma.M_bundled x) :=
+  protected definition xmod [reducible] : xmod (λ x, gamma.M_bundled x) :=
   begin
     fapply xmod.mk,
       exact D₀set,
@@ -161,7 +161,7 @@ namespace gamma
   end
 
   open Dbl_gpd
-  protected definition on_objects (G : Dbl_gpd) : Xmod :=
+  protected definition on_objects [reducible] (G : Dbl_gpd) : Xmod :=
   Xmod.mk (Groupoid.carrier (gpd G)) (Groupoid.struct (gpd G))
     (λ x, gamma.M_bundled x) (gamma.xmod (two_cell  G))
 

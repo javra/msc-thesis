@@ -60,6 +60,13 @@ namespace gamma
     apply idp,
   end
 
+  protected definition M_morphism.congr' {a : D₀} (v u : M_morphism a)
+    (p1 : M_morphism.lid v = M_morphism.lid u)
+    (p2 : p1 ▹ M_morphism.filler v = M_morphism.filler u) : v = u :=
+  begin
+    cases v, cases u, apply M_morphism.congr, apply p2,
+  end
+
   definition transport_commute {A B : Type} (P : A → B → Type)
     {a a' : A} (p : a = a') {b b' : B} (q : b = b')
     {P1 : P a b} :

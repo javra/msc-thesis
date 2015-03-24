@@ -1,6 +1,6 @@
 import .gamma ..dbl_gpd.functor ..xmod.morphism
 
-open eq iso category dbl_gpd xmod is_trunc path_algebra functor dbl_precat
+open eq category iso is_trunc path_algebra function xmod dbl_precat dbl_gpd Dbl_gpd functor
 
 namespace gamma
   context
@@ -71,6 +71,14 @@ namespace gamma
   end
 
   include F
+  set_option pp.max_steps 10000
+  --set_option pp.notation false
+  --set_option pp.implicit true
+ -- set_option pp.full_names true
+  set_option class.trace_instances true
+  set_option apply.class_instance false
+  attribute M_morphism.lid [unfold-c 7]
+
   protected definition on_morphisms :
     xmod_morphism (gamma.on_objects G) (gamma.on_objects H) :=
   begin
@@ -80,6 +88,9 @@ namespace gamma
     intros (p, x, y), apply (on_morphisms_hom_family p x y),
     intros, cases x, cases F, cases G, cases H, apply idp,
     intros, cases x with (lidx,fillerx),
+    cases F with (catF, twoF, F3, F4, F5, F6),
+    cases G with (gpdG, sqG, structG, carrierG_hset),
+    cases H with (gpdH, sqH, structH, carrierH_hset),
     fapply M_morphism.congr,
       apply concat, apply respect_comp,
       apply concat, apply (ap (λ x, _ ∘ x)), apply respect_comp,
@@ -91,7 +102,7 @@ namespace gamma
         (@right_inverse _ _ _ _ a (!all_iso))),
     apply tr_eq_of_eq_inv_tr,
     apply concat, apply (twoF_transport_b (dbl_functor.mk catF twoF F3 F4 F5 F6) _
-        (id_left (@iso.inverse _ _ _ _ a (!all_iso)))),
+                        (id_left (@iso.inverse _ _ _ _ a (!all_iso)))),
     apply tr_eq_of_eq_inv_tr,
     apply concat, apply respect_comp₂',
     apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
@@ -100,7 +111,14 @@ namespace gamma
       (dbl_functor.twoF (dbl_functor.mk catF twoF F3 F4 F5 F6)
       (ID₁ (Dbl_gpd.two_cell (Dbl_gpd.mk gpdG sqG structG carrierG_hset)) a)) x)),
     apply respect_comp₂',
-      --apply concat, apply transp_comp₂_eq_comp₂_transp_l_bu,
+    esimp{Dbl_gpd.two_cell,dbl_functor.catF,dbl_functor.mk},
+    --apply concat, apply (ap (λ x, comp₂ @sqH x _)), apply respect_id₁',
+    apply concat, apply inverse,
+    apply transp_comp₂_eq_comp₂_transp_l_u', apply inv_tr_eq_of_eq_tr,
+    apply concat, apply inverse,
+    apply transp_comp₂_eq_comp₂_transp_l_b',
   end
+
+  check @transp_comp₂_eq_comp₂_transp_l_bu
 
 end gamma

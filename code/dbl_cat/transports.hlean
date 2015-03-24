@@ -51,6 +51,50 @@ namespace dbl_precat
     apply (eq.rec_on q), apply idp,
   end
 
+  definition transp_comp₂_eq_comp₂_transp_l_u' {a b c d b₂ d₂: D₀}
+    {E : Type} {e : E → hom a b}
+    {f f' : E} (q : f = f') {g : hom c d} {h : hom a c} {i : hom b d}
+    {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
+    (u : D₂ (e f) g h i) (v : D₂ f₂ g₂ i i₂) :
+    transport (λ x, D₂ (f₂ ∘ (e x)) _ _ _) q (comp₂ D₂ v u)
+    = comp₂ D₂ v (transport (λ x, D₂ (e x) _ _ _) q u) :=
+  begin
+    apply (eq.rec_on q), apply idp,
+  end
+
+  definition transp_comp₂_eq_comp₂_transp_l_b' {a b c d b₂ d₂: D₀}
+    {E : Type} {e : E → hom c d}
+    {f : hom a b} {g g' : E} (q : g = g') {h : hom a c} {i : hom b d}
+    {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
+    (u : D₂ f (e g) h i) (v : D₂ f₂ g₂ i i₂) :
+    transport (λ x, D₂ _ (g₂ ∘ (e x)) _ _) q (comp₂ D₂ v u)
+    = comp₂ D₂ v (transport (λ x, D₂ _ (e x) _ _) q u) :=
+  begin
+    apply (eq.rec_on q), apply idp,
+  end
+
+  definition transp_comp₂_eq_comp₂_transp_r_u' {a b c d b₂ d₂: D₀}
+    {E : Type} {e : E → hom b b₂}
+    {f :  hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    {f₂ f₂' : E} (q : f₂ = f₂') {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
+    (u : D₂ f g h i) (v : D₂ (e f₂) g₂ i i₂) :
+    transport (λ x, D₂ ((e x) ∘ f) _ _ _) q (comp₂ D₂ v u)
+    = comp₂ D₂ (transport (λ x, D₂ (e x) _ _ _) q v) u :=
+  begin
+    apply (eq.rec_on q), apply idp,
+  end
+
+  definition transp_comp₂_eq_comp₂_transp_r_b' {a b c d b₂ d₂: D₀}
+    {E : Type} {e : E → hom d d₂}
+    {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    {f₂ : hom b b₂} {g₂ g₂' : E} (q: g₂ = g₂') {i₂ : hom b₂ d₂}
+    (u : D₂ f g h i) (v : D₂ f₂ (e g₂) i i₂) :
+    transport (λ x, D₂ _ ((e x) ∘ g) _ _) q (comp₂ D₂ v u)
+    = comp₂ D₂ (transport (λ x, D₂ _ (e x) _ _) q v) u :=
+  begin
+    apply (eq.rec_on q), apply idp,
+  end
+
   definition transp_comp₂_eq_comp₂_transp_r_r {a b c d b₂ d₂: D₀}
     {E : Type} {e : E → hom b₂ d₂}
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
