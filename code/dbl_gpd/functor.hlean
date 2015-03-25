@@ -216,6 +216,23 @@ namespace dbl_gpd
     (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
 
   context
+  parameters {D E : Dbl_gpd} (F : dbl_functor D E) {a b : gpd D} (f : hom a b)
+
+  definition respect_id₁''_lhs [reducible] := twoF F (ID₁ (two_cell D) (f⁻¹))
+  definition respect_id₁''_rhs [reducible] := transport (λ x, two_cell E x _ _ _)
+    (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
+    (transport (λ x, two_cell E _ x _ _)
+     (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
+      (transport (λ x, two_cell E _ _ x _) (eq.inverse (respect_id (catF F) b))
+       (transport (λ x, two_cell E _ _ _ x) (eq.inverse (respect_id (catF F) a))
+        proof (ID₁ (two_cell E) (to_fun_hom (catF F) f)⁻¹) qed)))
+
+  definition respect_id₁'' : respect_id₁''_lhs = respect_id₁''_rhs :=
+  sorry
+
+  end
+
+  context
   parameters {D E : Dbl_gpd} (F : dbl_functor D E)
     ⦃a b c₁ d₁ c₂ d₂ : gpd D⦄
     ⦃f : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
