@@ -74,7 +74,7 @@ namespace gamma
   set_option pp.max_steps 10000
   --set_option pp.notation false
   --set_option pp.implicit true
- -- set_option pp.full_names true
+  --set_option pp.full_names true
   set_option class.trace_instances true
   set_option apply.class_instance false
   attribute M_morphism.lid [unfold-c 7]
@@ -111,14 +111,56 @@ namespace gamma
       (dbl_functor.twoF (dbl_functor.mk catF twoF F3 F4 F5 F6)
       (ID₁ (Dbl_gpd.two_cell (Dbl_gpd.mk gpdG sqG structG carrierG_hset)) a)) x)),
     apply respect_comp₂',
-    esimp{Dbl_gpd.two_cell,dbl_functor.catF,dbl_functor.mk},
-    --apply concat, apply (ap (λ x, comp₂ @sqH x _)), apply respect_id₁',
     apply concat, apply inverse,
     apply transp_comp₂_eq_comp₂_transp_l_u', apply inv_tr_eq_of_eq_tr,
     apply concat, apply inverse,
-    apply transp_comp₂_eq_comp₂_transp_l_b',
+    apply transp_comp₂_eq_comp₂_transp_l_b', apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₂ @sqH x _)), apply respect_id₁',
+    apply concat, apply (ap (λ x, comp₂ _ _ x)),
+    apply (ap (λ x, comp₂ sqH (twoF fillerx) x)), apply respect_id₁',
+    apply concat, apply inverse, apply (ap (λ x, comp₂ _ _ x)),
+    apply transp_comp₂_eq_comp₂_transp_l_l,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_l,
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply inverse, apply transp_comp₂_inner_deal1,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_r,
+    apply inv_tr_eq_of_eq_tr,
+    apply inverse,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ @sqH (ID₁ sqH (to_fun_hom catF a)) x)),
+    apply inverse, apply transp_comp₂_eq_comp₂_transp_r_b',
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b',
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ _ _ x)), apply transp_comp₂_inner_deal2,
+    apply concat, apply (ap (λ x, comp₂ _ _ x)), apply inverse,
+    apply transp_comp₂_eq_comp₂_transp_r_r,
+    /-apply inverse, apply concat,
+    apply (transport_eq_transport4 (λ f g h i, sqH f g h i)
+      (λ x, (comp (to_fun_hom catF a) (comp _ _))) (λ x, comp (to_fun_hom catF a) (comp x _))
+      (λ x, id) (λ x, id)),
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply @transport4_set_reduce,-/
   end
 
-  check @transp_comp₂_eq_comp₂_transp_l_bu
+  check @ID₁
 
 end gamma

@@ -84,6 +84,28 @@ namespace dbl_precat
     apply (eq.rec_on q), apply idp,
   end
 
+  definition transp_comp₂_inner_deal1 {a b c d b₂ d₂: D₀}
+    {E : Type} {e : E → hom b d}
+    {f :  hom a b} {g : hom c d} {h : hom a c} {i i' : E} (q : i = i')
+    {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
+    (u : D₂ f g h (e i)) (v : D₂ f₂ g₂ (e i') i₂) :
+    comp₂ D₂ v (transport (λ x, D₂ _ _ _ (e x)) q u)
+    = comp₂ D₂ (transport (λ x, D₂ _ _ (e x) _) q⁻¹ v) u :=
+  begin
+    cases q, apply idp,
+  end
+
+  definition transp_comp₂_inner_deal2 {a b c d b₂ d₂: D₀}
+    {E : Type} {e : E → hom b d}
+    {f :  hom a b} {g : hom c d} {h : hom a c} {i i' : E} (q : i = i')
+    {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
+    (u : D₂ f g h (e i')) (v : D₂ f₂ g₂ (e i) i₂) :
+    comp₂ D₂ (transport (λ x, D₂ _ _ (e x) _) q v) u
+    = comp₂ D₂ v (transport (λ x, D₂ _ _ _ (e x)) q⁻¹ u) :=
+  begin
+    cases q, apply idp,
+  end
+
   definition transp_comp₂_eq_comp₂_transp_r_b' {a b c d b₂ d₂: D₀}
     {E : Type} {e : E → hom d d₂}
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
