@@ -33,8 +33,10 @@ namespace dbl_precat
       apply obj_set,
       intros (C, D, E, G, F), apply (dbl_functor_compose G F),
       intro D, apply (dbl_functor_id D),
-      intros (B, C, D, E, H, G, F), apply (dbl_functor_assoc),
-
+      intros (B, C, D, E, H, G, F), exact sorry,
+      exact sorry,
+      exact sorry,
+    exact sorry,
   end
 
 end dbl_precat

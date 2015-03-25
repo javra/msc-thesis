@@ -344,7 +344,7 @@ namespace dbl_precat
   end
 
   end
-
+exit
   set_option pp.notation false
   --set_option unifier.max_steps 50000
   definition dbl_functor_assoc{B C D E : Dbl_precat}
