@@ -213,7 +213,7 @@ $\sum_{(A : \UU)} P(A)$ where $P : \UU \to \UU$ and $\prod_{(A : \UU)} \isProp(P
 with function types as morphisms are univalent. \hfill $\qed$
 \end{lemma}
 
-\begin{lemma}
+\begin{lemma} \label{thm:precat-univalent}
 The precategory of strict precategories is univalent.
 \end{lemma}
 
@@ -533,12 +533,74 @@ Weak double groupoids are a full subcategory of this category.
 \end{lemma}
 
 \begin{proof}
-%TODO
+The proof can be done like the one of lemma \ref{thm:precat-univalent}.
 \end{proof}
+
+%TODO state some of the lemmas
 
 \section{Crossed modules in HoTT}
 
-\section{Presented Types}
+When defining crossed modules, there is less room for decisions, like the in what
+extent to rely on dependent types, than in the case of double categories and
+double groupoids.
+We use \emph{strict} groupoids as base as well as a family of groups that have
+a set as their carrier:
+
+\begin{defn}[Crossed module] \label{def:xmod-hott}
+A \textbf{crossed module} is defined as comprised of the following information:
+\begin{itemize}
+\item A strict groupoid $P$ on a carrier $P_0 : \UU$.
+\item A family of types $M : P_0 \to \UU$ where for each $p : P_0$ we have
+$\isSet(M_p)$ and a group structure on $M_p$, whose operation we will denote with
+``$\cdot$''.
+\item A family $\mu : \prod_{(p:P_0)} M_p \to \hom_P(p,p)$ of functions which all
+are group homomorphisms:
+\begin{align*}
+\prod_{p:P_0} ~ \prod_{y,x:M(p)} ~ \mu_p(y \cdot x) &= \mu_p(y) \circ \mu_p(x) \text{,} \\
+\prod_{p:P_0} ~ \mu_p(1) &= \id_P(p) \text{.}
+\end{align*}
+\item An action $\phi : \prod_{(p,q:P_0)} \hom_P(p,q) \to M_p \to M_q$ of $P$ on
+$M$, which means that
+\begin{align*}
+\prod_{p:P_0} ~ \prod_{x:M_p} ~ \phi(\id_P(p),x) &= x \text{,} \\
+\prod_{p,q,r:P_0} ~ \prod_{g:\hom_P(q,r)} ~ \prod_{h:\hom_P(p,q)} ~ \prod_{x:M_p} ~
+	\phi(g \circ f,x) &= \phi(g,\phi(f,x)) \text{, and} \\
+\prod_{p,q:P_0} ~ \prod_{f:\hom_P(p,q)} ~ \prod_{y,x:M_p} ~
+	\phi(f,y \cdot x) &= \phi(f,y) \cdot \phi(f,x) \text{.}
+\end{align*}
+\item Finally, proofs for the required relation between the action $\phi$ and
+conjugation in the respective structures:
+\begin{align*}
+\prod_{p,q:P_0} ~ \prod_{f:\hom_P(p,q)} ~ \prod_{x:M_p} ~
+	\mu_q(\phi(f,x)) &= f \circ \mu_p(x) \circ f\inv \text{ and } \\
+\prod_{p:P_0} ~ \prod_{c,x:M_p} ~ \phi(\mu_p(c),x) &= c \cdot x \cdot c\inv \text{.}
+\end{align*}
+Here, in both equations we have to decide for one of the two ways to place parentheses
+in the right-hand side of the equation, because associativity only holds propositionally.
+Either way will cause us to require transporting, in the formalization I went with
+binding always to the right.
+\end{itemize}
+\end{defn}
+
+Another definition which will cause no surprise is the one of morphisms between
+crossed modules:
+
+\begin{defn}[Morphisms of crossed modules]
+A \textbf{morphism between two crossed modules} $X$ and $Y$ on base groupoids
+$P$ and $Q$ and group families $M$ and $N$ is defined to be comprised
+of a functor $F$ between the respective base groupoids and a family of functions
+$\psi : \prod_{p:P_0} ~ M_p \to N_{F(p)}$ which should satisfy the following equations:
+\begin{align*}
+\prod_{p:P_0} ~ \prod_{y,x:M_p} ~ \psi_p(y \cdot x) &= \psi_p(y) \cdot \psi_p(x) \text{,} \\
+\prod_{p:P_0} ~ \prod_{x:M_p} ~ F(\mu_p(x)) &= \mu_{F(p)}(\psi_p(x)) \text{, and} \\
+\prod_{p,q:P_0} ~ \prod_{f:\hom_P(p,q)} ~ \prod_{x:M_p} ~
+	\psi_q(\phi(f,x)) &= \phi(F(f),\psi_p(x)) \text{.}
+\end{align*}
+\end{defn}
+
+%TODO: write down some of the few lemmas
+
+\section{Filtered Types}
 % here goes the actual fundamental dbl gpd, xmod
 
 \section{A Seifert-van Kampen theorem for 2-Types}
