@@ -600,8 +600,90 @@ $\psi : \prod_{p:P_0} ~ M_p \to N_{F(p)}$ which should satisfy the following equ
 
 %TODO: write down some of the few lemmas
 
-\section{Filtered Types}
-% here goes the actual fundamental dbl gpd, xmod
+\section{Presented Types}
+
+In this section we want to transfer what in chapter \ref{chapter:nat} were th
+fundamental double groupoid and the fundamental crossed module of a space to the
+world of higher types.
+This, of course involves more than just replacing each occurrence of the word
+``space'' with the word ``type'' but requires more restriction to the kind of
+information one has to provide to characterize a type by the introduced algebraic
+structures.
+
+In the topological setting we did not impose any conditions on the topological
+properties of the components of the nested triple of spaces -- even if we pictured
+$C$ as a disjoint union of points, $A$ as one-dimensional and $X$ as two-dimensional
+in our example \ref{example:fdblgpd-sphere} of the fundamental double groupoid
+of a 2-sphere.
+To meet the truncation level requirements when instantiating the fundamental
+double groupoid of a triple of types we have to make the truncation levels of the
+types increase in order of the inclusions.
+This leads us to the following definition:
+
+\begin{defn}
+A \textbf{presented 2-type} is a triple $(X,A,C)$ of types $X, A, C : \UU$ together
+with functions $\iota : C \to A$ and $\iota' : A \to X$ where $X$ is a 2-type,
+$A$ is a 1-type and $C$ is a set.
+\end{defn}
+
+Example \ref{example:fdblgpd-sphere} matches these requirements:
+
+\begin{example}
+The 2-sphere $\mathbb{S}^2$ can be defined as the higher inductive type on
+\begin{itemize}
+\item Four points $c_1, c_2, c_3, c_4 : \mathbb{S}^2$,
+\item equalities $p_{12} : c_1 = c_2$, $p_{23} : c_2 = c_3$, $p_{34} : c_3 = c_4$,
+	and $p_{41} : c_4 = c_1$, representing the equator, and
+\item two higher equalities $n,s:p_{12} \ct p_{23} \ct p_{34} \ct p_{41} = \refl_{c_1}$,
+representing the northern and southern hemisphere.
+\end{itemize}
+Using this definition we can define $C$ to be the set $\{c_1,c_2,c_3,c_4\}$,
+$A$ to be the higher inductive type $\mathbb{S}^1$ generated only by the points $c_1, \ldots,
+c_4$ and the equalities $p_{12}, \ldots, p_{41}$, and $X :\equiv \mathbb{S}^2$.
+$\iota : C \to A$ is the obvious embedding mapping $c_i \mapsto c_i$ and
+$\iota' : A \to X$ is defined by induction on $A$ with $\iota'(c_i) :\equiv c_i : X$
+and $\ap_{\iota'}(p_i) = p_i$.
+
+The truncation levels are obvious by definition. %TODO are they?
+\end{example}
+
+We can now define the fundamental double groupoid of a presented type.
+As it can be derived from the example above, the objects in $C$ will correspond
+to the objects of the groupoid, while morphisms in the groupoid will be
+equalities $A$ and two-cells will be equalities between equalities in $X$.
+We will start by first considering the 1-skeleton of this double groupoid:
+
+\begin{defn}[Fundamental groupoid] Let $A : \UU$ be a 1-type, $C : \UU$ be a set
+and $\iota : C \to A$. The \textbf{fundamental double groupoid} $G_1(A,C)$ 
+associated to this data is a groupoid on the carrier $C$ with
+$\hom_{G_1(A,C)}(a,b) :\equiv \iota(a) = \iota(b)$ for all $a,b:C$ and
+$g \circ f :\equiv f \ct g$ for all $f : \iota(a) = \iota(b)$ and $g : \iota(b)
+= \iota(c)$.
+\end{defn}
+
+\begin{proof}
+The obvious choice for identity morphisms is setting $\id_{G_1(A,C)} :\equiv
+\prod_{(a:C)} \refl_{\iota(a)}$. Associativity as well as neutrality of $\id_{G_1(A,C)}$
+follows directly from the respective properties of equalities. %TODO ref to chapter 2
+Inverses of morphisms are defined to be the reversed paths.
+\end{proof}
+
+\begin{defn}[Fundamental double groupoid]
+Let $(X,A,C)$ be a presented 2-type related by $\iota : C \to A$ and $\iota' :
+A \to X$. The \textbf{fundamental double groupoid} $G_2(X,A,C)$ of this triple
+is defined as having the fundamental groupoid $G_1(A,C)$. The dependent type
+$G_2(X,A,C)_2$ of two-cells is defined as:
+\begin{equation}
+\prod_{a,b,c,d:C} ~ \prod_{f : \iota a = \iota b} ~ \prod_{g : \iota c = \iota d}
+	~ \prod_{h : \iota a = \iota c} ~ \prod_{i : \iota b = \iota d}
+	\ap_{\iota'}(h) \ct \ap_{\iota'}(g) = \ap_{\iota'}(f) \ct \ap_{\iota'}(i)
+\end{equation}
+%TODO composition etc
+\end{defn}
+
+\begin{proof}
+
+\end{proof}
 
 \section{A Seifert-van Kampen theorem for 2-Types}
 

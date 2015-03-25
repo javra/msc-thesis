@@ -62,6 +62,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newcommand{\idtoiso}{\mathsf{idtoiso}}
 \newcommand{\alliso}{\mathsf{alliso}}
 \newcommand{\refl}{\mathsf{refl}}
+\newcommand{\ap}{\mathsf{ap}}
 \DeclareMathOperator{\comp}{comp}
 \DeclareMathOperator{\id}{id}
 \DeclareMathOperator{\invv}{inv_1}
@@ -133,27 +134,28 @@ I like to acknowledge ...
 
 \tableofcontents
 
-\chapter{Introduction}
+\chapter{Introduction} \label{chapter:intro}
 
 \input{intro.tex}
 
-\chapter{Homotopy type theory}
+\chapter{Homotopy type theory} \label{chapter:hott}
 
 \input{hott.tex}
 
-\chapter{Non-Abelian Topology}
+\chapter{Non-Abelian Topology} \label{chapter:nat}
 
 \input{nat.tex} 
 
 \chapter[Translation and Use in HoTT]{Translation and Use in Homotopy Type Theory}
+\label{chapter:types}
 
 \input{types.tex}
 
-\chapter{A Formalization in the Lean Theorem Prover}
+\chapter{A Formalization in the Lean Theorem Prover} \label{chapter:lean}
 
 \input{lean.tex}
 
-\chapter{Conclusion and Future Work}
+\chapter{Conclusion and Future Work} \label{chapter:outro}
 
 \bibliographystyle{alpha}
 \bibliography{references}
