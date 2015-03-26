@@ -1,4 +1,4 @@
-import algebra.precategory.basic algebra.precategory.morphism
+import algebra.precategory.basic
 open category is_trunc eq sigma sigma.ops unit
 
 context
