@@ -24,7 +24,7 @@ namespace dbl_gpd
 
   --set_option pp.implicit true
   universe variables l₁ l₂ l₃
-  definition cat_dbl_gpd : precategory.{(max l₁ l₂ l₃)+1 (max l₁ l₂ l₃)}
+  definition cat_dbl_gpd [reducible] : precategory.{(max l₁ l₂ l₃)+1 (max l₁ l₂ l₃)}
     Dbl_gpd.{l₁ l₂ l₃} :=
   begin
     fapply precategory.mk,
