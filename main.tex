@@ -6,10 +6,21 @@ pdfauthor={Jakob von Raumer},
 pdftitle={Master Thesis},
 pdfsubject={Mathematics},
 pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
-\usepackage[utf8]{inputenc}
-\usepackage{mathpazo}
-\usepackage[scaled=0.95]{helvet}
-\usepackage{courier}
+
+%code listings
+\usepackage{minted}
+\usepackage{newunicodechar}
+\renewcommand{\MintedPygmentize}{./pygments-main/pygmentize}
+\usepackage{fontspec,xunicode}
+\usepackage[osf]{mathpazo}
+\setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}
+\setmonofont{Ubuntu Mono}
+\newfontfamily{\freeserif}{DejaVu Sans}
+\newunicodechar{⦃}{\makebox[.5em]{\freeserif⦃}}
+\newunicodechar{⦄}{\makebox[.5em]{\freeserif⦄}}
+\newunicodechar{→}{\freeserif{→}}
+\newunicodechar{⁻}{\freeserif{⁻}}
+
 \linespread{1.05}
 \usepackage{graphicx}
 \usepackage{array}
