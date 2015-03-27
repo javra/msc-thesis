@@ -2,6 +2,8 @@ import algebra.groupoid ..transport4
 import .decl
 
 open eq iso category dbl_precat is_trunc nat sigma sigma.ops
+check
+
 
 namespace dbl_gpd
   variables {X A C : Type} [Xtrunc : is_trunc 2 X]
@@ -42,11 +44,11 @@ namespace dbl_gpd
     (v : h₂ ⬝ g₂ = g₁ ⬝ i₂)
     (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :
     (h₁ ⬝ h₂) ⬝ g₂ = f₁ ⬝ (i₁ ⬝ i₂) :=
-  calc (h₁ ⬝ h₂) ⬝ g₂ = h₁ ⬝ (h₂ ⬝ g₂) : con.assoc
-                 ... = h₁ ⬝ (g₁ ⬝ i₂) : v
-                 ... = (h₁ ⬝ g₁) ⬝ i₂ : con.assoc'
-                 ... = (f₁ ⬝ i₁) ⬝ i₂ : u
-                 ... = f₁ ⬝ (i₁ ⬝ i₂) : con.assoc
+  calc (h₁ ⬝ h₂) ⬝ g₂ = h₁ ⬝ (h₂ ⬝ g₂) : by rewrite con.assoc
+                 ... = h₁ ⬝ (g₁ ⬝ i₂) : by rewrite v
+                 ... = (h₁ ⬝ g₁) ⬝ i₂ : by rewrite con.assoc'
+                 ... = (f₁ ⬝ i₁) ⬝ i₂ : by rewrite u
+                 ... = f₁ ⬝ (i₁ ⬝ i₂) : by rewrite con.assoc
 
   definition fund_dbl_precat_flat_inv₁ {a b c d : X}
     {f : a = b} {g : c = d} {h : a = c} {i : b = d}
@@ -64,11 +66,11 @@ namespace dbl_gpd
     (v : i₁ ⬝ g₂ = f₂ ⬝ i₂)
     (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :
     h₁ ⬝ (g₁ ⬝ g₂) = (f₁ ⬝ f₂) ⬝ i₂ :=
-  calc h₁ ⬝ (g₁ ⬝ g₂) = (h₁ ⬝ g₁) ⬝ g₂ : con.assoc'
-                 ... = (f₁ ⬝ i₁) ⬝ g₂ : u
-                 ... = f₁ ⬝ (i₁ ⬝ g₂) : con.assoc
-                 ... = f₁ ⬝ (f₂ ⬝ i₂) : v
-                 ... = (f₁ ⬝ f₂) ⬝ i₂ : con.assoc'
+  calc h₁ ⬝ (g₁ ⬝ g₂) = (h₁ ⬝ g₁) ⬝ g₂ : by rewrite con.assoc'
+                 ... = (f₁ ⬝ i₁) ⬝ g₂ : by rewrite u
+                 ... = f₁ ⬝ (i₁ ⬝ g₂) : by rewrite con.assoc
+                 ... = f₁ ⬝ (f₂ ⬝ i₂) : by rewrite v
+                 ... = (f₁ ⬝ f₂) ⬝ i₂ : by rewrite con.assoc'
 
   definition fund_dbl_precat_flat_inv₂ {a b c d : X}
     {f : a = b} {g : c = d} {h : a = c} {i : b = d}
@@ -93,16 +95,16 @@ namespace dbl_gpd
   begin
     revert u, revert f₁, revert h₁, revert i₁,
     revert v, revert g₁, revert h₂, revert i₂,
-    revert w, revert g₂, revert h₃, revert g₃, apply (eq.rec_on i₃),
-    intro g₃, apply (eq.rec_on g₃),
+    revert w, revert g₂, revert h₃, revert g₃, cases i₃,
+    intro g₃, cases g₃,
     intros (h₃, g₂, w), apply (eq.rec_on w),
-    apply (eq.rec_on h₃),
-    intro i₂, apply (eq.rec_on i₂),
+    cases h₃,
+    intro i₂, cases i₂,
     intros (h₂, g₁, v), apply (eq.rec_on v),
     apply (eq.rec_on h₂),
-    intro i₁, apply (eq.rec_on i₁),
+    intro i₁, cases i₁,
     intros (h₁, g₁, u), apply (eq.rec_on u),
-    apply (eq.rec_on h₁),
+    cases h₁,
     apply idp,
   end
 
@@ -121,14 +123,14 @@ namespace dbl_gpd
     revert w, revert f₃, revert f₂, revert i₃, revert i₂,
     revert u, revert h₁, revert i₁,
     revert g₃, revert g₂, revert g₁,
-    intro g₁, apply (eq.rec_on g₁),
-    intro g₂, apply (eq.rec_on g₂),
-    intro g₃, apply (eq.rec_on g₃),
-    intro i₁, apply (eq.rec_on i₁),
+    intro g₁, cases g₁,
+    intro g₂, cases g₂,
+    intro g₃, cases g₃,
+    intro i₁, cases i₁,
     intro h₁, intro u, apply (eq.rec_on u),
     apply (eq.rec_on h₁),
-    intro i₂, apply (eq.rec_on i₂),
-    intro i₃, apply (eq.rec_on i₃),
+    intro i₂, cases i₂,
+    intro i₃, cases i₃,
     intro f₂, intro f₃,
     intro w, apply (eq.rec_on w),
     intro v, apply (eq.rec_on v),
@@ -187,12 +189,7 @@ namespace dbl_gpd
         (fund_dbl_precat_flat_comp₁ u (fund_dbl_precat_flat_id₁ f)))
     = u :=
   begin
-    revert u, revert f, revert h, revert i,
-    apply (eq.rec_on g),
-    intro i, apply (eq.rec_on i),
-    intro h, apply (eq.rec_on h),
-    intros, apply (eq.rec_on u),
-    apply idp,
+    cases g, cases i, cases h, cases u, apply idp,
   end
 
   definition fund_dbl_precat_flat_id₂_right {a b c d : X}
@@ -203,9 +200,9 @@ namespace dbl_gpd
         (fund_dbl_precat_flat_comp₂ u (fund_dbl_precat_flat_id₂ h))) = u :=
   begin
     revert u, revert f, revert g, revert h,
-    apply (eq.rec_on i),
-    intro h, apply (eq.rec_on h),
-    intro f, apply (eq.rec_on f),
+    cases i,
+    intro h, cases h,
+    intro f, cases f,
     intro g, apply (eq.rec_on g),
     intro u, apply (eq.rec_on u),
     apply idp,
@@ -232,9 +229,9 @@ namespace dbl_gpd
   = idp_con f :=
   begin
     revert u, revert f, revert g, revert h,
-    apply (eq.rec_on i),
-    intro h, apply (eq.rec_on h),
-    intro f, apply (eq.rec_on f),
+    cases i,
+    intro h, cases h,
+    intro f, cases f,
     intro g, apply (eq.rec_on g),
     intro u, apply (eq.rec_on u),
     apply idp,
@@ -249,9 +246,9 @@ namespace dbl_gpd
   = idp_con g :=
   begin
     revert u, revert f, revert g, revert h,
-    apply (eq.rec_on i),
-    intro h, apply (eq.rec_on h),
-    intro f, apply (eq.rec_on f),
+    cases i,
+    intro h, cases h,
+    intro f, cases f,
     intro g, apply (eq.rec_on g),
     intro u, apply (eq.rec_on u),
     apply idp,
@@ -266,9 +263,9 @@ namespace dbl_gpd
   = (idp_con h)⁻¹ :=
   begin
     revert u, revert f, revert g, revert h,
-    apply (eq.rec_on i),
-    intro h, apply (eq.rec_on h),
-    intro f, apply (eq.rec_on f),
+    cases i,
+    intro h, cases h,
+    intro f, cases f,
     intro g, apply (eq.rec_on g),
     intro u, apply (eq.rec_on u),
     apply idp,
@@ -283,9 +280,9 @@ namespace dbl_gpd
   = (idp_con i)⁻¹ :=
   begin
     revert u, revert f, revert g, revert h,
-    apply (eq.rec_on i),
-    intro h, apply (eq.rec_on h),
-    intro f, apply (eq.rec_on f),
+    cases i,
+    intro h, cases h,
+    intro f, cases f,
     intro g, apply (eq.rec_on g),
     intro u, apply (eq.rec_on u),
     apply idp,
@@ -340,19 +337,19 @@ namespace dbl_gpd
     revert u, revert f₀₀, revert g₀₁, revert g₀₀,
     revert x, revert f₁₁, revert g₁₂, revert f₂₁,
     revert w, revert f₁₀, revert g₁₁, revert g₁₀,
-    apply (eq.rec_on f₂₀),
-    intro g₁₀, apply (eq.rec_on g₁₀),
-    intro g₁₁, apply (eq.rec_on g₁₁),
+    cases f₂₀,
+    intro g₁₀, cases g₁₀,
+    intro g₁₁, cases g₁₁,
     intro f₁₀, intro w, apply (eq.rec_on w),
-    intro f₂₁, apply (eq.rec_on f₂₁),
-    intro g₁₂, apply (eq.rec_on g₁₂),
+    intro f₂₁, cases f₂₁,
+    intro g₁₂, cases g₁₂,
     intro f₁₁, intro x, apply (eq.rec_on x),
-    intro g₀₀, apply (eq.rec_on g₀₀),
-    intro g₀₁, apply (eq.rec_on g₀₁),
+    intro g₀₀, cases g₀₀,
+    intro g₀₁, cases g₀₁,
     intro f₀₀, intro u, apply (eq.rec_on u),
-    intro g₀₂, apply (eq.rec_on g₀₂),
+    intro g₀₂, cases g₀₂,
     intro f₀₁, apply (eq.rec_on f₀₁),
-    intro v, apply (eq.rec_on v),
+    intro v,   apply (eq.rec_on v),
     apply idp,
   end
 
@@ -434,16 +431,12 @@ namespace dbl_gpd
   begin
     reverts (g₀₀, g₀₁, g₀₂, g₁₀, g₁₁, g₁₂, u, v, w, x),
     reverts (f₀₁, f₁₁, f₂₁),
-    apply (eq.rec_on f₀₀),
-    apply (eq.rec_on f₁₀),
-    apply (eq.rec_on f₂₀),
+    cases f₀₀, cases f₁₀, cases f₂₀,
     intros (f₀₁, f₁₁, f₂₁),
-    apply (eq.rec_on f₀₁),
-    apply (eq.rec_on f₁₁),
-    apply (eq.rec_on f₂₁),
+    cases f₀₁, cases f₁₁, cases f₂₁,
     intros, apply idp,
   end
-
+exit
   definition fund_dbl_precat_interchange_aux2 :
     (fund_dbl_precat_flat_comp₂
        (transport (λ a_1, _ = _ ⬝ a_1) ((ap_con ι' g₀₂ g₁₂)⁻¹)
@@ -459,13 +452,9 @@ namespace dbl_gpd
   begin
     reverts (f₀₀, f₁₀, f₂₀, f₀₁, f₁₁, f₂₁, u, v, w, x),
     reverts (g₁₀, g₁₁, g₁₂),
-    apply (eq.rec_on g₀₀),
-    apply (eq.rec_on g₀₁),
-    apply (eq.rec_on g₀₂),
+    cases g₀₀, cases g₀₁, cases g₀₂,
     intros (g₁₀, g₁₁, g₁₂),
-    apply (eq.rec_on g₁₀),
-    apply (eq.rec_on g₁₁),
-    apply (eq.rec_on g₁₂),
+    cases g₁₀, cases g₁₁, cases g₁₂,
     intros, apply idp,
   end
 
@@ -624,10 +613,7 @@ namespace dbl_gpd
           (transport (λ a_6,  _ = (ap ι' f) ⬝ (ap ι' a_6)) ((con_idp i)⁻¹) u))))
     = u :=
   begin
-    revert u, revert g,
-    apply (eq.rec_on i),
-    apply (eq.rec_on h),
-    intros, apply idp,
+    cases i, cases h, apply idp,
   end
 
   definition fund_dbl_precat_id₁_left (a b c d : C)
