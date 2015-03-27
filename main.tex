@@ -16,10 +16,15 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}
 \setmonofont{Ubuntu Mono}
 \newfontfamily{\freeserif}{DejaVu Sans}
-\newunicodechar{⦃}{\makebox[.5em]{\freeserif⦃}}
-\newunicodechar{⦄}{\makebox[.5em]{\freeserif⦄}}
+\newunicodechar{⦃}{\ensuremath{\texttt{\{}\mkern-7mu\texttt{|}}}
+	%{\makebox[.5em]{\freeserif⦃}}
+\newunicodechar{⦄}{\ensuremath{\texttt{|}\mkern-7mu\texttt{\}}}}
+	%{\makebox[.5em]{\freeserif⦄}}
 \newunicodechar{→}{\freeserif{→}}
 \newunicodechar{⁻}{\freeserif{⁻}}
+\newunicodechar{▹}{\freeserif{▹}}
+%workaround to remove red boxes
+\AtBeginEnvironment{minted}{\renewcommand{\fcolorbox}[4][]{#4}}
 
 \linespread{1.05}
 \usepackage{graphicx}
@@ -74,6 +79,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newcommand{\alliso}{\mathsf{alliso}}
 \newcommand{\refl}{\mathsf{refl}}
 \newcommand{\ap}{\mathsf{ap}}
+\newcommand{\apiop}{\ap_{\iota'}}
 \DeclareMathOperator{\comp}{comp}
 \DeclareMathOperator{\id}{id}
 \DeclareMathOperator{\invv}{inv_1}

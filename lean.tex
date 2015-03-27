@@ -8,9 +8,12 @@ This is a Code Listing:
                frame=lines,
                fontsize=\footnotesize,
                framesep=1mm]{lean}
-definition inv₁_type : Type :=
-Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
-    D₂ f g h i → D₂ g f (h⁻¹) (i⁻¹)
+definition left_inverse₂_type [reducible] [D : dbl_precat C D₂] 
+  (inv₂ : inv₂_type) : Type :=
+Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+  (u : D₂ f g h i),
+  (left_inverse g) ▹ ((left_inverse f) ▹  --these are transports
+  (@comp₂ D₀ C D₂ D _ _ _ _ _ _ _ _ _ _ _ _ _ (inv₂ u) u)) = ID₂ D₂ h
 \end{minted}
 
 \section{Basic Homotopy Type Theory in Lean}

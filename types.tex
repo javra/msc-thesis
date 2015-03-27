@@ -386,7 +386,7 @@ But how do the basic examples~\ref{def:shell-dbl-cat} of a square double categor
 and a shell double category translate into HoTT? Stating them is surprisingly
 straight-forward:
 
-\begin{example}[Square and shell double category]
+\begin{example}[Square and shell double category] \label{def:shell-dbl-cat-hott}
 The square double category on a category $C$ on a Type $A : \UU$ can be instantiated
 as the double precategory having, of course, $C$ as a one skeleton, and setting
 $D_2(f,g,h,i) :\equiv \unit$.
@@ -678,11 +678,60 @@ $G_2(X,A,C)_2$ of two-cells is defined as:
 	~ \prod_{h : \iota a = \iota c} ~ \prod_{i : \iota b = \iota d}
 	\ap_{\iota'}(h) \ct \ap_{\iota'}(g) = \ap_{\iota'}(f) \ct \ap_{\iota'}(i)
 \end{equation}
-%TODO composition etc
 \end{defn}
 
 \begin{proof}
+Let us start by defining the vertical composition of two-cells:
+Let 
+\begin{align*}
+u &: \apiop(h_1) \ct \apiop(g_1) = \apiop(f) \ct \apiop(i_1) \text{ and } \\
+v &: \apiop(h_2) \ct \apiop(g_2) = \apiop(g_1) \ct \apiop(i_2) \text{.}
+\end{align*}
+Then, we receive $v \circ_1 u$ as the following concatenation of paths:
+\begin{align*}
+\apiop (h_1 \ct h_2) \ct \apiop(g_2) &= (\apiop(h_1) \ct \apiop(h_2)) \ct \apiop(g_2) \\
+	&= \apiop(h_1) \ct (\apiop(h_2) \ct \apiop(g_2)) \\
+	&= \apiop(h_2) \ct (\apiop(g_1) \ct \apiop(i_2)) \\
+	&= (\apiop(h_2) \ct \apiop(g_1)) \ct \apiop(i_2) \\
+	&= (\apiop(f) \ct \apiop(i_1)) \ct \apiop(i_2) \\
+	&= \apiop(f) \ct (\apiop(i_1) \ct \apiop(i_2)) \\
+	&= \apiop(f) \ct \apiop(i_1 \ct i_2) \text{.} \\
+\end{align*}
+Here, the first and last equation (an instance of the general theorem that $\ap$
+is distributive over the concatenation of paths) is what keeps this definition from
+being a special case of the shell double category (definition \ref{def:shell-dbl-cat-hott})
+and makes its formalization a lot more difficult. Horizontal composition is given
+analogously, a vertical identity square for a morphism $f : \iota(a) = \iota(b)$
+consists of
+\begin{align*}
+\apiop(\refl_{\iota a}) \ct \apiop(f) &\equiv \refl_{\iota' \iota a} \ct \apiop(f) \\
+	&= \apiop(f) \\
+	&\equiv \apiop(f) \ct \refl_{\iota' \iota b} \\
+	&\equiv \apiop(f) \ct \apiop(\refl_{\iota b}) \text{,} \\
+\end{align*}
+where it depends on the exact definition of equality as an inductive type whether
+the second and third equality are judgmental.
 
+Proving associativity, identitiy laws and the interchange law can be done all by
+using the following scheme:
+\begin{enumerate}
+\item First, we prove a version of the law where points, paths and two-cells
+all lie in one 2-type $X$.
+In this setting we can apply induction to the first and second order paths involved
+which makes all of the laws reduce to the form $\refl = \refl$. %TODO describe order?
+\item Then, we assume instead that there is no $\iota$, but points and paths
+lie in $A$ while two cells are equalities in $X$.
+Here we can apply induction to the 1-paths involved but not the iterated ones.
+To make the equalities proven in this step type correct we have to transport one
+side along the theorem that equates $\apiop(p \ct q)$ an $\apiop(p) \ct \apiop(q)$
+and along equational laws in the 1-skeleton (i.e. $\assoc$, $\idLeft$ and $\idRight$).
+\item In the last step, we use the first two proofs to show the acutal instance
+of the laws by making it a special case of statement no. 1 by evacuating one side
+of the equation from any transports and then using the second statement to solve
+the resulting equation.
+\end{enumerate}
+I will refrain from stating these proofs in detail and I will give an example in
+\ref{section:dbl-gpd-lean} when presenting the formalization in Lean. %TODO not give one example?
 \end{proof}
 
 \section{A Seifert-van Kampen theorem for 2-Types}
