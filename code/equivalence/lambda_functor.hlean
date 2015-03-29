@@ -11,7 +11,7 @@ namespace lambda
   begin
     fapply functor.mk,
       intro X, apply (lambda.on_objects X),
-      intros (X, Y, f), apply (lambda.on_morphisms f),
+      intros [X, Y, f], apply (lambda.on_morphisms f),
       intro X, cases X,
         fapply dbl_functor.congr',
             apply idp,
@@ -19,7 +19,7 @@ namespace lambda
         repeat ( apply eq_of_homotopy ; intros), cases x_8,
         fapply lambda_morphism.congr', apply idp,
         apply is_hset.elim,
-      intros (X, Y, Z, g, f), cases X, cases Y, cases Z, cases g, cases f,
+      intros [X, Y, Z, g, f], cases X, cases Y, cases Z, cases g, cases f,
         fapply dbl_functor.congr',
             apply idp,
           apply idp,

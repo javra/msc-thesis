@@ -28,12 +28,12 @@ namespace dbl_precat
     Dbl_precat.{l₁ l₂ l₃} :=
   begin
     fapply category.mk,
-      intros (D, E), apply (dbl_functor D E),
-      intros (D, E), apply (is_hset_dbl_functor D E),
+      intros [D, E], apply (dbl_functor D E),
+      intros [D, E], apply (is_hset_dbl_functor D E),
       apply obj_set,
-      intros (C, D, E, G, F), apply (dbl_functor_compose G F),
+      intros [C, D, E, G, F], apply (dbl_functor_compose G F),
       intro D, apply (dbl_functor_id D),
-      intros (B, C, D, E, H, G, F), exact sorry,
+      intros [B, C, D, E, H, G, F], exact sorry,
       exact sorry,
       exact sorry,
     exact sorry,

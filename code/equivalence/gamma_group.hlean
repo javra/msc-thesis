@@ -26,14 +26,14 @@ namespace gamma
     (Σ (lid : hom a a), D₂ lid id id id) ≃ (M_morphism a) :=
   begin
     fapply equiv.mk,
-      intro P, apply (sigma.rec_on P), intros (lid, filler),
+      intro P, apply (sigma.rec_on P), intros [lid, filler],
       exact (M_morphism.mk lid filler),
     fapply is_equiv.adjointify,
-        intro P, apply (M_morphism.rec_on P), intros (lid, filler),
+        intro P, apply (M_morphism.rec_on P), intros [lid, filler],
         exact ((⟨lid, filler⟩)),
-      intro P, apply (M_morphism.rec_on P), intros (lid, filler),
+      intro P, apply (M_morphism.rec_on P), intros [lid, filler],
       apply idp,
-    intro P, apply (sigma.rec_on P), intros (lid, filler),
+    intro P, apply (sigma.rec_on P), intros [lid, filler],
     apply idp,
   end
 
@@ -154,9 +154,9 @@ namespace gamma
   protected definition M_morphism.assoc ⦃a : D₀⦄ (w v u : M_morphism a) :
     M_morphism.comp w (M_morphism.comp v u) = M_morphism.comp (M_morphism.comp w v) u :=
   begin
-    revert u, revert v, apply (M_morphism.rec_on w), intros (w1, w2),
-    intro v, apply (M_morphism.rec_on v), intros (v1, v2),
-    intro u, apply (M_morphism.rec_on u), intros (u1, u2),
+    revert u, revert v, apply (M_morphism.rec_on w), intros [w1, w2],
+    intro v, apply (M_morphism.rec_on v), intros [v1, v2],
+    intro u, apply (M_morphism.rec_on u), intros [u1, u2],
     fapply M_morphism.congr,
       apply !assoc, apply concat,
       apply transport_commute,
@@ -186,7 +186,7 @@ namespace gamma
   protected definition M_morphism.id_left ⦃a : D₀⦄ (M : M_morphism a) :
     M_morphism.comp (M_morphism.one a) M = M :=
   begin
-    apply (M_morphism.rec_on M), intros (lid, filler),
+    apply (M_morphism.rec_on M), intros [lid, filler],
     fapply (M_morphism.congr),
       apply (id_left lid),
       apply concat, rotate 3, apply (id_left₂ D₂ filler),
@@ -201,7 +201,7 @@ namespace gamma
   protected definition M_morphism.id_right ⦃a : D₀⦄ (M : M_morphism a) :
     M_morphism.comp M (M_morphism.one a) = M :=
   begin
-    apply (M_morphism.rec_on M), intros (lid, filler),
+    apply (M_morphism.rec_on M), intros [lid, filler],
     fapply (M_morphism.congr),
       apply (id_right lid),
       apply concat, rotate 3, apply (id_right₂ D₂ filler),
@@ -261,7 +261,7 @@ namespace gamma
   definition M_morphism.left_inverse ⦃a : D₀⦄ (u : M_morphism a) :
     M_morphism.comp (M_morphism.inv u) u = M_morphism.one a :=
   begin
-    apply (M_morphism.rec_on u), intros (lid, filler),
+    apply (M_morphism.rec_on u), intros [lid, filler],
     fapply (M_morphism.congr),
       apply left_inverse,
       apply concat, rotate 3, apply (weak_dbl_gpd.left_inverse₂ D₂ filler),
@@ -273,9 +273,9 @@ namespace gamma
   protected definition M [instance] (a : D₀) : group (M_morphism a) :=
   begin
     fapply group.mk,
-      intros (u, v), apply (M_morphism.comp u v),
+      intros [u, v], apply (M_morphism.comp u v),
       apply (M_morphism.is_hset a),
-      intros (u, v, w), apply ((M_morphism.assoc u v w)⁻¹),
+      intros [u, v, w], apply ((M_morphism.assoc u v w)⁻¹),
       apply M_morphism.one,
       intro u, apply (M_morphism.id_left u),
       intro u, apply (M_morphism.id_right u),

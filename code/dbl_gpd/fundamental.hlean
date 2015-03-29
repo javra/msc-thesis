@@ -2,8 +2,6 @@ import algebra.groupoid ..transport4
 import .decl
 
 open eq iso category dbl_precat is_trunc nat sigma sigma.ops
-check
-
 
 namespace dbl_gpd
   variables {X A C : Type} [Xtrunc : is_trunc 2 X]
@@ -97,13 +95,13 @@ namespace dbl_gpd
     revert v, revert g₁, revert h₂, revert i₂,
     revert w, revert g₂, revert h₃, revert g₃, cases i₃,
     intro g₃, cases g₃,
-    intros (h₃, g₂, w), apply (eq.rec_on w),
+    intros [h₃, g₂, w], apply (eq.rec_on w),
     cases h₃,
     intro i₂, cases i₂,
-    intros (h₂, g₁, v), apply (eq.rec_on v),
+    intros [h₂, g₁, v], apply (eq.rec_on v),
     apply (eq.rec_on h₂),
     intro i₁, cases i₁,
-    intros (h₁, g₁, u), apply (eq.rec_on u),
+    intros [h₁, g₁, u], apply (eq.rec_on u),
     cases h₁,
     apply idp,
   end
@@ -429,10 +427,10 @@ namespace dbl_gpd
         (fund_dbl_precat_flat_comp₂ x w)
         (fund_dbl_precat_flat_comp₂ v u)) :=
   begin
-    reverts (g₀₀, g₀₁, g₀₂, g₁₀, g₁₁, g₁₂, u, v, w, x),
-    reverts (f₀₁, f₁₁, f₂₁),
+    reverts [g₀₀, g₀₁, g₀₂, g₁₀, g₁₁, g₁₂, u, v, w, x],
+    reverts [f₀₁, f₁₁, f₂₁],
     cases f₀₀, cases f₁₀, cases f₂₀,
-    intros (f₀₁, f₁₁, f₂₁),
+    intros [f₀₁, f₁₁, f₂₁],
     cases f₀₁, cases f₁₁, cases f₂₁,
     intros, apply idp,
   end
@@ -450,10 +448,10 @@ exit
         (fund_dbl_precat_flat_comp₁ x v)
         (fund_dbl_precat_flat_comp₁ w u)) :=
   begin
-    reverts (f₀₀, f₁₀, f₂₀, f₀₁, f₁₁, f₂₁, u, v, w, x),
-    reverts (g₁₀, g₁₁, g₁₂),
+    reverts [f₀₀, f₁₀, f₂₀, f₀₁, f₁₁, f₂₁, u, v, w, x],
+    reverts [g₁₀, g₁₁, g₁₂],
     cases g₀₀, cases g₀₁, cases g₀₂,
-    intros (g₁₀, g₁₁, g₁₂),
+    intros [g₁₀, g₁₁, g₁₂],
     cases g₁₀, cases g₁₁, cases g₁₂,
     intros, apply idp,
   end
@@ -471,11 +469,11 @@ exit
    = (fund_dbl_precat_flat_comp₂ (fund_dbl_precat_flat_comp₁ x v)
        (fund_dbl_precat_flat_comp₁ w u)) :=
   begin
-    reverts (u, v, w, x),
-    reverts (f₁₀, f₁₁, g₀₁, g₁₁),
-    reverts (f₂₀, f₂₁),
-    reverts (g₀₂, g₁₂),
-    reverts (g₀₀, g₁₀),
+    reverts [u, v, w, x],
+    reverts [f₁₀, f₁₁, g₀₁, g₁₁],
+    reverts [f₂₀, f₂₁],
+    reverts [g₀₂, g₁₂],
+    reverts [g₀₀, g₁₀],
     revert f₀₁, cases f₀₀,
     intro f₀₁, cases f₀₁,
     intro g₀₀, cases g₀₀,
@@ -564,7 +562,7 @@ exit
                      (fund_dbl_precat_flat_comp₁ w v) u)))))))))))))
      = (fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_comp₁ w v) u) :=
   begin
-    reverts (u, v, w),
+    reverts [u, v, w],
     revert g₃, revert i₃, revert h₃,
     revert g₂, revert i₂, revert h₂,
     revert g₁, revert i₁, revert h₁,
@@ -754,7 +752,7 @@ exit
                     (fund_dbl_precat_flat_comp₂ w v) u)))))))))))))
     = (fund_dbl_precat_flat_comp₂ (fund_dbl_precat_flat_comp₂ w v) u) :=
   begin
-    reverts (u, v, w),
+    reverts [u, v, w],
     revert i₃, revert g₃, revert f₃,
     revert i₂, revert g₂, revert f₂,
     revert i₁, revert g₁, revert f₁,

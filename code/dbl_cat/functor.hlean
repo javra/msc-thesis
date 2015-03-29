@@ -91,10 +91,10 @@ namespace dbl_precat
                    (respect_id₁ , (respect_comp₁, (respect_id₂, respect_comp₂)))))},
           {intro F, cases F, apply idp},
           {intro S,
-           cases S    with (catF, S'),
-           cases S'   with (twoF, S''),
-           cases S''  with (respect_id₁, S'''),
-           cases S''' with (respect_comp₁, S''''),
+           cases S    with [catF, S'],
+           cases S'   with [twoF, S''],
+           cases S''  with [respect_id₁, S'''],
+           cases S''' with [respect_comp₁, S''''],
            cases S'''',
            apply idp}
       end

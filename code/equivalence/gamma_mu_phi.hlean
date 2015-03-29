@@ -70,7 +70,7 @@ namespace gamma
   protected definition phi_respect_id ⦃y : D₀⦄ (u : M_morphism y) :
     phi (ID y) u = u :=
   begin
-    apply (M_morphism.rec_on u), intros (lid, filler),
+    apply (M_morphism.rec_on u), intros [lid, filler],
     fapply (M_morphism.congr),
       apply concat, apply id_left,
       apply concat, apply (ap (λ x, _ ∘ x)),
@@ -180,7 +180,7 @@ namespace gamma
   protected definition phi_respect_P_comp ⦃x y z : D₀⦄ (b : hom y z) (a : hom x y)
     (u : M_morphism x) : phi (b ∘ a) u = phi b (phi a u) :=
   begin
-    apply (M_morphism.rec_on u), intros (lid, filler),
+    apply (M_morphism.rec_on u), intros [lid, filler],
     fapply (M_morphism.congr),
       apply (transport _ (Pbainv a b)),
       apply concat, apply (!assoc⁻¹), apply (ap (λ x, b ∘ x)),
@@ -318,8 +318,8 @@ namespace gamma
   protected definition phi_respect_M_comp ⦃x y : D₀⦄ (a : hom x y) (v u : M_morphism x) :
     phi a (M_morphism.comp v u) = M_morphism.comp (phi a v) (phi a u) :=
   begin
-    apply (M_morphism.rec_on v), intros (lidv, fillerv),
-    apply (M_morphism.rec_on u), intros (lidu, filleru),
+    apply (M_morphism.rec_on v), intros [lidv, fillerv],
+    apply (M_morphism.rec_on u), intros [lidu, filleru],
     --Part I : Equality of lids
     fapply (M_morphism.congr),
       apply concat, rotate 4, apply inverse,

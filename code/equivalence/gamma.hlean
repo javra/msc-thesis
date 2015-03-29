@@ -103,8 +103,8 @@ namespace gamma
   protected definition gamma_CM2 ⦃x : D₀⦄ (v u : M_morphism x) :
     gamma.phi (gamma.mu v) u = M_morphism.comp v (M_morphism.comp u (M_morphism.inv v)) :=
   begin
-    apply (M_morphism.rec_on v), intros (lidv, fillerv),
-    apply (M_morphism.rec_on u), intros (lidu, filleru),
+    apply (M_morphism.rec_on v), intros [lidv, fillerv],
+    apply (M_morphism.rec_on u), intros [lidu, filleru],
     fapply (M_morphism.congr),
       apply idp,
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
@@ -147,15 +147,15 @@ namespace gamma
   begin
     fapply xmod.mk,
       exact D₀set,
-      intros (x, u), apply (gamma.mu u),
-      intros (x, v, u), apply (gamma.mu_respect_comp v u),
+      intros [x, u], apply (gamma.mu u),
+      intros [x, v, u], apply (gamma.mu_respect_comp v u),
       intro x, apply gamma.mu_respect_id,
-      intros (x, y, a, u), apply (gamma.phi a u),
-      intros (x, u), apply (gamma.phi_respect_id u),
-      intros (x, y, z, b, a, u), apply (gamma.phi_respect_P_comp b a u),
-      intros (x, y, a, v, u), apply (gamma.phi_respect_M_comp a v u),
-      intros (x, y, a, u), apply (gamma_CM1 a u),
-      intros (x, v, u), apply (gamma_CM2 v u),
+      intros [x, y, a, u], apply (gamma.phi a u),
+      intros [x, u], apply (gamma.phi_respect_id u),
+      intros [x, y, z, b, a, u], apply (gamma.phi_respect_P_comp b a u),
+      intros [x, y, a, v, u], apply (gamma.phi_respect_M_comp a v u),
+      intros [x, y, a, u], apply (gamma_CM1 a u),
+      intros [x, v, u], apply (gamma_CM2 v u),
   end
 
   end

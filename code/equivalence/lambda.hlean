@@ -24,11 +24,11 @@ namespace lambda
     fapply equiv.mk,
       intro S, apply (lambda_morphism.mk S.1 S.2),
     fapply is_equiv.adjointify,
-        intro u, apply (lambda_morphism.rec_on u), intros (mu, commu),
+        intro u, apply (lambda_morphism.rec_on u), intros [mu, commu],
         apply (sigma.mk mu commu),
-      intro u, apply (lambda_morphism.rec_on u), intros (mu, commu),
+      intro u, apply (lambda_morphism.rec_on u), intros [mu, commu],
       apply idp,
-    intro S, apply (sigma.rec_on S), intros (mu, commu),
+    intro S, apply (sigma.rec_on S), intros [mu, commu],
     apply idp,
   end
 
@@ -58,9 +58,9 @@ namespace lambda
     (p2 : p1 ▹ (lambda_morphism.comm v) = (lambda_morphism.comm u)) : v = u :=
   begin
     revert p2, revert p1,
-    apply (lambda_morphism.rec_on v), intros (m_v, comm_v),
-    apply (lambda_morphism.rec_on u), intros (m_u, comm_u),
-    intros (p1, p2), apply lambda_morphism.congr, apply p2,
+    apply (lambda_morphism.rec_on v), intros [m_v, comm_v],
+    apply (lambda_morphism.rec_on u), intros [m_u, comm_u],
+    intros [p1, p2], apply lambda_morphism.congr, apply p2,
   end
 
   definition lambda_morphism.congr_transports ⦃a b c d : P₀⦄
@@ -73,8 +73,7 @@ namespace lambda
       (transport (λ x, lambda_morphism f g x i') ph (lambda_morphism.mk m1 comm1))
     = lambda_morphism.mk m2 comm2 :=
   begin
-    apply (eq.rec_on p2), apply (eq.rec_on p1),
-    apply (eq.rec_on ph), apply (eq.rec_on pi),
+    cases p2, cases p1, cases ph, cases pi,
     apply idp,
   end
 
@@ -88,8 +87,7 @@ namespace lambda
       (transport (λ x, lambda_morphism x g' h i) pf (lambda_morphism.mk m1 comm1))
     = lambda_morphism.mk m2 comm2 :=
   begin
-    apply (eq.rec_on p2), apply (eq.rec_on p1),
-    apply (eq.rec_on pf), apply (eq.rec_on pg),
+    cases p2, cases p1, cases pf, cases pg,
     apply idp,
   end
 
@@ -218,7 +216,7 @@ namespace lambda
     (u : lambda_morphism f g h i) :
     id_left i ▹ id_left h ▹ lambda_morphism.comp₁ (lambda_morphism.ID₁ g) u = u :=
   begin
-    apply (lambda_morphism.rec_on u), intros (mu, commu),
+    apply (lambda_morphism.rec_on u), intros [mu, commu],
     fapply lambda_morphism.congr_transports,
       apply concat, apply (ap (λ x, x * _)), apply φ_respect_id,
       apply mul_one,
@@ -230,7 +228,7 @@ namespace lambda
     (u : lambda_morphism f g h i) :
     id_left g ▹ id_left f ▹ lambda_morphism.comp₂ (lambda_morphism.ID₂ i) u = u :=
   begin
-    apply (lambda_morphism.rec_on u), intros (mu, commu),
+    apply (lambda_morphism.rec_on u), intros [mu, commu],
     fapply lambda_morphism.congr_transports',
       apply concat, apply (ap (λ x, _ * x)), apply φ_respect_id,
       apply one_mul,
@@ -242,7 +240,7 @@ namespace lambda
     (u : lambda_morphism f g h i) :
     id_right i ▹ id_right h ▹ lambda_morphism.comp₁ u (lambda_morphism.ID₁ f) = u :=
   begin
-    apply (lambda_morphism.rec_on u), intros (mu, commu),
+    apply (lambda_morphism.rec_on u), intros [mu, commu],
     fapply lambda_morphism.congr_transports,
       apply concat, apply (ap (λ x, x * _)), apply φ_respect_one,
       apply one_mul,
@@ -254,7 +252,7 @@ namespace lambda
     (u : lambda_morphism f g h i) :
     id_right g ▹ id_right f ▹ lambda_morphism.comp₂ u (lambda_morphism.ID₂ h) = u :=
   begin
-    apply (lambda_morphism.rec_on u), intros (mu, commu),
+    apply (lambda_morphism.rec_on u), intros [mu, commu],
     fapply lambda_morphism.congr_transports',
       apply concat, apply (ap (λ x, _ * x)), apply φ_respect_one,
       apply mul_one,

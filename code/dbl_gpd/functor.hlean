@@ -88,10 +88,10 @@ namespace dbl_gpd
                    (respect_id₁ , (respect_comp₁, (respect_id₂, respect_comp₂)))))},
           {intro F, cases F, apply idp},
           {intro S,
-           cases S    with (catF, S'),
-           cases S'   with (twoF, S''),
-           cases S''  with (respect_id₁, S'''),
-           cases S''' with (respect_comp₁, S''''),
+           cases S    with [catF, S'],
+           cases S'   with [twoF, S''],
+           cases S''  with [respect_id₁, S'''],
+           cases S''' with [respect_comp₁, S''''],
            cases S'''',
            apply idp}
       end
@@ -173,8 +173,8 @@ namespace dbl_gpd
     dbl_functor.mk catF1 twoF1 respect_id₁1 respect_comp₁1 respect_id₂1 respect_comp₂1
     = dbl_functor.mk catF2 twoF2 respect_id₁2 respect_comp₁2 respect_id₂2 respect_comp₂2 :=
   begin
-    cases catF1 with (catF11, catF12, catF13, catF14),
-    cases catF2 with (catF21, catF22, catF23, catF24), esimp,
+    cases catF1 with [catF11, catF12, catF13, catF14],
+    cases catF2 with [catF21, catF22, catF23, catF24],
     cases p1, cases p2, cases p3,
     assert P2 : catF13 = catF23,
       apply is_hprop.elim,
@@ -269,28 +269,28 @@ namespace dbl_gpd
     {f f' : I} (pf : f = f') (u : two_cell D (e f) g h i) :
     twoF F (pf ▹ u) = pf ▹ (twoF F u) :=
   begin
-    apply (eq.rec_on pf), apply idp,
+    cases pf, apply idp,
   end
 
   definition twoF_transport_b  {I : Type} (e : I → hom c d)
     {g g' : I} (pg : g = g') (u : two_cell D f (e g) h i) :
     twoF F (pg ▹ u) = pg ▹ (twoF F u) :=
   begin
-    apply (eq.rec_on pg), apply idp,
+    cases pg, apply idp,
   end
 
   definition twoF_transport_l  {I : Type} (e : I → hom a c)
     {h h' : I} (ph : h = h') (u : two_cell D f g (e h) i) :
     twoF F (ph ▹ u) = ph ▹ (twoF F u) :=
   begin
-    apply (eq.rec_on ph), apply idp,
+    cases ph, apply idp,
   end
 
   definition twoF_transport_r  {I : Type} (e : I → hom b d)
     {i i' : I} (pi : i = i') (u : two_cell D f g h (e i)) :
     twoF F (pi ▹ u) = pi ▹ (twoF F u) :=
   begin
-    apply (eq.rec_on pi), apply idp,
+    cases pi, apply idp,
   end
 
   end
@@ -503,7 +503,7 @@ namespace dbl_gpd
   definition dbl_functor.id_left {B C : Dbl_gpd} (F : dbl_functor B C) :
     dbl_functor.compose (dbl_functor.id C) F = F :=
   begin
-    cases F with (F1, F2, F3, F4, F5, F6),
+    cases F with [F1, F2, F3, F4, F5, F6],
     fapply (dbl_functor.congr' B C),
         apply idp,
       apply idp,
@@ -513,7 +513,7 @@ namespace dbl_gpd
   definition dbl_functor.id_right {B C : Dbl_gpd} (F : dbl_functor B C) :
     dbl_functor.compose F (dbl_functor.id B) = F :=
   begin
-    cases F with (F1, F2, F3, F4, F5, F6),
+    cases F with [F1, F2, F3, F4, F5, F6],
     fapply (dbl_functor.congr' B C),
         apply idp,
       apply idp,

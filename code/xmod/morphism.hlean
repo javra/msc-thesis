@@ -46,19 +46,19 @@ namespace xmod
            (to_fun_hom gpd_functor a) (hom_family p x))) ≃ xmod_morphism :=
   begin
     fapply equiv.mk,
-      intro S, cases S with (S1, S'),
-      cases S' with (S2, S''),
-      cases S'' with (S3, S'''),
-      cases S''' with (S4, S5),
+      intro S, cases S with [S1, S'],
+      cases S' with [S2, S''],
+      cases S'' with [S3, S'''],
+      cases S''' with [S4, S5],
       apply (xmod_morphism.mk S1 S2 S3 S4 S5),
     fapply is_equiv.adjointify,
-        intro g, cases g with (g1, g2, g3, g4, g5),
+        intro g, cases g with [g1, g2, g3, g4, g5],
         apply (sigma.mk g1), apply (sigma.mk g2), apply ((g3, (g4, g5))),
-      intro g, cases g with (g1, g2, g3, g4, g5), apply idp,
-    intro S, cases S with (S1, S'),
-    cases S' with (S2, S''),
-    cases S'' with (S3, S'''),
-    cases S''' with (S4, S5),
+      intro g, cases g with [g1, g2, g3, g4, g5], apply idp,
+    intro S, cases S with [S1, S'],
+    cases S' with [S2, S''],
+    cases S'' with [S3, S'''],
+    cases S''' with [S4, S5],
     apply idp,
   end
 
@@ -118,8 +118,8 @@ namespace xmod
     xmod_morphism.mk gpd_functor1 hom_family1 hom_family_hom1 mu_commute1 phi_commute1
     = xmod_morphism.mk gpd_functor2 hom_family2 hom_family_hom2 mu_commute2 phi_commute2 :=
   begin
-    cases gpd_functor1 with (gf1, gf2, gf3, gf4),
-    cases gpd_functor2 with (gf5, gf6, gf7, gf8),
+    cases gpd_functor1 with [gf1, gf2, gf3, gf4],
+    cases gpd_functor2 with [gf5, gf6, gf7, gf8],
     cases p, cases q, cases r,
     assert P1 : hom_family_hom1 = hom_family_hom2,
       apply @is_hprop.elim,

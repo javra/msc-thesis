@@ -28,13 +28,13 @@ namespace dbl_gpd
     Dbl_gpd.{l₁ l₂ l₃} :=
   begin
     fapply precategory.mk,
-      intros (D, E), apply (dbl_functor D E),
-      intros (D, E), apply (is_hset_dbl_functor D E),
-      intros (C, D, E, G, F), apply (dbl_functor.compose G F),
+      intros [D, E], apply (dbl_functor D E),
+      intros [D, E], apply (is_hset_dbl_functor D E),
+      intros [C, D, E, G, F], apply (dbl_functor.compose G F),
       intro D, apply (dbl_functor.id D),
-      intros (B, C, D, E, H, G, F), apply (dbl_functor.assoc),
-      intros (B, C, F), apply (dbl_functor.id_left),
-      intros (B, C, F), apply (dbl_functor.id_right),
+      intros [B, C, D, E, H, G, F], apply (dbl_functor.assoc),
+      intros [B, C, F], apply (dbl_functor.id_left),
+      intros [B, C, F], apply (dbl_functor.id_right),
   end
 
   definition Cat_dbl_gpd [reducible] : Precategory :=

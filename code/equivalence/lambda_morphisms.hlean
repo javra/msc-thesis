@@ -44,10 +44,10 @@ namespace lambda
   protected definition on_morphisms {X Y : Xmod} (f : xmod_morphism X Y) :
     (dbl_functor (lambda.on_objects X) (lambda.on_objects Y)) :=
   begin
-    cases f with (F, ψ, f3, f4, f5),
+    cases f with [F, ψ, f3, f4, f5],
     fapply dbl_functor.mk, exact F,
-      intros (a, b, c, d, f, g, h, i),
-      esimp{lambda.on_objects, lambda.dbl_gpd}, intro m, cases m with (m1, m2),
+      intros [a, b, c, d, f, g, h, i],
+      intro m, cases m with [m1, m2],
       {fapply lambda_morphism.mk, apply (ψ d m1),
         apply concat, apply inverse, apply (f4 d m1),
         apply concat, apply (ap (λ x, to_fun_hom F x)), apply m2,
@@ -59,7 +59,7 @@ namespace lambda
         apply concat, apply (ap (λ x, _ ∘ _ ∘ _ ∘ x)),
           apply (@functor.respect_inv _ _ F _ _ g (!all_iso)),
         apply idp,},
-      {intros (p, q, a), fapply lambda_morphism.congr',
+      {intros [p, q, a], fapply lambda_morphism.congr',
         apply concat, apply functor_on_hom_aux4,
         apply concat, apply functor_on_hom_aux3,
         apply (xmod_morphism_hom_family_id X Y (xmod_morphism.mk F ψ f3 f4 f5)),
@@ -70,7 +70,7 @@ namespace lambda
         apply concat, apply f3,
         cases v, cases u, apply (ap (λ x, x * _)), apply f5,
       apply is_hset.elim,},
-      {intros (p, q, a), fapply lambda_morphism.congr',
+      {intros [p, q, a], fapply lambda_morphism.congr',
         apply concat, apply functor_on_hom_aux2,
         apply concat, apply functor_on_hom_aux1,
         apply (xmod_morphism_hom_family_id X Y (xmod_morphism.mk F ψ f3 f4 f5)),
