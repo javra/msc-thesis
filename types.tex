@@ -676,7 +676,7 @@ $G_2(X,A,C)_2$ of two-cells is defined as:
 \begin{equation}
 \prod_{a,b,c,d:C} ~ \prod_{f : \iota a = \iota b} ~ \prod_{g : \iota c = \iota d}
 	~ \prod_{h : \iota a = \iota c} ~ \prod_{i : \iota b = \iota d}
-	\ap_{\iota'}(h) \ct \ap_{\iota'}(g) = \ap_{\iota'}(f) \ct \ap_{\iota'}(i)
+	\apiop(h) \ct \apiop(g) = \apiop(f) \ct \apiop(i)
 \end{equation}
 \end{defn}
 
@@ -712,26 +712,45 @@ consists of
 where it depends on the exact definition of equality as an inductive type whether
 the second and third equality are judgmental.
 
-Proving associativity, identitiy laws and the interchange law can be done all by
+Proving associativity, identity laws and the interchange law can be done all by
 using the following scheme:
 \begin{enumerate}
 \item First, we prove a version of the law where points, paths and two-cells
 all lie in one 2-type $X$.
 In this setting we can apply induction to the first and second order paths involved
-which makes all of the laws reduce to the form $\refl = \refl$. %TODO describe order?
-\item Then, we assume instead that there is no $\iota$, but points and paths
+which makes all of the laws reduce to the form $\refl = \refl$.
+\item Then, we use the that proof to show the actual instance of the laws.
+Because of transports along laws in for the 1-skeleton 
+(i.e. $\assoc$, $\idLeft$ and $\idRight$) and transports along the theorem that
+equates $\apiop(p \ct q)$ an $\apiop(p) \ct \apiop(q)$, we first end up with an
+equation that contains lots of ``unnecessary'' transport. 
+\item We can eliminate these
+transports by then assuming that there is no $\iota$, but points and paths
 lie in $A$ while two cells are equalities in $X$.
-Here we can apply induction to the 1-paths involved but not the iterated ones.
-To make the equalities proven in this step type correct we have to transport one
-side along the theorem that equates $\apiop(p \ct q)$ an $\apiop(p) \ct \apiop(q)$
-and along equational laws in the 1-skeleton (i.e. $\assoc$, $\idLeft$ and $\idRight$).
-\item In the last step, we use the first two proofs to show the acutal instance
-of the laws by making it a special case of statement no. 1 by evacuating one side
-of the equation from any transports and then using the second statement to solve
-the resulting equation.
+Here, we can apply induction to the first order paths involved but not the iterated ones.
 \end{enumerate}
 I will refrain from stating these proofs in detail and I will give an example in
 \ref{section:dbl-gpd-lean} when presenting the formalization in Lean. %TODO not give one example?
+
+The vertically inverse of a square $u : \apiop(h) \ct \apiop(g) 
+= \apiop(f) \ct \apiop(i)$ is again given by using the functoriality
+of $\apiop$:
+\begin{align*}
+\apiop(h\inv) \ct \apiop(f) &= \apiop(h)\inv \ct \apiop(f) \\
+	&= \apiop(g) \ct \apiop(i)\inv \\
+	&= \apiop(g) \ct \apiop(i\inv) \text{.} \\	
+\end{align*}
+
+The final question that remains is what squares should be defined as thin.
+The answer is to regard a square in $G_2(X,A,C)_2(f,g,h,i)$ already be ``filled''
+in $A$: For every shell $(f,g,h,i)$ and $p : h \ct g = f \ct i$ we get the thin
+square of the commutativity witness by
+\begin{align*}
+\apiop(h) \ct \apiop(i) &= \apiop(h \ct i) \\
+	&= \apiop(f \ct i) \\
+	&= \apiop(f) \ct \apiop(i) \text{.}
+\end{align*}
+This again connects the name ``thin'' to its actual geometric interpretation.
 \end{proof}
 
 \section{A Seifert-van Kampen theorem for 2-Types}

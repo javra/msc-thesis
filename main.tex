@@ -13,7 +13,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \renewcommand{\MintedPygmentize}{./pygments-main/pygmentize}
 \usepackage{fontspec,xunicode}
 \usepackage[osf]{mathpazo}
-\setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}
 \setmonofont{Ubuntu Mono}
 \newfontfamily{\freeserif}{DejaVu Sans}
 \newunicodechar{⦃}{\ensuremath{\texttt{\{}\mkern-7mu\texttt{|}}}
@@ -85,28 +85,28 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \DeclareMathOperator{\invv}{inv_1}
 \DeclareMathOperator{\invh}{inv_2}
 \DeclareMathOperator{\obj}{obj}
-\DeclareMathOperator{\assoc}{assoc}
-\DeclareMathOperator{\assocv}{assoc_1}
-\DeclareMathOperator{\assoch}{assoc_2}
-\DeclareMathOperator{\idLeft}{idLeft}
-\DeclareMathOperator{\idLeftv}{idLeft_1}
-\DeclareMathOperator{\idLefth}{idLeft_2}
-\DeclareMathOperator{\idRight}{idRight}
-\DeclareMathOperator{\idRightv}{idRight_1}
-\DeclareMathOperator{\idRighth}{idRight_2}
-\DeclareMathOperator{\leftInv}{leftInv}
-\DeclareMathOperator{\leftInvv}{leftInv_1}
-\DeclareMathOperator{\leftInvh}{leftInv_2}
-\DeclareMathOperator{\rightInv}{rightInv}
-\DeclareMathOperator{\rightInvv}{rightInv_1}
-\DeclareMathOperator{\rightInvh}{rightInv_2}
-\DeclareMathOperator{\respectId}{respectId}
-\DeclareMathOperator{\respectIdv}{respectId_1}
-\DeclareMathOperator{\respectIdh}{respectId_2}
-\DeclareMathOperator{\respectComp}{respectComp}
-\DeclareMathOperator{\respectCompv}{respectComp_1}
-\DeclareMathOperator{\respectComph}{respectComp_2}
-\DeclareMathOperator{\thin}{thin}
+\newcommand{\assoc}{\mathsf{assoc}}
+\newcommand{\assocv}{\mathsf{assoc}_1}
+\newcommand{\assoch}{\mathsf{assoc}_2}
+\newcommand{\idLeft}{\mathsf{idLeft}}
+\newcommand{\idLeftv}{\mathsf{idLeft}_1}
+\newcommand{\idLefth}{\mathsf{idLeft}_2}
+\newcommand{\idRight}{\mathsf{idRight}}
+\newcommand{\idRightv}{\mathsf{idRight}_1}
+\newcommand{\idRighth}{\mathsf{idRight}_2}
+\newcommand{\leftInv}{\mathsf{leftInv}}
+\newcommand{\leftInvv}{\mathsf{leftInv}_1}
+\newcommand{\leftInvh}{\mathsf{leftInv}_2}
+\newcommand{\rightInv}{\mathsf{rightInv}}
+\newcommand{\rightInvv}{\mathsf{rightInv}_1}
+\newcommand{\rightInvh}{\mathsf{rightInv}_2}
+\newcommand{\respectId}{\mathsf{respectId}}
+\newcommand{\respectIdv}{\mathsf{respectId}_1}
+\newcommand{\respectIdh}{\mathsf{respectId}_2}
+\newcommand{\respectComp}{\mathsf{respectComp}}
+\newcommand{\respectCompv}{\mathsf{respectComp}_1}
+\newcommand{\respectComph}{\mathsf{respectComp}_2}
+\newcommand{\thin}{\mathsf{thin}}
 \newcommand{\ct}{
 	\mathchoice{\mathbin{\raisebox{0.5ex}{$\displaystyle\centerdot$}}}
 		{\mathbin{\raisebox{0.5ex}{$\centerdot$}}}
