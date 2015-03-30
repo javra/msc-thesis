@@ -848,7 +848,7 @@ with $\psi_p : M_p \to N_F(p)$ such that %TODO check if there's more conditions
 \item $F \circ \mu_p = \mu'_{F(p)} \circ \psi_p$ for all $p \in P$ and
 \item for all $p, q : P$, $a \in \hom_P(p,q)$ and $x : M_p$, the action is preserved:
 \begin{equation*}
-\psi_q(\phi(a,x)) = \phi(f(a),\psi_p(x)) \text{.} %TODO: double check this
+\psi_q(\phi(a,x)) = \phi(F(a),\psi_p(x)) \text{.} %TODO: double check this
 \end{equation*}
 \end{itemize}
 \end{defn}
@@ -879,16 +879,60 @@ M_p &\coloneqq \left\{ u \in G_2 \middle| \lowerf(u) = \leftf(u) = \rightf(u) = 
 Then, $M_p$ is a group with composition $\circ_2$, neutral element $0(p)$ and
 inverse $\invh$.
 Let further be $\mu = \upperf$ and let $\phi(a,u) =
-\epsilon_1(a) \circ_2 u \circ \epsilon_1(a\inv) \in M_q$ for $a : \hom_P(p,q)$
+\epsilon_1(a) \circ_2 u \circ \epsilon_1(a\inv) \in M_q$ for $a \in \hom_P(p,q)$
 and $u \in M_p$.
 
 The given data $P$, $(M_p)_{p \in P}$, $\mu$ and $\phi$ form a crossed module $\gamma G$.
 \end{lemma}
 
 \begin{proof}
-the proof
+We easily check that $\mu(\phi(a,u)) = a \circ u \circ a\inv$ for any $u \in M_p$
+and $a \in hom_P(p,q)$.
+To see, that $\phi(\mu_p(c),u) = c \circ_2 u \circ_2 c\inv$ for $u,c \in M_p$,
+we consider the composite square
+\begin{equation*}
+\left(c \circ_2 0(p) \circ_2 \invh(c)\right) \circ_1
+	\left(\epsilon_1(\upperf(c)) \circ_2 u \circ_2 \upperf(c\inv)\right) \text{,}
+\end{equation*}
+which, when evaluated as is, resolves to $\phi(\mu_p(c),u)$, but after applying
+the interchange law twice becomes
+\begin{equation*}
+\left(c \circ_1 \epsilon_1(\upperf(c))\right)
+	\circ_2 \left(0(p) \circ_1 u\right)
+	\circ_2 \left(\invh(c) \circ_1 \upperf(c\inv)\right)
+\end{equation*}
+and can be simplified to $c \circ_2 u \circ_2 c$ (see figure \ref{fig:gamma-cm2}).
 \end{proof}
 
+\begin{defn}
+The construction of $\gamma G$ can be extended to a map from double functors to
+morphisms of crossed modules and we receive a functor $\gamma : \DGpd \to \XMod$.
+\end{defn}
+
+\begin{figure} \centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\draw[double] (0,2) -- (0,0) -- (3,0) -- (3,2);
+\draw[double] (1,2) -- (1,0);
+\draw[double] (2,2) -- (2,0);
+\draw[double] (1,1) -- (2,1);
+\draw (0,1) -- (1,1);
+\draw (0,2) -- (3,2);
+\draw (2,1) -- (3,1);
+\foreach \x in {0,1,2,3} {
+	\foreach \y in {0,1,2} {
+		\node[fill,circle,inner sep=0pt,minimum size=5pt] at (\x,\y) {};
+	}
+}
+\node at (0.5,1.5) {$\epsilon_1\upperf(c)$};
+\node at (1.5,1.5) {$u$};
+\node at (2.5,1.5) {$\epsilon_1\upperf(c\inv)$};
+\node at (0.5,0.5) {$\invh(c)$};
+\node at (1.5,0.5) {$0(p)$};
+\node at (2.5,0.5) {$c$};
+\end{tikzpicture}
+\caption{A composite square proving the second crossed module axiom for $\gamma G$.}
+\label{fig:gamma-cm2}
+\end{figure}
 
 We conclude this chapter by stating:
 \begin{thm}
