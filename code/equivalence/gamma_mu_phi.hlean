@@ -116,7 +116,7 @@ namespace gamma
           (comp₂ D₂ (ID₁ D₂ a) (comp₂ D₂ filler (ID₁ D₂ (a⁻¹))))
           (ID₁ D₂ (b⁻¹))))) :=
   begin
-    apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
+    cases q, cases p, apply idp,
   end
 
   protected definition Pbainv ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z) :
@@ -155,7 +155,7 @@ namespace gamma
           (transport (λ x, D₂ _ x id id) q
             filler)))) :=
   begin
-    apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
+    cases q, cases p, apply idp,
   end
 
   protected definition phi_respect_P_comp₂_aux5 ⦃x y z : D₀⦄ (a : hom x y) (b : hom y z)
