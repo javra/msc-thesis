@@ -923,9 +923,9 @@ morphisms of crossed modules and we receive a functor $\gamma : \DGpd \to \XMod$
 		\node[fill,circle,inner sep=0pt,minimum size=5pt] at (\x,\y) {};
 	}
 }
-\node at (0.5,1.5) {$\epsilon_1\upperf(c)$};
+\node at (0.5,1.5) {$\epsilon_1\upperf(c\inv)$};
 \node at (1.5,1.5) {$u$};
-\node at (2.5,1.5) {$\epsilon_1\upperf(c\inv)$};
+\node at (2.5,1.5) {$\epsilon_1\upperf(c)$};
 \node at (0.5,0.5) {$\invh(c)$};
 \node at (1.5,0.5) {$0(p)$};
 \node at (2.5,0.5) {$c$};
@@ -934,10 +934,49 @@ morphisms of crossed modules and we receive a functor $\gamma : \DGpd \to \XMod$
 \label{fig:gamma-cm2}
 \end{figure}
 
+But how can we recover a double groupoid given a crossed module on a groupoid?
+
+\begin{lemma}[The double groupoid associated to a crossed module]
+Let $(M_p)_{p \in P}$ be a crossed module on a groupoid $P$. We define
+\begin{equation*}
+G_2 \coloneqq \left\{ (f,g,h,i,m) \middle| 
+	\mu(m) = i \circ f \circ h\inv \circ g\inv \right\} \text{.}
+\end{equation*}
+Then, $G_2$ forms the set of two cells of a double groupoid $\lambda (P, (M_p))$
+with the first four projections as face maps.
+\end{lemma}
+
+\begin{proof}
+Defining the vertical composition of squares $u = (f, g_1, h_1, i_1, m)$ and
+$v = (g_1, g_2, h_2, i_2, n)$ as $v \circ_1 u \coloneqq 
+(f, g_2, h_2 \circ h_1, i_2 \circ i_2, \phi(i_2, m) \cdot n)$ goes by having
+\begin{align*}
+\mu(\phi(i_2,m) \cdot n) &= i_2 \circ \mu(m) \circ i_2\inv \circ \mu(n)\\
+	&= i_2 \circ i_1 \circ f \circ h_1\inv \circ g_1\inv \circ
+		i_2\inv \circ i_2 \circ g_1 \circ h_2\inv \circ g_2\inv \\
+	&= (i_2 \circ i_1) \circ f \circ (h_2 \circ h_1)\inv \circ g_2\inv
+\end{align*}
+and the horizontal composition of $u = (f_1, g_1, h, i_1, m)$ and
+$v = (f_2, g_2, i_1, i_2, n)$ likewise by $v \circ_2 \coloneqq
+(f_2 \circ f_1, g_2 \circ g_1, h, i_2, n \cdot \phi(g_2,m))$ with
+\begin{align*}
+\mu(n \cdot \phi(g_2,m)) &= \mu(n) \circ g_2 \circ \mu(m) \circ g_2\inv \\
+	&= i_2 \circ f_2 \circ i_1\inv \circ g_2\inv \circ g_2 \circ
+		i_1 \circ f_1 \circ h\inv \circ g_1\inv \circ g_2\inv \\
+	&= i_1 \circ (f_2 \circ f_1) \circ h \circ (g_2 \circ g_1)\inv
+\end{align*}
+Identity squares are given by $(f,f,\epsilon(p),\epsilon(q),1)$ and
+$(\epsilon(p),\epsilon(q),f,f,1)$ for $f \in \hom_P(p,q)$. Identity and
+associativity laws follow easily from the fact that $\phi$ respects the composition
+in $M_p$, in $P$ as well as $\epsilon$.
+\end{proof}
+
 We conclude this chapter by stating:
 \begin{thm}
 The categories $\DGpd$ and $\XMod$ are equivalent.
 \end{thm}
+
+
 
 \section{The 2-dimensional Seifert-van Kampen theorem for spaces}
 
