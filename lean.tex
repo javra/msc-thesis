@@ -1,20 +1,62 @@
+My main goal in this thesis project was the formalization and application of
+Ronald Brown's structures for non-abelian algebraic topology in the theorem prover
+Lean.
+Lean, at the point of time when I started working on it, was still in a very early
+stage of development and did not lack any automation but also a basic library
+for homotopy type theory.
+Thus, we will first take a look at the basic language elements and technologies
+used in Lean and then describe the strategies, the structure and the pitfalls
+we encountered when building up a library for basic homotopy type theory,
+for categories in homotopy type theory, and finally for double groupoids and
+crossed modules.
+
 \section{The Lean Theorem Prover}
 
+The development of the theorem prover Lean was initiated in 2013 by Leo\-nar\-do
+de Moura and Jeremy Avigad.
+De Moura had previously been working on the automated theorem prover Z3, the leading
+solver for problem sets in the SMT standard.
+With Lean, he intends to create a interactive theorem proving system that connects
+the strength of solvers like Z3 with the expressiveness and flexibility of
+interactive systems like Agda, Coq or Isabelle.
+While in the world of automated theorem proving the verification of a statement
+results in a yes-or-no answer at best accompanied by a counterexample in the case
+that the statement gets refuted, in interactive theorem proving, we are interested
+in an actual proof that a statement is correct.
+Since in homotopy type theory it is relevant which proof of a theorem we assume
+and since proofs of theorems can be part of another definition or theorem,
+the proofs in an interactive theorem prover suitable for homotopy type theory
+should even be objects in the language itself.
+Lean has two modes: One for standard, proof irrelevant mathematics and one for
+In the following, I will only explain the features of the HoTT mode.
+homtopy type theory.
 
-This is a Code Listing:
-\begin{minted}[escapeinside=||,
-				linenos,
-               numbersep=5pt,
-               frame=lines,
-               fontsize=\footnotesize,
-               framesep=1mm]{lean}
-definition left_inverse₂_type [reducible] [D : dbl_precat C D₂] 
-  (inv₂ : inv₂_type) : Type :=
-Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
-  (u : D₂ f g h i),
-  (left_inverse g) ▹ ((left_inverse f) ▹  --these are transports
-  (@comp₂ D₀ C D₂ D _ _ _ _ _ _ _ _ _ _ _ _ _ (inv₂ u) u)) = ID₂ D₂ h
-\end{minted}
+A first ingredient are \textbf{type universes}.
+I contrast to homotopy type theory as presented in the HoTT book \cite{hottbook},
+type universes in Lean are \emph{non-cumulative}.
+Instead of using $\UU$, universes in Lean are denoted as \leani{Type.{l}}, where
+\leani{l} is the level of the universe.
+Of course, \leani{Type.{l}} is an object of \leani{Type.{l+1}}.
+Definitions can be \emph{universe polymorphic}, which means that, when no concrete
+universe levels are given, Lean will keep the definition as general as possible.
+The instantiation of a definition \leani{A} at a universe \leani{l} can be received
+manually by writing \leani{A.{l}}.
+To have manual control over the coherence of universe levels of definitions in
+a certain scope, variable universe levels can be declared using the command
+\leani{universe variable}. The following snippet shows universe polymorphism
+and the use of universe variables:
+\begin{listing}
+\begin{leancode}
+set_option pp.universes true
+
+check Type -- Prints Type.{l_1} : Type.{l_1+1}
+
+universe variable l
+check Type.{l} -- Prints Type.{l} : Type.{l+1}
+\end{leancode}
+\end{listing}
+
+
 
 \section{Basic Homotopy Type Theory in Lean}
 

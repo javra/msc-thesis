@@ -25,6 +25,13 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newunicodechar{▹}{\freeserif{▹}}
 %workaround to remove red boxes
 \AtBeginEnvironment{minted}{\renewcommand{\fcolorbox}[4][]{#4}}
+\newminted{lean}{escapeinside=||,
+	linenos,
+	numbersep=5pt,
+	frame=lines,
+	fontsize=\footnotesize,
+	framesep=1mm}
+\newcommand{\leani}[1]{\mintinline{lean}{#1}}
 
 \linespread{1.05}
 \usepackage{graphicx}
@@ -163,12 +170,13 @@ I like to acknowledge ...
 
 \input{nat.tex} 
 
-\chapter[Translation and Use in HoTT]{Translation and Use in Homotopy Type Theory}
-\label{chapter:types}
+\chapter{Translation and Use in Homotopy Type Theory} \label{chapter:types}
+\chaptermark{Translation and Use in HoTT}
 
 \input{types.tex}
 
 \chapter{A Formalization in the Lean Theorem Prover} \label{chapter:lean}
+\chaptermark{Formalization in Lean}
 
 \input{lean.tex}
 
