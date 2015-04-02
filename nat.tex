@@ -6,7 +6,7 @@ Algebraic Topology'' by Ronald Brown, Philip J. Higgins and Rafael Sivera
 The structures used extend classical homotopy theory by considering
 \emph{fundamental groupoids} with multiple base points, characterizing the 
 interaction between the first and the second homotopy group of a space by 
-\emph{crossed modules} as well as \emph{$n$-fold categories} for which we will
+\emph{crossed modules} as well as \emph{$n$-fold categories}, for which we will
 only consider the case $n = 2$.
 
 \section{Double Categories}
@@ -22,16 +22,49 @@ can define a (small) category $C$ by giving a tuple $(ob_C, hom_C, \partial^-,
 \item $\partial^-$ and $\partial^+ : hom_C \to ob_C$
 are maps assigning to each morphism $f$ its domain and codomain,
 \item $\epsilon : ob_C \to mor_C$ gives the identity morphism at each element
-(this implies $\partial^- \circ_C \epsilon = \partial^+ \circ_C \epsilon = \id$),
-\item and $\circ_C$
+(this implies $\partial^- \circ_C \epsilon = \partial^+ \circ_C \epsilon = \id$), and
+\item $\circ_C$
 denotes the composition of morphisms as a partial function $hom_C \times hom_C
 \to hom_C$, defined for all $(g, f) \in hom_C \times hom_C$ where
 $\partial^+(f) = \partial^-(g)$.
 \end{itemize}
-In line with the geometric interpretation that objects correspond to points while
-morphisms correspond to line we will call $\partial^-$ and $\partial^+$
+
+In accordance with the geometric interpretation that objects correspond to points while
+morphisms correspond to lines we will call $\partial^-$ and $\partial^+$
 \textbf{boundary} or \textbf{face maps} while $\epsilon$ will often be referred
 to as \textbf{degeneracy map}.
+
+Extending this idea, we want a double category to be an algebraic structure
+that does not only contain points and lines but also squares, bounded by four
+bounding sides, which we will also call \textbf{faces}.
+Like shown in figure \ref{fig:corner-ident}, we must impose conditions on the
+face maps so that we can really speak of squares.
+Furthermore, just as we needed degenerate lines at each point, we will have
+degenerate squares that have a given line as their vertical or horizontal faces.
+In our definiton, $\upperf(u)$, $\lowerf(u)$, $\leftf(u)$ and $\rightf(u)$
+will correspond to the upper, lower, left and right face of a square $u$, respectively.
+The whole set of faces of a given square $u \in D_2$ will be referred to as
+\textbf{shell} of this square.
+
+\begin{figure}[h] \centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\node(UL) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above left: 
+	{\scriptsize{$\partial^- (\upperf (u)) = \partial^- (\leftf (u))$}}}] at (0,1) {};
+\node(UR) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above right: 
+	{\scriptsize{$\partial^+ (\upperf (u)) = \partial^- (\rightf (u))$}}}] at (1,1) {};
+\node(BL) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]below left:
+	{\scriptsize{$\partial^- (\upperf (u)) = \partial^- (\leftf (u))$}}}] at (0,0) {};
+\node(BR) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]below right:
+	{\scriptsize{$\partial^+ (\lowerf (u)) = \partial^+ (\rightf (u))$}}}] at (1,0) {};
+\draw (UL) -- (UR) node [above, midway] {$\upperf(u)$};
+\draw (UR) -- (BR) node [right, midway] {$\rightf(u)$};
+\draw (BR) -- (BL) node [below, midway] {$\lowerf(u)$};
+\draw (BL) -- (UL) node [left, midway] {$\leftf(u)$};
+\node at (0.5,0.5) {$u$};
+\end{tikzpicture}
+\caption{A square $u \in D_2$ and its iterated faces.}
+\label{fig:corner-ident}
+\end{figure}
 
 \begin{defn}[Double category] \label{def:dbl-cat}
 A \textbf{double category} $D$ is given by the following data:
@@ -42,11 +75,11 @@ $\partial^-_1$, $\partial^+_1$, $\epsilon_1$, $\circ_1$,
 $\partial^-_2$, $\partial^+_2$, $\epsilon_2$, and $\circ_2$
 such that these sets form three categories:
 \begin{itemize}
-\item A category $(D_0, D_1, \partial^-, \partial^+, \epsilon, \circ_D)$ 
-on $D_0$ often called the \textbf{(1-)skeleton} of the double category.
-\item A \textbf{vertical category}
-$(D_1, D_2, \partial^-_1, \partial^+_1, \epsilon_1, \circ_1)$ and a 
-\item \textbf{horizontal category}
+\item a category $(D_0, D_1, \partial^-, \partial^+, \epsilon, \circ_D)$ 
+on $D_0$, often called the \textbf{(1-)skeleton} of the double category,
+\item a \textbf{vertical category}
+$(D_1, D_2, \partial^-_1, \partial^+_1, \epsilon_1, \circ_1)$, and
+\item a \textbf{horizontal category}
 $(D_1, D_2, \partial^-_2, \partial^+_2, \epsilon_2, \circ_2)$.
 \end{itemize}
 
@@ -87,7 +120,7 @@ the composition of the horizontal category, and vice versa:
 \end{equation}
 for each $f, g \in D_1$ and $u, v \in D_2$ where the compositions are defined.
 
-As a last condition, the so called \textbf{interchange law} has to be fulfilled:
+A last condition, called the \textbf{interchange law}, has to be fulfilled:
 For each $u, v, w, x \in D_2$,
 \begin{equation} \label{eq:interchange}
 (x \circ_2 w) \circ_1 (v \circ_2 u) = (x \circ_1 v) \circ_2 (w \circ_1 u)
@@ -95,43 +128,13 @@ For each $u, v, w, x \in D_2$,
 has to hold if it is well-defined.
 \end{defn}
 
-Especially the identities \ref{eq:corner-ident}, \ref{eq:degen-ident} and the
-interchange law might seem arbitrary but their intended meaning becomes more clear
-when considering the following geometric interpretation of a double category: We
-regard $D_0$ as a set of points, $D_1$ as a set of line segments and
-the elements in $D_2$ as squares. Then, $\upperf(u)$, $\lowerf(u)$, $\leftf(u)$ and
-$\rightf(u)$ correspond to the upper, lower, left and right face of a square $u$.
-The whole set of faces of a given square
-$u \in D_2$ will be referred to as \textbf{shell} of this square.
-
 As seen in figure \ref{fig:corner-ident}, the four identities \ref{eq:corner-ident}
 correspond to the well-definedness of the corners of a given square $u \in D_2$.
-
-\begin{figure} \centering
-\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
-\node(UL) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above left: 
-	{\scriptsize{$\partial^- (\upperf (u)) = \partial^- (\leftf (u))$}}}] at (0,1) {};
-\node(UR) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]above right: 
-	{\scriptsize{$\partial^+ (\upperf (u)) = \partial^- (\rightf (u))$}}}] at (1,1) {};
-\node(BL) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]below left:
-	{\scriptsize{$\partial^- (\upperf (u)) = \partial^- (\leftf (u))$}}}] at (0,0) {};
-\node(BR) [fill,circle,inner sep=0pt,minimum size=5pt,label={[label distance=-.2cm]below right:
-	{\scriptsize{$\partial^+ (\lowerf (u)) = \partial^+ (\rightf (u))$}}}] at (1,0) {};
-\draw (UL) -- (UR) node [above, midway] {$\upperf(u)$};
-\draw (UR) -- (BR) node [right, midway] {$\rightf(u)$};
-\draw (BR) -- (BL) node [below, midway] {$\lowerf(u)$};
-\draw (BL) -- (UL) node [left, midway] {$\leftf(u)$};
-\node at (0.5,0.5) {$u$};
-\end{tikzpicture}
-\caption{A square $u \in D_2$ and its iterated faces.}
-\label{fig:corner-ident}
-\end{figure}
-
 The next four equations~\ref{eq:degen-ident} tell us that for any line $f \in D_1$,
 besides the identities
 $\partial^\pm_1(\epsilon_1(f)) = f$ and
-$\partial^\pm_2(\epsilon_2(f)) = f$ which follow from the definition of a
-category, the remaining two faces of a \emph{degenerate square} are defined as
+$\partial^\pm_2(\epsilon_2(f)) = f$ (which follow from the definition of a
+category), the remaining two faces of a degenerate square are defined as
 consisting of the suitable degenerate lines. Figure \ref{fig:degen-ident}
 illustrates the cases of both the vertical and the horizontal category. Equation
 \ref{eq:zero-unique-ident} is to make sure that in the case where we take the degenerate
@@ -198,11 +201,11 @@ first compose horizontally and then vertically or the other way round.
 By this, it justifies to illustrate such compositions, as well as larger, iterated ones,
 by ``grids'' like the one shown in figure \ref{fig:interchange}.
 
-Starting from a given 1-skeleton it is easy to find some very simple
+Starting from a given 1-skeleton, it is easy to find some very simple
 but nevertheless very useful and recurring examples for double categories:
 
 \begin{example} \label{def:sq-dbl-cat}
-Let $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ a category. The
+Let $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ be a category. The
 \textbf{square double category} on $C$ is defined by setting $D_0 \coloneqq C_0$,
 $D_1 \coloneqq C_0$ and
 \begin{align*}
@@ -225,7 +228,7 @@ We denote the square double category on $C$ as $\square'C$.
 
 \begin{example} \label{def:shell-dbl-cat}
 Let again be $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ a category.
-We restrict the square double category on $C$ to commutative squares and receive
+We restrict the square double category on $C$ to commutative squares and obtain
 the \textbf{commutative square double category} or \textbf{shell double category}
 on $C$:
 \begin{align*}
@@ -236,7 +239,7 @@ D_2 &\coloneqq \left\{ (f, g, h, i) \middle| \text{$f$, $g$, $h$, and $i$ form a
 \end{align*}
 
 Faces and degeneracies are trivial, for defining the the vertical composition of
-two squares $(f, g_1, h_1, i_1)$ and $(g_1, g_2, h_2, i_2)$, one receives the
+two squares $(f, g_1, h_1, i_1)$ and $(g_1, g_2, h_2, i_2)$, one obtains the
 commutativity of the composed square by
 \begin{align*}
 g_2 \circ_C h_2 \circ_C h_1 &= i_2 \circ_C g_1 \circ_C h_1 \\
@@ -269,9 +272,10 @@ double category $D$ with $D_0 = D_1 = D_2 = \{\ast\}$.
 \section{Thin Structures and Connections}
 
 We will now enrich double category with even more data: We need a notion for
-what it means for a square to be \emph{thin}. When defining the fundamental double
-category of a space these thin squares will correspond to those actual geometric
-squares in the considered space which are homotopic to degenerate squares.
+what it means for a square to be \emph{thin}.
+When defining the fundamental double category of a space these thin squares will
+correspond to those actual geometric squares inside the considered space, which are
+homotopic to degenerate squares. %TODO "which"? "that"?
 
 \begin{defn} \label{def:thin-structure}
 Let $D$ be a double category on a category $C = (C_0, C_1)$. Then, a \textbf{thin
@@ -279,7 +283,7 @@ structure} on $D$ is a double functor $T : \square C \to D$ which on the 1-skele
 is the identity.
 
 Equivalently, we can describe a thin structure by marking certain two-cells as
-\textbf{thin} in way such that:
+\textbf{thin} in way such that the following hold:
 \begin{enumerate}
 \item Every commutative shell has a unique thin filler.
 \item The horizontal and vertical composition of two thin squares is thin.
@@ -332,7 +336,7 @@ connection with $\Gamma^+(f)$.
 We observe that connections are composable in the following sense:
 
 \begin{lemma}[Transport laws] \label{thm:dbl-cat-transport}
-Let $D$ a double category with thin structure and $f, g \in D_1$ with
+Let $D$ be a double category with thin structure and $f, g \in D_1$ with
 $\partial^+(f) = \partial^-(g)$. Then,
 \begin{align}
 \Gamma^-(g \circ f)
