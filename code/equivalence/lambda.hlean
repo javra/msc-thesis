@@ -17,6 +17,33 @@ namespace lambda
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :=
   (m : M d) (comm : μ' m = i ∘ f ∘ h⁻¹ ∘ g⁻¹)
 
+  definition lambda_morphism_m_transport_b ⦃a b c d : P₀⦄ {E : Type} {e : E → hom c d}
+    {f : hom a b} {g g' : E} (p : g = g') {h : hom a c} {i : hom b d}
+    (u : lambda_morphism f (e g) h i) :
+    lambda_morphism.m (transport (λ x, lambda_morphism f (e x) h i) p u)
+    = lambda_morphism.m u :=
+  begin
+    cases p, apply idp,
+  end
+
+  definition lambda_morphism_m_transport_l ⦃a b c d : P₀⦄ {E : Type} {e : E → hom a c}
+    {f : hom a b} {g : hom c d} {h h' : E} (p : h = h') {i : hom b d}
+    (u : lambda_morphism f g (e h) i) :
+    lambda_morphism.m (transport (λ x, lambda_morphism f g (e x) i) p u)
+    = lambda_morphism.m u :=
+  begin
+    cases p, apply idp,
+  end
+
+  definition lambda_morphism_m_transport_r ⦃a b c d : P₀⦄ {E : Type} {e : E → hom b d}
+    {f : hom a b} {g : hom c d} {h : hom a c} {i i' : E} (p : i = i')
+    (u : lambda_morphism f g h (e i)) :
+    lambda_morphism.m (transport (λ x, lambda_morphism f g h (e x)) p u)
+    = lambda_morphism.m u :=
+  begin
+    cases p, apply idp,
+  end
+
   definition lambda_morphism.sigma_char ⦃a b c d : P₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :
     (Σ (m : M d), μ' m = i ∘ f ∘ h⁻¹ ∘ g⁻¹) ≃ (lambda_morphism f g h i) :=
