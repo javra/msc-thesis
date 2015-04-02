@@ -20,7 +20,7 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 	%{\makebox[.5em]{\freeserif⦃}}
 \newunicodechar{⦄}{\ensuremath{\texttt{|}\mkern-7mu\texttt{\}}}}
 	%{\makebox[.5em]{\freeserif⦄}}
-\newunicodechar{→}{\freeserif{→}}
+\newunicodechar{→}{\texttt{\freeserif{→}}}
 \newunicodechar{⁻}{\freeserif{⁻}}
 \newunicodechar{▹}{\freeserif{▹}}
 %workaround to remove red boxes
@@ -28,9 +28,10 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newminted{lean}{escapeinside=||,
 	linenos,
 	numbersep=5pt,
-	frame=lines,
+	frame=single,
 	fontsize=\footnotesize,
-	framesep=1mm}
+	framesep=1mm,
+	samepage}
 \newcommand{\leani}[1]{\mintinline{lean}{#1}}
 
 \linespread{1.05}

@@ -32,11 +32,13 @@ In the following, I will only explain the features of the HoTT mode.
 homtopy type theory.
 
 A first ingredient are \textbf{type universes}.
-I contrast to homotopy type theory as presented in the HoTT book \cite{hottbook},
-type universes in Lean are \emph{non-cumulative}.
 Instead of using $\UU$, universes in Lean are denoted as \leani{Type.{l}}, where
 \leani{l} is the level of the universe.
 Of course, \leani{Type.{l}} is an object of \leani{Type.{l+1}}.
+But in contrast to homotopy type theory as presented in the HoTT book \cite{hottbook},
+type universes in Lean are \emph{non-cumulative}, 
+i.e. \leani{A : Type.{l}} does not entail \leani{A : Type.{l+1}}.
+
 Definitions can be \emph{universe polymorphic}, which means that, when no concrete
 universe levels are given, Lean will keep the definition as general as possible.
 The instantiation of a definition \leani{A} at a universe \leani{l} can be received
@@ -45,18 +47,75 @@ To have manual control over the coherence of universe levels of definitions in
 a certain scope, variable universe levels can be declared using the command
 \leani{universe variable}. The following snippet shows universe polymorphism
 and the use of universe variables:
-\begin{listing}
 \begin{leancode}
-set_option pp.universes true
-
 check Type -- Prints Type.{l_1} : Type.{l_1+1}
 
 universe variable l
 check Type.{l} -- Prints Type.{l} : Type.{l+1}
 \end{leancode}
-\end{listing}
 
+The only built-in type formers are (dependent and non-dependent) function types,
+structures, and inductive datatypes.
 
+The \textbf{type of functions} between types \leani{A} and \leani{B} is written
+as \leani{A → B}.
+\leani{A} and \leani{B} do not have to lie in the same universe to form this type
+and the universe level of the function type is the maximum of the level of domain
+and codomain type.
+Lambda abstraction and function application can be written like known from e.g.
+Haskell.
+$\beta$ reduction is done for each output, $\eta$ conversion is applied when necessary
+in the unification process.
+\begin{leancode}
+variables (A B : Type) (a : A) (b : B) (f : A → B)
+
+check A → B -- Prints A → B : Type.{max l_1 l_2}
+check (λ (x : A), b) -- Prints λ (x : A), b : A → B
+check (f a) -- Prints f a : B
+check (λ x, f x) a -- Prints f a : B
+\end{leancode}
+
+An important special case of non-dependent function types are type families
+of the form \leani{A → Type}. For every \leani{P : A → Type} we can form the
+\textbf{$\Pi$-type} \leani{Π (x : A), P x} over \leani{P}.
+Actually, non-dependent function types are just treated as the special case of
+dependent functions where \leani{P} is constant.
+The $\Pi$-type \leani{Π (x : A), B} for \leani{A B : Type} is automatically reduced
+to \leani{A → B}.
+\begin{leancode}
+variables (A B : Type) (P : A → Type) (Q : Π (x : A) , P x → Type)
+variables (p : Π (x : A), P x) (a : A)
+
+check p a -- Prints p a : P a
+check Q a -- Prints Q a : P a → Type
+check (λ (x : A), Q x (p x)) -- Prints λ (x : A), Q x (p x) : A → Type
+\end{leancode}
+
+Lean furthermore allows the definition of \textbf{inductive types and inductive
+families}.
+To construct an inductive type, one must give a list of parameters the type should
+depend on and a list of constructors.
+This makes the definition of important types like the natrual numbers or the identity
+type possible.
+The dependent recursor for inductive types is generated automatically by the kernel.
+\begin{leancode}
+inductive nat : Type :=
+  zero : nat,
+  succ : nat → nat
+check nat.succ nat.zero) -- Prints nat.succ nat.zero : nat
+check @nat.rec_on -- Prints Π {C : nat → Type} (n : nat), C nat.zero →
+                  --        (Π (a : nat), C a → C (nat.succ a)) → C n
+\end{leancode}
+
+\begin{leancode}
+inductive eq (A : Type) (a : A) : A → Type :=
+  refl : eq A a a
+variables (A : Type) (a : A)
+check @eq.refl A a -- Prints eq.refl a : eq A a a
+check @eq.rec_on A a -- Prints Π {C : Π (a_1 : A), eq A a a_1 → Type}
+                     --        {a_1 : A} (n : eq A a a_1),
+                     --        C a (eq.refl a) → C a_1 n
+\end{leancode}
 
 \section{Basic Homotopy Type Theory in Lean}
 
