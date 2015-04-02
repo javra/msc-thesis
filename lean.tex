@@ -97,7 +97,7 @@ To construct an inductive type, one must give a list of parameters the type shou
 depend on and a list of constructors.
 This makes the definition of important types like the natrual numbers or the identity
 type possible.
-The dependent recursor for inductive types is generated automatically by the kernel.
+The dependent recursor for inductive types is generated automatically by the kernel:
 \begin{leancode}
 inductive nat : Type :=
   zero : nat,
@@ -115,6 +115,26 @@ check @eq.refl A a -- Prints eq.refl a : eq A a a
 check @eq.rec_on A a -- Prints Π {C : Π (a_1 : A), eq A a a_1 → Type}
                      --        {a_1 : A} (n : eq A a a_1),
                      --        C a (eq.refl a) → C a_1 n
+\end{leancode}
+
+We can not only define single inductive types but also \textbf{families of
+inductive types}, which we can define by recursion on the index of the family:
+
+\begin{leancode}
+open nat
+
+inductive vec (A : Type) : nat → Type :=
+  nil : vec A 0,
+  cons : Π (n : nat), A → vec A n → vec A (n+1)
+
+open vec
+variables (A : Type) (a : A)
+check @vec.rec_on A -- Prints Π {C : Π (a : ℕ), vec A a → Type} {a : ℕ} 
+                    --        (n : vec A a), C 0 (nil A) →
+                    --        (Π (n : ℕ) (a : A) (a_1 : vec A n), C n a_1
+                    --          → C (n + 1) (cons n a a_1)) →
+                    --        C a n
+check vec.cons 0 a (vec.nil A) -- Prints cons 0 a (nil A) : vec A (0+1)
 \end{leancode}
 
 \section{Basic Homotopy Type Theory in Lean}
