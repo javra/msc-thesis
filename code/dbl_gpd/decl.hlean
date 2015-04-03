@@ -55,7 +55,7 @@ structure weak_dbl_gpd [class] {D₀ : Type}
 (left_inverse₂ : @left_inverse₂_type D₀ C D₂ D inv₂)
 (right_inverse₂ : @right_inverse₂_type D₀ C D₂ D inv₂)
 
-structure dbl_gpd [class]  {D₀ : Type}
+structure dbl_gpd [class] {D₀ : Type}
   (C : groupoid D₀)
   (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type)
   extends D : weak_dbl_gpd C D₂:=

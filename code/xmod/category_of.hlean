@@ -17,6 +17,8 @@ namespace xmod
     intros [X, Y, f], apply xmod_morphism_id_right,
   end
 
+  attribute cat_xmod [instance]
+
   definition Cat_xmod [reducible] : Precategory :=
   Precategory.mk Xmod cat_xmod
 

@@ -25,7 +25,7 @@ namespace dbl_precat
         (transport (λ x, D₂ (ef x) _ id id) p
           (transport (λ x, D₂ _ (eg x) id id) q filler)) :=
   begin
-    apply (eq.rec_on q), apply (eq.rec_on p), apply idp,
+    cases q, cases p, apply idp,
   end
 
   definition transp_comp₂_eq_comp₂_transp_l_b {y z w : D₀}
@@ -37,7 +37,7 @@ namespace dbl_precat
     = comp₂ D₂ filler'
         (transport (λ x, D₂ _ (eg x) id id) q filler) :=
   begin
-    apply (eq.rec_on q), apply idp,
+    cases q, apply idp,
   end
 
   definition transp_comp₂_eq_comp₂_transp_l_l {a b c d b₂ d₂: D₀}
@@ -48,7 +48,7 @@ namespace dbl_precat
     transport (λ x, D₂ _ _ (e x) _) q (comp₂ D₂ v u)
     = comp₂ D₂ v (transport (λ x, D₂ _ _ (e x) _) q u) :=
   begin
-    apply (eq.rec_on q), apply idp,
+    cases q, apply idp,
   end
 
   definition transp_comp₂_eq_comp₂_transp_l_u' {a b c d b₂ d₂: D₀}
@@ -59,7 +59,7 @@ namespace dbl_precat
     transport (λ x, D₂ (f₂ ∘ (e x)) _ _ _) q (comp₂ D₂ v u)
     = comp₂ D₂ v (transport (λ x, D₂ (e x) _ _ _) q u) :=
   begin
-    apply (eq.rec_on q), apply idp,
+    cases q, apply idp,
   end
 
   definition transp_comp₂_eq_comp₂_transp_l_b' {a b c d b₂ d₂: D₀}

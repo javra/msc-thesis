@@ -7,6 +7,7 @@ open gamma lambda
 universe variable l
 
 --set_option pp.notation false
+--set_option pp.implicit true
 definition gamma_lambda_iso (X : Xmod) :
   hom (functor.compose gamma.functor lambda.functor X) X :=
 begin
@@ -43,6 +44,42 @@ begin
     },
 end
 
+definition gamma_lambda_iso_nat (X Y : Xmod) (m : xmod_morphism X Y) :
+  @eq
+    (@hom (carrier Cat_xmod) Cat_xmod
+       (@to_fun_ob Cat_xmod Cat_xmod
+          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor)
+          X)
+       (@to_fun_ob Cat_xmod Cat_xmod (@functor.id Cat_xmod) Y))
+    (@comp (carrier Cat_xmod) Cat_xmod
+       (@to_fun_ob Cat_xmod Cat_xmod
+          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor)
+          X)
+       (@to_fun_ob Cat_xmod Cat_xmod (@functor.id Cat_xmod) X)
+       (@to_fun_ob Cat_xmod Cat_xmod (@functor.id Cat_xmod) Y)
+       (@to_fun_hom Cat_xmod Cat_xmod (@functor.id Cat_xmod) X Y m)
+       (gamma_lambda_iso X))
+    (@comp (carrier Cat_xmod) Cat_xmod
+       (@to_fun_ob Cat_xmod Cat_xmod
+          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor)
+          X)
+       (@to_fun_ob Cat_xmod Cat_xmod
+          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor)
+          Y)
+       (@to_fun_ob Cat_xmod Cat_xmod (@functor.id Cat_xmod) Y)
+       (gamma_lambda_iso Y)
+       (@to_fun_hom Cat_xmod Cat_xmod
+          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor)
+          X
+          Y
+          m)) :=
+begin
+  fapply xmod_morphism_congr,
+  { --cases X, cases Y, cases m,
+
+  },
+end
+
 definition lambda_gamma_iso (G : carrier Cat_dbl_gpd) :
   hom (functor.compose lambda.functor gamma.functor G) G :=
 begin
@@ -61,4 +98,5 @@ begin
     fapply iso.mk,
       fapply nat_trans.mk,
         intro X, apply (gamma_lambda_iso X),
+      intros [X, Y, m],
 end
