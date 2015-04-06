@@ -91,9 +91,9 @@ check Q a -- Prints Q a : P a → Type
 check (λ (x : A), Q x (p x)) -- Prints λ (x : A), Q x (p x) : A → Type
 \end{leancode}
 
-Lean furthermore allows the definition of \textbf{inductive types and inductive
-families}.
-To construct an inductive type, one must give a list of parameters the type should
+Lean furthermore allows the definition of inductive types and inductive
+families.
+To construct an \textbf{inductive type}, one must give a list of parameters the type should
 depend on and a list of constructors.
 This makes the definition of important types like the natrual numbers or the identity
 type possible.
@@ -119,7 +119,6 @@ check @eq.rec_on A a -- Prints Π {C : Π (a_1 : A), eq A a a_1 → Type}
 
 We can not only define single inductive types but also \textbf{families of
 inductive types}, which we can define by recursion on the index of the family:
-
 \begin{leancode}
 open nat
 
@@ -135,6 +134,33 @@ check @vec.rec_on A -- Prints Π {C : Π (a : ℕ), vec A a → Type} {a : ℕ}
                     --          → C (n + 1) (cons n a a_1)) →
                     --        C a n
 check cons 0 a (nil A) -- Prints cons 0 a (nil A) : vec A (0+1)
+\end{leancode}
+
+A widely used subclass of inductive types are \textbf{structures}, also often
+referred to as "records".
+Structures are inductive types which are non-recursive and only have one constructor.
+That means that they are equivalent to iterated sigma types but, among other advantages,
+have named projections.
+Structures provide a basic inheritance mechanism as they can extend arbitrarily
+many other structures with \textbf{coercions} being added for each parent structure:
+\begin{leancode}
+structure graph (V : Type₀) :=
+  (E : V → V → Type₀)
+
+structure refl_graph (V : Type₀) extends graph V :=
+  (refl : Π (v : V), E v v)
+
+structure trans_graph (V : Type₀) extends graph V :=
+  (trans : Π (u v w : V), E u v → E v w → E u w)
+
+structure refl_trans_graph (V : Type₀) extends refl_graph V, trans_graph V
+
+variables (V : Type₀)
+check graph.E (refl_graph.mk (λ (a b : V), a = b) eq.refl)
+/- Prints
+  graph.E (refl_graph.to_graph 
+    (refl_graph.mk (λ (a b : V), a = b) eq.refl)) :
+    V → V → Type₀ -/
 \end{leancode}
 
 As one can already seen in these small examples, writing out the full names and
@@ -202,6 +228,17 @@ Variables declared in sections is persistent while variables in contexts will no
 be accessible after closing the scope.
 Besides \leani{variables}, there are \leani{parameters} which will not be generalized
 until the context or section is closed.
+
+One last feature helping to create short and readable files are \textbf{type
+classes}.
+After marking an inductive type or a family of inductive type as \leani{[class]},
+we can declare definitions that are objects of this type as \leani{[instance]}.
+Then, we can use a fourth mode of argument implicitness (besides \leani{(...)},
+\leani{{...}}, and \leani{⦃...⦄}) denoted by \leani{[...]} to tell Lean that it
+should infer this argument by filling in one of the instances of the required
+type.
+The selection of one out of several fitting instances can be influenced by assigning
+priorities to the instance declarations.
 
 \section{Basic Homotopy Type Theory in Lean}
 
