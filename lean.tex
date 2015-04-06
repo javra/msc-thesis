@@ -134,8 +134,74 @@ check @vec.rec_on A -- Prints Π {C : Π (a : ℕ), vec A a → Type} {a : ℕ}
                     --        (Π (n : ℕ) (a : A) (a_1 : vec A n), C n a_1
                     --          → C (n + 1) (cons n a a_1)) →
                     --        C a n
-check vec.cons 0 a (vec.nil A) -- Prints cons 0 a (nil A) : vec A (0+1)
+check cons 0 a (nil A) -- Prints cons 0 a (nil A) : vec A (0+1)
 \end{leancode}
+
+As one can already seen in these small examples, writing out the full names and
+the complete list of parameters for each call of a defined function can be very
+tedious.
+Lean implements some features that allow its users to make theory files more
+succinct and readable by leaving out information that can be inferred automatically
+by Lean.
+
+One feature that allows more brevity are \textbf{implicit arguments}.
+To mark an argument to a definition to be automatically inferred by Lean,
+the user can mark it with curly brackets instead of round brackets when listing
+it in the signatur of the definition.
+Of course the missing arguments have to be such that they can be uniquely determined
+by the unification process, otherwise the unifier will return an appropriate error
+message whenever the definition is used.
+By default, implicit arguments are \emph{maximally inserted}.
+That means, that any expression of a $\Pi$-type with its first argument implicit
+is not interpreted as is but further applied by inference of that argument.
+By using double curly brackets \leani{⦃...⦄} instead of single curly brackts,
+the user can change this behaviour to be more passive by only inferring the argument
+if it precedes a explicitely stated one:
+\begin{leancode}
+definition inverse {P : Type} {x y : P} (p : x = y) : y = x :=
+  eq.rec (eq.refl x) p
+check inverse -- Prints inverse : ?x = ?y → ?y = ?x
+
+definition id ⦃A : Type⦄ (a : A) := A
+check id -- Prints id : Π ⦃A : Type⦄, A → Type
+
+variables {A : Type} (a : A)
+check id a -- Prints id a : Type
+\end{leancode}
+
+Another useful feature to organize formalizations and shorten code is the interaction
+between namespaces and overloading.
+In general there are no restrictions on \textbf{overloading} theorem names but each additional
+overload with the same name makes it harder for the elaborator to figure out which
+one it needs to use in a certain case.
+To make overloads more organized, definitions can be put in hierarchical \textbf{namespaces}
+which can be opened selectively.
+Opening a namespace makes each theorem in that namespace available to be called
+with its name as stated in the definition inside that namespace, as opposed to
+giving its absolute name.
+Definitions can be marked as \leani{protected} to prevent their names from being
+pruned and as \leani{private} to exclude them from exporting completely.
+Furthermore, opening namespaces enables the use of \textbf{notations} defined
+in that namespace.
+\begin{leancode}
+open nat
+
+namespace exponentiation
+  definition squared (a : ℕ) := a * a
+  notation a`²`:100 := squared a
+end exponentiation
+
+open exponentiation
+check squared -- Prints squared : ℕ → ℕ
+eval 4² -- Prints 16
+\end{leancode}
+Often, consecutive definitions share a lot of arguments.
+To avoid the need to repeat those arguments for each definition, Lean provides
+\textbf{sections} and \textbf{contexts} which serve as scopes for common variables.
+Variables declared in sections is persistent while variables in contexts will not
+be accessible after closing the scope.
+Besides \leani{variables}, there are \leani{parameters} which will not be generalized
+until the context or section is closed.
 
 \section{Basic Homotopy Type Theory in Lean}
 
