@@ -239,6 +239,105 @@ should infer this argument by filling in one of the instances of the required
 type.
 The selection of one out of several fitting instances can be influenced by assigning
 priorities to the instance declarations.
+Type classes are a tool for achieving \emph{canonicity}.
+One important application is the fixation of instances of algebraic structures on
+certain types or their closure under certain type formers, for example the structure
+of an abelian group on the type of integers or the direct product of groups as
+a canonical group structure on a product type.
+By marking theorems as instances which themselves have type class parameters,
+we can put quite some automation load on the type class resolution.
+In the following example we give a canonical graph structure to the natural numbers
+and prove that the resulting graph is serial:
+\begin{leancode}
+open nat eq sigma.ops
+
+structure graph [class] (V : Type₀) := (E : V → V → Type₀)
+
+definition nat_graph [instance] : graph nat := graph.mk (λ x y, y = x+1)
+
+definition is_serial (V : Type₀) [G : graph V] := Π x, Σ y, graph.E x y
+
+definition nat_serial : is_serial nat := λ x, ⟨x+1, idp⟩
+\end{leancode}
+
+In all previous examples, we stated all definitions and proofs by giving the
+whole term at once.
+In some theorem provers like Agda \cite{agda}, this method, support by the presence
+of \texttt{let} and \texttt{where} terms, is used for all proofs while others,
+like Coq \cite{coq}, rely on the use of \textbf{tactics}.
+Tactics are sequentially executed commands that transform a given proof goal into
+an easier to solve set of goals.
+Lean allows both approaches to be used purely or even using tactics for subterms
+of a declarative proofs.
+The user can switch to the tactic mode with \leani{begin ... end}.
+As soon as the tactic block has been successfully filled in with tactic calls,
+the full proof term gets elaborated, type checked, and is from there on in\-
+distinguishable from a directly entered proof.
+
+The tactics in Lean are still under development and will be extended in near
+future.
+Thus, I will only give a list of the tactics that were used at the time of
+writing the formalizations in this thesis:
+\begin{itemize}
+\item The tactic \leani{exact} takes a proof term as argument which it uses
+to solve the first subgoal completely.
+If Lean fails to infer every argument that is not stated explicitly or if Lean
+cannot unify the expression with the goal, the tactic fails.
+\item If one wants to treat the current first subgoal with an arbitrary theorem
+without already solving it completely, one can use \leani{apply}.
+It unifies the theorem with the subgoal but opposed to failing it creates a new
+subgoal for each undetermined or unresolved argument of the state theorem.
+The new subgoals are added from the last argument to the first.
+Arguments, that can be inferred from later arguments will not be converted to a
+new subgoal.
+\item Sometimes, one wants to prove premises or give arguments in the order
+they appear in the statement of the applied theorem.
+This can be achieved by using \leani{fapply}.
+In general, it results in more subgoals than \leani{apply}.
+\item Using \leani{assert} lets the user proof a named statement which is added
+to the context for the rest of the main proof.
+\item If the current subgoal is a (dependent or non-dependent) function, \leani{intro}
+adds the variable, which the goal quantifies over, to the context and applies it
+to the goal. \leani{intros} does the same iteratively for multiple variables.
+\leani{revert} does the opposite: It selects a variable in the context and
+replaces the goal by its quantification over this variable.
+A similar job is done by \leani{generalize}.
+It takes an arbitrary term as argument and quantifies the goal over a variable
+that term's type, replacing all its occurrences by the quantifying variable.
+\item The tactic \leani{clear} is used to delete unused variables from the context.
+This is especially useful to speed up type class resolution and to shorten the output
+of the current context.
+\item \leani{cases} destructs a given context variable of an inductive type 
+using the automatically generated \leani{cases_on} theorem.
+Optionally, a list of the desired names for the newly generated variables can be
+appended.
+\item Often, a goal is not expressed in its simplest form.
+\leani{esimp} simplifies the goal after unfolding a given list of definitions.
+\item The \leani{rewrite} tactic takes a theorem yielding a (propositional)
+equality and replaces occurrences of the equation's left hand side by the 
+right hand side.
+The user can specify in what pattern or how often the replacement should be made.
+\item By using \leani{rotate}, one can rotate the list of subgoals by a given
+number of steps.
+This is useful when the user wants to postpone the goal at the first position
+to be solved at the end of the proof.
+\item Tactics can furthermore be concatenated to a single tactic using the and-then
+composition \leani{( tactic1 ; tactic2 )}.
+The resulting tactic fails if either one of the tactics fail. \\
+The notation \leani{[ tactic1 | tactic2 ]} specifies an or-else branching of tactics:
+Lean first tries to apply the first tactic and if it fails the second one.
+The composed tactic only fails if both of them fail.
+\item Adding to this composition of tactics one can use the \leani{repeat}
+tactic as a loop command.
+The tactic given to \leani{repeat} as an argument is applied over and over until
+it fails.
+So, by giving it an or-else composition of tactics Lean tries each one from a set
+of tactics until none of them is applicable.
+\item Curly brackets can be used to create a scope which only aims to solve the
+first subgoal.
+If the subgoal is not solved within that scope, an error will appear at the line
+of the closing bracket. %TODO make this sound better
+\end{itemize} %TODO give some examples maybe?
 
 \section{Basic Homotopy Type Theory in Lean}
 
