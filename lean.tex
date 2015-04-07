@@ -341,6 +341,116 @@ of the closing bracket. %TODO make this sound better
 
 \section{Basic Homotopy Type Theory in Lean}
 
+Lean's homotopy type theory library is split into two parts:
+The content of a folder \texttt{init} is imported by default and provides
+theories for built-in features like \leani{rewrite}.
+Besides this folder there are other theories which are not required at startup
+and which the user can import manually.
+They include characterizations of path spaces and basic theories about common
+algebraic structures which will be presented in the next chapter.
+
+One important definition in the initialization folder is, of course, the one of
+\textbf{propositional equality}.
+As mentioned above, equality is just a very basic example for an inductive type.
+Here, we define equality as inductive family of types \leani{eq} and with \leani{idp}
+give an alternative name for $\refl$ with the base being implicit:
+\begin{leancode}
+universe variable l
+inductive eq.{l} {A : Type.{l}} (a : A) : A → Type.{l} :=
+refl : eq a a
+
+definition idp {a : A} := refl a
+\end{leancode}
+By this definition, $p \ct \refl$ is definitionally equal to $p$ while $\refl \ct p = p$
+can only be proved by induction on $p$.
+Concatenation and inversion of paths are defined using path induction and abbreviated
+with the obvious notation:
+\begin{leancode}
+definition concat (p : x = y) (q : y = z) : x = z := eq.rec (λu, u) q p
+definition inverse (p : x = y) : y = x := eq.rec (refl x) p
+
+notation p₁ ⬝ p₂ := concat p₁ p₂
+notation p ⁻¹ := inverse p
+\end{leancode}
+A lot of basic calculations in the path groupoid can be proved by just using
+path induction. Her is one example for this kind of lemma:
+\begin{leancode}
+definition eq_of_idp_eq_inv_con (p q : x = y) : idp = p⁻¹ ⬝ q → p = q :=
+eq.rec_on p (take q h, h ⬝ (idp_con _)) q
+\end{leancode}
+
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{l|r|r}
+\toprule[1pt]
+\multicolumn{1}{c}{Theory} 
+	& \multicolumn{1}{c}{Line Count} 
+	& \multicolumn{1}{c}{Compilation Time} \\ 
+\midrule[1pt]
+\leani{init.} & & \\
+	\hspace{1em}\leani{bool} \\
+	\hspace{1em}\leani{datatypes} \\
+	\hspace{1em}\leani{default} \\
+	\hspace{1em}\leani{equiv} \\
+	\hspace{1em}\leani{function} \\
+	\hspace{1em}\leani{hedberg} \\
+	\hspace{1em}\leani{logic} \\
+	\hspace{1em}\leani{nat} \\
+	\hspace{1em}\leani{num} \\
+	\hspace{1em}\leani{path} \\
+	\hspace{1em}\leani{priority} \\
+	\hspace{1em}\leani{relation} \\
+	\hspace{1em}\leani{reserved_notation} \\
+	\hspace{1em}\leani{tactic} \\
+	\hspace{1em}\leani{trunc} \\
+	\hspace{1em}\leani{util} \\
+	\hspace{1em}\leani{wf} \\
+	\hspace{1em}\leani{axioms.} \\
+		\hspace{2em}\leani{funext_of_ua} \\
+		\hspace{2em}\leani{funext_varieties} \\
+		\hspace{2em}\leani{ua} \\
+	\hspace{1em}\leani{types.} \\
+		\hspace{2em}\leani{empty} \\
+		\hspace{2em}\leani{prod} \\
+		\hspace{2em}\leani{sum} \\
+\bottomrule[1pt]
+\end{tabular}
+\caption{Theories imported in Lean's initial startup.} \label{tab:init-tree}
+\end{center}
+\end{table} 
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{l|r|r}
+\toprule[1pt]
+\multicolumn{1}{c}{Theory} 
+	& \multicolumn{1}{c}{Line Count} 
+	& \multicolumn{1}{c}{Compilation Time} \\ 
+\midrule[1pt]
+\leani{arity} \\
+\leani{algebra.} \\
+	\hspace{1em}\leani{binary} \\
+	\hspace{1em}\leani{group} \\
+	\hspace{1em}\leani{relation} \\
+\leani{types.} & & \\
+	\hspace{1em}\leani{arrow} \\
+	\hspace{1em}\leani{eq} \\
+	\hspace{1em}\leani{equiv} \\
+	\hspace{1em}\leani{fiber} \\
+	\hspace{1em}\leani{pi} \\
+	\hspace{1em}\leani{pointed} \\
+	\hspace{1em}\leani{prod} \\
+	\hspace{1em}\leani{sigma} \\
+	\hspace{1em}\leani{trunc} \\
+	\hspace{1em}\leani{W} \\
+\bottomrule[1pt]
+\end{tabular}
+\caption{Theories in Lean's standard library for its homotopy type theory mode.
+(Category theory excluded.)} \label{tab:hottlib-tree}
+\end{center}
+\end{table} 
+
 \section{Category Theory in Lean}
 
 \section{Formalizing Double Groupoids and Crossed Modules}
