@@ -177,6 +177,10 @@ it in the signatur of the definition.
 Of course the missing arguments have to be such that they can be uniquely determined
 by the unification process, otherwise the unifier will return an appropriate error
 message whenever the definition is used.
+The user can make all arguments in a function call implicit by prepending a
+\leani{!} to the definition name.
+The opposite, making all arguments explicit, can be achieved by prepending the
+symbol \leani{@}.
 By default, implicit arguments are \emph{maximally inserted}.
 That means, that any expression of a $\Pi$-type with its first argument implicit
 is not interpreted as is but further applied by inference of that argument.
@@ -361,8 +365,6 @@ refl : eq a a
 
 definition idp {a : A} := refl a
 \end{leancode}
-By this definition, $p \ct \refl$ is definitionally equal to $p$ while $\refl \ct p = p$
-can only be proved by induction on $p$.
 Concatenation and inversion of paths are defined using path induction and abbreviated
 with the obvious notation:
 \begin{leancode}
@@ -372,11 +374,87 @@ definition inverse (p : x = y) : y = x := eq.rec (refl x) p
 notation p₁ ⬝ p₂ := concat p₁ p₂
 notation p ⁻¹ := inverse p
 \end{leancode}
-A lot of basic calculations in the path groupoid can be proved by just using
+By this definition, $p \ct \refl$ is definitionally equal to $p$ while $\refl \ct p = p$
+can only be proved by induction on $p$.
+A lot of basic calculations in the path groupoid can also be proved by just using
 path induction. Her is one example for this kind of lemma:
 \begin{leancode}
 definition eq_of_idp_eq_inv_con (p q : x = y) : idp = p⁻¹ ⬝ q → p = q :=
 eq.rec_on p (take q h, h ⬝ (idp_con _)) q
+\end{leancode}
+Two other basic definitions for paths are the one of transports and $\ap$.
+\begin{leancode}
+definition transport [reducible] (P : A → Type) {x y : A}
+  (p : x = y) (u : P x) : P y :=
+eq.rec_on p u
+
+definition ap ⦃A B : Type⦄ (f : A → B) {x y:A} (p : x = y) : f x = f y :=
+eq.rec_on p idp
+\end{leancode}
+
+To be able to express univalence it is important to have a useful definition of
+the \textbf{equivalence of types}.
+We use structures to express the type of proofs $\isequiv(f)$ that a function $f$
+is a half-adjoint equivalence as well as for the type of equivalences between
+two given types (\textasciitilde \, denotes the type of homotopies between two functions) :
+\begin{leancode}
+structure is_equiv [class] {A B : Type} (f : A → B) :=
+  (inv : B → A)
+  (retr : (f ∘ inv) ∼ id)
+  (sect : (inv ∘ f) ∼ id)
+  (adj : Π x, retr (f x) = ap f (sect x))
+
+structure equiv (A B : Type) :=
+  (to_fun : A → B)
+  (to_is_equiv : is_equiv to_fun)
+\end{leancode}
+In practice, we will almost never use the generated constructor of \leani{is_equiv}
+but instead we proved an alternative constructor \leani{adjointify} which does
+not require the adjointness proof \leani{adj}.
+
+\textbf{Univalence} than states that the function \leani{equiv_of_eq}, which lets
+us gain an equivalence from an equality between two types in the same universe,
+is itself an equivalence.
+We mark the axiom as instance so that, whenever there is mention of \leani{equiv_of_eq},
+we have access to its inverse.
+This inverse \leani{ua} is also the only common form univalence appears elsewhere.
+\begin{leancodebr}
+section
+  universe variable l
+  variables {A B : Type.{l}}
+
+  definition is_equiv_tr_of_eq (H : A = B) :
+    is_equiv (transport (λ X, X) H) :=
+  @is_equiv_tr Type (λX, X) A B H
+
+  definition equiv_of_eq (H : A = B) : A ≃ B :=
+  equiv.mk _ (is_equiv_tr_of_eq H)
+end
+
+axiom univalence (A B : Type) : is_equiv (@equiv_of_eq A B)
+attribute univalence [instance]
+
+definition ua {A B : Type} : A ≃ B → A = B := (@equiv_of_eq A B)⁻¹
+\end{leancodebr}
+
+We use the univalence axiom to prove \textbf{function extensionality} first of
+non-dependent and then of dependent functions.
+We first define three varieties of function extensionality and then proof that
+the desired definition of function extensionality (stating that the function
+\leani{apD10} which returns for each equality between functions a homotopy
+between those functions) follows from the other ones.
+\begin{leancode}
+definition funext.{l k} := 
+Π ⦃A : Type.{l}⦄ {P : A → Type.{k}} (f g : Π x, P x),
+  is_equiv (@apD10 A P f g)
+
+-- Naive funext is the assertion that pointwise equal functions are equal.
+definition naive_funext :=
+Π ⦃A : Type⦄ {P : A → Type} (f g : Πx, P x), (f ∼ g) → f = g
+
+-- Weak funext says that a product of contractible types is contractible.
+definition weak_funext :=
+Π ⦃A : Type⦄ (P : A → Type) [H: Πx, is_contr (P x)], is_contr (Πx, P x)
 \end{leancode}
 
 
