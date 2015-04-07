@@ -443,6 +443,8 @@ We first define three varieties of function extensionality and then proof that
 the desired definition of function extensionality (stating that the function
 \leani{apD10} which returns for each equality between functions a homotopy
 between those functions) follows from the other ones.
+This approach has been ported from the Coq HoTT library
+~\footnote{\url{https://github.com/HoTT/HoTT}}.
 \begin{leancode}
 definition funext.{l k} := 
 Π ⦃A : Type.{l}⦄ {P : A → Type.{k}} (f g : Π x, P x),
@@ -455,6 +457,67 @@ definition naive_funext :=
 -- Weak funext says that a product of contractible types is contractible.
 definition weak_funext :=
 Π ⦃A : Type⦄ (P : A → Type) [H: Πx, is_contr (P x)], is_contr (Πx, P x)
+\end{leancode}
+
+\textbf{Truncation levels} are implemented by first creating a version of the natural
+numbers that ``start at -2'' together with a coercion from the actual type
+\leani{nat}, then defining internal versions of contractability and truncatedness,
+and at eventually defining a type class structure holding a proof of the internal
+truncatedness:
+\begin{leancodebr}
+inductive trunc_index : Type₁ :=
+  minus_two : trunc_index,
+  succ : trunc_index → trunc_index
+...
+structure contr_internal (A : Type) :=
+  (center : A)
+  (contr : Π(a : A), center = a)
+
+definition is_trunc_internal (n : trunc_index) : Type → Type :=
+trunc_index.rec_on n (λA, contr_internal A)
+  (λn trunc_n A, (Π(x y : A), trunc_n (x = y)))
+...
+structure is_trunc [class] (n : trunc_index) (A : Type) :=
+  (to_internal : is_trunc_internal n A)
+
+abbreviation is_contr := is_trunc -2
+abbreviation is_hprop := is_trunc -1
+abbreviation is_hset  := is_trunc 0
+\end{leancodebr}
+By this trick we can then define contractability as the special case of being 
+truncated at level -2.
+This makes it a lot easier to write theorems that hold for all levels of
+truncatedness.
+The type class \leani{is_trunc} has many instances that, by calling type class
+resolution themselves, automatize the process of finding the truncation level
+of a given iterated $\Sigma$-type or $\Pi$-type (proofs and surrounding
+context omitted, definitions gathered from multiple files):
+\begin{leancode}
+--Equalities in contractible types are contractible.
+definition is_contr_eq {A : Type} [H : is_contr A] (x y : A) :
+  is_contr (x = y) := ...
+
+-- n-types are also (n+1)-types.
+definition is_trunc_succ [instance] [priority 100] 
+  (A : Type) (n : trunc_index) [H : is_trunc n A] : is_trunc (n.+1) A := ...
+
+-- The unit type is contractible.
+definition is_contr_unit [instance] : is_contr unit := ...
+
+-- The empty type is a mere proposition.
+definition is_hprop_empty [instance] : is_hprop empty := ...
+
+-- A Sigma type is n-truncated if the type of every possible projections is.
+definition is_trunc_sigma [instance] (B : A → Type) (n : trunc_index)
+  [HA : is_trunc n A] [HB : Πa, is_trunc n (B a)] :
+  is_trunc n (Σ a, B a) := ...
+  
+-- Any dependent product of n-types is an n-type.
+definition is_trunc_pi [instance] (B : A → Type) (n : trunc_index)
+  [H : Πa, is_trunc n (B a)] : is_trunc n (Πa, B a) := ...
+  
+-- Being an equivalence is a mere proposition.
+theorem is_hprop_is_equiv [instance] : is_hprop (is_equiv f) := ...
 \end{leancode}
 
 
