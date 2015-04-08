@@ -352,6 +352,8 @@ Besides this folder there are other theories which are not required at startup
 and which the user can import manually.
 They include characterizations of path spaces and basic theories about common
 algebraic structures which will be presented in the next chapter.
+The extension and maintenance of the library is an ongoing joint effort by
+Jeremy Avigad, Floris van Doorn, Leonardo de Moura and me.
 
 One important definition in the initialization folder is, of course, the one of
 \textbf{propositional equality}.
@@ -492,7 +494,7 @@ The type class \leani{is_trunc} has many instances that, by calling type class
 resolution themselves, automatize the process of finding the truncation level
 of a given iterated $\Sigma$-type or $\Pi$-type (proofs and surrounding
 context omitted, definitions gathered from multiple files):
-\begin{leancode}
+\begin{leancodebr}
 --Equalities in contractible types are contractible.
 definition is_contr_eq {A : Type} [H : is_contr A] (x y : A) :
   is_contr (x = y) := ...
@@ -518,8 +520,19 @@ definition is_trunc_pi [instance] (B : A → Type) (n : trunc_index)
   
 -- Being an equivalence is a mere proposition.
 theorem is_hprop_is_equiv [instance] : is_hprop (is_equiv f) := ...
-\end{leancode}
+\end{leancodebr}
 
+An important part of the library besides the initialization files consists of
+theorems characterizing paths between instances of different type formers.
+One example for such a characterization is that a path between two dependent
+pairs can be built out of paths between their projections:
+\begin{leancode}
+definition dpair_eq_dpair (p : a = a') (q : p ▹ b = b') : ⟨a, b⟩ = ⟨a', b'⟩ :=
+by cases p; cases q; apply idp
+
+definition sigma_eq (p : u.1 = v.1) (q : p ▹ u.2 = v.2) : u = v :=
+by cases u; cases v; apply (dpair_eq_dpair p q)
+\end{leancode}
 
 \begin{table}[h]
 \begin{center}
@@ -530,31 +543,32 @@ theorem is_hprop_is_equiv [instance] : is_hprop (is_equiv f) := ...
 	& \multicolumn{1}{c}{Compilation Time} \\ 
 \midrule[1pt]
 \leani{init.} & & \\
-	\hspace{1em}\leani{bool} \\
-	\hspace{1em}\leani{datatypes} \\
-	\hspace{1em}\leani{default} \\
-	\hspace{1em}\leani{equiv} \\
-	\hspace{1em}\leani{function} \\
-	\hspace{1em}\leani{hedberg} \\
-	\hspace{1em}\leani{logic} \\
-	\hspace{1em}\leani{nat} \\
-	\hspace{1em}\leani{num} \\
-	\hspace{1em}\leani{path} \\
-	\hspace{1em}\leani{priority} \\
-	\hspace{1em}\leani{relation} \\
-	\hspace{1em}\leani{reserved_notation} \\
-	\hspace{1em}\leani{tactic} \\
-	\hspace{1em}\leani{trunc} \\
-	\hspace{1em}\leani{util} \\
-	\hspace{1em}\leani{wf} \\
-	\hspace{1em}\leani{axioms.} \\
-		\hspace{2em}\leani{funext_of_ua} \\
-		\hspace{2em}\leani{funext_varieties} \\
-		\hspace{2em}\leani{ua} \\
-	\hspace{1em}\leani{types.} \\
-		\hspace{2em}\leani{empty} \\
-		\hspace{2em}\leani{prod} \\
-		\hspace{2em}\leani{sum} \\
+	\hspace{1em}\leani{bool} & 28  & \\
+	\hspace{1em}\leani{datatypes} & 90 & \\
+	\hspace{1em}\leani{default} & 15 & \\
+	\hspace{1em}\leani{equiv} & 276 & \\
+	\hspace{1em}\leani{function} & 61 & \\
+	\hspace{1em}\leani{hedberg} & 47 & \\
+	\hspace{1em}\leani{logic} & 359 & \\
+	\hspace{1em}\leani{nat} & 345 & \\
+	\hspace{1em}\leani{num} & 135 & \\
+	\hspace{1em}\leani{path} & 648 & \\
+	\hspace{1em}\leani{priority} & 12 & \\
+	\hspace{1em}\leani{relation} & 43 & \\
+	\hspace{1em}\leani{reserved_notation} & 103 & \\
+	\hspace{1em}\leani{tactic} & 106 & \\
+	\hspace{1em}\leani{trunc} & 262 & \\
+	\hspace{1em}\leani{util} & 18 & \\
+	\hspace{1em}\leani{wf} & 162 & \\
+	\hspace{1em}\leani{axioms.} & & \\
+		\hspace{2em}\leani{funext_of_ua} & 162 & \\
+		\hspace{2em}\leani{funext_varieties} & 111 & \\
+		\hspace{2em}\leani{ua} & 51 & \\
+	\hspace{1em}\leani{types.} & & \\
+		\hspace{2em}\leani{empty} & 23 & \\
+		\hspace{2em}\leani{prod} & 99 & \\
+		\hspace{2em}\leani{sigma} & 26 & \\
+		\hspace{2em}\leani{sum} & 19 & \\
 \bottomrule[1pt]
 \end{tabular}
 \caption{Theories imported in Lean's initial startup.} \label{tab:init-tree}
@@ -569,22 +583,22 @@ theorem is_hprop_is_equiv [instance] : is_hprop (is_equiv f) := ...
 	& \multicolumn{1}{c}{Line Count} 
 	& \multicolumn{1}{c}{Compilation Time} \\ 
 \midrule[1pt]
-\leani{arity} \\
-\leani{algebra.} \\
-	\hspace{1em}\leani{binary} \\
-	\hspace{1em}\leani{group} \\
-	\hspace{1em}\leani{relation} \\
+\leani{arity} & 188 & \\
+\leani{algebra.} & & \\
+	\hspace{1em}\leani{binary} & 74 & \\
+	\hspace{1em}\leani{group} & 570 & \\
+	\hspace{1em}\leani{relation} & 122 & \\
 \leani{types.} & & \\
-	\hspace{1em}\leani{arrow} \\
-	\hspace{1em}\leani{eq} \\
-	\hspace{1em}\leani{equiv} \\
-	\hspace{1em}\leani{fiber} \\
-	\hspace{1em}\leani{pi} \\
-	\hspace{1em}\leani{pointed} \\
-	\hspace{1em}\leani{prod} \\
-	\hspace{1em}\leani{sigma} \\
-	\hspace{1em}\leani{trunc} \\
-	\hspace{1em}\leani{W} \\
+	\hspace{1em}\leani{arrow} & 49 & \\
+	\hspace{1em}\leani{eq} & 271 & \\
+	\hspace{1em}\leani{equiv} & 98 & \\
+	\hspace{1em}\leani{fiber} & 51 & \\
+	\hspace{1em}\leani{pi} & 198 & \\
+	\hspace{1em}\leani{pointed} & 40 & \\
+	\hspace{1em}\leani{prod} & 48 & \\
+	\hspace{1em}\leani{sigma} & 397 & \\
+	\hspace{1em}\leani{trunc} & 140 & \\
+	\hspace{1em}\leani{W} & 157 & \\
 \bottomrule[1pt]
 \end{tabular}
 \caption{Theories in Lean's standard library for its homotopy type theory mode.
