@@ -534,80 +534,174 @@ definition sigma_eq (p : u.1 = v.1) (q : p ▹ u.2 = v.2) : u = v :=
 by cases u; cases v; apply (dpair_eq_dpair p q)
 \end{leancode}
 
-\begin{table}[h]
+\begin{table}[p]
 \begin{center}
 \begin{tabular}{l|r|r}
 \toprule[1pt]
 \multicolumn{1}{c}{Theory} 
 	& \multicolumn{1}{c}{Line Count} 
-	& \multicolumn{1}{c}{Compilation Time} \\ 
+	& \multicolumn{1}{c}{Compilation Time in s} \\ 
 \midrule[1pt]
 \leani{init.} & & \\
-	\hspace{1em}\leani{bool} & 28  & \\
-	\hspace{1em}\leani{datatypes} & 90 & \\
-	\hspace{1em}\leani{default} & 15 & \\
-	\hspace{1em}\leani{equiv} & 276 & \\
-	\hspace{1em}\leani{function} & 61 & \\
-	\hspace{1em}\leani{hedberg} & 47 & \\
-	\hspace{1em}\leani{logic} & 359 & \\
-	\hspace{1em}\leani{nat} & 345 & \\
-	\hspace{1em}\leani{num} & 135 & \\
-	\hspace{1em}\leani{path} & 648 & \\
-	\hspace{1em}\leani{priority} & 12 & \\
-	\hspace{1em}\leani{relation} & 43 & \\
-	\hspace{1em}\leani{reserved_notation} & 103 & \\
-	\hspace{1em}\leani{tactic} & 106 & \\
-	\hspace{1em}\leani{trunc} & 262 & \\
-	\hspace{1em}\leani{util} & 18 & \\
-	\hspace{1em}\leani{wf} & 162 & \\
+	\hspace{1em}\leani{bool} & 28 & 0.043\\
+	\hspace{1em}\leani{datatypes} & 90 & 0.044\\
+	\hspace{1em}\leani{default} & 15 & 0.421\\
+	\hspace{1em}\leani{equiv} & 276 & 1.082\\
+	\hspace{1em}\leani{function} & 61 & 0.042\\
+	\hspace{1em}\leani{hedberg} & 47 & 0.399\\
+	\hspace{1em}\leani{logic} & 359 & 0.173\\
+	\hspace{1em}\leani{nat} & 345 & 0.565\\
+	\hspace{1em}\leani{num} & 135 & 0.073\\
+	\hspace{1em}\leani{path} & 648 & 2.683\\
+	\hspace{1em}\leani{priority} & 12 & 0.036\\
+	\hspace{1em}\leani{relation} & 43 & 0.072\\
+	\hspace{1em}\leani{reserved_notation} & 103 & 0.035\\
+	\hspace{1em}\leani{tactic} & 106 & 0.067\\
+	\hspace{1em}\leani{trunc} & 262 & 0.821\\
+	\hspace{1em}\leani{util} & 18 & 0.324\\
+	\hspace{1em}\leani{wf} & 162 & 0.394\\
 	\hspace{1em}\leani{axioms.} & & \\
-		\hspace{2em}\leani{funext_of_ua} & 162 & \\
-		\hspace{2em}\leani{funext_varieties} & 111 & \\
-		\hspace{2em}\leani{ua} & 51 & \\
+		\hspace{2em}\leani{funext_of_ua} & 162 & 0.674\\
+		\hspace{2em}\leani{funext_varieties} & 111 & 0.483\\
+		\hspace{2em}\leani{ua} & 51 & 0.302\\
 	\hspace{1em}\leani{types.} & & \\
-		\hspace{2em}\leani{empty} & 23 & \\
-		\hspace{2em}\leani{prod} & 99 & \\
-		\hspace{2em}\leani{sigma} & 26 & \\
-		\hspace{2em}\leani{sum} & 19 & \\
+		\hspace{2em}\leani{empty} & 23 & 0.055\\
+		\hspace{2em}\leani{prod} & 99 & 0.225\\
+		\hspace{2em}\leani{sigma} & 26 & 0.058\\
+		\hspace{2em}\leani{sum} & 19 & 0.036\\ %TODO repeat this without -t 0
 \bottomrule[1pt]
 \end{tabular}
 \caption{Theories imported in Lean's initial startup.} \label{tab:init-tree}
 \end{center}
 \end{table} 
 
+\begin{table}[p]
+\begin{center}
+\begin{tabular}{l|r|r}
+\toprule[1pt]
+\multicolumn{1}{c}{Theory} 
+	& \multicolumn{1}{c}{Line Count} 
+	& \multicolumn{1}{c}{Compilation Time in s} \\ 
+\midrule[1pt]
+\leani{arity} & 188 & 0.797\\
+\leani{algebra.} & & \\
+	\hspace{1em}\leani{binary} & 74 & 0.156\\
+	\hspace{1em}\leani{group} & 570 & 1.317\\
+	\hspace{1em}\leani{relation} & 122 & 0.330\\
+\leani{types.} & & \\
+	\hspace{1em}\leani{arrow} & 49 & 0.143\\
+	\hspace{1em}\leani{eq} & 271 & 0.556\\
+	\hspace{1em}\leani{equiv} & 98 & 0.652\\
+	\hspace{1em}\leani{fiber} & 51 & 0.199\\
+	\hspace{1em}\leani{pi} & 198 & 1.177\\
+	\hspace{1em}\leani{pointed} & 40 & 0.121\\
+	\hspace{1em}\leani{prod} & 48 & 0.144\\
+	\hspace{1em}\leani{sigma} & 397 & 1.599\\
+	\hspace{1em}\leani{trunc} & 140 & 0.371\\
+	\hspace{1em}\leani{W} & 157 & 0.128\\
+\bottomrule[1pt]
+\end{tabular}
+\caption{Theories in Lean's standard library for its homotopy type theory mode.
+(Category theory excluded.)} \label{tab:hottlib-tree}
+\end{center}
+\end{table}
+
+Figure \ref{tab:init-tree} and \ref{tab:hottlib-tree} show the line count and
+the compilation time for each theory in Lean's HoTT library excluding the library
+for category theory.
+
+\section{Category Theory in Lean}
+
+Our library of basic category theoretical definitions and theorems, which is
+still work in progress, also aims to mimic the structure of Coq's HoTT implementation
+of categories while being more succinct than it.
+We use structures and type classes for most definitions of algebraic structures
+and their closure properties.
+
+The central structure our formalization revolves around is, of course, the one
+of a precategory:
+\begin{leancode}
+structure precategory [class] (ob : Type) : Type :=
+  (hom : ob → ob → Type)
+  (homH : Π(a b : ob), is_hset (hom a b))
+  (comp : Π⦃a b c : ob⦄, hom b c → hom a b → hom a c)
+  (ID : Π (a : ob), hom a a)
+  (assoc : Π ⦃a b c d : ob⦄ (h : hom c d) (g : hom b c) (f : hom a b),
+     comp h (comp g f) = comp (comp h g) f)
+  (id_left : Π ⦃a b : ob⦄ (f : hom a b), comp !ID f = f)
+  (id_right : Π ⦃a b : ob⦄ (f : hom a b), comp f !ID = f)
+\end{leancode}
+
+Since usually the domain of an identity morphism is determined by the context
+we will most often use a shorter notation for the identity:
+\begin{leancode}
+definition id [reducible] := ID a
+\end{leancode}
+
+We introduce a shortcut for the type class instance postulating that each equality
+of morphism is a mere proposition.
+We use this instance, for example, to prove that it is sufficient to give equalities
+between the morphism types, composition and identities of two precategories on the
+same type of objects, to show that these precategories are equal:
+
+\begin{leancode}
+definition is_hprop_eq_hom [instance] : is_hprop (f = f') := !is_trunc_eq
+
+definition precategory_eq_mk' (ob : Type) (C D : precategory ob)
+  (p : @hom ob C = @hom ob D)
+  (q : transport (λ x, Πa b c, x b c → x a b → x a c) p
+    (@comp ob C) = @comp ob D)
+  (r : transport (λ x, Πa, x a a) p (@ID ob C) = @ID ob D) : C = D :=
+begin
+  cases C, cases D,
+  apply precategory_eq_mk, apply q, apply r,
+end
+\end{leancode}
+
+We also define a \emph{bundled} version of a category, as the structure containing
+the object type and a precategory on it as fields:
+\begin{leancode}
+structure Precategory : Type :=
+  (carrier : Type)
+  (struct : precategory carrier)
+\end{leancode}
+
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{l|r|r}
 \toprule[1pt]
 \multicolumn{1}{c}{Theory} 
 	& \multicolumn{1}{c}{Line Count} 
-	& \multicolumn{1}{c}{Compilation Time} \\ 
+	& \multicolumn{1}{c}{Compilation Time in s} \\ 
 \midrule[1pt]
-\leani{arity} & 188 & \\
 \leani{algebra.} & & \\
-	\hspace{1em}\leani{binary} & 74 & \\
-	\hspace{1em}\leani{group} & 570 & \\
-	\hspace{1em}\leani{relation} & 122 & \\
-\leani{types.} & & \\
-	\hspace{1em}\leani{arrow} & 49 & \\
-	\hspace{1em}\leani{eq} & 271 & \\
-	\hspace{1em}\leani{equiv} & 98 & \\
-	\hspace{1em}\leani{fiber} & 51 & \\
-	\hspace{1em}\leani{pi} & 198 & \\
-	\hspace{1em}\leani{pointed} & 40 & \\
-	\hspace{1em}\leani{prod} & 48 & \\
-	\hspace{1em}\leani{sigma} & 397 & \\
-	\hspace{1em}\leani{trunc} & 140 & \\
-	\hspace{1em}\leani{W} & 157 & \\
+	\hspace{1em}\leani{groupoid} & 119 & 0.419\\
+	\hspace{1em}\leani{category.} & & \\
+		\hspace{2em}\leani{basic} & 74 & 0.265 \\
+		\hspace{2em}\leani{constructions} & 144 & 1.180 \\
+	\hspace{1em}\leani{precategory.} &  & \\
+		\hspace{2em}\leani{adjoints} & 143 & $^*$0.638 \\
+		\hspace{2em}\leani{basic} & 236 & 1.870 \\
+		\hspace{2em}\leani{constructions} & 268 & 1.862 \\
+		\hspace{2em}\leani{functor} & 253 & $^*$2.981 \\
+		\hspace{2em}\leani{iso} & 350 & 2.131 \\
+		\hspace{2em}\leani{nat_trans} & 114 & 1.033 \\
+		\hspace{2em}\leani{strict} & 53 & 0.246	\\
+		\hspace{2em}\leani{yoneda} & 208 & 3.852 \\
 \bottomrule[1pt]
 \end{tabular}
-\caption{Theories in Lean's standard library for its homotopy type theory mode.
-(Category theory excluded.)} \label{tab:hottlib-tree}
+\caption{The theories in Lean's category theory library.} \label{tab:cat-tree}
 \end{center}
-\end{table} 
+\end{table}
 
-\section{Category Theory in Lean}
-
-\section{Formalizing Double Groupoids and Crossed Modules}
+\section[Formalizing Double Groupoids and Crossed Modules]
+	{Formalizing Double Groupoids and Crossed Modules
+	\sectionmark{Formalization of DGpd and Xmod}}
+\sectionmark{Formalization DGpd and Xmod}
 
 \section{Instantiating the Fundamental Double Groupoid}
+
+
+
+
+
