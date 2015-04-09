@@ -666,6 +666,69 @@ structure Precategory : Type :=
   (struct : precategory carrier)
 \end{leancode}
 
+Using typeclasses for split monos, split epis and isomorphisms enables us to access
+the left, right or both-sided inverse filling in the precategory structure as
+well as the invertability witness by type class instance resolution:
+\begin{leancode}
+structure split_mono [class]
+    {ob : Type} [C : precategory ob] {a b : ob} (f : a ⟶ b) :=
+  {retraction_of : b ⟶ a}
+  (retraction_comp : retraction_of ∘ f = id)
+
+structure split_epi [class]
+    {ob : Type} [C : precategory ob] {a b : ob} (f : a ⟶ b) :=
+  {section_of : b ⟶ a}
+  (comp_section : f ∘ section_of = id)
+
+structure is_iso [class]
+    {ob : Type} [C : precategory ob] {a b : ob} (f : a ⟶ b) :=
+  {inverse : b ⟶ a}
+  (left_inverse  : inverse ∘ f = id)
+  (right_inverse : f ∘ inverse = id)
+\end{leancode}
+
+On purpose, we weaken some theorems to accepting arbitrary witnesses for mere propositions
+that would actually be derivable from the other witnesses.
+By this, we can have class instance resolution fill in a witness selected by the
+highest instance priority.
+In the following example, even if there is a theorem obtaining \leani{is_iso (f⁻¹)}
+from \leani{is_iso f}, we might want the witness to be the axiom that in a groupoid
+all morphisms are isomorphisms.
+This spares us the need of transporting the statement to the right witness each
+time we use it:
+\begin{leancode}
+definition inverse_involutive (f : a ⟶ b) [H : is_iso f] [H : is_iso (f⁻¹)]
+  : (f⁻¹)⁻¹ = f :=
+inverse_eq_right !left_inverse
+
+definition id_inverse (a : ob) [H : is_iso (ID a)] : (ID a)⁻¹ = id :=
+inverse_eq_left !id_comp
+
+definition comp_inverse [Hp : is_iso p] [Hpq : is_iso (q ∘ p)] :
+  (q ∘ p)⁻¹ʰ = p⁻¹ʰ ∘ q⁻¹ʰ :=
+inverse_eq_left (show (p⁻¹ʰ ∘ q⁻¹ʰ) ∘ q ∘ p = id, from
+  by rewrite [-assoc, inverse_comp_cancel_left, left_inverse])
+\end{leancode}
+
+Not only the the property of a morphism $f$ being an isomorphism but also the type
+of morphisms between two given objects is encapsulated in a structure that heavily
+helps to fill in proofs automatically. %TODO more precise
+\begin{leancode}
+structure iso (a b : ob) :=
+  (to_hom : hom a b)
+  [struct : is_iso to_hom]
+
+infix `≅`:50 := iso.iso
+attribute iso.struct [instance] [priority 400]
+
+-- The type of isomorphisms between two objects is a set.
+definition is_hset_iso [instance] : is_hset (a ≅ b) :=
+begin
+  apply is_trunc_is_equiv_closed,
+    apply (equiv.to_is_equiv (!iso.sigma_char)),
+end
+\end{leancode}
+
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{l|r|r}
@@ -680,17 +743,18 @@ structure Precategory : Type :=
 		\hspace{2em}\leani{basic} & 74 & 0.265 \\
 		\hspace{2em}\leani{constructions} & 144 & 1.180 \\
 	\hspace{1em}\leani{precategory.} &  & \\
-		\hspace{2em}\leani{adjoints} & 143 & $^*$0.638 \\
+		\hspace{2em}\leani{adjoints} & 143 & *0.638 \\
 		\hspace{2em}\leani{basic} & 236 & 1.870 \\
 		\hspace{2em}\leani{constructions} & 268 & 1.862 \\
-		\hspace{2em}\leani{functor} & 253 & $^*$2.981 \\
+		\hspace{2em}\leani{functor} & 253 & *2.981 \\
 		\hspace{2em}\leani{iso} & 350 & 2.131 \\
 		\hspace{2em}\leani{nat_trans} & 114 & 1.033 \\
 		\hspace{2em}\leani{strict} & 53 & 0.246	\\
 		\hspace{2em}\leani{yoneda} & 208 & 3.852 \\
 \bottomrule[1pt]
 \end{tabular}
-\caption{The theories in Lean's category theory library.} \label{tab:cat-tree}
+\caption{The theories in Lean's category theory library.
+Theories marked with * contain unfinished proofs.} \label{tab:cat-tree}
 \end{center}
 \end{table}
 
