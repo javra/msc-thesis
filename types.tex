@@ -122,7 +122,7 @@ If we wanted to build a precategory of precategories we encounter the problem th
 functors between two given precategories don't generally form a set!
 Restricting ourselves to strict precategories solves this problem:
 
-\begin{lemma}
+\begin{lemma} \label{thm:functors-hset}
 Let $C$ be a precategory and $D$ be a strict precategory.
 Then, the type of functors between $C$ and $D$ forms a set.
 \end{lemma}
@@ -136,7 +136,7 @@ But turning the codomain of this function into a set obviously solves the
 problem.
 \end{proof}
 
-\begin{corollary}
+\begin{corollary} \label{thm:precat-strict-precat}
 For each pair of universes $(\UU_i, \UU_j)$ there is a precategory of strict
 precategories with carrier in $\UU_i$ and morphism types in $\UU_j$. Morphisms of
 this category are functors, with composition of functors and identity functors

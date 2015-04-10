@@ -729,6 +729,93 @@ begin
 end
 \end{leancode}
 
+Another definition we want to generalize to the two dimensional case is the one
+of a functor.
+We introduce functors as a structure and add coercions to its function on objects
+and to its function on morphisms.
+By doing so, we will be able to write \leani{F a} for the image of an object \leani{a}
+and \leani{F f} for the image of a morphism \leani{f} under a functor \leani{F}.
+\begin{leancode}
+structure functor (C D : Precategory) : Type :=
+  (to_fun_ob : C → D)
+  (to_fun_hom : Π ⦃a b : C⦄, hom a b → hom (to_fun_ob a) (to_fun_ob b))
+  (respect_id : Π (a : C), to_fun_hom (ID a) = ID (to_fun_ob a))
+  (respect_comp : Π {a b c : C} (g : hom b c) (f : hom a b),
+    to_fun_hom (g ∘ f) = to_fun_hom g ∘ to_fun_hom f)
+
+infixl `⇒`:25 := functor
+attribute to_fun_ob [coercion]
+attribute to_fun_hom [coercion]
+\end{leancode}
+
+One example where these coercions are used is the definition of the composition
+of functors:
+\begin{leancode}
+definition compose [reducible] (G : functor D E) (F : functor C D) :
+  functor C E :=
+functor.mk
+  (λ x, G (F x))
+  (λ a b f, G (F f))
+  (λ a, calc
+    G (F (ID a)) = G (ID (F a)) : by rewrite respect_id
+             ... = ID (G (F a)) : by rewrite respect_id)
+  (λ a b c g f, calc
+    G (F (g ∘ f)) = G (F g ∘ F f)     : by rewrite respect_comp
+              ... = G (F g) ∘ G (F f) : by rewrite respect_comp)
+\end{leancode}
+
+Like mentioned above, it is useful to still have a representation of a structure
+as an iterated product and $\Sigma$-type.
+With this characterization we can formalize lemma \ref{thm:functors-hset} easily:
+\begin{leancode}
+protected definition sigma_char :
+  (Σ (to_fun_ob : C → D)
+  (to_fun_hom : Π ⦃a b : C⦄, hom a b → hom (to_fun_ob a) (to_fun_ob b)),
+  (Π (a : C), to_fun_hom (ID a) = ID (to_fun_ob a)) ×
+  (Π {a b c : C} (g : hom b c) (f : hom a b),
+    to_fun_hom (g ∘ f) = to_fun_hom g ∘ to_fun_hom f)) ≃ (functor C D) :=
+...
+
+set_option apply.class_instance false
+protected definition is_hset_functor [HD : is_hset D] : is_hset (C ⇒ D) :=
+begin
+  apply is_trunc_is_equiv_closed, apply equiv.to_is_equiv,
+    apply sigma_char,
+  apply is_trunc_sigma, apply is_trunc_pi, intros, exact HD, intro F,
+  apply is_trunc_sigma, apply is_trunc_pi, intro a,
+    {apply is_trunc_pi, intro b,
+     apply is_trunc_pi, intro c, apply !homH},
+  intro H, apply is_trunc_prod,
+    {apply is_trunc_pi, intro a,
+     apply is_trunc_eq, apply is_trunc_succ, apply !homH},
+    {repeat (apply is_trunc_pi; intros),
+     apply is_trunc_eq, apply is_trunc_succ, apply !homH},
+end
+\end{leancode}
+
+This enables us to implement the precategory of strict precategory (compare
+corollary \ref{thm:precat-strict-precat}).
+The proof that this precategory is univalent (lemma \ref{thm:precat-univalent})
+still needs a formalization.
+
+\begin{leancode}
+structure strict_precategory [class] (ob : Type) extends precategory ob :=
+  (is_hset_ob : is_hset ob)
+
+structure Strict_precategory : Type :=
+  (carrier : Type)
+  (struct : strict_precategory carrier)
+
+definition precat_strict_precat : precategory Strict_precategory :=
+precategory.mk (λ a b, functor a b)
+  (λ a b, @functor.is_hset_functor a b _)
+  (λ a b c g f, functor.compose g f)
+  (λ a, functor.id)
+  (λ a b c d h g f, !functor.assoc)
+  (λ a b f, !functor.id_left)
+  (λ a b f, !functor.id_right)
+\end{leancode}
+
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{l|r|r}
@@ -762,6 +849,51 @@ Theories marked with * contain unfinished proofs.} \label{tab:cat-tree}
 	{Formalizing Double Groupoids and Crossed Modules
 	\sectionmark{Formalization of DGpd and Xmod}}
 \sectionmark{Formalization DGpd and Xmod}
+
+When formalizing the structures presented in chapters \ref{chapter:nat} and
+\ref{chapter:types}, I proceeded in the order the concepts are presented in this
+thesis.
+Since it was necessary to change several definitions to improve compatibility with
+the library and to improve performance I had to change most of the definitions
+repeatedly during the process.
+In the following, I will only present the final version of the definitions.
+
+The first structure is the one of a \textbf{double category}.
+Since it has many fields, it was useful to come up with an idea to shorten the definition:
+We first define what it means to be a \textbf{worm category}.
+This structure consists of objects, morphisms and two-cells the same way a double
+category does, but it only allows for composition in one direction.
+
+\begin{leancodebr}
+structure worm_precat [class] {D₀ : Type}
+  (C  : precategory D₀)
+  (D₂ : Π ⦃a b c d : D₀⦄
+    (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type) :=
+  (comp₁ : proof Π ⦃a b c₁ d₁ c₂ d₂ : D₀⦄
+    ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
+    ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄,
+    (D₂ g₁ g₂ h₂ i₂) → (D₂ f₁ g₁ h₁ i₁)
+    → (@D₂ a b c₂ d₂ f₁ g₂ (h₂ ∘ h₁) (i₂ ∘ i₁)) qed)
+  (ID₁ : proof Π ⦃a b : D₀⦄ (f : hom a b), D₂ f f (ID a) (ID b) qed)
+  (assoc₁ : proof Π ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : D₀⦄
+    ⦃f  : hom a b⦄   ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
+    ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
+    ⦃g₃ : hom c₃ d₃⦄ ⦃h₃ : hom c₂ c₃⦄ ⦃i₃ : hom d₂ d₃⦄
+    (w : D₂ g₂ g₃ h₃ i₃) (v : D₂ g₁ g₂ h₂ i₂) (u : D₂ f g₁ h₁ i₁),
+    (assoc i₃ i₂ i₁) ▹ ((assoc h₃ h₂ h₁) ▹
+      (comp₁ w (comp₁ v u))) = (comp₁ (comp₁ w v) u) qed)
+  (id_left₁ : proof Π ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i),
+    (id_left i) ▹ ((id_left h) ▹ (comp₁ (ID₁ g) u)) = u qed)
+  (id_right₁ : proof Π ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i),
+    (id_right i) ▹ ((id_right h) ▹ (comp₁ u (ID₁ f))) = u qed)
+  (homH' : proof Π ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+    is_hset (D₂ f g h i) qed)
+\end{leancodebr}
 
 \section{Instantiating the Fundamental Double Groupoid}
 
