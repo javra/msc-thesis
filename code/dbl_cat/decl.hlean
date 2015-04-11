@@ -6,7 +6,8 @@ structure worm_precat {D₀ : Type} (C  : precategory D₀)
   (comp₁ : proof Π ⦃a b c₁ d₁ c₂ d₂ : D₀⦄
     ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄,
-    (D₂ g₁ g₂ h₂ i₂) → (D₂ f₁ g₁ h₁ i₁) → (@D₂ a b c₂ d₂ f₁ g₂ (h₂ ∘ h₁) (i₂ ∘ i₁)) qed)
+    (D₂ g₁ g₂ h₂ i₂) → (D₂ f₁ g₁ h₁ i₁)
+    → (@D₂ a b c₂ d₂ f₁ g₂ (h₂ ∘ h₁) (i₂ ∘ i₁)) qed)
   (ID₁ : proof Π ⦃a b : D₀⦄ (f : hom a b), D₂ f f (ID a) (ID b) qed)
   (assoc₁ : proof Π ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : D₀⦄
     ⦃f  : hom a b⦄   ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
@@ -49,7 +50,7 @@ structure dbl_precat {D₀ : Type} (C : precategory D₀)
     (v : D₂ f₀₁ f₁₁ g₀₁ g₀₂) (u : D₂ f₀₀ f₁₀ g₀₀ g₀₁),
     comp₁ (comp₂ x w) (comp₂ v u) = comp₂ (comp₁ x v) (comp₁ w u) qed)
 
-structure Dbl_precat : Type :=
+structure Dbl_precat :=
   (cat : Precategory)
   (two_cell : Π ⦃a b c d : cat⦄ (f : hom a b)
     (g : hom c d) (h : hom a c) (i : hom b d), Type)
