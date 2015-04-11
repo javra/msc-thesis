@@ -31,7 +31,6 @@ begin
     },
     {
       intros, cases x, cases filler,
-      --apply inverse, apply concat, apply (refl (φ a _)),
       apply concat, apply (refl (lambda_morphism.m _)),
       apply concat, apply lambda_morphism_m_transport_b,
       apply concat, apply lambda_morphism_m_transport_b,
@@ -43,6 +42,9 @@ begin
       apply mul_one,
     },
 end
+
+set_option pp.max_steps 10000
+print definition gamma_lambda_iso
 
 definition gamma_lambda_iso_nat (X Y : Xmod) (m : xmod_morphism X Y) :
   @eq
@@ -75,10 +77,21 @@ definition gamma_lambda_iso_nat (X Y : Xmod) (m : xmod_morphism X Y) :
           m)) :=
 begin
   fapply xmod_morphism_congr,
-  { --cases X, cases Y, cases m,
+  { cases X, cases Y, cases m,
+    apply idp,
+  },
+  { cases X, cases Y, cases m,
+    apply idp,
+  },
+  { apply eq_of_homotopy, intro p,
+    apply eq_of_homotopy, intro x,
+    cases X, cases Y, cases m,
+    esimp[Xmod.cases_on, xmod_morphism.cases_on],
 
   },
 end
+
+check @xmod_morphism.hom_family
 
 definition lambda_gamma_iso (G : carrier Cat_dbl_gpd) :
   hom (functor.compose lambda.functor gamma.functor G) G :=
@@ -88,7 +101,7 @@ begin
     intros [a,b,c,d,f,g,h,i,u],
 end
 
-definition xmod_dbl_gpd_equivalence : equivalence Cat_dbl_gpd.{l l l} Cat_xmod.{l l l} :=
+definition xmod_dbl_gpd_equivalence cd : equivalence Cat_dbl_gpd.{l l l} Cat_xmod.{l l l} :=
 begin
   fapply equivalence.mk,
     apply gamma.functor,
