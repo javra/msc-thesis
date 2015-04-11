@@ -34,17 +34,18 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \newunicodechar{∘}{\freeserif{∘}}
 \newunicodechar{ʰ}{\freeserif{ʰ}}
 \newunicodechar{⇒}{\freeserif{⇒}}
+\newunicodechar{⋆}{\freeserif{⋆}}
 %workaround to remove red boxes
 \AtBeginEnvironment{minted}{\renewcommand{\fcolorbox}[4][]{#4}}
 \usemintedstyle{colorful}
-\newminted{lean}{escapeinside=||,
+\newminted{lean}{%escapeinside=||,
 	linenos,
 	numbersep=5pt,
 	frame=single,
 	fontsize=\footnotesize,
 	framesep=1mm,
 	samepage}
-\newminted[leancodebr]{lean}{escapeinside=||,
+\newminted[leancodebr]{lean}{%escapeinside=||,
 	linenos,
 	numbersep=5pt,
 	frame=single,
