@@ -13,7 +13,7 @@ namespace dbl_precat
       (h : hom a c) (i : hom b d), unit) :=
   begin
     fapply dbl_precat.mk,
-      repeat ( intros ; [ exact ⋆ |  apply is_hprop.elim | apply is_trunc_succ ] ),
+      repeat ( intros ; ( rexact ⋆ |  apply is_hprop.elim | apply is_trunc_succ ) ),
       repeat ( intros ;  apply idp)
   end
 
@@ -66,22 +66,16 @@ namespace dbl_precat
 
 end dbl_precat
 
-set_option pp.implicit true
-set_option pp.universes true
-set_option pp.notation false
 namespace worm_precat
   context
   parameters {D₀ : Type} [C : precategory D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type}
-    [D : worm_precat C D₂]
+    (D : worm_precat C D₂)
 
-  --include C D
-
+  include D₀ C D
   structure two_cell_ob : Type := (vo1 : D₀) (vo2 : D₀) (vo3 : @hom D₀ C vo1 vo2)
 
-  check @two_cell_ob
-exit
   structure two_cell_connect (Sf Sg : two_cell_ob) : Type :=
   (vc1 : @hom D₀ C (two_cell_ob.vo1 Sf) (two_cell_ob.vo1 Sg))
   (vc2 : @hom D₀ C (two_cell_ob.vo2 Sf) (two_cell_ob.vo2 Sg))
@@ -92,12 +86,12 @@ exit
     fapply equiv.mk,
       intro S, apply (two_cell_ob.mk S.1 S.2.1 S.2.2),
     fapply is_equiv.adjointify,
-        intro V, apply (two_cell_ob.rec_on V), intros (a, b, f),
+        intro V, apply (two_cell_ob.rec_on V), intros [a, b, f],
         apply (⟨a, b, f⟩),
-      intro V, apply (two_cell_ob.rec_on V), intros (a, b, f),
+      intro V, apply (two_cell_ob.rec_on V), intros [a, b, f],
       apply idp,
-    intro S, apply (sigma.rec_on S), intros (a, S'),
-    apply (sigma.rec_on S'), intros (b, f),
+    intro S, apply (sigma.rec_on S), intros [a, S'],
+    apply (sigma.rec_on S'), intros [b, f],
     apply idp,
   end
 
@@ -110,13 +104,12 @@ exit
     fapply equiv.mk,
       intro S, apply (two_cell_connect.mk S.1 S.2.1 S.2.2),
     fapply is_equiv.adjointify,
-        intro V, apply (two_cell_connect.rec_on V), intros (h, i, u),
+        intro V, apply (two_cell_connect.rec_on V), intros [h, i, u],
         exact (⟨h, i, u⟩),
-      intro V, apply (two_cell_connect.rec_on V), intros (h, i, u),
+      intro V, apply (two_cell_connect.rec_on V), intros [h, i, u],
       apply idp,
-    intro S, apply (sigma.rec_on S), intros (h, S'),
-    apply (sigma.rec_on S'), intros (i, u),
-    apply idp,
+    intro S, apply (sigma.rec_on S), intros [h, S'],
+    cases S', apply idp,
   end
 
   definition two_cell_connect_path' {Sf Sg : two_cell_ob} : Π
@@ -129,14 +122,12 @@ exit
     (puv : pi ▹ ph ▹ u = v)
       , two_cell_connect.mk h₁ i₁ u  = two_cell_connect.mk h₂ i₂ v :=
   begin
-    intros (h₁, h₂, i₁, i₂, ph), apply (eq.rec_on ph),
-    intros (u, pi), apply (eq.rec_on pi),
-    intros, apply (eq.rec_on puv),
+    intros [h₁, h₂, i₁, i₂, ph], cases ph,
+    intros [u, pi], cases pi,
+    intros, cases puv,
     apply idp,
   end
 
-  --set_option pp.universes true
-  include D
   definition two_cell_comp [reducible] {Sf Sg Sh : two_cell_ob}
     : two_cell_connect Sg Sh → two_cell_connect Sf Sg → two_cell_connect Sf Sh :=
   (λ Sv Su, two_cell_connect.mk (vc1 Sv ∘ vc1 Su) (vc2 Sv ∘ vc2 Su)
@@ -153,55 +144,51 @@ exit
     fapply two_cell_connect_path',
     exact (assoc (vc1 Sw) (vc1 Sv) (vc1 Su)),
     exact (assoc (vc2 Sw) (vc2 Sv) (vc2 Su)),
-    exact (@assoc₁ D₀ C D₂ D _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _  (vc3 Sw) (vc3 Sv) (vc3 Su)),
+    apply assoc₁,
   end
 
   definition two_cell_id_left {Sf Sg : two_cell_ob}
     (Su : two_cell_connect Sf Sg) : two_cell_comp (two_cell_id Sg) Su = Su :=
   begin
-    apply (two_cell_connect.rec_on Su),
-    intros (h, i, u),
+    cases Su,
     fapply two_cell_connect_path',
     apply id_left,
     apply id_left,
-    exact (@id_left₁ D₀ C D₂ D _ _ _ _ _ _ _ _ u),
+    apply id_left₁,
   end
 
   definition two_cell_id_right {Sf Sg : two_cell_ob}
     (Su : two_cell_connect Sf Sg) : two_cell_comp Su (two_cell_id Sf) = Su :=
   begin
-    apply (two_cell_connect.rec_on Su),
-    intros (h, i, u),
+    cases Su,
     fapply two_cell_connect_path',
     apply id_right,
     apply id_right,
-    exact (@id_right₁ D₀ C D₂ D _ _ _ _ _ _ _ _ u),
+    apply id_right₁,
   end
 
 end
-exit
+
   universe variables l₀ l₁ l₂
   variables {D₀ : Type.{l₀}} [C : precategory.{l₀ (max l₀ l₁)} D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
       (h : hom a c) (i : hom b d), Type.{max l₀ l₁ l₂}}
 
-
-  definition two_cell_precat [D : worm_precat C D₂]
-    : precategory.{(max l₀ l₁) (max l₀ l₁ l₂)} two_cell_ob :=
+  definition two_cell_precat (D : worm_precat C D₂)
+    : precategory.{(max l₀ l₁) (max l₀ l₁ l₂)} (two_cell_ob D) :=
   begin
     fapply precategory.mk.{(max l₀ l₁) (max l₀ l₁ l₂)},
-                intros (Sf, Sg), exact (@two_cell_connect D₀ C D₂ Sf Sg),
-              intros (Sf, Sg), apply is_trunc_is_equiv_closed, apply equiv.to_is_equiv,
-              exact (@two_cell_connect_sigma_char D₀ C D₂ Sf Sg),
-              apply is_trunc_sigma, apply !homH,
-              intro f, apply is_trunc_sigma, apply !homH,
-              intro g, apply (@homH' D₀ C D₂ D),
-            intros (Sf, Sg, Sh, Sv, Su), apply (two_cell_comp Sv Su),
+                intros [Sf, Sg], exact (two_cell_connect D Sf Sg),
+              intros [Sf, Sg], apply is_trunc_is_equiv_closed, apply equiv.to_is_equiv,
+              exact (two_cell_connect_sigma_char D Sf Sg),
+              apply is_trunc_sigma, intros,
+              apply is_trunc_sigma, intros, apply (homH' D),
+            intros [Sf, Sg, Sh, Sv, Su], apply (two_cell_comp D Sv Su),
           intro Sf, exact (@two_cell_id D₀ C D₂ D Sf),
-        intros (Sf₁, Sf₂, Sf₃, Sf₄, Sw, Sv, Su),
+        intros [Sf₁, Sf₂, Sf₃, Sf₄, Sw, Sv, Su],
         exact (@two_cell_assoc D₀ C D₂ D Sf₁ Sf₂ Sf₃ Sf₄ Sw Sv Su),
-      intros (Sf, Sg, Su), exact (@two_cell_id_left D₀ C D₂ D Sf Sg Su),
-    intros (Sf, Sg, Su), exact (@two_cell_id_right D₀ C D₂ D Sf Sg Su),
+      intros [Sf, Sg, Su], exact (@two_cell_id_left D₀ C D₂ D Sf Sg Su),
+    intros [Sf, Sg, Su], exact (@two_cell_id_right D₀ C D₂ D Sf Sg Su),
   end
 
 end worm_precat
@@ -213,12 +200,12 @@ namespace dbl_precat
       (h : hom a c) (i : hom b d), Type.{max l₀ l₁ l₂}}
 
   definition vert_precat [D : dbl_precat C D₂] :=
-  @worm_precat.two_cell_precat.{l₀ l₁ l₂} D₀ C D₂ (to_worm_precat_1 D₂)
+  @worm_precat.two_cell_precat.{l₀ l₁ l₂} D₀ C D₂ (to_worm_precat_1 D)
 
   definition horiz_precat [D : dbl_precat C D₂] :=
-  @worm_precat.two_cell_precat.{l₀ l₁ l₂} D₀ C _ (to_worm_precat_2 D₂)
+  @worm_precat.two_cell_precat.{l₀ l₁ l₂} D₀ C _ (to_worm_precat_2 D)
 
-  definition zero [D : dbl_precat C D₂] (a : D₀) := ID₁ D₂ (ID a)
+  definition zero [D : dbl_precat C D₂] (a : D₀) := ID₁ D (ID a)
   notation `◻` := !zero
 
 end dbl_precat
