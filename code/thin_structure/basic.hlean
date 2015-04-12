@@ -40,8 +40,7 @@ namespace dbl_gpd
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat,
       -- Apply helper lemma eliminating transports
-      apply ID₁_of_ul_br_aux,
-      apply is_hset.elim,
+      apply ID₁_of_ul_br_aux, apply is_hset.elim,
       exact ((id_right f) ⬝ (id_left f)⁻¹),
     -- Identity squares are thin
     apply thin_id₁,
@@ -63,8 +62,7 @@ namespace dbl_gpd
       apply (thin_comp₁ D), apply !assoc,
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply concat,
-      apply !ID₂_of_br_ul_aux,
-      apply is_hset.elim,
+      apply !ID₂_of_br_ul_aux, apply is_hset.elim,
       exact ((id_left f) ⬝ (id_right f)⁻¹),
     apply (thin_id₂ D),
   end
@@ -76,28 +74,34 @@ namespace dbl_gpd
   by cases p; apply (ap (λ x, thin D _ _ _ _ x) !is_hset.elim)
 
   definition br_of_br_square ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c) :
-    (id_left id) ▹
-    (comp₁ D (comp₂ D (br_connect g) (ID₂ D g)) (comp₂ D (ID₁ D g) (br_connect f)))
+    (id_left id) ▹ (comp₁ D (comp₂ D (br_connect g) (ID₂ D g))
+      (comp₂ D (ID₁ D g) (br_connect f)))
     = br_connect (g ∘ f) :=
   begin
     apply tr_eq_of_eq_inv_tr,
+    -- Prove commutativity of second row
     assert line2_commute : (id ∘ id) ∘ g = id ∘ g ∘ id,
       exact (calc (id ∘ id) ∘ g = id ∘ g : @id_left D₀ C
                            ... = (id ∘ g) ∘ id : id_right
                            ... = id ∘ (g ∘ id) : assoc),
+    -- Prove thinness of second row
     assert line2_thin : comp₂ D (br_connect g) (ID₂ D g)
       = thin D (g ∘ id) (id ∘ id) g id line2_commute,
-      apply concat, apply (ap (λx, comp₂ D _ x)),  apply inverse, apply thin_id₂,
+      apply concat, apply (ap (λx, comp₂ D _ x)), apply inverse, apply thin_id₂,
       apply thin_comp₂,
+    -- Prove commutativity of first row
     assert line1_commute : (g ∘ id) ∘ f = id ∘ g ∘ f,
       exact (calc (g ∘ ID b) ∘ f = g ∘ f : @id_right D₀ C
                             ... = ID c ∘ g ∘ f : id_left),
+    -- Prove thinness of first row
     assert line1_thin : comp₂ D (ID₁ D g) (br_connect f)
       = thin D (g ∘ f) (g ∘ id) f id line1_commute,
       apply concat, apply (ap (λx, comp₂ D x _)), apply inverse, apply thin_id₁,
       apply thin_comp₂,
+    -- Replace composite squares by thin squares
     apply concat, exact (ap (λx, comp₁ D x _) line2_thin),
     apply concat, exact (ap (λx, comp₁ D _ x) line1_thin),
+    -- Thinness of the entire 2x2 grid
     apply concat, apply thin_comp₁, apply idp,
     apply eq_inv_tr_of_tr_eq,
     apply br_of_br_square_aux,
@@ -121,7 +125,7 @@ namespace dbl_gpd
                          ... = (id ∘ f) ∘ id : assoc),
     assert col1_thin : comp₁ D (ID₁ D f) (ul_connect f)
       = thin D id f (id ∘ id) (id ∘ f) col1_commute,
-      apply concat, apply (ap (λx, comp₁ D x _)), apply inverse, apply (thin_id₁ D),
+      apply concat, apply (ap (λx, comp₁ D x _)), apply inverse, apply thin_id₁,
       apply thin_comp₁,
     assert col2_commute : g ∘ id ∘ f = (g ∘ f) ∘ id,
       exact (calc g ∘ id ∘ f = g ∘ f : @id_left D₀ C
