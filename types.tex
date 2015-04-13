@@ -28,7 +28,7 @@ in line with the actual Lean implementation presented in the next chapter.
 Let $A : \UU$ be a type (the \textbf{object type} or \textbf{carrier}). A
 \textbf{precategory} $C$ on $A$ is constructed by giving the following data:
 \begin{itemize}
-\item For each $a, b : A$ a type of morphisms $\hom_C(a, b) : U$ for which we furthermore
+\item For each $a, b : A$ a type of morphisms $\hom_C(a, b) : \UU$ for which we furthermore
 require that $\prod_{(a,b:A)} \isSet(\hom_C(a, b))$.
 \item The composition of morphisms
 \begin{equation*}
@@ -67,13 +67,13 @@ Then, $C = D$. \hfill $\qed$
 \end{lemma}
 
 This also justifies that we do not require further coherence conditions on
-associativity (the ``pentagon coherence'') and identity laws. %TODO add further explanation?
+associativity (the ``pentagon coherence law'') and identity laws. %TODO add further explanation?
 
 \begin{defn} [Functors] \label{def:hott-precat-functor}
 Let $C_A$ and $C_B$ be precategories on types $A$ and $B$.
 A \textbf{functor} $F$ between $C_A$ and $C_B$ is constructed by giving the following:
 \begin{itemize}
-\item Its definition on objects as a instance of $F_{\obj}: A \to B$.
+\item Its definition on objects as an instance of $F_{\obj}: A \to B$.
 \item Its definition on morphisms
 \begin{equation*}
 F_{\hom} : \prod_{a,b:A} ~ \prod_{f:\hom_{C_A}(a,b)} \hom_{C_B}(F_{\obj}(a),F_{\obj}(b))\text{.}
@@ -111,7 +111,7 @@ instantiated as such.
 For example, the 1-types of a universe $\UU_i$ give us a precategory with morphisms
 between $A, B : \UU_i$ being $A = B$, composition being concatenation of equalities
 and identity being reflexivity.
-But often we will only have to deal with precategories whose carrier is a set".
+But often we will only have to deal with precategories whose carrier is a set.
 
 \begin{defn}[Strict precategory] \label{def:hott-strict-precat}
 A precategory with a set as carrier is called \textbf{strict}.
@@ -146,7 +146,7 @@ being defined as obvious. \hfill $\qed$
 Another precategory we can consider is the precategory of sets:
 
 \begin{lemma}
-Let $\UU_i$ be a universe. Then, the type of sets in $\UU_i$ forms a precategory
+Let $\UU_i$ be a universe. Then, the 1-type of sets in $\UU_i$ forms a precategory
 with morphisms being arbitrary functions.
 \end{lemma}
 
@@ -155,7 +155,7 @@ when dealing with precategories:
 If we look at the previous two examples of precategories where each object itself
 are types, we can conclude that if two objects are isomorphic in the algebraic sense
 they are equivalent types and thus, by the univalence axiom, equal.
-We want to transfer this as requirement to all categories, extending the general
+We want to transfer this as a requirement to all categories, extending the general
 idea of univalence which says that isomorphic objects should be treated as equals.
 To make this definition of a \emph{category} as smooth as possible, some helping
 will be necessary.
@@ -217,7 +217,16 @@ with function types as morphisms are univalent. \hfill $\qed$
 The precategory of strict precategories is univalent.
 \end{lemma}
 
-%TODO prove this
+\begin{proof}
+If two precategories are isomorphic, the functors witnessing this relation restrict
+to an equivalence on the carrier which, by univalence, gives us an equality
+between the carriers.
+Transported along this equality the functors also give an equivalence between the
+morphism types of two objects.
+Again, we use univalence, this time to gain an equality between the sets of morphisms.
+By lemma~\label{thm:hott-eq-precat} we conclude that two isomorphic precategories
+are equal.
+\end{proof}
 
 \begin{lemma} \label{thm:cat-1-type}
 If there is a univalent category on a type $A : \UU$, then $A$ is a 1-type.
@@ -279,8 +288,8 @@ D_2 : \prod_{a,b,c,d:D_0} ~ \prod_{f:D_1(a,b)} ~ \prod_{g:D_1(c,d)}
 	~ \prod_{h:D_1(a,c)} ~ \prod_{i:D_1(b,d)} \UU
 \end{equation*}
 We will always leave the first four parameters implicit and write $D_2(f,g,h,i)$
-for the type two-cell with $f$ as its upper face, $g$ as its bottom face,
-$h$ as its left face, and $i$ as its right face.
+for the type of two-cells with $f$ as their upper face, $g$ as their bottom face,
+$h$ as their left face, and $i$ as their right face.
 \item The vertical composition operation: For all $a, b, c_1, d_1, c_2, d_2 : D_0$
 and $f_1 : D_1(a, b)$, $g_1 : D_1(c_1, d_1)$, $h_1 : D_1(a, c_1)$, $i_1 : D_1(b, d_1)$,
 $g_2 : D_1(c_2, d_2)$, $h_2 : D_1(c_1, c_2)$, and $i_2 : D_1(d_1, d_2)$ the composition
@@ -313,7 +322,7 @@ that the following equations hold:
 \idRight(i)_*(\idRight(h)_*(\id_1 \circ_1 u) &= u \text{.}
 \end{align*}
 Again, the transports are needed to account for the difference in the faces
-in the composition.
+of the two squares we compare.
 \item Of course, we need a horizontal composition and identity:
 \begin{align*}
 \circ_2 &: \prod_{\ldots} D_2(f,g,h,i) \to D_2(f_2,g_2,i,i_2) 
@@ -387,8 +396,8 @@ and a shell double category translate into HoTT? Stating them is surprisingly
 straight-forward:
 
 \begin{example}[Square and shell double category] \label{def:shell-dbl-cat-hott}
-The square double category on a category $C$ on a Type $A : \UU$ can be instantiated
-as the double precategory having, of course, $C$ as a one skeleton, and setting
+The square double category on a precategory $C$ on a Type $A : \UU$ can be instantiated
+as the double category having, of course, $C$ as a one skeleton, and setting
 $D_2(f,g,h,i) :\equiv \unit$.
 By doing this, the type of squares does not contain any more information than its
 arguments.
@@ -408,7 +417,7 @@ the remaining properties follow easily by the truncation imposed on morphisms
 and two-cells.
 \end{example}
 
-When defining thin structures, we want the uniqueness of a unique filler of a
+When defining thin structures, we want the uniqueness of a thin filler of a
 commutative shell to be represented by a functional dependency.
 By this, we will have more definitional equalities between thin squares than
 we would get if we defined thin squares to be a mere proposition depending on
@@ -435,9 +444,9 @@ convenient to use.
 \item For any adjacent squares $u$ and $v$, $\thin(v) \circ_1 \thin(u)
 = \thin(v \circ_1 u)$ and $\thin(v) \circ_2 \thin(u) = \thin(v \circ_2 u)$ where
 appropriate.
-Here, besides quantifying over 6 object, 7 morphisms, we also quantify over
-every commutativity proof for the shell of $u$, $v$, as well as their respective
-composite.
+Here, besides quantifying over 6 objects, 7 morphisms, and two squares,
+we also quantify over every commutativity proof for the shell of $u$, $v$,
+as well as their respective composite.
 \end{itemize}
 \end{defn}
 
@@ -488,7 +497,7 @@ need to include the strictness whenever we want to deal with the \emph{category
 of double categories} or the \emph{category of double groupoids}, because double
 functors will only form a set when their codomain is strict.
 
-Another think one could ask oneself is what it means for a double category to
+Another question that could be asked is what it means for a double category to
 be \emph{univalent}.
 The most reasonable condition would be that, besides the 1-skeleton, also the
 vertical and horizontal precategory should be univalent.
@@ -602,7 +611,7 @@ $\psi : \prod_{p:P_0} ~ M_p \to N_{F(p)}$ which should satisfy the following equ
 
 \section{Presented Types}
 
-In this section we want to transfer what in chapter \ref{chapter:nat} were th
+In this section we want to transfer what in chapter \ref{chapter:nat} were the
 fundamental double groupoid and the fundamental crossed module of a space to the
 world of higher types.
 This, of course involves more than just replacing each occurrence of the word
@@ -644,7 +653,7 @@ $\iota : C \to A$ is the obvious embedding mapping $c_i \mapsto c_i$ and
 $\iota' : A \to X$ is defined by induction on $A$ with $\iota'(c_i) :\equiv c_i : X$
 and $\ap_{\iota'}(p_i) = p_i$.
 
-The truncation levels are obvious by definition. %TODO are they?
+Then, $(\trunc{2}{\mathbb{S}^2}, A, C)$ is a presented 2-type.
 \end{example}
 
 We can now define the fundamental double groupoid of a presented type.
@@ -656,7 +665,7 @@ We will start by first considering the 1-skeleton of this double groupoid:
 \begin{defn}[Fundamental groupoid] Let $A : \UU$ be a 1-type, $C : \UU$ be a set
 and $\iota : C \to A$. The \textbf{fundamental double groupoid} $G_1(A,C)$ 
 associated to this data is a groupoid on the carrier $C$ with
-$\hom_{G_1(A,C)}(a,b) :\equiv \iota(a) = \iota(b)$ for all $a,b:C$ and
+$\hom_{G_1(A,C)}(a,b) :\equiv \big(\iota(a) = \iota(b)\big)$ for all $a,b:C$ and
 $g \circ f :\equiv f \ct g$ for all $f : \iota(a) = \iota(b)$ and $g : \iota(b)
 = \iota(c)$.
 \end{defn}
@@ -671,8 +680,8 @@ Inverses of morphisms are defined to be the reversed paths.
 \begin{defn}[Fundamental double groupoid]
 Let $(X,A,C)$ be a presented 2-type related by $\iota : C \to A$ and $\iota' :
 A \to X$. The \textbf{fundamental double groupoid} $G_2(X,A,C)$ of this triple
-is defined as having the fundamental groupoid $G_1(A,C)$. The dependent type
-$G_2(X,A,C)_2$ of two-cells is defined as:
+is defined as having the fundamental groupoid $G_1(A,C)$ as 1-skeleton while the
+dependent type $G_2(X,A,C)_2$ of two-cells is defined as:
 \begin{equation}
 \prod_{a,b,c,d:C} ~ \prod_{f : \iota a = \iota b} ~ \prod_{g : \iota c = \iota d}
 	~ \prod_{h : \iota a = \iota c} ~ \prod_{i : \iota b = \iota d}
@@ -688,16 +697,18 @@ u &: \apiop(h_1) \ct \apiop(g_1) = \apiop(f) \ct \apiop(i_1) \text{ and } \\
 v &: \apiop(h_2) \ct \apiop(g_2) = \apiop(g_1) \ct \apiop(i_2) \text{.}
 \end{align*}
 Then, we receive $v \circ_1 u$ as the following concatenation of paths:
-\begin{align*}
+\begin{equation}
+\begin{aligned}
 \apiop (h_1 \ct h_2) \ct \apiop(g_2) &= (\apiop(h_1) \ct \apiop(h_2)) \ct \apiop(g_2) \\
 	&= \apiop(h_1) \ct (\apiop(h_2) \ct \apiop(g_2)) \\
 	&= \apiop(h_2) \ct (\apiop(g_1) \ct \apiop(i_2)) \\
 	&= (\apiop(h_2) \ct \apiop(g_1)) \ct \apiop(i_2) \\
 	&= (\apiop(f) \ct \apiop(i_1)) \ct \apiop(i_2) \\
 	&= \apiop(f) \ct (\apiop(i_1) \ct \apiop(i_2)) \\
-	&= \apiop(f) \ct \apiop(i_1 \ct i_2) \text{.} \\
-\end{align*}
-Here, the first and last equation (an instance of the general theorem that $\ap$
+	&= \apiop(f) \ct \apiop(i_1 \ct i_2) \text{.}
+\end{aligned}
+\end{equation}
+Here, the first and last equation (an instance of the general theorem saying that $\ap$
 is distributive over the concatenation of paths) is what keeps this definition from
 being a special case of the shell double category (definition \ref{def:shell-dbl-cat-hott})
 and makes its formalization a lot more difficult. Horizontal composition is given
@@ -707,7 +718,7 @@ consists of
 \apiop(\refl_{\iota a}) \ct \apiop(f) &\equiv \refl_{\iota' \iota a} \ct \apiop(f) \\
 	&= \apiop(f) \\
 	&\equiv \apiop(f) \ct \refl_{\iota' \iota b} \\
-	&\equiv \apiop(f) \ct \apiop(\refl_{\iota b}) \text{,} \\
+	&\equiv \apiop(f) \ct \apiop(\refl_{\iota b}) \text{,}
 \end{align*}
 where it depends on the exact definition of equality as an inductive type whether
 the second and third equality are judgmental.
@@ -741,11 +752,11 @@ of $\apiop$:
 	&= \apiop(g) \ct \apiop(i\inv) \text{.} \\	
 \end{align*}
 
-The final question that remains is what squares should be defined as thin.
+The final question that remains is which squares should be defined as thin.
 The answer is to regard a square in $G_2(X,A,C)_2(f,g,h,i)$ as thin as soon as
-it's already be ``filled''
-in $A$: For every shell $(f,g,h,i)$ and $p : h \ct g = f \ct i$ we get the thin
-square of the commutativity witness by
+it is already be ``filled''
+in $A$: For every shell $(f,g,h,i)$ and $p : h \ct g = f \ct i$ we get a thin
+square from
 \begin{align*}
 \apiop(h) \ct \apiop(i) &= \apiop(h \ct i) \\
 	&= \apiop(f \ct i) \\

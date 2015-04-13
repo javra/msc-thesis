@@ -2,7 +2,7 @@ My main goal in this thesis project was the formalization and application of
 Ronald Brown's structures for non-abelian algebraic topology in the theorem prover
 Lean.
 Lean, at the point of time when I started working on it, was still in a very early
-stage of development and did not lack any automation but also a basic library
+stage of development and did not only lack any automation but also a basic library
 for homotopy type theory.
 Thus, we will first take a look at the basic language elements and technologies
 used in Lean and then describe the strategies, the structure and the pitfalls
@@ -28,10 +28,10 @@ and since proofs of theorems can be part of another definition or theorem,
 the proofs in an interactive theorem prover suitable for homotopy type theory
 should even be objects in the language itself.
 Lean has two modes: One for standard, proof irrelevant mathematics and one for
-In the following, I will only explain the features of the HoTT mode.
 homtopy type theory.
+In the following, I will only explain the features of latter.
 
-A first ingredient are \textbf{type universes}.
+A first ingredient to the language are \textbf{type universes}.
 Instead of using $\UU$, universes in Lean are denoted as \leani{Type.{l}}, where
 \leani{l} is the level of the universe.
 Of course, \leani{Type.{l}} is an object of \leani{Type.{l+1}}.
@@ -40,7 +40,8 @@ type universes in Lean are \emph{non-cumulative},
 i.e. \leani{A : Type.{l}} does not entail \leani{A : Type.{l+1}}.
 
 Definitions can be \emph{universe polymorphic}, which means that, when no concrete
-universe levels are given, Lean will keep the definition as general as possible.
+universe levels are given, Lean will keep the definition as general as possible
+regarding universe levels of arguments and return type.
 The instantiation of a definition \leani{A} at a universe \leani{l} can be received
 manually by writing \leani{A.{l}}.
 To have manual control over the coherence of universe levels of definitions in
@@ -1126,7 +1127,7 @@ definition ul_connect ⦃a b : D₀⦄ (f : hom a b) : D₂ (ID a) f (ID a) f :=
 thin D (ID a) f (ID a) f idp
 \end{leancode}
 
-In contrast, proving the S-law (\ref{thm:s-law}) %TODO add this
+In contrast, proving the S-law (\ref{thm:s-law})
 takes surprisingly much effort.
 It is the first of many theorems for which we need helper lemmas that
 generalize paths to make a statement provable by path induction.

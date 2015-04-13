@@ -1,5 +1,5 @@
 This section describes the basic notions of nonabelian topology which I
-formalized and applied to homotopy type theory instead of topological
+formalized and applied to higher types in homotopy type theory instead of topological
 spaces. The majority of definitions is taken from the book ``Nonabelian
 Algebraic Topology'' by Ronald Brown, Philip J. Higgins and Rafael Sivera
 \cite{nat}.
@@ -40,7 +40,8 @@ bounding sides, which we will also call \textbf{faces}.
 Like shown in figure \ref{fig:corner-ident}, we must impose conditions on the
 face maps so that we can really speak of squares.
 Furthermore, just as we needed degenerate lines at each point, we will have
-degenerate squares that have a given line as their vertical or horizontal faces.
+degenerate squares that have a given line at both of their vertical or 
+both of their horizontal faces.
 In our definiton, $\upperf(u)$, $\lowerf(u)$, $\leftf(u)$ and $\rightf(u)$
 will correspond to the upper, lower, left and right face of a square $u$, respectively.
 The whole set of faces of a given square $u \in D_2$ will be referred to as
@@ -62,18 +63,18 @@ The whole set of faces of a given square $u \in D_2$ will be referred to as
 \draw (BL) -- (UL) node [left, midway] {$\leftf(u)$};
 \node at (0.5,0.5) {$u$};
 \end{tikzpicture}
-\caption{A square $u \in D_2$ and its iterated faces.}
+\caption{A square $u \in D_2$, its faces, and its corners.}
 \label{fig:corner-ident}
 \end{figure}
 
 \begin{defn}[Double category] \label{def:dbl-cat}
 A \textbf{double category} $D$ is given by the following data:
-Three sets $D_0$, $D_1$, and $D_2$, respectively called \textbf{0-, 1- and
-2-cells}, together with
+Three sets $D_0$, $D_1$, and $D_2$, the elements of which are
+respectively called \textbf{0-, 1- and 2-cells}, together with
 maps $\partial^-$, $\partial^+$, $\epsilon$, $\circ_D$,
 $\partial^-_1$, $\partial^+_1$, $\epsilon_1$, $\circ_1$,
 $\partial^-_2$, $\partial^+_2$, $\epsilon_2$, and $\circ_2$
-such that these sets form three categories:
+that make these sets form three categories:
 \begin{itemize}
 \item a category $(D_0, D_1, \partial^-, \partial^+, \epsilon, \circ_D)$ 
 on $D_0$, often called the \textbf{(1-)skeleton} of the double category,
@@ -128,18 +129,18 @@ For each $u, v, w, x \in D_2$,
 has to hold if it is well-defined.
 \end{defn}
 
-As seen in figure \ref{fig:corner-ident}, the four identities \ref{eq:corner-ident}
+As seen in figure \ref{fig:corner-ident}, the four identities~(\ref{eq:corner-ident})
 correspond to the well-definedness of the corners of a given square $u \in D_2$.
-The next four equations~\ref{eq:degen-ident} tell us that for any line $f \in D_1$,
+The next four equations~(\ref{eq:degen-ident}) tell us that for any line $f \in D_1$,
 besides the identities
 $\partial^\pm_1(\epsilon_1(f)) = f$ and
 $\partial^\pm_2(\epsilon_2(f)) = f$ (which follow from the definition of a
 category), the remaining two faces of a degenerate square are defined as
 consisting of the suitable degenerate lines. Figure \ref{fig:degen-ident}
-illustrates the cases of both the vertical and the horizontal category. Equation
-\ref{eq:zero-unique-ident} is to make sure that in the case where we take the degenerate
-square of a line which is itself degenerate and end up with a square with all four
-faces degenerate, it doesn't matter if we chose the vertical or the horizontal
+illustrates the cases of both the vertical and the horizontal category.
+Equation~(\ref{eq:zero-unique-ident}) is to make sure that in the case where we take the degenerate
+square of a line which is itself degenerate, and end up with a square with all four
+faces degenerate, it doesn't matter whether we choose the vertical or the horizontal
 degeneracy but that instead we receive a unique zero-element for each $x \in D_0$.
 
 \begin{figure} \centering
@@ -169,7 +170,7 @@ line $f \in D_1$. Degenerate lines are drawn as double lines.} %%TODO "double li
 \label{fig:degen-ident}
 \end{figure}
 
-The linearity condition~\ref{eq:linear-ident} serves to define the two faces of
+The linearity condition~(\ref{eq:linear-ident}) serves to define the two faces of
 a composite square that are not already fixed by the definition of vertical and
 horizontal category.
 
@@ -207,7 +208,7 @@ but nevertheless very useful and recurring examples for double categories:
 \begin{example} \label{def:sq-dbl-cat}
 Let $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ be a category. The
 \textbf{square double category} on $C$ is defined by setting $D_0 \coloneqq C_0$,
-$D_1 \coloneqq C_0$ and
+$D_1 \coloneqq C_1$ and
 \begin{align*}
 D_2 \coloneqq \left\{ (f, g, h, i) \right| &\partial^+(f) = \partial^-(i), 
 	\partial^+(i) = \partial^+(g), \\ %TODO: Make { bigger
@@ -219,7 +220,7 @@ this set. (To keep things consistent, I will always state the faces of a square
 in the order upper, lower, left and right.) The degenerate squares are the obvious
 quadruples $(f, f, \id, \id)$ and $(\id, \id, f, f)$ for a morphism $f \in C_1$.
 Composing two squares $(f, g_1, h_1, i_1)$ and $(g_1, g_2, h_2, i_2)$ vertically
-yields a square $(f, g_2, h_2 \circ_C h_1, i_2 \circ_C i_1)$.
+yields a square $(f, g_2, h_2 \circ h_1, i_2 \circ i_1)$.
 
 Note that $f$, $g$, $h$, and $i$ do not have to form a \emph{commutative} square ---
 the square double category on $C$ rather collects all possible squares in $C$.
@@ -234,8 +235,7 @@ on $C$:
 \begin{align*}
 D_0 &\coloneqq C_0 \text{,} \\
 D_1 &\coloneqq C_1 \text{ and } \\
-D_2 &\coloneqq \left\{ (f, g, h, i) \middle| \text{$f$, $g$, $h$, and $i$ form a
-	 square and } g \circ_C h = i \circ_C f \right\} \text{.}
+D_2 &\coloneqq \left\{ (f, g, h, i) \in (\square'C)_2 ~\middle|~ g \circ_C h = i \circ_C f \right\} \text{.}
 \end{align*}
 
 Faces and degeneracies are trivial, for defining the the vertical composition of
@@ -335,26 +335,58 @@ connection with $\Gamma^+(f)$.
 
 We observe that connections are composable in the following sense:
 
+\begin{lemma}[S-laws] \label{thm:s-law}
+Let $D$ be a double category with thin structure and $f \in D_1$. Then,
+\begin{align*}
+\Gamma^-(f) \circ_2 \Gamma^+(f) &= \epsilon_1(f) \text{ and }\\
+\Gamma^-(f) \circ_1 \Gamma^-(f) &= \epsilon_2(f) \text{.}
+\end{align*}
+\end{lemma}
+
 \begin{lemma}[Transport laws] \label{thm:dbl-cat-transport}
 Let $D$ be a double category with thin structure and $f, g \in D_1$ with
 $\partial^+(f) = \partial^-(g)$. Then,
-\begin{align}
+\begin{align*}
 \Gamma^-(g \circ f)
 	&= (\Gamma^-(g) \circ_2 \epsilon_2(g)) \circ_1 (\epsilon_1(g) \circ_2 \Gamma^-(f))
 	\text{ and } \\
 \Gamma^+(g \circ f)
 	&= (\Gamma^+(g) \circ_2 \epsilon_1(f)) \circ_1 (\epsilon_2(f) \circ_2 \Gamma^+(f))
 	\text{.}
-\end{align}
+\end{align*}
 \end{lemma}
 \begin{proof}
-As one can easily check (see figures \ref{fig:transport-law-minus},
+As one can easily check (see figures \ref{fig:s-law-horiz} --
 \ref{fig:transport-law-plus}) for each of the equations,
 the composed squares are well defined and have the faces of the square on the left
 hand side coincide with those of the square on the right hand side.
 The composite squares are thin because they are a composition of thin squares.
-Then, the theorem follows from the uniqueness of thin fillers.
+Then, the theorem follows from the uniqueness of thin fillers and the thinness
+of identity squares.
 \end{proof}
+
+\begin{figure}\centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\draw[double] (0,0) -- (0,1) -- (1,1);
+\draw[double] (1,0) -- (2,0) -- (2,1);
+\draw (0,0) -- (1,0) -- (1,1) -- (2,1);
+\draw[double] (3,0) -- (3,1);
+\draw[double] (4,0) -- (4,1);
+\draw (3,0) -- (4,0);
+\draw (3,1) -- (4,1);
+\foreach \x in {0,1,2,3,4} {
+	\foreach \y in {0,1} {
+		\node[fill,circle,inner sep=0pt,minimum size=5pt] at (\x,\y) {};
+	}
+}
+\node at (2.5,0.5) {$=$};
+\node at (0.5,0.5) {$\Gamma^+(f)$};
+\node at (1.5,0.5) {$\Gamma^-(f)$};
+\node at (3.5,0.5) {$\epsilon_1(f)$};
+\end{tikzpicture}
+\caption{The horizontal S-law.}
+\label{fig:s-law-horiz}
+\end{figure}
 
 \begin{figure} \centering
 \begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
@@ -381,7 +413,7 @@ Then, the theorem follows from the uniqueness of thin fillers.
 \node[fill,circle,inner sep=0pt,minimum size=5pt] at (4,1.5) {};
 \node at (3.5,1) {$\Gamma^-(g \circ f)$};
 \end{tikzpicture}
-\caption{Illustration of the transport law for $\Gamma^-(g \circ f)$.}
+\caption{The transport law for $\Gamma^-(g \circ f)$.}
 \label{fig:transport-law-minus}
 \end{figure}
 
@@ -410,7 +442,7 @@ Then, the theorem follows from the uniqueness of thin fillers.
 \node[fill,circle,inner sep=0pt,minimum size=5pt] at (4,1.5) {};
 \node at (3.5,1) {$\Gamma^+(g \circ f)$};
 \end{tikzpicture}
-\caption{Illustration of the transport law for $\Gamma^+(g \circ f)$.}
+\caption{The transport law for $\Gamma^+(g \circ f)$.}
 \label{fig:transport-law-plus}
 \end{figure}
 
@@ -491,7 +523,7 @@ $v, u \in D_2$ the following equations hold as soon as they are well defined:
 \begin{proof}
 We only prove the first equation since the second one results from transposition
 of the situation and is provable analogously.
-Using the above calculations and the interchange law we see that
+Using the previous calculations and the interchange law we see that
 \begin{align*}
 (\invv(v) \circ_2 \invv(u)) \circ_1 (v \circ_2 u)
 = 	& (\invv(v) \circ_1 v) \circ_2 (\invv(u) \circ_1 u) \\
@@ -503,7 +535,7 @@ Using the above calculations and the interchange law we see that
 Cancelling out $v \circ_2 u$ gives the desired result.
 \end{proof}
 
-After observing that we can ``rotate'' a square by 180 degrees in two ways, by first
+Observing that we can ``rotate'' a square by 180 degrees in two ways, by first
 taking the vertical and then the horizontal inverse or vice versa, we can prove
 that those are actually one and the same:
 
@@ -540,11 +572,11 @@ Thin squares in both double categories are exactly those in $(\square C)_2$,
 which makes $\square C$ a double groupoids with all squares thin. %TODO a "thin double gpd"?
 \end{proof}
 
-We will now take a look at the most important example of a double groupoid: The
-double groupoid of a triple of spaces. 
+We will now take a look at the most important example of a double groupoid:
+The fundamental double groupoid of a triple of spaces. 
 It extends and generalizes the definition of the fundamental group and the second
 homotopy group of a space.
-We start with extending the idea of the set of loops based in a point by allowing
+We start by extending the idea of the set of loops based in a point by allowing
 multiple base points and adding squares.
 Just like its classical homotopy theoretic counterpart,
 the following strucure does \emph{not} already define a double groupoid until we
@@ -559,21 +591,21 @@ We receive sets of points, lines and squares by defining
 \item $R(X, A, C)_2 \coloneqq \left\{ \alpha : (I^2, \partial I^2, \partial^2 I^2)
 	\to (X, A, C) \right\}$, where
 \end{itemize}
-The maps are meant to be \emph{based} in the sense that they should map the
-indicated components of the indicated triples to their counterparts. %TODO no no no
+the maps are meant to be \emph{based} in the sense that they should map the
+components of the indicated tuples to their counterparts.
 In other words, the points in $R(X, A, C)$ are the points in $C$ , the lines
 are paths in $A$ with endpoints located in $C$ and the two-cells are squares
 in $X$ which have faces in $A$ and corners in $C$.
 
-Note, that in the case of $C = \{ \ast \}$ the 1-skeleton becomes the loop space
-based in $\ast$ and in the case of $C = A = \{ \ast \}$ our two-cells end up to
-be maps $\mathbb{S}^2 \to X$ based in $\ast$. %TODO put this somewhere else
+Note, that $R(X, A, C)_1$ in the case of $C = \{ \ast \}$ becomes the loop space
+based in $\ast$ and in the case of $C = A = \{ \ast \}$ the elements of
+$R(X, A, C)_2$ end up to be maps $\mathbb{S}^2 \to X$ based in $\ast$.
 
-Just like for a double groupoid we to state faces, degeneracies, compositions
+Just like for a double groupoid we give faces, degeneracies, compositions
 and inversions. They might seem familiar from classical homotopy theory
 since they are just an extension of the operation that defines the loop group:
 
-For a line $\sigma : (I, \partial I) \to (A , C)$ the left and right face are
+For a line $\sigma : (I, \partial I) \to (A , C)$, the left and right face are
 simply given by $\sigma(0)$ and $\sigma(1)$. For a square $\alpha$ we define
 $\upperf(\alpha)(x) = \alpha(0,x)$, $\lowerf(\alpha)(x) = \alpha(1,x)$,
 $\leftf(\alpha)(x) = \alpha(x,0)$ and $\rightf(\alpha)(x) = \alpha(x,1)$.
@@ -625,7 +657,7 @@ It can easily be seen that the operations defined on squares and lines in
 definition \ref{def:filtered-maps} respect this definition of equivalence and that
 the resulting structure is, indeed, a weak double groupoid.
 
-This is furthermore the point where the reason in the name ``thin structure'' becomes
+This is furthermore the point where the reason for the name ``thin structure'' becomes
 clear:
 To define a thin structure on $\Pi_2(X, A, C)$ we put the predicate ``thin''
 on those equivalence classes of squares that contain a squre $\alpha : I^2 \to X$
@@ -668,7 +700,7 @@ as five faces of a a cube:
 \end{center}
 
 We can fill this cube and receive a thin homotopy $I^3 \to X$ by simply choosing
-a point $p$ above the box and mapping each point in $I^3$ to its image under the
+a point $p$ above the cube and mapping each point in $I^3$ to its image under the
 projection onto the box centered in $p$.
 \end{defn}
 
@@ -756,7 +788,7 @@ by mapping a representative $\alpha : (\mathbb{D}^2, \partial \mathbb{D}^2) \to
 (X, A)$ to its restriction to the boundary $\left.\alpha\right|_{\partial \mathbb{D}^2}
 : \mathbb{S}^1 \to A$.
 \item The group $\pi_1(A, x)$ acts on $\pi_2(X, A, x)$ by ``glueing'' the
-representative $l$ of $\pi_1(A, x)$ on the disk and image that represents the given
+representative $l$ of $\pi_1(A, x)$ on the disk that represents the given
 element $[\alpha] \in \pi_2(X, A, x)$ and 
 extending the disk like illustrated in figure \ref{fig:xmod-motivation}.
 \end{enumerate}
@@ -770,12 +802,12 @@ concatenation of paths $l\inv \cdot \partial \alpha \cdot l$.
 to a disk $\alpha \in \pi_2(X, A, x)$ is homotopic to the composition
 $\beta\inv \cdot \alpha \cdot \beta$ in $\pi_2(X, A, x)$.
 \end{itemize}
-So the boundary map and the action resemble the \emph{conjucation} of group elements
+So the boundary map and the action resemble the \emph{conjugation} of group elements
 in two different ways. This motivates to bundle these properties into a new algebraic
 structure:
 
 \begin{defn}[Crossed module over a group]
-Let $P$ be a group. A \textbf{crossed module} on $P$ is another group $M$ toghether
+Let $P$ be a group. A \textbf{crossed module} on $P$ is another group $M$ together
 with a group homomorphism $\mu : M \to P$ and a group action $\phi$ of $P$ on
 $M$ such that:
 \begin{enumerate}
@@ -847,7 +879,7 @@ $\mu$ and action $\phi$ and let $(N_q)_{q \in Q}$ be a crossed module over $Q$
 with morphism $\mu'$ and action $\phi'$.
 A \textbf{morphism} between $(M_p)_{p \in P}$ and $(N_q)_{q \in Q}$ is a functor $F$
 between $P$ and $Q$ and a family of group homomorphisms $(\psi_p)_{p \in P}$ 
-with $\psi_p : M_p \to N_F(p)$ such that %TODO check if there's more conditions
+with $\psi_p : M_p \to N_{F(p)}$ such that %TODO check if there's more conditions
 \begin{itemize}
 \item $F \circ \mu_p = \mu'_{F(p)} \circ \psi_p$ for all $p \in P$ and
 \item for all $p, q : P$, $a \in \hom_P(p,q)$ and $x : M_p$, the action is preserved:
@@ -883,7 +915,7 @@ M_p &\coloneqq \left\{ u \in G_2 \middle| \lowerf(u) = \leftf(u) = \rightf(u) = 
 Then, $M_p$ is a group with composition $\circ_2$, neutral element $0(p)$ and
 inverse $\invh$.
 Let further be $\mu = \upperf$ and let $\phi(a,u) =
-\epsilon_1(a) \circ_2 u \circ \epsilon_1(a\inv) \in M_q$ for $a \in \hom_P(p,q)$
+\epsilon_1(a) \circ_2 u \circ_2 \epsilon_1(a\inv) \in M_q$ for $a \in \hom_P(p,q)$
 and $u \in M_p$.
 
 The given data $P$, $(M_p)_{p \in P}$, $\mu$ and $\phi$ form a crossed module $\gamma G$.
@@ -953,7 +985,8 @@ with the first four projections as face maps.
 \begin{proof}
 Defining the vertical composition of squares $u = (f, g_1, h_1, i_1, m)$ and
 $v = (g_1, g_2, h_2, i_2, n)$ as $v \circ_1 u \coloneqq 
-(f, g_2, h_2 \circ h_1, i_2 \circ i_2, \phi(i_2, m) \cdot n)$ goes by having
+(f, g_2, h_2 \circ h_1, i_2 \circ i_2, \phi(i_2, m) \cdot n)$ is well-defined
+since
 \begin{align*}
 \mu(\phi(i_2,m) \cdot n) &= i_2 \circ \mu(m) \circ i_2\inv \circ \mu(n)\\
 	&= i_2 \circ i_1 \circ f \circ h_1\inv \circ g_1\inv \circ
