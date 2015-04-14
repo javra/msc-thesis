@@ -1,7 +1,7 @@
 import types.pi types.sigma
 import .decl
 
-open eq dbl_precat category is_trunc dbl_precat.thin_structure
+open eq dbl_precat category is_trunc thin_structure
 
 namespace dbl_gpd
   context
@@ -81,8 +81,8 @@ namespace dbl_gpd
     apply tr_eq_of_eq_inv_tr,
     -- Prove commutativity of second row
     assert line2_commute : (id ∘ id) ∘ g = id ∘ g ∘ id,
-      exact (calc (id ∘ id) ∘ g = id ∘ g : @id_left D₀ C
-                           ... = (id ∘ g) ∘ id : id_right
+      exact (calc (id ∘ id) ∘ g = id ∘ g : by rewrite id_left
+                           ... = (id ∘ g) ∘ id : by rewrite id_right
                            ... = id ∘ (g ∘ id) : assoc),
     -- Prove thinness of second row
     assert line2_thin : comp₂ D (br_connect g) (ID₂ D g)
@@ -91,7 +91,7 @@ namespace dbl_gpd
       apply thin_comp₂,
     -- Prove commutativity of first row
     assert line1_commute : (g ∘ id) ∘ f = id ∘ g ∘ f,
-      exact (calc (g ∘ ID b) ∘ f = g ∘ f : @id_right D₀ C
+      exact (calc (g ∘ ID b) ∘ f = g ∘ f : by rewrite id_right
                             ... = ID c ∘ g ∘ f : id_left),
     -- Prove thinness of first row
     assert line1_thin : comp₂ D (ID₁ D g) (br_connect f)
@@ -120,7 +120,7 @@ namespace dbl_gpd
   begin
     apply tr_eq_of_eq_inv_tr,
     assert col1_commute : f ∘ id ∘ id = (id ∘ f) ∘ id,
-      exact (calc f ∘ id ∘ id = f ∘ id : @id_left D₀ C
+      exact (calc f ∘ id ∘ id = f ∘ id : by rewrite id_left
                          ... = id ∘ (f ∘ id) : id_left
                          ... = (id ∘ f) ∘ id : assoc),
     assert col1_thin : comp₁ D (ID₁ D f) (ul_connect f)
@@ -128,7 +128,7 @@ namespace dbl_gpd
       apply concat, apply (ap (λx, comp₁ D x _)), apply inverse, apply thin_id₁,
       apply thin_comp₁,
     assert col2_commute : g ∘ id ∘ f = (g ∘ f) ∘ id,
-      exact (calc g ∘ id ∘ f = g ∘ f : @id_left D₀ C
+      exact (calc g ∘ id ∘ f = g ∘ f : by rewrite id_left
                         ... = (g ∘ f) ∘ id : id_right),
     assert col2_thin : comp₁ D (ul_connect g) (ID₂ D f)
       = thin D id g (id ∘ f) (g ∘ f) col2_commute,

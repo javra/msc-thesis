@@ -1,7 +1,7 @@
 import algebra.precategory.functor .decl ..transport4 ..dbl_gpd.basic arity
 
 open eq iso iso.iso category functor dbl_gpd dbl_precat equiv Dbl_gpd
-open prod prod.ops sigma sigma.ops pi is_trunc
+open prod prod.ops sigma sigma.ops pi is_trunc thin_structure
 
 namespace dbl_gpd
 
@@ -15,29 +15,29 @@ namespace dbl_gpd
   definition respect_id₁_type [reducible] : Type := Π ⦃a b : gpd D⦄ (f : hom a b),
     transport (λ x, two_cell E _ _ _ x) (respect_id catF b)
       (transport (λ x, two_cell E _ _ x _) (respect_id catF a)
-        (twoF (ID₁ (two_cell D) f)))
-    = ID₁ (two_cell E) (catF f)
+        (twoF (ID₁ D f)))
+    = ID₁ E (catF f)
 
   definition respect_id₂_type [reducible] : Type := Π ⦃a b : gpd D⦄ (f : hom a b),
     transport (λ x, two_cell E _ x _ _) (respect_id catF b)
       (transport (λ x, two_cell E x _ _ _) (respect_id catF a)
-        (twoF (ID₂ (two_cell D) f)))
-    = ID₂ (two_cell E) (catF f)
+        (twoF (ID₂ D f)))
+    = ID₂ E (catF f)
 
-  set_option unifier.max_steps 80000 --TODO make this go away
+  set_option unifier.max_steps 60000 --TODO make this go away
   definition respect_comp₁_type [reducible] : Type := Π ⦃a b c₁ d₁ c₂ d₂ : gpd D⦄
     ⦃f : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
     (v : two_cell D g₁ g₂ h₂ i₂)
     (u : two_cell D f g₁ h₁ i₁),
-      transport
-        (λ x, two_cell E (to_fun_hom catF f) (to_fun_hom catF g₂) (to_fun_hom catF h₂ ∘ to_fun_hom catF h₁) x)
+      transport (λ x, two_cell E (to_fun_hom catF f) (to_fun_hom catF g₂)
+        (to_fun_hom catF h₂ ∘ to_fun_hom catF h₁) x)
         (respect_comp catF i₂ i₁)
-        (transport
-          (λ x, two_cell E (to_fun_hom catF f) (to_fun_hom catF g₂) x (to_fun_hom catF (i₂ ∘ i₁)))
+        (transport (λ x, two_cell E (to_fun_hom catF f) (to_fun_hom catF g₂)
+          x (to_fun_hom catF (i₂ ∘ i₁)))
           (respect_comp catF h₂ h₁)
-          (twoF (comp₁ (two_cell D) v u)))
-      = comp₁ (two_cell E) (@twoF c₁ d₁ c₂ d₂ g₁ g₂ h₂ i₂ v) (twoF u)
+          (twoF (comp₁ D v u)))
+      = comp₁ E (twoF v) (twoF u)
 
   definition respect_comp₂_type [reducible] : Type := Π ⦃a b₁ c d₁ b₂ d₂ : gpd D⦄
     ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h : hom a c⦄ ⦃i₁ : hom b₁ d₁⦄
@@ -45,13 +45,14 @@ namespace dbl_gpd
     (v : two_cell D f₂ g₂ i₁ i₂)
     (u : two_cell D f₁ g₁ h i₁),
       transport
-        (λ x, two_cell E (to_fun_hom catF f₂ ∘ to_fun_hom catF f₁) x (to_fun_hom catF h) (to_fun_hom catF i₂))
+        (λ x, two_cell E (to_fun_hom catF f₂ ∘ to_fun_hom catF f₁) x
+        (to_fun_hom catF h) (to_fun_hom catF i₂))
         (respect_comp catF g₂ g₁)
-        (transport
-          (λ x, two_cell E x (to_fun_hom catF (g₂ ∘ g₁)) (to_fun_hom catF h) (to_fun_hom catF i₂))
+        (transport (λ x, two_cell E x (to_fun_hom catF (g₂ ∘ g₁))
+          (to_fun_hom catF h) (to_fun_hom catF i₂))
           (respect_comp catF f₂ f₁)
-          (twoF (comp₂ (two_cell D) v u)))
-      = comp₂ (two_cell E) (twoF v) (twoF u)
+          (twoF (comp₂ D v u)))
+      = comp₂ E (twoF v) (twoF u)
   set_option unifier.max_steps 20000
   end
 
@@ -106,46 +107,29 @@ namespace dbl_gpd
     (twoF2 : Π ⦃a b c d : gpd D⦄
       ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
       two_cell D f g h i → two_cell E (catF2 f) (catF2 g) (catF2 h) (catF2 i))
-
-  definition respect_id₁1_type [reducible] := respect_id₁_type D E catF1
-  definition respect_id₁2_type [reducible] := respect_id₁_type D E catF2
-  definition respect_comp₁1_type [reducible] := respect_comp₁_type D E catF1
-  definition respect_comp₁2_type [reducible] := respect_comp₁_type D E catF2
-  definition respect_id₂1_type [reducible] := respect_id₂_type D E catF1
-  definition respect_id₂2_type [reducible] := respect_id₂_type D E catF2
-  definition respect_comp₂1_type [reducible] := respect_comp₂_type D E catF1
-  definition respect_comp₂2_type [reducible] := respect_comp₂_type D E catF2
+    (respect_id₁1 : proof respect_id₁_type D E catF1 qed twoF1)
+    (respect_id₁2 : proof respect_id₁_type D E catF2 qed twoF2)
+    (respect_comp₁1 : proof respect_comp₁_type D E catF1 qed twoF1)
+    (respect_comp₁2 : proof respect_comp₁_type D E catF2 qed twoF2)
+    (respect_id₂1 : proof respect_id₂_type D E catF1 qed twoF1)
+    (respect_id₂2 : proof respect_id₂_type D E catF2 qed twoF2)
+    (respect_comp₂1 : proof respect_comp₂_type D E catF1 qed twoF1)
+    (respect_comp₂2 : proof respect_comp₂_type D E catF2 qed twoF2)
 
   definition dbl_functor.congr (p1 : catF1 = catF2) (p2 : p1 ▹ twoF1 = twoF2) :
-    Π (respect_id₁1 : respect_id₁1_type twoF1)
-    (respect_id₁2 : respect_id₁2_type twoF2)
-    (respect_comp₁1 : respect_comp₁1_type twoF1)
-    (respect_comp₁2 : respect_comp₁2_type twoF2)
-    (respect_id₂1 : respect_id₂1_type twoF1)
-    (respect_id₂2 : respect_id₂2_type twoF2)
-    (respect_comp₂1 : respect_comp₂1_type twoF1)
-    (respect_comp₂2 : respect_comp₂2_type twoF2),
-    dbl_functor.mk catF1 twoF1 respect_id₁1 respect_comp₁1 respect_id₂1 respect_comp₂1
-    = dbl_functor.mk catF2 twoF2 respect_id₁2 respect_comp₁2 respect_id₂2 respect_comp₂2 :=
+    dbl_functor.mk catF1 twoF1
+      respect_id₁1 respect_comp₁1 respect_id₂1 respect_comp₂1
+    = dbl_functor.mk catF2 twoF2
+      respect_id₁2 respect_comp₁2 respect_id₂2 respect_comp₂2 :=
   begin
-    apply (eq.rec_on p2), apply (eq.rec_on p1),
-    intros, apply (ap01111 (λ f g h i, dbl_functor.mk catF1 twoF1 f g h i)),
+    cases p1, cases p2,
+    intros, apply (ap01111 (λ f g h i, dbl_functor.mk catF2 twoF2 f g h i)),
       repeat (
         repeat ( apply eq_of_homotopy ; intros ) ;
-        apply (@is_hset.elim _ (!(homH' (two_cell E)))) ),
+        apply (@is_hset.elim _ (!(homH' E))) ),
   end
 
-  end
-
-  context
-  parameters (D E : Dbl_gpd)
-    (catF1 catF2 : functor (gpd D) (gpd E))
-    (twoF1 : Π ⦃a b c d : gpd D⦄
-      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
-      two_cell D f g h i → two_cell E (catF1 f) (catF1 g) (catF1 h) (catF1 i))
-    (twoF2 : Π ⦃a b c d : gpd D⦄
-      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
-      two_cell D f g h i → two_cell E (catF2 f) (catF2 g) (catF2 h) (catF2 i))
+  parameters
     (p1 : to_fun_ob catF1 = to_fun_ob catF2)
     (p2 : transport
       (λ x, Π (a b : carrier (gpd D)), hom a b → hom (x a) (x b)) p1
@@ -157,16 +141,6 @@ namespace dbl_gpd
                     @two_cell E (Hob a) (Hob b) (Hob c) (Hob d)
                      (Hhom a b f) (Hhom c d g) (Hhom a c h) (Hhom b d i))
           p1 p2 ▹ twoF1 = twoF2)
-
-  parameters
-    (respect_id₁1 : proof respect_id₁_type D E catF1 qed twoF1)
-    (respect_id₁2 : proof respect_id₁_type D E catF2 qed twoF2)
-    (respect_comp₁1 : proof respect_comp₁_type D E catF1 qed twoF1)
-    (respect_comp₁2 : proof respect_comp₁_type D E catF2 qed twoF2)
-    (respect_id₂1 : proof respect_id₂_type D E catF1 qed  twoF1)
-    (respect_id₂2 : proof respect_id₂_type D E catF2 qed twoF2)
-    (respect_comp₂1 : proof respect_comp₂_type D E catF1 qed twoF1)
-    (respect_comp₂2 : proof respect_comp₂_type D E catF2 qed twoF2)
 
   include p1 p2 p3
   definition dbl_functor.congr' :
@@ -184,19 +158,19 @@ namespace dbl_gpd
     cases P3,
     assert P4 : respect_id₁1 = respect_id₁2,
       repeat ( apply eq_of_homotopy ; intros ),
-      apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+      apply (@is_hset.elim _ (!(homH' E))),
     cases P4,
     assert P5 : respect_comp₁1 = respect_comp₁2,
       repeat ( apply eq_of_homotopy ; intros ),
-      apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+      apply (@is_hset.elim _ (!(homH' E))),
     cases P5,
     assert P6 : respect_id₂1 = respect_id₂2,
       repeat ( apply eq_of_homotopy ; intros ),
-      apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+      apply (@is_hset.elim _ (!(homH' E))),
     cases P6,
     assert P7 : respect_comp₂1 = respect_comp₂2,
       repeat ( apply eq_of_homotopy ; intros ),
-      apply (@is_hset.elim _ (!(homH' (two_cell E)))),
+      apply (@is_hset.elim _ (!(homH' E))),
     cases P7,
     apply idp,
   end
@@ -207,30 +181,11 @@ namespace dbl_gpd
 
   definition respect_id₁' {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b : gpd D} (f : hom a b) :=
-  eq_inv_tr_of_tr_eq _ _ _ _
-    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₁ F f))
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₁ F f))
 
   definition respect_id₂' {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b : gpd D} (f : hom a b) :=
-  eq_inv_tr_of_tr_eq _ _ _ _
-    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
-
-  context
-  parameters {D E : Dbl_gpd} (F : dbl_functor D E) {a b : gpd D} (f : hom a b)
-
-  definition respect_id₁''_lhs [reducible] := twoF F (ID₁ (two_cell D) (f⁻¹))
-  definition respect_id₁''_rhs [reducible] := transport (λ x, two_cell E x _ _ _)
-    (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
-    (transport (λ x, two_cell E _ x _ _)
-     (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
-      (transport (λ x, two_cell E _ _ x _) (eq.inverse (respect_id (catF F) b))
-       (transport (λ x, two_cell E _ _ _ x) (eq.inverse (respect_id (catF F) a))
-        proof (ID₁ (two_cell E) (to_fun_hom (catF F) f)⁻¹) qed)))
-
-  definition respect_id₁'' : respect_id₁''_lhs = respect_id₁''_rhs :=
-  sorry
-
-  end
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
 
   context
   parameters {D E : Dbl_gpd} (F : dbl_functor D E)
@@ -241,8 +196,7 @@ namespace dbl_gpd
     (u : two_cell D f g₁ h₁ i₁)
 
   definition respect_comp₁' :=
-  eq_inv_tr_of_tr_eq _ _ _ _
-    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₁ F v u))
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₁ F v u))
 
   end
 
@@ -255,8 +209,7 @@ namespace dbl_gpd
     (u : two_cell D f₁ g₁ h i₁)
 
   definition respect_comp₂' :=
-  eq_inv_tr_of_tr_eq _ _ _ _
-    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₂ F v u))
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₂ F v u))
 
   end
 
@@ -268,30 +221,22 @@ namespace dbl_gpd
   definition twoF_transport_u {I : Type} (e : I → hom a b)
     {f f' : I} (pf : f = f') (u : two_cell D (e f) g h i) :
     twoF F (pf ▹ u) = pf ▹ (twoF F u) :=
-  begin
-    cases pf, apply idp,
-  end
+  by cases pf; apply idp
 
   definition twoF_transport_b  {I : Type} (e : I → hom c d)
     {g g' : I} (pg : g = g') (u : two_cell D f (e g) h i) :
     twoF F (pg ▹ u) = pg ▹ (twoF F u) :=
-  begin
-    cases pg, apply idp,
-  end
+  by cases pg; apply idp
 
   definition twoF_transport_l  {I : Type} (e : I → hom a c)
     {h h' : I} (ph : h = h') (u : two_cell D f g (e h) i) :
     twoF F (ph ▹ u) = ph ▹ (twoF F u) :=
-  begin
-    cases ph, apply idp,
-  end
+  by cases ph; apply idp
 
   definition twoF_transport_r  {I : Type} (e : I → hom b d)
     {i i' : I} (pi : i = i') (u : two_cell D f g h (e i)) :
     twoF F (pi ▹ u) = pi ▹ (twoF F u) :=
-  begin
-    cases pi, apply idp,
-  end
+  by cases pi; apply idp
 
   end
 
@@ -406,54 +351,54 @@ namespace dbl_gpd
     (u : two_cell D f g h i)
 
   definition alg_congr_br [reducible] :=
-  thin (two_cell E) (p_iso d) (ID (catF G d)) (p_iso d) (ID (catF G d)) idp
+  thin E (p_iso d) (ID (catF G d)) (p_iso d) (ID (catF G d)) idp
 
   definition alg_congr_b [reducible] :=
-  thin (two_cell E) (catF F g) (catF G g) (p_iso c) (p_iso d) (q g)
+  thin E (catF F g) (catF G g) (p_iso c) (p_iso d) (q g)
 
   definition alg_congr_bl [reducible] :=
-  thin (two_cell E) (p_iso c)⁻¹ (ID (catF G c)) (ID (catF G c)) (p_iso c)
+  thin E (p_iso c)⁻¹ (ID (catF G c)) (ID (catF G c)) (p_iso c)
   begin
     apply concat, apply id_left, apply inverse, apply comp.right_inverse,
   end
 
   definition alg_congr_r [reducible] :=
-  thin (two_cell E) (p_iso b) (p_iso d) (catF F i) (catF G i) (q i)⁻¹
+  thin E (p_iso b) (p_iso d) (catF F i) (catF G i) (q i)⁻¹
 
   include q
   definition alg_congr_l [reducible] :=
-  thin (two_cell E) (p_iso a)⁻¹ (p_iso c)⁻¹ (catF G h) (catF F h)
+  thin E (p_iso a)⁻¹ (p_iso c)⁻¹ (catF G h) (catF F h)
   begin
     apply inverse_comp_eq_of_eq_comp, apply inverse, apply concat, apply assoc,
     apply comp_inverse_eq_of_eq_comp, apply inverse, apply q,
   end
 
   definition alg_congr_ur [reducible] :=
-  thin (two_cell E) (ID (catF G b)) (p_iso b) (p_iso b)⁻¹ (ID (catF G b))
+  thin E (ID (catF G b)) (p_iso b) (p_iso b)⁻¹ (ID (catF G b))
   begin
     apply concat, apply comp.right_inverse,
     apply inverse, apply id_left,
   end
 
   definition alg_congr_u [reducible] :=
-  thin (two_cell E) (catF G f) (catF F f) (p_iso a)⁻¹ (p_iso b)⁻¹
+  thin E (catF G f) (catF F f) (p_iso a)⁻¹ (p_iso b)⁻¹
   begin
     apply eq_inverse_comp_of_comp_eq, apply concat, apply assoc,
     apply comp_inverse_eq_of_eq_comp, apply inverse, apply q,
   end
 
   definition alg_congr_ul [reducible] :=
-  thin (two_cell E)  (ID (catF G a)) (p_iso a)⁻¹ (ID (catF G a)) (p_iso a)⁻¹
+  thin E (ID (catF G a)) (p_iso a)⁻¹ (ID (catF G a)) (p_iso a)⁻¹
   begin
     apply idp,
   end
 
   definition alg_congr_lhs [reducible] :=
-  comp₁ (two_cell E)
-    (comp₂ (two_cell E) alg_congr_br (comp₂ (two_cell E) alg_congr_b alg_congr_bl))
-    (comp₁ (two_cell E)
-      (comp₂ (two_cell E) alg_congr_r (comp₂ (two_cell E) (twoF F u) alg_congr_l))
-      (comp₂ (two_cell E) alg_congr_ur (comp₂ (two_cell E) alg_congr_u alg_congr_ul)))
+  comp₁ E
+    (comp₂ E alg_congr_br (comp₂ E alg_congr_b alg_congr_bl))
+    (comp₁ E
+      (comp₂ E alg_congr_r (comp₂ E (twoF F u) alg_congr_l))
+      (comp₂ E alg_congr_ur (comp₂ E alg_congr_u alg_congr_ul)))
 
   definition alg_congr_lhs' [reducible] :=
   (transport (λ x, two_cell E x _ _ _) (id_left (catF G f))
