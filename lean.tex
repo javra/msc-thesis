@@ -1086,7 +1086,9 @@ Since for a given double category there will, in all relevant cases, be one
 canonical thin structure, we use the type class mechanism to find that thin
 structure as an instance of the following \textbf{type class of thin structures}:
 \begin{leancodebr}
-structure thin_structure [class] :=
+structure thin_structure [class] {D₀ : Type} [C : precategory D₀]
+    {D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c → hom b d → Type}
+    (D : dbl_precat C D₂) :=
   (thin : Π ⦃a b c d : D₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), g ∘ h = i ∘ f
     → D₂ f g h i)
@@ -1204,6 +1206,220 @@ rows to the context:
     apply concat, apply thin_comp₁, apply idp,
     apply eq_inv_tr_of_tr_eq,
     apply br_of_br_square_aux,
+  end
+\end{leancodebr}
+
+Now we can start defining double groupoids.
+The definition of a weak double groupoid poses a greater task to lean's type
+checker than the one of a double category which is why we first define the the
+type of the arguments that are required to make a weak double groupoid out of a
+double category as separate definitions to give Lean the chance to elaborate
+and type check the terms before using them in the actual definition.
+Note that in the \leani{extends} command in structure definition, \leani{C} is
+automatically casted from a groupoid to a general precategory.
+
+\begin{leancodebr}
+context
+  parameters
+    {D₀ : Type}
+    (C : groupoid D₀)
+    (D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c →  hom b d → Type)
+    (D : dbl_precat C D₂)
+
+  definition inv₁_type : Type :=
+  Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d},
+    D₂ f g h i → D₂ g f (h⁻¹) (i⁻¹)
+
+  definition left_inverse₁_type (inv₁ : inv₁_type) : Type :=
+  Π ⦃a b c d : D₀⦄ {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    (u : D₂ f g h i),
+    (left_inverse i) ▹ (left_inverse h) ▹ (comp₁ D (inv₁ u) u) = ID₁ D f
+  ...
+end
+
+structure weak_dbl_gpd {D₀ : Type} (C : groupoid D₀)
+  (D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c →  hom b d → Type)
+  extends D : dbl_precat C D₂ :=
+  (inv₁ : inv₁_type C D₂)
+  (left_inverse₁ : left_inverse₁_type C D₂ D inv₁)
+  (right_inverse₁ : right_inverse₁_type C D₂ D inv₁)
+  (inv₂ : inv₂_type C D₂)
+  (left_inverse₂ : left_inverse₂_type C D₂ D inv₂)
+  (right_inverse₂ : right_inverse₂_type C D₂ D inv₂)
+\end{leancodebr}
+
+To implement and get the definition~\ref{def:dbl-gpd-hott} of a double
+group\-oid we only have to add a thin structure to a weak double groupoid.
+For the definition of the category of double group\-oids we again add a strict and
+bundled version:
+\begin{leancodebr}
+structure dbl_gpd {D₀ : Type} (C : groupoid D₀) (D₂ : Π ⦃a b c d : D₀⦄, 
+    hom a b → hom c d → hom a c →  hom b d → Type)
+  extends D : weak_dbl_gpd C D₂:=
+  (T : thin_structure (weak_dbl_gpd.to_dbl_precat D))
+
+structure Dbl_gpd : Type :=
+  (gpd : Groupoid)
+  (two_cell : Π ⦃a b c d : gpd⦄,
+    hom a b → hom c d → hom a c →  hom b d → Type)
+  (struct : dbl_gpd gpd two_cell)
+  (obj_set : is_hset (carrier gpd))
+\end{leancodebr}
+
+For the definition of a double functor we again have to pull out the definition
+of the argument types to make it easier for the elaborator:
+
+\begin{leancodebr}
+  structure dbl_functor (D E : Dbl_gpd) :=
+    (catF : functor (gpd D) (gpd E))
+    (twoF : Π ⦃a b c d : gpd D⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell D f g h i → two_cell E (catF f) (catF g) (catF h) (catF i))
+    (respect_id₁ : respect_id₁_type D E catF twoF)
+    (respect_comp₁ : respect_comp₁_type D E catF twoF)
+    (respect_id₂ : respect_id₂_type D E catF twoF)
+    (respect_comp₂ : respect_comp₂_type D E catF twoF)
+\end{leancodebr}
+
+As a first lemma characterizing equalities between double functors we have the
+following:
+
+\begin{leancodebr}
+  parameters (D E : Dbl_gpd)
+    (catF1 catF2 : functor (gpd D) (gpd E))
+    (twoF1 : Π ⦃a b c d : gpd D⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell D f g h i → two_cell E (catF1 f) (catF1 g) (catF1 h) (catF1 i))
+    (twoF2 : Π ⦃a b c d : gpd D⦄
+      ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+      two_cell D f g h i → two_cell E (catF2 f) (catF2 g) (catF2 h) (catF2 i))
+    (respect_id₁1 : proof respect_id₁_type D E catF1 qed twoF1)
+    (respect_id₁2 : proof respect_id₁_type D E catF2 qed twoF2)
+    (respect_comp₁1 : proof respect_comp₁_type D E catF1 qed twoF1)
+    (respect_comp₁2 : proof respect_comp₁_type D E catF2 qed twoF2)
+    (respect_id₂1 : proof respect_id₂_type D E catF1 qed twoF1)
+    (respect_id₂2 : proof respect_id₂_type D E catF2 qed twoF2)
+    (respect_comp₂1 : proof respect_comp₂_type D E catF1 qed twoF1)
+    (respect_comp₂2 : proof respect_comp₂_type D E catF2 qed twoF2) 
+
+  definition dbl_functor.congr (p1 : catF1 = catF2) (p2 : p1 ▹ twoF1 = twoF2) :
+    dbl_functor.mk catF1 twoF1 
+      respect_id₁1 respect_comp₁1 respect_id₂1 respect_comp₂1
+    = dbl_functor.mk catF2 twoF2 
+      respect_id₁2 respect_comp₁2 respect_id₂2 respect_comp₂2 :=
+  begin
+    cases p1, cases p2,
+    intros, apply (ap01111 (λ f g h i, dbl_functor.mk catF2 twoF2 f g h i)),
+      repeat (
+        repeat ( apply eq_of_homotopy ; intros ) ;
+        apply (@is_hset.elim _ (!(homH' E))) ),
+  end
+\end{leancodebr}
+
+But in practice, this formalization turned out to be less useful than one where
+we don't have a path between the category functors but instead between their
+objects and morphisms, separately:
+\begin{leancodebr}
+    (p1 : to_fun_ob catF1 = to_fun_ob catF2)
+    (p2 : transport
+      (λ x, Π (a b : carrier (gpd D)), hom a b → hom (x a) (x b)) p1
+      (to_fun_hom catF1) = to_fun_hom catF2)
+    (p3 : apD011 (λ Hob Hhom,
+                  Π ⦃a b c d : carrier (gpd D)⦄
+                    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
+                    two_cell D f g h i →
+                    @two_cell E (Hob a) (Hob b) (Hob c) (Hob d)
+                     (Hhom a b f) (Hhom c d g) (Hhom a c h) (Hhom b d i))
+          p1 p2 ▹ twoF1 = twoF2)
+\end{leancodebr}
+
+Using these more fine grained prerequisites for equality between double functors
+we can prove the associativity of double functors in a pretty straightforward way:
+\begin{leancodebr}
+  definition dbl_functor.assoc {B C D E : Dbl_gpd}
+    (H : dbl_functor D E) (G : dbl_functor C D) (F : dbl_functor B C) :
+    dbl_functor.compose H (dbl_functor.compose G F)
+    = dbl_functor.compose (dbl_functor.compose H G) F :=
+  begin
+    fapply (dbl_functor.congr' B E),
+        apply idp,
+      apply idp,
+    apply idp,
+  end
+\end{leancodebr}
+
+The composition mentioned in that theorem is defined as obvious on the 1-skeleton
+and on the two-cells, it is quite a bit of work to show that it respects
+identities and composition.
+Let's take a look at the part of the proof that shows that the composite functor
+respects the vertical identity:
+\begin{leancodebr}
+      intros, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+      apply concat, apply (ap (λ x, twoF G x)), apply respect_id₁',
+      apply concat, apply twoF_transport_l, apply tr_eq_of_eq_inv_tr,
+      apply concat, apply twoF_transport_r, apply tr_eq_of_eq_inv_tr,
+      apply concat, apply respect_id₁',
+      apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+      apply inverse,
+      apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
+      apply concat, apply transport4_transport_acc,
+      apply concat, apply transport4_transport_acc,
+      apply concat, apply transport4_transport_acc,
+      apply concat, apply transport4_transport_acc,
+      apply concat, apply transport4_transport_acc,
+      apply transport4_set_reduce,
+\end{leancodebr}
+The two calls to \leani{apply respect_id₁'} are the use of that fact that each of the
+double functors respects identity squares.
+The lemmas \leani{twoF_transport_l} and \leani{twoF_transport_r} serve to pull
+a transport out of the application of a double functor to a two-cell.
+Just as in many proofs, we then end up with a goal that consists of an equation
+with the same term on its left and right hand side but with lots of transport
+terms on one side.
+Since the transports are all on the different faces of a two-cell, we create an
+auxiliary definition \leani{transport4} holding transports for each face.
+Then we turn the regular transports into instances of this new definitions using
+\leani{transport_eq_transport4} and \leani{transport4_transport_acc} so that in the
+end we can use the fact that morphisms between two objects form a set to eliminate
+the \leani{transport4} term.
+
+\leani{transport4} itself ist defined as follows:
+\begin{leancode}
+  parameters {A B C D : Type} (P : A → B → C → D → Type)
+  definition transport4 {a0 a1 : A} {b0 b1 : B} {c0 c1 : C} {d0 d1 : D}
+    (pa : a0 = a1) (pb : b0 = b1) (pc : c0 = c1) (pd : d0 = d1)
+    (u : P a0 b0 c0 d0) : P a1 b1 c1 d1 :=
+  pd ▹ pc ▹ pb ▹ pa ▹ u
+\end{leancode}
+
+After turning the outermost \leani{transport} into a \leani{transport4} we can
+accumulate other transport by just using the following lemma:
+\begin{leancode}
+  definition transport4_transport_acc {E : Type}
+    {a0 : A} {b0 : B} {c0 : C} {d0 : D}
+    {e0 e1 : E} {f : E → A} {g : E → B} {h : E → C} {i : E → D}
+    (pa : f e1 = a0) (pb : g e1 = b0) (pc : h e1 = c0) (pd : i e1 = d0)
+    (p : e0 = e1) (u : P (f e0) (g e0) (h e0) (i e0)) :
+  transport4 pa pb pc pd (transport (λ (x : E), P (f x) (g x) (h x) (i x)) p u)
+  = transport4 (ap f p ⬝ pa) (ap g p ⬝ pb) (ap h p ⬝ pc) (ap i p ⬝ pd) u :=
+  by cases pa; cases pb; cases pc; cases pd; cases p; apply idp
+\end{leancode}
+
+The final reduction step is done by assuming that all parameter types \leani{A},
+\leani{B}, \leani{C}, and \leani{D} are sets:
+\begin{leancodebr}
+  definition transport4_set_reduce [HA : is_hset A] [HB : is_hset B]
+    [HC : is_hset C] [HD : is_hset D]
+    {a0 : A} {b0 : B} {c0 : C} {d0 : D}
+    {pa : a0 = a0} {pb : b0 = b0} (pc : c0 = c0) (pd : d0 = d0)
+    (u : P a0 b0 c0 d0) :
+    transport4 pa pb pc pd u = u :=
+  begin
+    assert Ppa : pa = idp, apply is_hset.elim,
+    assert Ppb : pb = idp, apply is_hset.elim,
+    assert Ppc : pc = idp, apply is_hset.elim,
+    assert Ppd : pd = idp, apply is_hset.elim,
+    rewrite [Ppa, Ppb, Ppc, Ppd],
   end
 \end{leancodebr}
 
