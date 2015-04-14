@@ -1423,6 +1423,66 @@ The final reduction step is done by assuming that all parameter types \leani{A},
   end
 \end{leancodebr}
 
+Finally, we can instantiate the precategory of double groupoids:
+\begin{leancodebr}
+  universe variables l₁ l₂ l₃
+  definition cat_dbl_gpd [reducible] :
+    precategory.{(max l₁ l₂ l₃)+1 (max l₁ l₂ l₃)} Dbl_gpd.{l₁ l₂ l₃} :=
+  begin
+    fapply precategory.mk,
+      intros [D, E], apply (dbl_functor D E),
+      intros [D, E], apply (is_hset_dbl_functor D E),
+      intros [C, D, E, G, F], apply (dbl_functor.compose G F),
+      intro D, apply (dbl_functor.id D),
+      intros [B, C, D, E, H, G, F], apply (dbl_functor.assoc),
+      intros [B, C, F], apply (dbl_functor.id_left),
+      intros [B, C, F], apply (dbl_functor.id_right),
+  end
+\end{leancodebr}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{l|r|r}
+\toprule[1pt]
+\multicolumn{1}{c}{Theory} 
+	& \multicolumn{1}{c}{Line Count} 
+	& \multicolumn{1}{c}{Compilation Time in s} \\ 
+\midrule[1pt]
+\leani{transport4} & 49 & 0.454\\
+\leani{dbl_cat.} & & \\
+	\hspace{1em}\leani{basic} & & \\
+%	\hspace{1em}\leani{category_of} & & \\
+	\hspace{1em}\leani{decl} & & \\
+%	\hspace{1em}\leani{functor} & & \\	
+\leani{dbl_gpd.} & & \\
+	\hspace{1em}\leani{basic} & & \\
+	\hspace{1em}\leani{category_of} & & \\
+	\hspace{1em}\leani{decl} & & \\
+	\hspace{1em}\leani{functor} & & \\
+	\hspace{1em}\leani{fundamental} & & \\
+\leani{equivalence.} & & \\
+	\hspace{1em}\leani{equivalence} & & \\
+	\hspace{1em}\leani{gamma_functor} & & \\
+	\hspace{1em}\leani{gamma} & & \\
+	\hspace{1em}\leani{gamma_group} & & \\
+	\hspace{1em}\leani{gamma_morphisms} & & \\
+	\hspace{1em}\leani{gamma_mu_phi} & & \\
+	\hspace{1em}\leani{lambda_functor} & & \\
+	\hspace{1em}\leani{lambda} & & \\
+	\hspace{1em}\leani{lambda_morphisms} & & \\
+\leani{thin_structure.} & & \\
+	\hspace{1em}\leani{basic} & & \\
+	\hspace{1em}\leani{decl} & & \\
+\leani{xmod.} & & \\
+	\hspace{1em}\leani{category_of} & & \\
+	\hspace{1em}\leani{decl} & & \\
+	\hspace{1em}\leani{morphism} & & \\
+\bottomrule[1pt]
+\end{tabular}
+\caption{The theories of my formalization project.} \label{tab:cat-tree}
+\end{center}
+\end{table}
+
 \section{Instantiating the Fundamental Double Groupoid}
 
 
