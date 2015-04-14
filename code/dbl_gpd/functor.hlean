@@ -240,6 +240,7 @@ namespace dbl_gpd
 
   end
 
+  set_option pp.notation false
   definition dbl_functor.compose [reducible] {C D E : Dbl_gpd}
     (G : dbl_functor D E) (F : dbl_functor C D) : dbl_functor C E :=
   begin
@@ -253,10 +254,7 @@ namespace dbl_gpd
         apply concat, apply respect_id₁',
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         apply inverse,
-        apply concat, apply (transport_eq_transport4 _
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
-          (λ x, ID (to_fun_ob (catF G) (to_fun_ob (catF F) a))) (λ x, x)),
+        apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -271,12 +269,7 @@ namespace dbl_gpd
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         unfold functor.compose, esimp,
         apply inverse,
-        apply concat, apply (transport_eq_transport4 _
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) g₂))
-          (λ x, comp (to_fun_hom (catF G) (to_fun_hom (catF F) h₂))
-            (to_fun_hom (catF G) (to_fun_hom (catF F) h₁)))
-          (λ x, x)),
+        apply concat,  apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -290,10 +283,7 @@ namespace dbl_gpd
         apply concat, apply respect_id₂',
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         apply inverse,
-        apply concat, apply (transport_eq_transport4 _
-          (λ x, ID (to_fun_ob (catF G) (to_fun_ob (catF F) a))) (λ x, x)
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) f))),
+        apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
@@ -308,12 +298,7 @@ namespace dbl_gpd
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         unfold functor.compose, esimp,
         apply inverse,
-        apply concat, apply (transport_eq_transport4 _
-          (λ x, comp (to_fun_hom (catF G) (to_fun_hom (catF F) _))
-            (to_fun_hom (catF G) (to_fun_hom (catF F) _)))
-          (λ x, x)
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) _))
-          (λ x, to_fun_hom (catF G) (to_fun_hom (catF F) _))),
+        apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,
         apply concat, apply transport4_transport_acc,

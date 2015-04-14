@@ -15,11 +15,11 @@ context
     (u : P a0 b0 c0 d0) :
     transport4 pa pb pc pd u = u :=
   begin
-    assert Ppa : idp = pa, apply is_hset.elim, apply (transport _ Ppa),
-    assert Ppb : idp = pb, apply is_hset.elim, apply (transport _ Ppb),
-    assert Ppc : idp = pc, apply is_hset.elim, apply (transport _ Ppc),
-    assert Ppd : idp = pd, apply is_hset.elim, apply (transport _ Ppd),
-    apply idp,
+    assert Ppa : pa = idp, apply is_hset.elim,
+    assert Ppb : pb = idp, apply is_hset.elim,
+    assert Ppc : pc = idp, apply is_hset.elim,
+    assert Ppd : pd = idp, apply is_hset.elim,
+    rewrite [Ppa,Ppb,Ppc,Ppd],
   end
 
   definition transport_eq_transport4 {E : Type}
@@ -28,9 +28,7 @@ context
     (u : P (f e0) (g e0) (h e0) (i e0)) :
     transport (λ (x : E), P (f x) (g x) (h x) (i x)) p u
     = transport4 (ap f p) (ap g p) (ap h p) (ap i p) u :=
-  begin
-    apply (eq.rec_on p), apply idp,
-  end
+  by cases p; apply idp
 
   definition transport4_acc {a0 a1 a2 : A} {b0 b1 b2 : B} {c0 c1 c2 : C} {d0 d1 d2 : D}
     (pa1 : a0 = a1) (pb1 : b0 = b1) (pc1 : c0 = c1) (pd1 : d0 = d1)
@@ -38,13 +36,7 @@ context
     (u : P a0 b0 c0 d0) :
     transport4 pa2 pb2 pc2 pd2 (transport4 pa1 pb1 pc1 pd1 u)
     = transport4 (pa1 ⬝ pa2) (pb1 ⬝ pb2) (pc1 ⬝ pc2) (pd1 ⬝ pd2) u :=
-  begin
-    apply (eq.rec_on pa2),
-    apply (eq.rec_on pb2),
-    apply (eq.rec_on pc2),
-    apply (eq.rec_on pd2),
-    apply idp,
-  end
+  by cases pa2; cases pb2; cases pc2; cases pd2; apply idp
 
   definition transport4_transport_acc {E : Type} {a0 : A} {b0 : B} {c0 : C} {d0 : D}
     {e0 e1 : E} {f : E → A} {g : E → B} {h : E → C} {i : E → D}
@@ -52,13 +44,6 @@ context
     (p : e0 = e1) (u : P (f e0) (g e0) (h e0) (i e0)) :
   transport4 pa pb pc pd (transport (λ (x : E), P (f x) (g x) (h x) (i x)) p u)
   = transport4 (ap f p ⬝ pa) (ap g p ⬝ pb) (ap h p ⬝ pc) (ap i p ⬝ pd) u :=
-  begin
-    apply (eq.rec_on pa),
-    apply (eq.rec_on pb),
-    apply (eq.rec_on pc),
-    apply (eq.rec_on pd),
-    apply (eq.rec_on p),
-    apply idp,
-  end
+  by cases pa; cases pb; cases pc; cases pd; cases p; apply idp
 
 end
