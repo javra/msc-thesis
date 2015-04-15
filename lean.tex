@@ -846,10 +846,7 @@ Theories marked with * contain unfinished proofs.} \label{tab:cat-tree}
 \end{center}
 \end{table}
 
-\section[Formalizing Double Groupoids and Crossed Modules]
-	{Formalizing Double Groupoids and Crossed Modules
-	\sectionmark{Formalization of DGpd and Xmod}}
-\sectionmark{Formalization DGpd and Xmod}
+\section{Formalizing Double Groupoids}
 
 When formalizing the structures presented in chapters \ref{chapter:nat} and
 \ref{chapter:types}, I proceeded in the order the concepts are presented in this
@@ -1440,6 +1437,183 @@ Finally, we can instantiate the precategory of double groupoids:
   end
 \end{leancodebr}
 
+\section{Formalizing Crossed Modules}
+
+The definition of a crossed module involves stating the fact that the given map
+$\mu$ is a group homomorphism and that $\phi$ is a groupoid action.
+Since the algebra library did not contain any definitions for these algebraic
+notions and since their properties are only rarely used, I decided to add them
+to the definition of a crossed module as additional fields:
+\begin{leancodebr}
+structure xmod {P₀ : Type} [P : groupoid P₀] (M : P₀ → Group) :=
+  (P₀_hset : is_hset P₀)
+  (μ : Π ⦃p : P₀⦄, M p → hom p p)
+  (μ_respect_comp : Π ⦃p : P₀⦄ (b a : M p), μ (b * a) = μ b ∘ μ a)
+  (μ_respect_id : Π (p : P₀), μ 1 = ID p)
+  (φ : Π ⦃p q : P₀⦄, hom p q → M p → M q)
+  (φ_respect_id : Π ⦃p : P₀⦄ (x : M p), φ (ID p) x = x)
+  (φ_respect_P_comp : Π ⦃p q r : P₀⦄ (b : hom q r) (a : hom p q) (x : M p),
+    φ (b ∘ a) x = φ b (φ a x))
+  (φ_respect_M_comp : Π ⦃p q : P₀⦄ (a : hom p q) (y x : M p),
+    φ a (y * x) = (φ a y) * (φ a x))
+  (CM1 : Π ⦃p q : P₀⦄ (a : hom p q) (x : M p), μ (φ a x) = a ∘ (μ x) ∘ a⁻¹)
+  (CM2 : Π ⦃p : P₀⦄ (c x : M p), φ (μ c) x = c * (x * c⁻¹ᵍ))
+\end{leancodebr}
+
+The fact that $\mu$ respects inverses and $\phi$ respects the neutral element
+of the group can then be derived from the fields listed in the definition of
+a crossed module:
+\begin{leancodebr}
+  definition μ_respect_inv ⦃p : P₀⦄ (a : M p) : μ MM a⁻¹ᵍ = (μ MM a)⁻¹ :=
+  begin
+    assert H : μ MM a⁻¹ᵍ ∘ μ MM a = (μ MM a)⁻¹ ∘ μ MM a,
+      exact calc μ MM a⁻¹ᵍ ∘ μ MM a = μ MM (a⁻¹ᵍ * a) : μ_respect_comp
+                               ... = μ MM 1 : by rewrite mul_left_inv
+                               ... = id : μ_respect_id
+                               ... = (μ MM a)⁻¹ ∘ μ MM a : left_inverse,
+    apply epi.elim, exact H,
+  end
+
+  definition φ_respect_one ⦃p q : P₀⦄ (a : hom p q) : φ MM a 1 = 1 :=
+  begin
+    assert H : φ MM a 1 * 1 = φ MM a 1 * φ MM a 1,
+      exact calc φ MM a 1 * 1 = φ MM a 1 : mul_one
+                          ... = φ MM a (1 * 1)  : one_mul
+                          ... = φ MM a 1 * φ MM a 1 : φ_respect_M_comp,
+    apply eq.inverse, apply (mul_left_cancel H),
+  end
+\end{leancodebr}
+
+Just like we did for double functors, we define morphisms of crossed modules as
+their own structures, with lemmas to state a representation by iterated sigma
+and product types, their truncation level and a lemma to build an equality between
+two of them:
+\begin{leancodebr}
+  structure xmod_morphism : Type :=
+    (gpd_functor : functor (Groupoid.mk X (gpd X)) (Groupoid.mk Y (gpd Y)))
+    (hom_family : Π (p : X), (groups X p) → (groups Y (gpd_functor p)))
+    (hom_family_hom : Π (p : X) (x y : groups X p),
+      hom_family p (x * y) = hom_family p x * hom_family p y)
+    (mu_commute : Π (p : X) (x : groups X p), 
+      gpd_functor (μ X x) = μ Y (hom_family p x))
+    (phi_commute : Π (p q : X) (a : hom p q) (x : groups X p),
+      hom_family q (φ X a x) = φ Y (gpd_functor a) (hom_family p x))
+
+  definition xmod_morphism_sigma_char :
+    (Σ (gpd_functor : functor (Groupoid.mk X (gpd X)) (Groupoid.mk Y (gpd Y)))
+      (hom_family : Π (p : X), (groups X p) → (groups Y (gpd_functor p))),
+      (Π (p : X) (x y : groups X p),
+        hom_family p (x * y) = (hom_family p x) * (hom_family p y))
+      × (Π (p : X) (x : groups X p),
+      to_fun_hom gpd_functor (μ X x) = μ Y (hom_family p x))
+      × (Π (p q : X) (a : @hom X _ p q) (x : groups X p),
+      hom_family q (φ X a x) = φ Y (gpd_functor a) (hom_family p x)))
+        ≃ xmod_morphism := ...
+
+  definition xmod_morphism_hset : is_hset xmod_morphism := ...
+
+  parameters ...
+    (p : to_fun_ob gpd_functor1 = to_fun_ob gpd_functor2)
+    (q : transport (λ x, Π a b, hom a b → hom (x a) (x b)) p
+      (to_fun_hom gpd_functor1) = to_fun_hom gpd_functor2)
+    (r : transport (λ x, Π p', (groups X p') → (groups Y (x p'))) p 
+      hom_family1 = hom_family2)
+
+  definition xmod_morphism_congr :
+    xmod_morphism.mk gpd_functor1 hom_family1 
+      hom_family_hom1 mu_commute1 phi_commute1
+    = xmod_morphism.mk gpd_functor2 hom_family2
+      hom_family_hom2 mu_commute2 phi_commute2 := ...
+\end{leancodebr}
+
+This equality lemma can then be uses to prove the identity and associativity of
+crossed module morphisms to build the precategory of crossed modules.
+
+\begin{leancodebr}
+  definition xmod_morphism_id_left :
+    xmod_morphism_comp (xmod_morphism_id Y) f = f :=
+  begin
+    cases f,
+    fapply xmod_morphism_congr,
+        apply idp,
+      apply idp,
+    repeat (apply eq_of_homotopy ; intros),
+    apply idp,
+  end
+
+  universe variables l₁ l₂ l₃
+  definition cat_xmod :
+    precategory.{(max l₁ l₂ l₃)+1 (max l₁ l₂ l₃)} Xmod.{l₁ l₂ l₃} :=
+  begin
+    fapply precategory.mk,
+      intros [X, Y], apply (xmod_morphism X Y),
+      intros [X, Y], apply xmod_morphism_hset,
+      intros [X, Y, Z, g, f], apply (xmod_morphism_comp g f),
+      intro X, apply xmod_morphism_id,
+      intros [X, Y, Z, W, h, g, f], apply xmod_morphism_assoc,
+      intros [X, Y, f], apply xmod_morphism_id_left,
+    intros [X, Y, f], apply xmod_morphism_id_right,
+  end
+\end{leancodebr}
+
+
+
+\section{Proving the Equivalence}
+
+Proving the equivalence between the categories $\DGpd$ and $\XMod$ involves the
+following steps:
+\begin{enumerate}
+\item Define $\gamma$ and $\lambda$ on objects -- as functions mapping double
+groupoids to crossed modules and vice versa.
+\item Define $\gamma$ and $\lambda$ on double functors and crossed module morphisms.
+A step that we glossed over when defining the functors in the original topological and
+set theoretic setting.
+\item Instantiate $\gamma$ and $\lambda$ as actual functors by proving that
+they respect identities and composition.
+\item Build natural transformations $\gamma\lambda \to \id_{\XMod}$ and
+$\lambda\gamma \to \id_{\DGpd}$.
+\item Show that these natural transformations are isomorphic by showing that they
+map each point in the respective category to an isomorphism in that category.
+\end{enumerate}
+
+We start by implementing $\gamma$ as a function \leani{Dbl_gpd → Xmod}.
+This first of all involved building the family of groups in the desired
+crossed module.
+We create a further structure to hold the objects of each of these groups:
+The type of two-cells which have the identity on all but their upper face.
+\begin{leancodebr}
+  structure folded_sq (a : D₀) :=
+    (lid : hom a a)
+    (filler : D₂ lid id id id)
+\end{leancodebr}
+
+After proving the group axioms for \leani{folded_sq a}, a task which again involves
+extensive transport management, we can instantiate the actual group of ``folded
+squares'' over a point \leani{a : D₀}.
+Here, \leani{l₂} is the the universe level of morphisms in the double groupoid in
+the context and \leani{l₃} is the level of two-cells.
+\begin{leancodebr}
+  protected definition folded_sq_group [instance] (a : D₀) :
+    group (folded_sq a) :=
+  begin
+    fapply group.mk,
+      intros [u, v], apply (folded_sq.comp u v),
+      apply (folded_sq.is_hset a),
+      intros [u, v, w], apply ((folded_sq.assoc u v w)⁻¹),
+      apply folded_sq.one,
+      intro u, apply (folded_sq.id_left u),
+      intro u, apply (folded_sq.id_right u),
+      intro u, apply (folded_sq.inv u),
+      intro u, apply (folded_sq.left_inverse u),
+  end
+
+  protected definition folded_sq_Group [reducible] (a : D₀) :
+    Group.{max l₂ l₃} :=
+  Group.mk (folded_sq a) (folded_sq_group a)
+\end{leancodebr}
+
+\section{Instantiating the Fundamental Double Groupoid}
+
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{l|r|r}
@@ -1482,8 +1656,6 @@ Finally, we can instantiate the precategory of double groupoids:
 \caption{The theories of my formalization project.} \label{tab:cat-tree}
 \end{center}
 \end{table}
-
-\section{Instantiating the Fundamental Double Groupoid}
 
 
 
