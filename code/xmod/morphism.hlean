@@ -14,12 +14,9 @@ namespace xmod
     (hom_family : Π (p : X), (groups X p) → (groups Y (gpd_functor p)))
     (hom_family_hom : Π (p : X) (x y : groups X p),
       hom_family p (x * y) = hom_family p x * hom_family p y)
-    (mu_commute : Π (p : X) (x : groups X p),
-      to_fun_hom gpd_functor (μ _ x) = μ _ (hom_family p x))
-    (phi_commute : Π (p q : X) (a : @hom X _ p q) (x : groups X p),
-      hom_family q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
-      = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
-           (to_fun_hom gpd_functor a) (hom_family p x))
+    (mu_commute : Π (p : X) (x : groups X p), gpd_functor (μ X x) = μ Y (hom_family p x))
+    (phi_commute : Π (p q : X) (a : hom p q) (x : groups X p),
+      hom_family q (φ X a x) = φ Y (gpd_functor a) (hom_family p x))
 
   definition xmod_morphism_hom_family_id (f : xmod_morphism) (p : X) :
     xmod_morphism.hom_family f p 1 = 1 :=
@@ -39,11 +36,9 @@ namespace xmod
       (Π (p : X) (x y : groups X p),
         hom_family p (x * y) = (hom_family p x) * (hom_family p y))
       × (Π (p : X) (x : groups X p),
-      to_fun_hom gpd_functor (μ _ x) = μ _ (hom_family p x))
+      to_fun_hom gpd_functor (μ X x) = μ Y (hom_family p x))
       × (Π (p q : X) (a : @hom X _ p q) (x : groups X p),
-      hom_family q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
-      = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
-           (to_fun_hom gpd_functor a) (hom_family p x))) ≃ xmod_morphism :=
+      hom_family q (φ X a x) = φ Y (gpd_functor a) (hom_family p x))) ≃ xmod_morphism :=
   begin
     fapply equiv.mk,
       intro S, cases S with [S1, S'],
@@ -63,13 +58,12 @@ namespace xmod
   end
 
   set_option apply.class_instance false
-  definition xmod_morphism_hset :
-    is_hset xmod_morphism :=
+  definition xmod_morphism_hset : is_hset xmod_morphism :=
   begin
     apply is_trunc_equiv_closed,
       apply xmod_morphism_sigma_char,
     apply is_trunc_sigma, intros,
-    apply @functor.is_hset_functor, apply (P₀_hset (gpd Y) (groups Y)),
+    apply @functor.is_hset_functor, apply (P₀_hset Y),
     intros, apply is_trunc_sigma,
       repeat (apply is_trunc_pi ; intros),
       apply (group.carrier_hset (groups Y (to_fun_ob a a_1))),
@@ -93,20 +87,16 @@ namespace xmod
     (hom_family_hom1 : Π (p : X) (x y : groups X p),
       hom_family1 p (x * y) = hom_family1 p x * hom_family1 p y)
     (mu_commute1 : Π (p : X) (x : groups X p),
-      to_fun_hom gpd_functor1 (μ _ x) = μ _ (hom_family1 p x))
-    (phi_commute1 : Π (p q : X) (a : @hom X _ p q) (x : groups X p),
-      hom_family1 q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
-      = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
-           (to_fun_hom gpd_functor1 a) (hom_family1 p x))
+      to_fun_hom gpd_functor1 (μ X x) = μ Y (hom_family1 p x))
+    (phi_commute1 : Π (p q : X) (a : hom p q) (x : groups X p),
+      hom_family1 q (φ X a x) = φ Y (gpd_functor1 a) (hom_family1 p x))
     (hom_family2 : Π (p : X), (groups X p) → (groups Y (gpd_functor2 p)))
     (hom_family_hom2 : Π (p : X) (x y : groups X p),
       hom_family2 p (x * y) = hom_family2 p x * hom_family2 p y)
     (mu_commute2 : Π (p : X) (x : groups X p),
-      to_fun_hom gpd_functor2 (μ _ x) = μ _ (hom_family2 p x))
-    (phi_commute2 : Π (p q : X) (a : @hom X _ p q) (x : groups X p),
-      hom_family2 q (@φ (carrier X) (gpd X) (groups X) (struct X) _ _ a x)
-      = @φ (carrier Y) (gpd Y) (groups Y) (struct Y) _ _
-           (to_fun_hom gpd_functor2 a) (hom_family2 p x))
+      to_fun_hom gpd_functor2 (μ X x) = μ Y (hom_family2 p x))
+    (phi_commute2 : Π (p q : X) (a : hom p q) (x : groups X p),
+      hom_family2 q (φ X a x) = φ Y (gpd_functor2 a) (hom_family2 p x))
     (p : to_fun_ob gpd_functor1 = to_fun_ob gpd_functor2)
     (q : transport (λ x, Π a b, hom a b → hom (x a) (x b)) p
       (to_fun_hom gpd_functor1) = to_fun_hom gpd_functor2)
@@ -124,21 +114,18 @@ namespace xmod
     assert P1 : hom_family_hom1 = hom_family_hom2,
       apply @is_hprop.elim,
       repeat ( apply is_trunc_pi ; intros ),
-      apply is_trunc_eq, --apply semigroup.carrier_hset,
+      apply is_trunc_eq,
     cases P1,
-    assert P2 : mu_commute1 = mu_commute2,
-      apply is_hprop.elim,
+    assert P2 : mu_commute1 = mu_commute2, apply is_hprop.elim,
     cases P2,
     assert P3 : phi_commute1 = phi_commute2,
       apply @is_hprop.elim,
       repeat ( apply is_trunc_pi ; intros ),
-      apply is_trunc_eq, --apply semigroup.carrier_hset,
+      apply is_trunc_eq,
     cases P3,
-    assert P4 : gf3 = gf7,
-      apply is_hprop.elim,
+    assert P4 : gf3 = gf7, apply is_hprop.elim,
     cases P4,
-    assert P5 : @gf4 = @gf8,
-      apply is_hprop.elim,
+    assert P5 : @gf4 = @gf8, apply is_hprop.elim,
     cases P5,
     apply idp,
   end
@@ -148,8 +135,7 @@ namespace xmod
   context
   parameters
     {X Y Z : Xmod}
-    (g : xmod_morphism Y Z)
-    (f : xmod_morphism X Y)
+    (g : xmod_morphism Y Z) (f : xmod_morphism X Y)
 
   include g f
   open xmod_morphism
@@ -182,9 +168,7 @@ namespace xmod
   context
   parameters
     (X Y Z W : Xmod)
-    (h : xmod_morphism Z W)
-    (g : xmod_morphism Y Z)
-    (f : xmod_morphism X Y)
+    (h : xmod_morphism Z W) (g : xmod_morphism Y Z) (f : xmod_morphism X Y)
 
   definition xmod_morphism_assoc :
     xmod_morphism_comp h (xmod_morphism_comp g f)
@@ -193,7 +177,7 @@ namespace xmod
     fapply xmod_morphism_congr,
         apply idp,
       apply idp,
-    repeat (apply eq_of_homotopy ; intros),
+      repeat (apply eq_of_homotopy ; intros),
     apply idp,
   end
 
