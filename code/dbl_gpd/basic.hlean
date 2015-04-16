@@ -42,7 +42,7 @@ namespace dbl_gpd
   definition ID₂_respect_inv : ID₂ D (f⁻¹) = inv₁ D (ID₂ D f) :=
   sorry
 
-  definition ID₁_inverse_compose :
+  definition ID₁_inverse_compose (f : hom a b) :
     comp₂ D (ID₁ D (f⁻¹)) (ID₁ D f) =
     transport (λ x, D₂ _ x id id) ((left_inverse f)⁻¹)
       (transport (λ x, D₂ x _ id id) ((left_inverse f)⁻¹) (ID₁ D (ID a))) :=

@@ -54,7 +54,7 @@ structure weak_dbl_gpd {D₀ : Type}
 
 structure dbl_gpd {D₀ : Type} (C : groupoid D₀)
   (D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c →  hom b d → Type)
-  extends D : weak_dbl_gpd C D₂:=
+  extends D : weak_dbl_gpd C D₂ :=
   (T : thin_structure (weak_dbl_gpd.to_dbl_precat D))
 
 attribute dbl_gpd.T [instance]

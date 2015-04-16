@@ -4,8 +4,8 @@ open xmod category function eq is_trunc
 
 namespace xmod
 
-  universe variables l1 l2 l3
-  definition cat_xmod : precategory.{(max l1 l2 l3)+1 (max l1 l2 l3)} Xmod.{l1 l2 l3} :=
+  universe variables l₁ l₂ l₃
+  definition cat_xmod : precategory.{(max l₁ l₂ l₃)+1 (max l₁ l₂ l₃)} Xmod.{l₁ l₂ l₃} :=
   begin
     fapply precategory.mk,
       intros [X, Y], apply (xmod_morphism X Y),

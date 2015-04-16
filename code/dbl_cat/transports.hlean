@@ -7,7 +7,7 @@ namespace dbl_precat
   parameters {D₀ : Type} [D₀set : is_hset D₀] [C : precategory D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
       Type}
-    [D : dbl_precat C D₂]
+    (D : dbl_precat C D₂)
   include D D₀set C
 
   section

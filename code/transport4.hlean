@@ -19,7 +19,7 @@ context
     assert Ppb : pb = idp, apply is_hset.elim,
     assert Ppc : pc = idp, apply is_hset.elim,
     assert Ppd : pd = idp, apply is_hset.elim,
-    rewrite [Ppa,Ppb,Ppc,Ppd],
+    rewrite [Ppa, Ppb, Ppc, Ppd],
   end
 
   definition transport_eq_transport4 {E : Type}
