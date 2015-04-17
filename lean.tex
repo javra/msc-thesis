@@ -1574,7 +1574,7 @@ they respect identities and composition.
 $\lambda\gamma \to \id_{\DGpd}$.
 \item Show that these natural transformations are isomorphic by showing that they
 map each point in the respective category to an isomorphism in that category.
-\end{enumerate}
+\end{enumerate} %TODO specify how much of this is completed
 
 We start by implementing $\gamma$ as a function \leani{Dbl_gpd → Xmod}.
 This first of all involved building the family of groups in the desired
@@ -1610,6 +1610,35 @@ the context and \leani{l₃} is the level of two-cells.
   protected definition folded_sq_Group [reducible] (a : D₀) :
     Group.{max l₂ l₃} :=
   Group.mk (folded_sq a) (folded_sq_group a)
+\end{leancodebr}
+
+The definitions for $\mu$ and $\phi$ themselves are again very straightforward, while
+some of the axioms are surprisingly hard to prove, one example being the proof that
+$\phi$ respects the group composition, which takes more than 100 lines due to
+the massive need to transform \leani{transport} terms.
+In the end we can define the bundled crossed module that results from $\gamma$:
+\begin{leancodebr}
+  protected definition xmod [reducible] : 
+    xmod (λ x, gamma.folded_sq_Group G x) :=
+  begin
+    fapply xmod.mk,
+      exact D₀set,
+      intros [x, u], apply (gamma.mu G u),
+      intros [x, v, u], apply (gamma.mu_respect_comp G v u),
+      intro x, apply gamma.mu_respect_id,
+      intros [x, y, a, u], apply (gamma.phi G a u),
+      intros [x, u], apply (gamma.phi_respect_id G u),
+      intros [x, y, z, b, a, u], apply (gamma.phi_respect_P_comp G b a u),
+      intros [x, y, a, v, u], apply (gamma.phi_respect_M_comp G a v u),
+      intros [x, y, a, u], apply (gamma_CM1 a u),
+      intros [x, v, u], apply (gamma_CM2 v u),
+  end
+
+  end
+
+  open Dbl_gpd
+  protected definition on_objects [reducible] (G : Dbl_gpd) : Xmod :=
+  Xmod.mk (λ x, gamma.folded_sq_Group G x) (gamma.xmod G)
 \end{leancodebr}
 
 \section{Instantiating the Fundamental Double Groupoid}

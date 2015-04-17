@@ -8,12 +8,12 @@ attribute gamma.folded_sq_group [instance]
 set_option pp.beta true
 namespace gamma
   context
-  universe variable l
-  parameters {D₀ : Type.{l}}
+  --universe variable l
+  parameters {D₀ : Type/-.{l}-/}
     [D₀set : is_hset D₀]
-    [C : groupoid.{l l} D₀]
+    [C : groupoid/-.{l l}-/ D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
-      Type.{l}}
+      Type/-.{l}-/}
     (G : dbl_gpd C D₂)
   include G D₀set C
 
@@ -35,7 +35,7 @@ namespace gamma
     fapply folded_sq.mk,
       apply (a ∘ (folded_sq.lid u) ∘ a⁻¹),
     assert v : D₂ (a ∘ (folded_sq.lid u) ∘ a⁻¹) (a ∘ id ∘ a⁻¹) id id,
-      apply (comp₂ G (ID₁ G a) (comp₂ G (folded_sq.filler u) (ID₁ G (a⁻¹)))),
+      apply (comp₂ G (dbl_precat.ID₁ G a) (comp₂ G (folded_sq.filler u) (dbl_precat.ID₁ G (a⁻¹)))),
     apply (transport (λ x, D₂ _ x id id) (right_inverse a)
              (transport (λ x, D₂ _ (a ∘ x) id id) (id_left (a⁻¹)) v)),
   end

@@ -15,14 +15,14 @@ namespace dbl_gpd
   definition respect_id₁_type [reducible] : Type := Π ⦃a b : gpd D⦄ (f : hom a b),
     transport (λ x, two_cell E _ _ _ x) (respect_id catF b)
       (transport (λ x, two_cell E _ _ x _) (respect_id catF a)
-        (twoF (ID₁ D f)))
-    = ID₁ E (catF f)
+        (twoF (dbl_precat.ID₁ D f)))
+    = dbl_precat.ID₁ E (catF f)
 
   definition respect_id₂_type [reducible] : Type := Π ⦃a b : gpd D⦄ (f : hom a b),
     transport (λ x, two_cell E _ x _ _) (respect_id catF b)
       (transport (λ x, two_cell E x _ _ _) (respect_id catF a)
-        (twoF (ID₂ D f)))
-    = ID₂ E (catF f)
+        (twoF (dbl_precat.ID₂ D f)))
+    = dbl_precat.ID₂ E (catF f)
 
   set_option unifier.max_steps 60000 --TODO make this go away
   definition respect_comp₁_type [reducible] : Type := Π ⦃a b c₁ d₁ c₂ d₂ : gpd D⦄
@@ -36,8 +36,8 @@ namespace dbl_gpd
         (transport (λ x, two_cell E (to_fun_hom catF f) (to_fun_hom catF g₂)
           x (to_fun_hom catF (i₂ ∘ i₁)))
           (respect_comp catF h₂ h₁)
-          (twoF (comp₁ D v u)))
-      = comp₁ E (twoF v) (twoF u)
+          (twoF (dbl_precat.comp₁ D v u)))
+      = dbl_precat.comp₁ E (twoF v) (twoF u)
 
   definition respect_comp₂_type [reducible] : Type := Π ⦃a b₁ c d₁ b₂ d₂ : gpd D⦄
     ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h : hom a c⦄ ⦃i₁ : hom b₁ d₁⦄
@@ -51,8 +51,8 @@ namespace dbl_gpd
         (transport (λ x, two_cell E x (to_fun_hom catF (g₂ ∘ g₁))
           (to_fun_hom catF h) (to_fun_hom catF i₂))
           (respect_comp catF f₂ f₁)
-          (twoF (comp₂ D v u)))
-      = comp₂ E (twoF v) (twoF u)
+          (twoF (dbl_precat.comp₂ D v u)))
+      = dbl_precat.comp₂ E (twoF v) (twoF u)
   set_option unifier.max_steps 20000
   end
 
@@ -181,11 +181,13 @@ namespace dbl_gpd
 
   definition respect_id₁' {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b : gpd D} (f : hom a b) :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₁ F f))
+  eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.ID₁ D f)) _
+   (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₁ F f))
 
   definition respect_id₂' {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b : gpd D} (f : hom a b) :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
+  eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.ID₂ D f)) _
+   (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
 
   context
   parameters {D E : Dbl_gpd} (F : dbl_functor D E)
@@ -196,7 +198,8 @@ namespace dbl_gpd
     (u : two_cell D f g₁ h₁ i₁)
 
   definition respect_comp₁' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₁ F v u))
+  eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.comp₁ D v u)) _
+   (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₁ F v u))
 
   end
 
@@ -209,7 +212,8 @@ namespace dbl_gpd
     (u : two_cell D f₁ g₁ h i₁)
 
   definition respect_comp₂' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₂ F v u))
+  eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.comp₂ D v u)) _
+   (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₂ F v u))
 
   end
 

@@ -4,8 +4,7 @@ open eq category iso is_trunc path_algebra function xmod dbl_precat dbl_gpd Dbl_
 
 namespace gamma
   context
-  universe variable l
-  parameters {G H : Dbl_gpd.{l l l}} (F : dbl_functor G H)
+  parameters {G H : Dbl_gpd} (F : dbl_functor G H)
 
   protected definition on_morphisms_on_base [reducible] (p : gamma.on_objects G)
     (x : Xmod.groups (gamma.on_objects G) p) :
@@ -15,7 +14,7 @@ namespace gamma
     cases G with [gpdG,sqG,structG,carrierG_hset],
     cases H with [gpdH,sqH,structH,carrierH_hset],
     cases x with [lid,filler],
-    fapply M_morphism.mk, apply (to_fun_hom catF lid),
+    fapply folded_sq.mk, apply (to_fun_hom catF lid),
     apply (transport (λ x, sqH _ x id id) (respect_id catF p)),
     apply (transport (λ x, sqH _ _ x id) (respect_id catF p)),
     apply (transport (λ x, sqH _ _ _ x) (respect_id catF p)),
@@ -33,7 +32,7 @@ namespace gamma
     cases H with [gpdH,sqH,structH,carrierH_hset],
     cases x with [lidx,fillerx],
     cases y with [lidy,fillery],
-    fapply M_morphism.congr, apply (respect_comp catF),
+    fapply folded_sq.congr, apply (respect_comp catF),
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply concat, apply (twoF_transport_b (dbl_functor.mk catF twoF F3 F4 F5 F6)),
@@ -70,6 +69,9 @@ namespace gamma
 
   include F
   set_option apply.class_instance false
+  --set_option pp.full_names true
+  set_option pp.max_depth 10000
+  set_option pp.max_steps 50000
 
   protected definition on_morphisms :
     xmod_morphism (gamma.on_objects G) (gamma.on_objects H) :=
@@ -83,7 +85,7 @@ namespace gamma
     cases F with [catF, twoF, F3, F4, F5, F6],
     cases G with [gpdG, sqG, structG, carrierG_hset],
     cases H with [gpdH, sqH, structH, carrierH_hset],
-    fapply M_morphism.congr,
+    fapply folded_sq.congr,
       apply concat, apply respect_comp,
       apply concat, apply (ap (λ x, _ ∘ x)), apply respect_comp,
       apply (ap (λ x, _ ∘ _ ∘ x)),
@@ -98,32 +100,31 @@ namespace gamma
     apply tr_eq_of_eq_inv_tr,
     apply concat, apply respect_comp₂',
     apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
-    apply concat, apply (ap (λ x, comp₂
-      (Dbl_gpd.two_cell (Dbl_gpd.mk gpdH sqH structH carrierH_hset))
-      (dbl_functor.twoF (dbl_functor.mk catF twoF F3 F4 F5 F6)
-      (ID₁ (Dbl_gpd.two_cell (Dbl_gpd.mk gpdG sqG structG carrierG_hset)) a)) x)),
+    apply concat, apply (ap (λ x, comp₂ structH
+      (dbl_functor.twoF (dbl_functor.mk catF twoF F3 F4 F5 F6) (dbl_precat.ID₁ structG a)) x)),
     apply respect_comp₂',
     apply concat, apply inverse,
     apply transp_comp₂_eq_comp₂_transp_l_u', apply inv_tr_eq_of_eq_tr,
     apply concat, apply inverse,
     apply transp_comp₂_eq_comp₂_transp_l_b', apply inv_tr_eq_of_eq_tr,
-    apply concat, apply (ap (λ x, comp₂ @sqH x _)), apply respect_id₁',
+    apply concat, apply (ap (λ x, comp₂ _ x _)), apply respect_id₁',
     apply concat, apply (ap (λ x, comp₂ _ _ x)),
-    apply (ap (λ x, comp₂ sqH (twoF fillerx) x)), apply respect_id₁'',
+    apply (ap (λ x, comp₂ (mk gpdH sqH structH carrierH_hset) (twoF fillerx) x)),
+      apply respect_id₁',
     apply concat, apply inverse, apply (ap (λ x, comp₂ _ _ x)),
-    apply transp_comp₂_eq_comp₂_transp_l_u',
-    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_u',
+    apply (transp_comp₂_eq_comp₂_transp_l_u' structH),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' structH),
     apply inv_tr_eq_of_eq_tr,
     apply concat, apply inverse, apply (ap (λ x, comp₂ _ _ x)),
-    apply transp_comp₂_eq_comp₂_transp_l_b',
-    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b',
+    apply (transp_comp₂_eq_comp₂_transp_l_b' structH),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' structH),
     apply inv_tr_eq_of_eq_tr,
     apply concat, apply inverse, apply (ap (λ x, comp₂ _ _ x)),
     apply transp_comp₂_eq_comp₂_transp_l_l,
-    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_l,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_l structH),
     apply inv_tr_eq_of_eq_tr,
-    apply concat, apply inverse, apply transp_comp₂_inner_deal1,
-    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_r,
+    apply concat, apply inverse, apply (transp_comp₂_inner_deal1 structH),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_r structH),
     apply inv_tr_eq_of_eq_tr,
     apply inverse,
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
@@ -134,13 +135,14 @@ namespace gamma
     apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ @sqH (ID₁ sqH (to_fun_hom catF a)) x)),
-    apply inverse, apply transp_comp₂_eq_comp₂_transp_r_b',
-    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b',
+    apply concat, apply (ap (λ x, comp₂ structH
+      (dbl_precat.ID₁ structH (to_fun_hom catF a)) x)),
+    apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' structH),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' structH),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ _ _ x)), apply transp_comp₂_inner_deal2,
+    apply concat, apply (ap (λ x, comp₂ _ _ x)), apply (transp_comp₂_inner_deal2 structH),
     apply concat, apply (ap (λ x, comp₂ _ _ x)), apply inverse,
-    apply transp_comp₂_eq_comp₂_transp_r_r,
+    apply (transp_comp₂_eq_comp₂_transp_r_r structH),
     apply inverse, apply concat,
     apply (transport_eq_transport4 (λ f g h i, sqH f g h i)
       (λ x, (comp (to_fun_hom catF a) (comp _ _)))
@@ -162,8 +164,8 @@ namespace gamma
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
-    apply transport4_set_reduce,
-      apply homH, apply homH, apply homH, apply homH,
+    --apply transport4_set_reduce,
+      --apply homH, apply homH, apply homH, apply homH,-/
   end
 
   end
