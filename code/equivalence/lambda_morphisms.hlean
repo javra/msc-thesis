@@ -4,42 +4,26 @@ import ..xmod.category_of ..dbl_gpd.category_of
 open eq category iso is_trunc path_algebra function xmod Xmod dbl_gpd functor
 
 namespace lambda
+  variables {P₀ : Type} [P : groupoid P₀]
+    {M : P₀ → Group} {MM : xmod M} ⦃a b c d : P₀⦄
+    {f f' : hom a b} {g g' : hom c d} {h h' : hom a c} {i i' : hom b d}
+    (u : lambda_morphism MM f g h i)
 
-  protected definition functor_on_hom_aux1 {P₀ : Type} [P : groupoid P₀]
-    {M : P₀ → Group} [MM : xmod M] ⦃a b c d : P₀⦄
-    {f f' : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
-    (M : lambda_morphism f g h i) (p : f = f') :
-    lambda_morphism.m (p ▹ M) = lambda_morphism.m M :=
-  begin
-    cases p, apply idp,
-  end
+  protected definition functor_on_hom_aux1 (p : f = f') :
+    lambda_morphism.m (p ▹ u) = lambda_morphism.m u :=
+  by cases p; apply idp
 
-  protected definition functor_on_hom_aux2 {P₀ : Type} [P : groupoid P₀]
-    {M : P₀ → Group} [MM : xmod M] ⦃a b c d : P₀⦄
-    {f : hom a b} {g g' : hom c d} {h : hom a c} {i : hom b d}
-    (M : lambda_morphism f g h i) (p : g = g') :
-    lambda_morphism.m (p ▹ M) = lambda_morphism.m M :=
-  begin
-    cases p, apply idp,
-  end
+  protected definition functor_on_hom_aux2 (p : g = g') :
+    lambda_morphism.m (p ▹ u) = lambda_morphism.m u :=
+  by cases p; apply idp
 
-  protected definition functor_on_hom_aux3 {P₀ : Type} [P : groupoid P₀]
-    {M : P₀ → Group} [MM : xmod M] ⦃a b c d : P₀⦄
-    {f : hom a b} {g : hom c d} {h h' : hom a c} {i : hom b d}
-    (M : lambda_morphism f g h i) (p : h = h') :
-    lambda_morphism.m (p ▹ M) = lambda_morphism.m M :=
-  begin
-    cases p, apply idp,
-  end
+  protected definition functor_on_hom_aux3 (p : h = h') :
+    lambda_morphism.m (p ▹ u) = lambda_morphism.m u :=
+  by cases p; apply idp
 
-  protected definition functor_on_hom_aux4 {P₀ : Type} [P : groupoid P₀]
-    {M : P₀ → Group} [MM : xmod M] ⦃a b c d : P₀⦄
-    {f : hom a b} {g : hom c d} {h : hom a c} {i i' : hom b d}
-    (M : lambda_morphism f g h i) (p : i = i') :
-    lambda_morphism.m (p ▹ M) = lambda_morphism.m M :=
-  begin
-    cases p, apply idp,
-  end
+  protected definition functor_on_hom_aux4 (p : i = i') :
+    lambda_morphism.m (p ▹ u) = lambda_morphism.m u :=
+  by cases p; apply idp
 
   protected definition on_morphisms {X Y : Xmod} (f : xmod_morphism X Y) :
     (dbl_functor (lambda.on_objects X) (lambda.on_objects Y)) :=

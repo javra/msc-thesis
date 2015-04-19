@@ -50,9 +50,7 @@ namespace gamma
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_inner,
     apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_r,
     apply tr_eq_of_eq_inv_tr, apply inverse,
-    apply concat, apply (transport_eq_transport4 (λ f g h i, sqH f g h i)
-      (λ x, catF lidx ∘ catF lidy) (λ x, (catF (ID p)) ∘ (catF (ID p)))
-      (λ x, catF (ID p)) (λ x, x) (respect_id catF p)⁻¹),
+    apply concat, apply (transport_eq_transport4 (λ f g h i, sqH f g h i)),
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
@@ -110,7 +108,7 @@ namespace gamma
     apply concat, apply (ap (λ x, comp₂ _ x _)), apply respect_id₁',
     apply concat, apply (ap (λ x, comp₂ _ _ x)),
     apply (ap (λ x, comp₂ (mk gpdH sqH structH carrierH_hset) (twoF fillerx) x)),
-      apply respect_id₁',
+      apply respect_id₁'',
     apply concat, apply inverse, apply (ap (λ x, comp₂ _ _ x)),
     apply (transp_comp₂_eq_comp₂_transp_l_u' structH),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' structH),
@@ -144,10 +142,7 @@ namespace gamma
     apply concat, apply (ap (λ x, comp₂ _ _ x)), apply inverse,
     apply (transp_comp₂_eq_comp₂_transp_r_r structH),
     apply inverse, apply concat,
-    apply (transport_eq_transport4 (λ f g h i, sqH f g h i)
-      (λ x, (comp (to_fun_hom catF a) (comp _ _)))
-      (λ x, comp (to_fun_hom catF a) (comp x _))
-      (λ x, id) (λ x, id)),
+    apply (transport_eq_transport4 (λ f g h i, sqH f g h i)),
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
@@ -164,8 +159,8 @@ namespace gamma
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
     apply concat, apply transport4_transport_acc,
-    --apply transport4_set_reduce,
-      --apply homH, apply homH, apply homH, apply homH,-/
+    apply transport4_set_reduce,
+      apply homH, apply homH, apply homH, apply homH,
   end
 
   end
