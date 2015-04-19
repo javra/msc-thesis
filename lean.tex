@@ -1641,6 +1641,138 @@ In the end we can define the bundled crossed module that results from $\gamma$:
   Xmod.mk (λ x, gamma.folded_sq_Group G x) (gamma.xmod G)
 \end{leancodebr}
 
+Defining the functor $\gamma$ on morphisms we have to map a double functor to a
+morphism of crossed modules.
+We first define the morphism on the group family by applying the double functor
+to the ``folded squares'' with transports to keep three of their faces the identity.
+Proving that this defines a group homomorphism, and proving the further axioms
+again makes use of the statements that functors respect composition and identities
+and of the helper lemmas to move the resulting transport terms.
+\begin{leancodebr}
+  context
+  parameters {G H : Dbl_gpd} (F : dbl_functor G H)
+
+  protected definition on_morphisms_on_base [reducible]
+    (p : gamma.on_objects G) (x : Xmod.groups (gamma.on_objects G) p) :
+    Xmod.groups (gamma.on_objects H) (to_fun_ob (dbl_functor.catF F) p) :=
+  begin
+    cases F with [catF, twoF, F3, F4, F5, F6],
+    cases G with [gpdG,sqG,structG,carrierG_hset],
+    cases H with [gpdH,sqH,structH,carrierH_hset],
+    cases x with [lid,filler],
+    fapply folded_sq.mk, apply (to_fun_hom catF lid),
+    apply (transport (λ x, sqH _ x id id) (respect_id catF p)),
+    apply (transport (λ x, sqH _ _ x id) (respect_id catF p)),
+    apply (transport (λ x, sqH _ _ _ x) (respect_id catF p)),
+    apply (twoF filler),
+  end
+
+  set_option unifier.max_steps 30000
+  protected definition on_morphisms_hom_family [reducible]
+    (p : Xmod.carrier (gamma.on_objects G)) 
+    (x y : Xmod.groups (gamma.on_objects G) p) :
+    gamma.on_morphisms_on_base F p (x * y) =
+    (gamma.on_morphisms_on_base F p x) * (gamma.on_morphisms_on_base F p y) :=
+  begin
+    ...
+  end
+  
+  protected definition on_morphisms :
+    xmod_morphism (gamma.on_objects G) (gamma.on_objects H) :=
+  begin
+    ...
+  end
+\end{leancodebr}
+
+We show the final instantiation of $\gamma$ as a functor using function extensionality
+for the proof that $\gamma$ respects composition and identity.
+Note that 
+\begin{leancodebr}
+  protected definition functor :
+    functor Cat_dbl_gpd.{l₁ l₂ l₃} Cat_xmod.{(max l₁ l₂) l₂ l₃} :=
+  begin
+    fapply functor.mk,
+      intro G, apply (gamma.on_objects G),
+      intros [G, H, F], apply (gamma.on_morphisms F),
+      intro G, cases G,
+        fapply xmod_morphism_congr, apply idp, apply idp,
+        repeat ( apply eq_of_homotopy ; intros), cases x_1, apply idp,
+    ...
+  end
+\end{leancodebr}
+
+Just like for $\gamma$, we create a structure to hold the two-cell of the double
+groupoid we create when defining the functor $\lambda$:
+\begin{leancode}
+  parameters {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} (MM : xmod M)
+  ...
+  structure lambda_morphism ⦃a b c d : P₀⦄
+    (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :=
+  (m : M d) (comm : μ MM m = i ∘ f ∘ h⁻¹ ∘ g⁻¹)
+\end{leancode}
+
+Compositions, identity squares, thin squares and axioms that are needed to build
+a double groupoid are defined without major difficulties.
+In the end we collect all 27 of these definitions to form the double groupoid we
+want:
+\begin{leancodebr}
+  protected definition dbl_gpd [reducible] : dbl_gpd P lambda_morphism :=
+  begin
+    fapply dbl_gpd.mk,
+      intros, apply (lambda_morphism.comp₁ a_1 a_2),
+      intros, apply (lambda_morphism.ID₁ f),
+      intros, apply lambda_morphism.assoc₁,
+      intros, apply lambda_morphism.id_left₁,
+      intros, apply lambda_morphism.id_right₁,
+      intros, apply lambda_morphism.is_hset,
+      intros, apply (lambda_morphism.comp₂ a_1 a_2),
+      intros, apply (lambda_morphism.ID₂ f),
+      intros, apply lambda_morphism.assoc₂,
+      intros, apply lambda_morphism.id_left₂,
+      intros, apply lambda_morphism.id_right₂,
+      intros, apply lambda_morphism.is_hset,
+      intros, apply lambda_morphism.id_comp₁,
+      intros, apply lambda_morphism.id_comp₂,
+      intros, apply lambda_morphism.zero_unique,
+      intros, apply lambda_morphism.interchange,
+      intros, apply (lambda_morphism.inv₁ a_1),
+      intros, apply lambda_morphism.left_inverse₁,
+      intros, apply lambda_morphism.right_inverse₁,
+      intros, apply (lambda_morphism.inv₂ a_1),
+      intros, apply lambda_morphism.left_inverse₂,
+      intros, apply lambda_morphism.right_inverse₂,
+      intros, fapply thin_structure.mk,
+        intros, apply (lambda_morphism.T f g h i a_1),
+        intros, apply lambda_morphism.thin_ID₁,
+        intros, apply lambda_morphism.thin_ID₂,
+        intros, apply lambda_morphism.thin_comp₁,
+        intros, apply lambda_morphism.thin_comp₂,
+  end
+\end{leancodebr}
+
+After defining $\lambda$ on morphisms we can instantiate it as a functor between
+categories with the same restriction to universe levels that we already saw in
+the definition of $\gamma$.
+\begin{leancodebr}
+  protected definition functor :
+    functor Cat_xmod.{l₁ l₂ l₃} Cat_dbl_gpd.{(max l₁ l₂) l₂ l₃} :=
+  begin
+    fapply functor.mk,
+      intro X, apply (lambda.on_objects X),
+      intros [X, Y, f], apply (lambda.on_morphisms f),
+      intro X, cases X,
+        fapply dbl_functor.congr', apply idp, apply idp,
+        repeat ( apply eq_of_homotopy ; intros), cases x_8,
+        fapply lambda_morphism.congr', apply idp,
+        apply is_hset.elim,
+      intros [X, Y, Z, g, f], cases X, cases Y, cases Z, cases g, cases f,
+        fapply dbl_functor.congr', apply idp, apply idp,
+        repeat ( apply eq_of_homotopy ; intros), cases x_8,
+        fapply lambda_morphism.congr', apply idp,
+        apply is_hset.elim,
+  end
+\end{leancodebr}
+
 \section{Instantiating the Fundamental Double Groupoid}
 
 \begin{table}[h]
