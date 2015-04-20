@@ -607,7 +607,7 @@ by cases u; cases v; apply (dpair_eq_dpair p q)
 \end{center}
 \end{table}
 
-Figure \ref{tab:init-tree} and \ref{tab:hottlib-tree} show the line count and
+Tables \ref{tab:init-tree} and \ref{tab:hottlib-tree} show the line count and
 the compilation time for each theory in Lean's HoTT library excluding the library
 for category theory.
 
@@ -1773,7 +1773,250 @@ the definition of $\gamma$.
   end
 \end{leancodebr}
 
-\section{Instantiating the Fundamental Double Groupoid}
+\section{Instantiating the Fundamental Double Group\-oid}
+
+The general strategy for the instantiation of the fundamental double group\-oid
+of a presented 2-type has been laid out in definition~\ref{def:fundamental-dbl-gpd}.
+We start by building the fundamental groupoid of a 1-type $A$, a set $C$ and a
+function $\iota : C \to A$ relating them:
+\begin{leancodebr}
+  definition fundamental_groupoid [reducible] : groupoid C :=
+  groupoid.mk
+    (λ (a b : C), ι a =  ι b)
+    (λ (a b : C), is_trunc_eq nat.zero (ι a) (ι b))
+    (λ (a b c : C) (p : ι b = ι c) (q : ι a = ι b), q ⬝ p)
+    (λ (a : C), refl (ι a))
+    (λ (a b c d : C) (p : ι c = ι d) (q : ι b = ι c) (r : ι a = ι b),
+      con.assoc r q p)
+    (λ (a b : C) (p : ι a = ι b), con_idp p)
+    (λ (a b : C) (p : ι a = ι b), idp_con p)
+    (λ ⦃a b : C⦄ (p : ι a = ι b),
+      @is_iso.mk C _ a b p (eq.inverse p) (!con.right_inv) (!con.left_inv))
+\end{leancodebr}
+
+We then continue to provide all the components for the double groupoid in the ``flat''
+setting where we only consider points, equalities and iterated equalities in the
+2-type $X$.
+This is done by basic manipulation of the given equalities.
+The vertical composition, for example, is given by the following calculation:
+\begin{leancodebr}
+  definition fund_dbl_precat_flat_comp₁ {a₁ b₁ a₂ b₂ a₃ b₃ : X}
+    {f₁ : a₁ = b₁} {g₁ : a₂ = b₂} {h₁ : a₁ = a₂} {i₁ : b₁ = b₂}
+    {g₂ : a₃ = b₃} {h₂ : a₂ = a₃} {i₂ : b₂ = b₃}
+    (v : h₂ ⬝ g₂ = g₁ ⬝ i₂) (u : h₁ ⬝ g₁ = f₁ ⬝ i₁) :
+    (h₁ ⬝ h₂) ⬝ g₂ = f₁ ⬝ (i₁ ⬝ i₂) :=
+  calc (h₁ ⬝ h₂) ⬝ g₂ = h₁ ⬝ (h₂ ⬝ g₂) : by rewrite con.assoc
+                 ... = h₁ ⬝ (g₁ ⬝ i₂) : by rewrite v
+                 ... = (h₁ ⬝ g₁) ⬝ i₂ : by rewrite con.assoc'
+                 ... = (f₁ ⬝ i₁) ⬝ i₂ : by rewrite u
+                 ... = f₁ ⬝ (i₁ ⬝ i₂) : by rewrite con.assoc
+\end{leancodebr}
+
+The corresponding axioms are proven by induction over the equalities involved.
+Here, one has to carefully choose the order in which to destruct the equalities,
+since the iterated equalities can only be destructed if their right hand side
+is atomic and since in Lean $p \ct \refl$, but not $\refl \ct p$ is judgmentally
+equal to $p$.
+The following example shows the proof of the interchange law by destruction in the
+order which is illustrated in
+figure~\ref{fig:interchange-destruct} by
+non-reflexivity equalities shown as paths and iterated equalities as bounded
+areas.
+\begin{leancodebr}
+  variables
+    {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : X}
+    {f₀₀ : a₀₀ = a₀₁} {f₀₁ : a₀₁ = a₀₂} {f₁₀ : a₁₀ = a₁₁} {f₁₁ : a₁₁ = a₁₂}
+    {f₂₀ : a₂₀ = a₂₁} {f₂₁ : a₂₁ = a₂₂} {g₀₀ : a₀₀ = a₁₀} {g₀₁ : a₀₁ = a₁₁}
+    {g₀₂ : a₀₂ = a₁₂} {g₁₀ : a₁₀ = a₂₀} {g₁₁ : a₁₁ = a₂₁} {g₁₂ : a₁₂ = a₂₂}
+    (x : g₁₁ ⬝ f₂₁ = f₁₁ ⬝ g₁₂) (w : g₁₀ ⬝ f₂₀ = f₁₀ ⬝ g₁₁)
+    (v : g₀₁ ⬝ f₁₁ = f₀₁ ⬝ g₀₂) (u : g₀₀ ⬝ f₁₀ = f₀₀ ⬝ g₀₁)
+
+  definition fund_dbl_precat_flat_interchange :
+    fund_dbl_precat_flat_interchange_vert_horiz x w v u
+    = fund_dbl_precat_flat_interchange_horiz_vert x w v u :=
+  begin
+    revert v, revert f₀₁, revert g₀₂,
+    revert u, revert f₀₀, revert g₀₁, revert g₀₀,
+    revert x, revert f₁₁, revert g₁₂, revert f₂₁,
+    revert w, revert f₁₀, revert g₁₁, revert g₁₀,
+    cases f₂₀,
+    intro g₁₀, cases g₁₀,
+    intro g₁₁, cases g₁₁,
+    intro f₁₀, intro w, apply (eq.rec_on w),
+    intro f₂₁, cases f₂₁,
+    intro g₁₂, cases g₁₂,
+    intro f₁₁, intro x, apply (eq.rec_on x),
+    intro g₀₀, cases g₀₀,
+    intro g₀₁, cases g₀₁,
+    intro f₀₀, intro u, apply (eq.rec_on u),
+    intro g₀₂, cases g₀₂,
+    intro f₀₁, apply (eq.rec_on f₀₁),
+    intro v,   apply (eq.rec_on v),
+    apply idp,
+  end
+\end{leancodebr}
+
+\begin{figure} \centering
+\begin{tikzpicture}[auto,scale=1,color=black,every path/.append style={thick},
+	every loop/.style={}]
+\begin{scope}[shift={(0,0)}]
+\draw (0,0) -- (0,2) -- (2,2) -- (2,0);
+\draw (0,1) -- (2,1);
+\draw (1,2) -- (1,0) -- (2,0);
+\draw[red,line width=3pt] (0,0) -- (1,0);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\node at (3,1) {$\overset{\text{\leani{cases f₂₀}}}{\leadsto}$};
+\begin{scope}[shift={(4,0)}]
+\draw (0,2) -- (2,2); \draw (0,1) -- (2,1); \draw (0,0) -- (2,0);
+\draw (0,2) -- (0,1); \draw (1,2) -- (1,1) -- (0,0);
+\draw (2,2) -- (2,0);
+\draw[red,line width=3pt] (0,1) -- (0,0);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\node at (7,1) {$\overset{\text{\leani{cases g₁₀}}}{\leadsto}$};
+\begin{scope}[shift={(8,0)}]
+\draw (0,1) edge[bend right,red,line width=3pt] (1,1);
+\draw (0,2) -- (2,2); \draw (1,1) -- (2,1);
+\draw (0,2) -- (0,1) edge[bend right] (2,0);
+\draw (1,2) -- (1,1) edge[bend right] (0,1);
+\draw (2,2) -- (2,0);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\node at (-1,-2) {$\overset{\text{\leani{cases g₁₁}}}{\leadsto}$};
+\begin{scope}[shift={(0,-3)}]
+\draw (0,2) -- (2,2); \draw (1,1) -- (2,1);
+\draw (1,2) -- (1,1); \draw (2,2) -- (2,0);
+\draw (0,2) -- (1,1) edge[in=95,out=130,loop] (1,1) -- (2,0);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\end{tikzpicture}
+\caption{Destructing a grid of squares to prove the ``flat'' interchange law.}
+\label{fig:interchange-destruct}
+\end{figure}
+
+The actual vertical composition is then derived from the ``flat'' version by transporting
+twice along the functoriality \leani{ap_con} of path concatenation.
+\begin{leancodebr}
+  definition fund_dbl_precat_comp₁ ...
+    (v : ap ι' h₂ ⬝ ap ι' g₂ = ap ι' g₁ ⬝ ap ι' i₂)
+    (u : ap ι' h₁ ⬝ ap ι' g₁ = ap ι' f₁ ⬝ ap ι' i₁) :
+      ap ι' (h₁ ⬝ h₂) ⬝ ap ι' g₂ = ap ι' f₁ ⬝ ap ι' (i₁ ⬝ i₂) :=
+  ((ap_con ι' i₁ i₂)⁻¹) ▹ ((ap_con ι' h₁ h₂)⁻¹) ▹
+  @fund_dbl_precat_flat_comp₁ X A C Xtrunc Atrunc Cset
+    (ι' (ι a₁)) (ι' (ι b₁)) (ι' (ι a₂)) (ι' (ι b₂)) (ι' (ι a₃)) (ι' (ι b₃))
+    (ap ι' f₁) (ap ι' g₁) (ap ι' h₁) (ap ι' i₁)
+    (ap ι' g₂) (ap ι' h₂) (ap ι' i₂) v u
+\end{leancodebr}
+
+Then we can prove the axioms for the double groupoid performing step 2 and 3
+from the proof of definition~\ref{def:fundamental-dbl-gpd}.
+Like in the following example of vertical associativity, we first use the flat
+version of the axiom and in the end refer to another auxiliary lemma that allows
+for path induction in the type $A$.
+\begin{leancodebr}
+  definition fund_dbl_precat_assoc₁_aux {a₁ a₂ a₃ a₄ b₁ b₂ b₃ b₄ : A}
+    (f₁ : a₁ = b₁) (g₁ : a₂ = b₂) (h₁ : a₁ = a₂) (i₁ : b₁ = b₂)
+    (g₂ : a₃ = b₃) (h₂ : a₂ = a₃) (i₂ : b₂ = b₃) (g₃ : a₄ = b₄)
+    (h₃ : a₃ = a₄) (i₃ : b₃ = b₄)
+    (w : (ap ι' h₃) ⬝ (ap ι' g₃) = (ap ι' g₂) ⬝ (ap ι' i₃))
+    (v : (ap ι' h₂) ⬝ (ap ι' g₂) = (ap ι' g₁) ⬝ (ap ι' i₂))
+    (u : (ap ι' h₁) ⬝ (ap ι' g₁) = (ap ι' f₁) ⬝ (ap ι' i₁)) :
+    (transport (λ x, ((ap ι' h₁) ⬝ x) ⬝ (ap ι' g₃) = _) (ap_con ι' h₂ h₃)
+     (transport (λ x, _ =  ((ap ι' f₁) ⬝ ((ap ι' i₁) ⬝ x))) (ap_con ι' i₂ i₃)
+      (transport (λ x, (x ⬝ (ap ι' g₃)) = _) (ap_con ι' h₁ (concat h₂ h₃))
+       (transport (λ x, _ = (ap ι' f₁) ⬝ x) (ap_con ι' i₁ (concat i₂ i₃))
+        (transport (λ x, _ = (ap ι' f₁) ⬝ (ap ι' x)) (con.assoc i₁ i₂ i₃)
+         (transport (λ x, (ap ι' x) ⬝ _ = _) (con.assoc h₁ h₂ h₃)
+          (transport (λ x, _ =  (ap ι' f₁) ⬝ x) (ap_con ι' (concat i₁ i₂) i₃)⁻¹
+           (transport (λ x, x ⬝ (ap ι' g₃) = _) (ap_con ι' (concat h₁ h₂) h₃)⁻¹
+            (transport (λ x, _ = _ ⬝ (x ⬝ _)) (ap_con ι' i₁ i₂)⁻¹
+             (transport (λ x, (x ⬝ _) ⬝ _ = _) (ap_con ι' h₁ h₂)⁻¹
+              (transport (λ x, x ⬝ _ = _)
+                (con.assoc (ap ι' h₁) (ap ι' h₂) (ap ι' h₃))⁻¹
+                (transport (λ x, _ = _ ⬝ x)
+                   (con.assoc (ap ι' i₁) (ap ι' i₂) (ap ι' i₃))⁻¹
+                   (fund_dbl_precat_flat_comp₁
+                     (fund_dbl_precat_flat_comp₁ w v) u)))))))))))))
+     = (fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_comp₁ w v) u) :=
+  begin
+    ...
+  end
+
+  definition fund_dbl_precat_assoc₁ :
+    (con.assoc i₁ i₂ i₃) ▹ (con.assoc h₁ h₂ h₃) ▹
+      (fund_dbl_precat_comp₁ w (fund_dbl_precat_comp₁ v u))
+    = fund_dbl_precat_comp₁ (fund_dbl_precat_comp₁ w v) u :=
+  begin
+    unfold fund_dbl_precat_comp₁,
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply concat, apply fund_dbl_precat_flat_transp1, apply inv_tr_eq_of_eq_tr,
+    apply concat, apply fund_dbl_precat_flat_transp2, apply inv_tr_eq_of_eq_tr,
+    apply concat, apply fund_dbl_precat_flat_assoc₁', -- Call flat version
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
+    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
+    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
+    apply inverse,
+    apply concat, apply fund_dbl_precat_flat_transp3, apply inv_tr_eq_of_eq_tr,
+    apply concat, apply fund_dbl_precat_flat_transp4, apply inv_tr_eq_of_eq_tr,
+    apply inverse, apply fund_dbl_precat_assoc₁_aux, -- Call half-flat lemma
+  end
+\end{leancodebr}
+
+Thin squares are defined by the following calculation using, again, the functoriality
+of $\ap$.
+\begin{leancodebr}
+  definition fund_dbl_precat_thin {a b c d : C}
+    {f : ι a = ι b} {g : ι c = ι d} {h : ι a = ι c} {i : ι b = ι d}
+    (comm : h ⬝ g = f ⬝ i) :
+    ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i :=
+  calc ap ι' h ⬝ ap ι' g = ap ι' (h ⬝ g) : ap_con
+                    ... = ap ι' (f ⬝ i) : comm
+                    ... = ap ι' f ⬝ ap ι' i : ap_con
+\end{leancodebr}
+
+Using the same strategy for the axioms for this thin structure as for the axioms
+of the weak double groupoid lets us finally conclude by defining the fundamental
+double groupoid:
+\begin{leancodebr}
+  definition fundamental_dbl_precat : dbl_gpd (fundamental_groupoid)
+    (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
+      ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :=
+  begin
+    fapply dbl_gpd.mk,
+      ...
+    fapply thin_structure.mk,
+      ...
+  end
+\end{leancodebr}
 
 \begin{table}[h]
 \begin{center}
