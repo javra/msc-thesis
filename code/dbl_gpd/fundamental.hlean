@@ -7,33 +7,23 @@ namespace dbl_gpd
   variables {X A C : Type} [Xtrunc : is_trunc 2 X]
     [Atrunc : is_trunc 1 A] [Cset : is_hset C]
     {ι' : A → X} {ι : C → A}
-  include Xtrunc Atrunc Cset
+  include Atrunc
 
-  definition square_rec_on {a b c d : X}
-    {f : a = b} {g : c = d} {h : a = c} {i : b = d}
-    (u : h ⬝ g = f ⬝ i)
-    {P : Π (a b c d : X) (f : a = b) (g : c = d) (h : a = c) (i : b = d),
-       h ⬝ g = f ⬝ i → Type}
-    (H : P a a a a idp idp idp idp idp) : P a b c d f g h i u :=
-  begin
-    revert u, revert f, revert h, revert g, apply (eq.rec_on i),
-    intro g, apply (eq.rec_on g),
-    intros, apply (eq.rec_on u),
-    apply (eq.rec_on h), exact H,
-  end
 
   definition fundamental_groupoid [reducible] : groupoid C :=
   groupoid.mk
     (λ (a b : C), ι a =  ι b)
-    (λ (a b : C), have ish : is_hset (ι a = ι b),
-      from is_trunc_eq nat.zero (ι a) (ι b), ish)
+    (λ (a b : C), is_trunc_eq nat.zero (ι a) (ι b))
     (λ (a b c : C) (p : ι b = ι c) (q : ι a = ι b), q ⬝ p)
     (λ (a : C), refl (ι a))
-    (λ (a b c d : C) (p : ι c = ι d) (q : ι b = ι c) (r : ι a = ι b), con.assoc r q p)
+    (λ (a b c d : C) (p : ι c = ι d) (q : ι b = ι c) (r : ι a = ι b),
+      con.assoc r q p)
     (λ (a b : C) (p : ι a = ι b), con_idp p)
     (λ (a b : C) (p : ι a = ι b), idp_con p)
     (λ ⦃a b : C⦄ (p : ι a = ι b),
       @is_iso.mk C _ a b p (eq.inverse p) (!con.right_inv) (!con.left_inv))
+
+  include Xtrunc Cset
 
   --FLAT VERSIONS
   definition fund_dbl_precat_flat_comp₁ {a₁ b₁ a₂ b₂ a₃ b₃ : X}
@@ -434,7 +424,7 @@ namespace dbl_gpd
     cases f₀₁, cases f₁₁, cases f₂₁,
     intros, apply idp,
   end
-exit
+
   definition fund_dbl_precat_interchange_aux2 :
     (fund_dbl_precat_flat_comp₂
        (transport (λ a_1, _ = _ ⬝ a_1) ((ap_con ι' g₀₂ g₁₂)⁻¹)
@@ -1120,34 +1110,24 @@ exit
     ⬝ (transport (λ x, _ = ap ι' x) (idp_con f ⬝ (con_idp f)⁻¹)
        (refl (ap ι' (concat idp f)))) ⬝ (ap_con ι' f idp)
     = idp_con (ap ι' f) :=
-  begin
-    cases f, apply idp,
-  end
+  by cases f; apply idp
 
   definition fund_dbl_precat_thin_id₁ {a b : C} (f : ι a = ι b) :
     fund_dbl_precat_thin ((idp_con f) ⬝ (con_idp f)⁻¹)
     = fund_dbl_precat_id₁ X A C ι' ι f :=
-  begin
-    esimp {fund_dbl_precat_thin, fund_dbl_precat_id₁},
-    apply fund_dbl_precat_thin_id₁_aux,
-  end
+  by apply fund_dbl_precat_thin_id₁_aux
 
   definition fund_dbl_precat_thin_id₂_aux {a b : A} (f : a = b) :
     (ap_con ι' f idp)⁻¹
     ⬝ (transport (λ x, _ = ap ι' x) ((con_idp f) ⬝ (idp_con f)⁻¹)
        (refl (ap ι' (concat f idp)))) ⬝ (ap_con ι' idp f)
     = (idp_con (ap ι' f))⁻¹ :=
-  begin
-    cases f, apply idp,
-  end
+  by cases f; apply idp
 
   definition fund_dbl_precat_thin_id₂ {a b : C} (f : ι a = ι b) :
     fund_dbl_precat_thin ((con_idp f) ⬝ (idp_con f)⁻¹)
     = fund_dbl_precat_id₂ X A C ι' ι f :=
-  begin
-    esimp {fund_dbl_precat_thin, fund_dbl_precat_id₂},
-    apply fund_dbl_precat_thin_id₂_aux,
-  end
+  by apply fund_dbl_precat_thin_id₂_aux
 
   attribute is_trunc_eq [instance]
   definition fund_dbl_precat_thin_comp₁_aux {a b c₁ d₁ c₂ d₂ : A}
@@ -1169,7 +1149,6 @@ exit
              (refl (ap ι' (concat (concat h₁ h₂) g₂)))))
        ⬝ (ap_con ι' f₁ (concat i₁ i₂))) :=
   begin
-    esimp {fund_dbl_precat_flat_comp₁},
     cases i₂, cases i₁,
     cases h₂, cases h₁,
     cases g₂, cases px, cases pv,
@@ -1197,7 +1176,6 @@ exit
              (refl (ap ι' (concat f₁ (concat i₁ i₂))))))
        ⬝ (ap_con ι' (concat h₁ h₂) g₂)) :=
   begin
-    esimp {fund_dbl_precat_flat_comp₂},
     cases i₂, cases i₁,
     cases h₂, cases h₁,
     cases g₂, cases px, cases pv,
@@ -1206,7 +1184,6 @@ exit
     rewrite P1,
   end
 
-  set_option pp.notation false
   definition fund_dbl_precat_thin_comp₁ {a b c₁ d₁ c₂ d₂ : C}
     (f₁ : ι a = ι b) (g₁ : ι c₁ = ι d₁) (h₁ : ι  a = ι c₁) (i₁ : ι b = ι d₁)
     (g₂ : ι c₂ = ι d₂) (h₂ : ι c₁ = ι c₂) (i₂ : ι d₁ = ι d₂)
@@ -1214,10 +1191,7 @@ exit
     (px : (h₁ ⬝ h₂) ⬝ g₂ = f₁ ⬝ (i₁ ⬝ i₂)) :
     fund_dbl_precat_comp₁ (fund_dbl_precat_thin pv) (fund_dbl_precat_thin pu)
     = fund_dbl_precat_thin px :=
-  begin
-    esimp {fund_dbl_precat_thin, fund_dbl_precat_comp₁},
-    apply fund_dbl_precat_thin_comp₁_aux,
-  end
+  by apply fund_dbl_precat_thin_comp₁_aux
 
   definition fund_dbl_precat_thin_comp₂ {a b c₁ d₁ c₂ d₂ : C}
     (f₁ : ι a = ι b) (g₁ : ι c₁ = ι d₁) (h₁ : ι a = ι c₁) (i₁ : ι b = ι d₁)
@@ -1226,10 +1200,7 @@ exit
     (px : f₁ ⬝ (i₁ ⬝ i₂) = (h₁ ⬝ h₂) ⬝ g₂) :
     fund_dbl_precat_comp₂ (fund_dbl_precat_thin pv) (fund_dbl_precat_thin pu)
     = fund_dbl_precat_thin px :=
-  begin
-    esimp {fund_dbl_precat_thin, fund_dbl_precat_comp₂},
-    apply fund_dbl_precat_thin_comp₂_aux,
-  end
+  by apply fund_dbl_precat_thin_comp₂_aux
 
   variables {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : C}
     {f₀₀ : ι a₀₀ = ι a₀₁} {f₀₁ : ι a₀₁ = ι a₀₂}
@@ -1288,8 +1259,8 @@ exit
       intros, apply (fund_dbl_precat_inv₂ a_1),
       intros, apply fund_dbl_precat_left_inverse₂,
       intros, apply fund_dbl_precat_right_inverse₂,
-      intros, apply (fund_dbl_precat_thin a_1),
     fapply thin_structure.mk,
+      intros, apply (fund_dbl_precat_thin a_1),
       intros, apply fund_dbl_precat_thin_id₁,
       intros, apply fund_dbl_precat_thin_id₂,
       intros, apply fund_dbl_precat_thin_comp₁,
