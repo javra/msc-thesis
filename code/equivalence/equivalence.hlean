@@ -49,28 +49,10 @@ begin
     },
 end
 
-set_option pp.max_steps 10000
-check xmod_morphism.mk
-
 definition gamma_lambda_iso_nat (X Y : Xmod) (f : xmod_morphism X Y) :
-    (@comp (carrier Cat_xmod) Cat_xmod
-       (@to_fun_ob Cat_xmod Cat_xmod
-          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor)
-          X)
-       (@to_fun_ob Cat_xmod Cat_xmod (@functor.id Cat_xmod) X)
-       (@to_fun_ob Cat_xmod Cat_xmod (@functor.id Cat_xmod) Y)
-       (@to_fun_hom Cat_xmod Cat_xmod (@functor.id Cat_xmod) X Y f)
-       (gamma_lambda_iso X))
-    = (@comp (carrier Cat_xmod) Cat_xmod
-       (@to_fun_ob Cat_xmod Cat_xmod
-          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor) X)
-       (@to_fun_ob Cat_xmod Cat_xmod
-          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor) Y)
-       (@to_fun_ob Cat_xmod Cat_xmod (@functor.id Cat_xmod) Y)
-       (gamma_lambda_iso Y)
-       (@to_fun_hom Cat_xmod Cat_xmod
-          (@functor.compose Cat_xmod Cat_dbl_gpd Cat_xmod gamma.functor lambda.functor)
-          X Y f)) :=
+  ((@functor.id Cat_xmod) f) ∘ (gamma_lambda_iso X)
+  = (gamma_lambda_iso Y) ∘
+    (@to_fun_hom _ _ (functor.compose gamma.functor lambda.functor) X Y f) :=
 begin
   fapply xmod_morphism_congr,
   { cases X, cases Y, cases f,
@@ -81,23 +63,14 @@ begin
   },
   { apply eq_of_homotopy, intro p,
     apply eq_of_homotopy, intro x,
-    cases X with [X1, X2, X3, X'],-- cases X' with [X4, X5, X6, X7, X8, X9, X10, X11, X12],
-    cases Y with [Y1, Y2, Y3, Y'],-- cases Y' with [Y4, Y5, Y6, Y7, Y8, Y9, Y10, Y11, Y12],
-    cases f with [f1, f2, f3, f4, f5],
-    cases x, cases filler,
-    esimp [Xmod.cases_on, xmod_morphism.cases_on],
-    apply concat, apply (refl (f2 p m)),
-    apply inverse, apply concat, apply (refl (gamma_lambda_iso_hom_family _ _ _)),
-    esimp [gamma_lambda_iso_hom_family, folded_sq.mk, folded_sq.cases_on],
-    esimp [lambda_morphism.cases_on, lambda_morphism.m],
+    cases X, cases Y, cases f, cases x, cases filler,
+    apply inverse,
     apply concat, apply lambda.functor_on_hom_aux2,
     apply concat, apply lambda.functor_on_hom_aux3,
     apply concat, apply lambda.functor_on_hom_aux4,
     apply idp,
   },
 end
-
-check @xmod_morphism.hom_family
 
 definition lambda_gamma_iso (G : carrier Cat_dbl_gpd) :
   hom (functor.compose lambda.functor gamma.functor G) G :=
@@ -118,5 +91,5 @@ begin
     fapply iso.mk,
       fapply nat_trans.mk,
         intro X, apply (gamma_lambda_iso X),
-      intros [X, Y, m],
+      intros [X, Y, f], apply (gamma_lambda_iso_nat X Y f),
 end

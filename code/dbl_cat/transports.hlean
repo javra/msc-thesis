@@ -217,6 +217,20 @@ namespace dbl_precat
     = comp₁ D v (transport (λ x, D₂ _ _ (e x) _) p u) :=
   by cases p; apply idp
 
+  definition transp_comp₁_eq_comp₁_transp_b_r {e : E → hom d₁ d₂}
+    {i₂ i₂' : E} (p : i₂ = i₂')
+    (v : D₂ g₁ g₂ h₂ (e i₂)) (u : D₂ f₁ g₁ h₁ i₁) :
+    transport (λ x, D₂ _ _ _ ((e x) ∘ i₁)) p (comp₁ D v u)
+    = comp₁ D (transport (λ x, D₂ _ _ _ (e x)) p v) u :=
+  by cases p; apply idp
+
+  definition transp_comp₁_eq_comp₁_transp_b_l {e : E → hom c₁ c₂}
+    {h₂ h₂' : E} (p : h₂ = h₂')
+    (v : D₂ g₁ g₂ (e h₂) i₂) (u : D₂ f₁ g₁ h₁ i₁) :
+    transport (λ x, D₂ _ _ ((e x) ∘ h₁) _) p (comp₁ D v u)
+    = comp₁ D (transport (λ x, D₂ _ _ (e x) _) p v) u :=
+  by cases p; apply idp
+
   definition transp_comp₁_eq_comp₁_transp_b_rl {y z w : D₀}
     {Ef : Type} {ef : Ef → hom y z}
     {Eg : Type} {eg : Eg → hom y z}

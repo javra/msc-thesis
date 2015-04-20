@@ -406,13 +406,13 @@ namespace dbl_gpd
 
   definition fund_dbl_precat_interchange_aux :
     (fund_dbl_precat_flat_comp₁
-       (transport (λ a_0, _ ⬝ a_0 = _) ((ap_con ι' f₂₀ f₂₁)⁻¹)
-          (transport (λ a_1, _ = a_1 ⬝ _) ((ap_con ι' f₁₀ f₁₁)⁻¹)
+       (transport (λ x, _ ⬝ x = _) (ap_con ι' f₂₀ f₂₁)⁻¹
+          (transport (λ x, _ = x ⬝ _) (ap_con ι' f₁₀ f₁₁)⁻¹
              (fund_dbl_precat_flat_comp₂ x w)))
-       (transport (λ a_0, _ ⬝ a_0 = _) ((ap_con ι' f₁₀ f₁₁)⁻¹)
-          (transport (λ a_1, _ = a_1 ⬝ _) ((ap_con ι' f₀₀ f₀₁)⁻¹)
+       (transport (λ x, _ ⬝ x = _) (ap_con ι' f₁₀ f₁₁)⁻¹
+          (transport (λ x, _ = x ⬝ _) (ap_con ι' f₀₀ f₀₁)⁻¹
              (fund_dbl_precat_flat_comp₂ v u))))
-    = ((ap_con ι' f₂₀ f₂₁)⁻¹) ▹ ((ap_con ι' f₀₀ f₀₁)⁻¹) ▹
+    = (ap_con ι' f₂₀ f₂₁)⁻¹ ▹ (ap_con ι' f₀₀ f₀₁)⁻¹ ▹
       (fund_dbl_precat_flat_comp₁
         (fund_dbl_precat_flat_comp₂ x w)
         (fund_dbl_precat_flat_comp₂ v u)) :=
@@ -534,20 +534,20 @@ namespace dbl_gpd
     (w : (ap ι' h₃) ⬝ (ap ι' g₃) = (ap ι' g₂) ⬝ (ap ι' i₃))
     (v : (ap ι' h₂) ⬝ (ap ι' g₂) = (ap ι' g₁) ⬝ (ap ι' i₂))
     (u : (ap ι' h₁) ⬝ (ap ι' g₁) = (ap ι' f₁) ⬝ (ap ι' i₁)) :
-    (transport (λ a_6, ((ap ι' h₁) ⬝ a_6) ⬝ (ap ι' g₃) = _) (ap_con ι' h₂ h₃)
-     (transport (λ a_6, _ =  ((ap ι' f₁) ⬝ ((ap ι' i₁) ⬝ a_6))) (ap_con ι' i₂ i₃)
-      (transport (λ a_6, (a_6 ⬝ (ap ι' g₃)) = _) (ap_con ι' h₁ (concat h₂ h₃))
-       (transport (λ a_6, _ = (ap ι' f₁) ⬝ a_6) (ap_con ι' i₁ (concat i₂ i₃))
-        (transport (λ a_6, _ = (ap ι' f₁) ⬝ (ap ι' a_6)) (con.assoc i₁ i₂ i₃)
-         (transport (λ a_6, (ap ι' a_6) ⬝ (ap ι' g₃) = _) (con.assoc h₁ h₂ h₃)
-          (transport (λ a_6, _ =  (ap ι' f₁) ⬝ a_6) ((ap_con ι' (concat i₁ i₂) i₃)⁻¹)
-           (transport (λ a_6, a_6 ⬝ (ap ι' g₃) = _) ((ap_con ι' (concat h₁ h₂) h₃)⁻¹)
-            (transport (λ a_6, _ = (ap ι' f₁) ⬝ (a_6 ⬝ (ap ι' i₃))) ((ap_con ι' i₁ i₂)⁻¹)
-             (transport (λ a_6, (a_6 ⬝ (ap ι' h₃)) ⬝ (ap ι' g₃) = _) ((ap_con ι' h₁ h₂)⁻¹)
-              (transport (λ a_0, a_0 ⬝  (ap ι' g₃) = _)
-                ((con.assoc (ap ι' h₁) (ap ι' h₂) (ap ι' h₃))⁻¹)
-                (transport (λ a_0, _ = (ap ι' f₁) ⬝ a_0)
-                   ((con.assoc (ap ι' i₁) (ap ι' i₂) (ap ι' i₃))⁻¹)
+    (transport (λ x, ((ap ι' h₁) ⬝ x) ⬝ (ap ι' g₃) = _) (ap_con ι' h₂ h₃)
+     (transport (λ x, _ =  ((ap ι' f₁) ⬝ ((ap ι' i₁) ⬝ x))) (ap_con ι' i₂ i₃)
+      (transport (λ x, (x ⬝ (ap ι' g₃)) = _) (ap_con ι' h₁ (concat h₂ h₃))
+       (transport (λ x, _ = (ap ι' f₁) ⬝ x) (ap_con ι' i₁ (concat i₂ i₃))
+        (transport (λ x, _ = (ap ι' f₁) ⬝ (ap ι' x)) (con.assoc i₁ i₂ i₃)
+         (transport (λ x, (ap ι' x) ⬝ _ = _) (con.assoc h₁ h₂ h₃)
+          (transport (λ x, _ =  (ap ι' f₁) ⬝ x) (ap_con ι' (concat i₁ i₂) i₃)⁻¹
+           (transport (λ x, x ⬝ (ap ι' g₃) = _) (ap_con ι' (concat h₁ h₂) h₃)⁻¹
+            (transport (λ x, _ = _ ⬝ (x ⬝ _)) (ap_con ι' i₁ i₂)⁻¹
+             (transport (λ x, (x ⬝ _) ⬝ _ = _) (ap_con ι' h₁ h₂)⁻¹
+              (transport (λ x, x ⬝ _ = _)
+                (con.assoc (ap ι' h₁) (ap ι' h₂) (ap ι' h₃))⁻¹
+                (transport (λ x, _ = _ ⬝ x)
+                   (con.assoc (ap ι' i₁) (ap ι' i₂) (ap ι' i₃))⁻¹
                    (fund_dbl_precat_flat_comp₁
                      (fund_dbl_precat_flat_comp₁ w v) u)))))))))))))
      = (fund_dbl_precat_flat_comp₁ (fund_dbl_precat_flat_comp₁ w v) u) :=

@@ -199,7 +199,9 @@ namespace dbl_gpd
       (transport (λ x, two_cell E _ _ x _) (functor.respect_inv (catF F) h)
         (twoF F (inv₁ D u)))
     = inv₁ E (twoF F u) :=
-  sorry
+  begin
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+  end
 
   definition respect_inv₁' :=
   eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₁)
@@ -215,7 +217,7 @@ namespace dbl_gpd
   eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₂)
 
   end
-
+exit
 
   context
   parameters {D E : Dbl_gpd} (F : dbl_functor D E) {a b : gpd D} (f : hom a b)
