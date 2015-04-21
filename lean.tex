@@ -1842,16 +1842,15 @@ areas.
     cases f₂₀,
     intro g₁₀, cases g₁₀,
     intro g₁₁, cases g₁₁,
-    intro f₁₀, intro w, apply (eq.rec_on w),
+    intro f₁₀, intro w, cases w,
     intro f₂₁, cases f₂₁,
     intro g₁₂, cases g₁₂,
-    intro f₁₁, intro x, apply (eq.rec_on x),
+    intro f₁₁, intro x, cases x,
     intro g₀₀, cases g₀₀,
     intro g₀₁, cases g₀₁,
-    intro f₀₀, intro u, apply (eq.rec_on u),
+    intro f₀₀, intro u, cases u,
     intro g₀₂, cases g₀₂,
-    intro f₀₁, apply (eq.rec_on f₀₁),
-    intro v,   apply (eq.rec_on v),
+    intro f₀₁, intro v, cases v,
     apply idp,
   end
 \end{leancodebr}
@@ -1916,6 +1915,73 @@ areas.
 \node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,1) {};
 \node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
 \end{scope}
+\node at (3,-2) {$\overset{\text{\leani{cases w}}}{\leadsto}$};
+\begin{scope}[shift={(4,-3)}]
+\draw (0,2) -- (2,2); \draw (1,1) -- (2,1);
+\draw (1,2) -- (1,1); \draw (2,2) -- (2,0);
+\draw (0,2) --  (1,1) edge[red, line width=3pt] (2,0);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\node at (7,-2) {$\overset{\text{\leani{cases f₂₁}}}{\leadsto}$};
+\begin{scope}[shift={(8,-3)}]
+\draw (0,2) -- (2,2); \draw (1,1) edge[bend left] (2,1);
+\draw (1,2) -- (1,1); \draw (2,2) -- (2,1);
+\draw (0,2) --  (1,1) edge[red, bend right, line width=3pt] (2,1);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\node at (-1,-4.5) {$\overset{\text{\leani{cases g₁₂}}}{\leadsto}$};
+\begin{scope}[shift={(0,-6)}]
+\draw (0,2) -- (2,2);
+\draw (1,2) -- (1,1) edge[loop below] (1,1); \draw (0,2) -- (1,1) -- (2,2);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\node at (3,-4.5) {$\overset{\text{\leani{cases x}}}{\leadsto}$};
+\begin{scope}[shift={(4,-6)}]
+\draw (0,2) -- (2,2);
+\draw (1,2) -- (1,1) -- (2,2); \draw (0,2) edge[red, line width=3pt] (1,1);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\node at (7,-4.5) {$\overset{\text{\leani{cases g₀₀}}}{\leadsto}$};
+\begin{scope}[shift={(7.5,-6)}]
+\draw (1,1) -- (2,2) -- (1,2) edge[bend right] (1,1);
+\draw (1,1) edge[bend right, red, line width=3pt] (1,2);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,1) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,2) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (2,2) {};
+\end{scope}
+\node at (-1,-6) {$\overset{\text{\leani{cases g₀₁}}}{\leadsto}$};
+\begin{scope}[shift={(0.5,-6)}]
+\draw (0,0) edge[loop left] (0,0)
+			edge[bend left] (1,0)
+			edge[bend right] (1,0);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,0) {};
+\end{scope}
+\node at (3,-6) {$\overset{\text{\leani{cases u}}}{\leadsto}$};
+\begin{scope}[shift={(4.5,-6)}]
+\draw (0,0) edge[bend left] (1,0)
+			edge[red, line width=3pt, bend right] (1,0);
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (0,0) {};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (1,0) {};
+\end{scope}
+\node at (7,-6) {$\overset{\text{\leani{cases g₀₂}}}{\leadsto}$};
+\node [fill,circle,inner sep=0pt,minimum size=5pt] at (9,-6) {};
+\draw (9,-6) edge[loop above] (9,-6);
 \end{tikzpicture}
 \caption{Destructing a grid of squares to prove the ``flat'' interchange law.}
 \label{fig:interchange-destruct}
