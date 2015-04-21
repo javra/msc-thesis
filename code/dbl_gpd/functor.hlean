@@ -1,4 +1,5 @@
-import algebra.precategory.functor .decl ..transport4 ..dbl_gpd.basic arity
+import algebra.precategory.functor
+import ..dbl_cat.transports .decl ..transport4 ..dbl_gpd.basic arity ..transport4
 
 open eq iso iso.iso category functor dbl_gpd dbl_precat equiv Dbl_gpd
 open prod prod.ops sigma sigma.ops pi is_trunc thin_structure
@@ -191,54 +192,6 @@ namespace dbl_gpd
 
   context
   parameters {D E : Dbl_gpd} (F : dbl_functor D E)
-    {a b c d : gpd D} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
-    (u : two_cell D f g h i)
-
-  definition respect_inv₁ :
-    transport (λ x, two_cell E _ _ _ x) (functor.respect_inv (catF F) i)
-      (transport (λ x, two_cell E _ _ x _) (functor.respect_inv (catF F) h)
-        (twoF F (inv₁ D u)))
-    = inv₁ E (twoF F u) :=
-  begin
-    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
-  end
-
-  definition respect_inv₁' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₁)
-
-  definition respect_inv₂ :
-    transport (λ x, two_cell E _ x _ _) (functor.respect_inv (catF F) g)
-      (transport (λ x, two_cell E x _ _ _) (functor.respect_inv (catF F) f)
-        (twoF F (inv₂ D u)))
-    = inv₂ E (twoF F u) :=
-  sorry
-
-  definition respect_inv₂' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₂)
-
-  end
-exit
-
-  context
-  parameters {D E : Dbl_gpd} (F : dbl_functor D E) {a b : gpd D} (f : hom a b)
-
-  definition respect_id₁''_lhs [reducible] := twoF F (ID₁ (struct D) (f⁻¹))
-  definition respect_id₁''_rhs [reducible] := transport (λ x, two_cell E x _ _ _)
-  (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
-  (transport (λ x, two_cell E _ x _ _)
-  (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
-  (transport (λ x, two_cell E _ _ x _) (eq.inverse (respect_id (catF F) b))
-  (transport (λ x, two_cell E _ _ _ x) (eq.inverse (respect_id (catF F) a))
-  proof (ID₁ (struct E) (to_fun_hom (catF F) f)⁻¹) qed)))
-
-  --TODO: prove this after proving cancelling laws?
-  definition respect_id₁'' : respect_id₁''_lhs = respect_id₁''_rhs :=
-  sorry
-
-  end
-
-  context
-  parameters {D E : Dbl_gpd} (F : dbl_functor D E)
     ⦃a b c₁ d₁ c₂ d₂ : gpd D⦄
     ⦃f : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
@@ -289,6 +242,110 @@ exit
     {i i' : I} (pi : i = i') (u : two_cell D f g h (e i)) :
     twoF F (pi ▹ u) = pi ▹ (twoF F u) :=
   by cases pi; apply idp
+
+  end
+
+  context
+  universe variables l₁ l₂ l₃ l₄ l₅ l₆
+  parameters {D : Dbl_gpd.{l₁ l₂ l₃}} {E : Dbl_gpd.{l₄ l₅ l₆}} (F : dbl_functor D E)
+    {a b c d : gpd D} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
+    (u : two_cell D f g h i)
+
+  /-set_option pp.max_steps 500000
+  set_option pp.max_depth 1000000
+  set_option pp.implicit true
+  set_option pp.universes true
+  set_option pp.notation false
+  set_option formatter.hide_full_terms false
+  set_option pp.indent 0-/
+  definition respect_inv₁ :
+    transport (λ x, two_cell E _ _ _ x) (functor.respect_inv (catF F) i)
+      (transport (λ x, two_cell E _ _ x _) (functor.respect_inv (catF F) h)
+        (twoF F (inv₁ D u)))
+    = inv₁ E (twoF F u) :=
+  begin
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (id_right₁ E (twoF F (inv₁ D u))),
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₁ E _ x)),
+      apply inverse, apply (right_inverse₁ E (twoF F u)),
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_u_r E),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_u_l E),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (assoc₁' E),
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₁ E x _)),
+      apply inverse, apply  (respect_comp₁ F),
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_b_r E),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_b_l E),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₁ E (twoF F x) _)), apply (left_inverse₁' D),
+    apply concat, apply (ap (λ x, comp₁ E x _)), apply twoF_transport_l,
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_b_l E),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₁ E x _)), apply twoF_transport_r,
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_b_r E),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₁ E x _)), apply (respect_id₁' F),
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_b_l E),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_b_r E),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (id_left₁' E),
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply inverse,
+    apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply concat, apply transport4_transport_acc,
+    apply transport4_set_reduce,
+  end
+
+  definition respect_inv₁' :=
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₁)
+
+  definition respect_inv₂ :
+    transport (λ x, two_cell E _ x _ _) (functor.respect_inv (catF F) g)
+      (transport (λ x, two_cell E x _ _ _) (functor.respect_inv (catF F) f)
+        (twoF F (inv₂ D u)))
+    = inv₂ E (twoF F u) :=
+  sorry
+
+  definition respect_inv₂' :=
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₂)
+
+  end
+exit
+
+  context
+  parameters {D E : Dbl_gpd} (F : dbl_functor D E) {a b : gpd D} (f : hom a b)
+
+  definition respect_id₁''_lhs [reducible] := twoF F (ID₁ (struct D) (f⁻¹))
+  definition respect_id₁''_rhs [reducible] := transport (λ x, two_cell E x _ _ _)
+  (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
+  (transport (λ x, two_cell E _ x _ _)
+  (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
+  (transport (λ x, two_cell E _ _ x _) (eq.inverse (respect_id (catF F) b))
+  (transport (λ x, two_cell E _ _ _ x) (eq.inverse (respect_id (catF F) a))
+  proof (ID₁ (struct E) (to_fun_hom (catF F) f)⁻¹) qed)))
+
+  --TODO: prove this after proving cancelling laws?
+  definition respect_id₁'' : respect_id₁''_lhs = respect_id₁''_rhs :=
+  sorry
 
   end
 
