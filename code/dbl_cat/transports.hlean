@@ -58,11 +58,9 @@ namespace dbl_precat
     (u : D₂ f (e g) h i) (v : D₂ f₂ g₂ i i₂) :
     transport (λ x, D₂ _ (g₂ ∘ (e x)) _ _) q (comp₂ D v u)
     = comp₂ D v (transport (λ x, D₂ _ (e x) _ _) q u) :=
-  begin
-    apply (eq.rec_on q), apply idp,
-  end
+  by cases q; apply idp
 
-  definition transp_comp₂_eq_comp₂_transp_r_u' {e : E → hom b b₂}
+  definition transp_cmp₂_eq_comp₂_transp_r_u' {e : E → hom b b₂}
     {f₂ f₂' : E} (q : f₂ = f₂')
     (u : D₂ f g h i) (v : D₂ (e f₂) g₂ i i₂) :
     transport (λ x, D₂ ((e x) ∘ f) _ _ _) q (comp₂ D v u)

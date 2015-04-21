@@ -51,9 +51,7 @@ namespace dbl_gpd
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
     apply inverse, apply concat, apply zero_unique,
     apply inverse, apply concat, apply (transport_eq_transport4 (λ f g h i, D₂ f g h i)),
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
+    do 3 (apply concat; apply transport4_transport_acc),
     apply @transport4_set_reduce,
   end
 

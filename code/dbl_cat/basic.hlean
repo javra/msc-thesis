@@ -45,11 +45,51 @@ namespace dbl_precat
 
 end dbl_precat
 
+namespace dbl_precat
+  variables {D₀ : Type} {C : precategory D₀}
+    {D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c → hom b d → Type}
+    (D : dbl_precat C D₂)
+
+  definition assoc₁' ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : D₀⦄
+    ⦃f  : hom a b⦄   ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
+    ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
+    ⦃g₃ : hom c₃ d₃⦄ ⦃h₃ : hom c₂ c₃⦄ ⦃i₃ : hom d₂ d₃⦄
+    (w : D₂ g₂ g₃ h₃ i₃) (v : D₂ g₁ g₂ h₂ i₂) (u : D₂ f g₁ h₁ i₁) :=
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (assoc₁ D w v u))
+
+  definition id_left₁' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (id_left₁ D u))
+
+  definition id_right₁' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (id_right₁ D u))
+
+  definition assoc₂' ⦃a₁ a₂ a₃ a₄ c₁ c₂ c₃ c₄ : D₀⦄
+    ⦃f₁ : hom a₁ a₂⦄ ⦃g₁ : hom c₁ c₂⦄ ⦃h₁ : hom a₁ c₁⦄ ⦃h₂ : hom a₂ c₂⦄
+    ⦃f₂ : hom a₂ a₃⦄ ⦃g₂ : hom c₂ c₃⦄ ⦃h₃ : hom a₃ c₃⦄
+    ⦃f₃ : hom a₃ a₄⦄ ⦃g₃ : hom c₃ c₄⦄ ⦃h₄ : hom a₄ c₄⦄
+    (w : D₂ f₃ g₃ h₃ h₄) (v : D₂ f₂ g₂ h₂ h₃) (u : D₂ f₁ g₁ h₁ h₂) :=
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _(assoc₂ D w v u))
+
+  definition id_left₂' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (id_left₂ D u))
+
+  definition id_right₂' ⦃a b c d : D₀⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : D₂ f g h i) :=
+  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (id_right₂ D u))
+
+end dbl_precat
+
 namespace worm_precat
   context
   parameters {D₀ : Type} [C : precategory D₀]
-    {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
-      (h : hom a c) (i : hom b d), Type}
+    {D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c → hom b d → Type}
     (D : worm_precat C D₂)
 
   include D₀ C D
@@ -180,39 +220,5 @@ namespace dbl_precat
 
   definition horiz_precat :=
   worm_precat.two_cell_precat.{l₀ l₁ l₂} (to_worm_precat_2 D)
-
-  definition assoc₁' ⦃a b c₁ d₁ c₂ d₂ c₃ d₃ : D₀⦄
-    ⦃f  : hom a b⦄   ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
-    ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
-    ⦃g₃ : hom c₃ d₃⦄ ⦃h₃ : hom c₂ c₃⦄ ⦃i₃ : hom d₂ d₃⦄
-    (w : D₂ g₂ g₃ h₃ i₃) (v : D₂ g₁ g₂ h₂ i₂) (u : D₂ f g₁ h₁ i₁) :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (assoc₁ D w v u))
-
-  definition id_left₁' ⦃a b c d : D₀⦄
-    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
-    (u : D₂ f g h i) :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (id_left₁ D u))
-
-  definition id_right₁' ⦃a b c d : D₀⦄
-    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
-    (u : D₂ f g h i) :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (id_right₁ D u))
-
-  definition assoc₂' ⦃a₁ a₂ a₃ a₄ c₁ c₂ c₃ c₄ : D₀⦄
-    ⦃f₁ : hom a₁ a₂⦄ ⦃g₁ : hom c₁ c₂⦄ ⦃h₁ : hom a₁ c₁⦄ ⦃h₂ : hom a₂ c₂⦄
-    ⦃f₂ : hom a₂ a₃⦄ ⦃g₂ : hom c₂ c₃⦄ ⦃h₃ : hom a₃ c₃⦄
-    ⦃f₃ : hom a₃ a₄⦄ ⦃g₃ : hom c₃ c₄⦄ ⦃h₄ : hom a₄ c₄⦄
-    (w : D₂ f₃ g₃ h₃ h₄) (v : D₂ f₂ g₂ h₂ h₃) (u : D₂ f₁ g₁ h₁ h₂) :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _(assoc₂ D w v u))
-
-  definition id_left₂' ⦃a b c d : D₀⦄
-    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
-    (u : D₂ f g h i) :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (id_left₂ D u))
-
-  definition id_right₂' ⦃a b c d : D₀⦄
-    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
-    (u : D₂ f g h i) :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (id_right₂ D u))
 
 end dbl_precat

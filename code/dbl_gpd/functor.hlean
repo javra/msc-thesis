@@ -246,18 +246,10 @@ namespace dbl_gpd
   end
 
   context
-  universe variables l₁ l₂ l₃ l₄ l₅ l₆
-  parameters {D : Dbl_gpd.{l₁ l₂ l₃}} {E : Dbl_gpd.{l₄ l₅ l₆}} (F : dbl_functor D E)
+  parameters {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b c d : gpd D} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (u : two_cell D f g h i)
 
-  /-set_option pp.max_steps 500000
-  set_option pp.max_depth 1000000
-  set_option pp.implicit true
-  set_option pp.universes true
-  set_option pp.notation false
-  set_option formatter.hide_full_terms false
-  set_option pp.indent 0-/
   definition respect_inv₁ :
     transport (λ x, two_cell E _ _ _ x) (functor.respect_inv (catF F) i)
       (transport (λ x, two_cell E _ _ x _) (functor.respect_inv (catF F) h)
@@ -297,21 +289,7 @@ namespace dbl_gpd
     apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
     apply inverse,
     apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
+    do 15 (apply concat; apply transport4_transport_acc),
     apply transport4_set_reduce,
   end
 
@@ -323,33 +301,80 @@ namespace dbl_gpd
       (transport (λ x, two_cell E x _ _ _) (functor.respect_inv (catF F) f)
         (twoF F (inv₂ D u)))
     = inv₂ E (twoF F u) :=
-  sorry
+  begin
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (id_right₂ E (twoF F (inv₂ D u))),
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ E _ x)),
+      apply inverse, apply (right_inverse₂ E (twoF F u)),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' E),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' E),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (assoc₂' E),
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₂ E x _)),
+      apply inverse, apply (respect_comp₂ F),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' E),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' E),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ E (twoF F x) _)), apply (left_inverse₂' D),
+    apply concat, apply (ap (λ x, comp₂ E x _)), apply twoF_transport_u,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' E),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₂ E x _)), apply twoF_transport_b,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' E),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₂ E x _)), apply (respect_id₂' F),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' E),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' E),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (id_left₂' E),
+    apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
+    apply inverse,
+    apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
+    do 15 (apply concat; apply transport4_transport_acc),
+    apply transport4_set_reduce,
+  end
 
   definition respect_inv₂' :=
   eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₂)
 
   end
-exit
 
   context
   parameters {D E : Dbl_gpd} (F : dbl_functor D E) {a b : gpd D} (f : hom a b)
 
-  definition respect_id₁''_lhs [reducible] := twoF F (ID₁ (struct D) (f⁻¹))
+  -- This is a helper lemma for the equivalence construction.
+  -- TODO: replace it by use of the above lemmas.
+  definition respect_id₁''_lhs [reducible] := twoF F (dbl_precat.ID₁ D (f⁻¹))
   definition respect_id₁''_rhs [reducible] := transport (λ x, two_cell E x _ _ _)
   (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
   (transport (λ x, two_cell E _ x _ _)
   (@functor.respect_inv _ _ (catF F) _ _ f (!all_iso) (!all_iso))⁻¹
   (transport (λ x, two_cell E _ _ x _) (eq.inverse (respect_id (catF F) b))
   (transport (λ x, two_cell E _ _ _ x) (eq.inverse (respect_id (catF F) a))
-  proof (ID₁ (struct E) (to_fun_hom (catF F) f)⁻¹) qed)))
+  proof (dbl_precat.ID₁ E (to_fun_hom (catF F) f)⁻¹) qed)))
 
-  --TODO: prove this after proving cancelling laws?
+  definition respect_id₁''_aux := eq_inv_tr_of_tr_eq _ _ _ _ (apD
+    (λ x, dbl_precat.ID₁ E x) (functor.respect_inv (catF F) f))
+
   definition respect_id₁'' : respect_id₁''_lhs = respect_id₁''_rhs :=
-  sorry
+  begin
+    esimp[respect_id₁''_lhs, respect_id₁''_rhs],
+    apply concat, apply respect_id₁',
+    do 2 (apply inv_tr_eq_of_eq_tr),
+    apply concat, apply respect_id₁''_aux,
+    apply inv_tr_eq_of_eq_tr, apply inverse,
+    apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
+    do 6 (apply concat; apply transport4_transport_acc),
+    apply transport4_set_reduce,
+  end
 
   end
 
-  set_option pp.notation false
   definition dbl_functor.compose [reducible] {C D E : Dbl_gpd}
     (G : dbl_functor D E) (F : dbl_functor C D) : dbl_functor C E :=
   begin
@@ -379,11 +404,7 @@ exit
         unfold functor.compose, esimp,
         apply inverse,
         apply concat,  apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
-        apply concat, apply transport4_transport_acc,
-        apply concat, apply transport4_transport_acc,
-        apply concat, apply transport4_transport_acc,
-        apply concat, apply transport4_transport_acc,
-        apply concat, apply transport4_transport_acc,
+        do 5 (apply concat; apply transport4_transport_acc),
         apply transport4_set_reduce,
       intros, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
         apply concat, apply (ap (λ x, twoF G x)), apply respect_id₂',
@@ -393,11 +414,7 @@ exit
         apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
         apply inverse,
         apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell E f g h i)),
-        apply concat, apply transport4_transport_acc,
-        apply concat, apply transport4_transport_acc,
-        apply concat, apply transport4_transport_acc,
-        apply concat, apply transport4_transport_acc,
-        apply concat, apply transport4_transport_acc,
+        do 5 (apply concat; apply transport4_transport_acc),
         apply transport4_set_reduce,
       intros, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
         apply concat, apply (ap (λ x, twoF G x)), apply respect_comp₂',
