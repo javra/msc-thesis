@@ -4,11 +4,11 @@ open dbl_precat category is_trunc eq
 
 namespace dbl_precat
   section
-  parameters {D₀ : Type} [D₀set : is_hset D₀] [C : precategory D₀]
+  parameters {D₀ : Type} [C : precategory D₀]
     {D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
       Type}
     (D : dbl_precat C D₂)
-  include D D₀set C
+  include D C
 
   section
   variables {a b c d b₂ d₂ : D₀} {E : Type}
@@ -58,13 +58,21 @@ namespace dbl_precat
     (u : D₂ f (e g) h i) (v : D₂ f₂ g₂ i i₂) :
     transport (λ x, D₂ _ (g₂ ∘ (e x)) _ _) q (comp₂ D v u)
     = comp₂ D v (transport (λ x, D₂ _ (e x) _ _) q u) :=
-  by cases q; apply idp
+  by apply (eq.rec_on q); apply idp
 
-  definition transp_cmp₂_eq_comp₂_transp_r_u' {e : E → hom b b₂}
+  definition transp_comp₂_eq_comp₂_transp_r_u' {e : E → hom b b₂}
     {f₂ f₂' : E} (q : f₂ = f₂')
     (u : D₂ f g h i) (v : D₂ (e f₂) g₂ i i₂) :
     transport (λ x, D₂ ((e x) ∘ f) _ _ _) q (comp₂ D v u)
     = comp₂ D (transport (λ x, D₂ (e x) _ _ _) q v) u :=
+  by cases q; apply idp
+
+  definition transp_comp₂_eq_comp₂_transp_r_vert {g : hom c b}
+    {i : hom b b} {i₂ : hom b₂ b₂}
+    {e : E → hom b b₂} {f₂ f₂' : E} (q : f₂ = f₂')
+    (u : D₂ f g h i) (v : D₂ (e f₂) (e f₂) i i₂) :
+    transport (λ x, D₂ ((e x) ∘ f) ((e x) ∘ g) _ _) q (comp₂ D v u)
+    = comp₂ D (transport (λ x, D₂ (e x) (e x) _ _) q v) u :=
   by cases q; apply idp
 
   definition transp_comp₂_inner_deal1 {e : E → hom b d}
@@ -228,6 +236,14 @@ namespace dbl_precat
     transport (λ x, D₂ _ _ ((e x) ∘ h₁) _) p (comp₁ D v u)
     = comp₁ D (transport (λ x, D₂ _ _ (e x) _) p v) u :=
   by cases p; apply idp
+
+  definition transp_comp₂_eq_comp₂_transp_b_horiz
+    {g₁ : hom c₁ c₁} {i₁ : hom b c₁} {g₂ : hom c₂ c₂}
+    {e : E → hom c₁ c₂} {h₂ h₂' : E} (q : h₂ = h₂')
+    (u : D₂ f₁ g₁ h₁ i₁) (v : D₂ g₁ g₂ (e h₂) (e h₂)) :
+    transport (λ x, D₂ _ _ ((e x) ∘ _) ((e x) ∘ _)) q (comp₁ D v u)
+    = comp₁ D (transport (λ x, D₂ _ _ (e x) (e x)) q v) u :=
+  by cases q; apply idp
 
   definition transp_comp₁_eq_comp₁_transp_b_rl {y z w : D₀}
     {Ef : Type} {ef : Ef → hom y z}

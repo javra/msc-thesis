@@ -25,21 +25,57 @@ namespace dbl_gpd
   definition right_inverse₂' :=
   eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (right_inverse₂ D u))
 
-  /-definition comp₁_right_cancel ⦃c₂ d₂ : D₀⦄
-    {g₂ : hom c₂ d₂} {h₂ : hom c c₂} {i₂ : hom d d₂}
-    {v w : D₂ g g₂ h₂ i₂} (p : comp₁ D v u = comp₁ D w u) : v = w :=
+  definition ID₁_respect_inv : ID₁ D (f⁻¹) = inv₂ D (ID₁ D f) :=
+  begin
+    apply concat, apply inverse, apply (id_right₂ D),
+    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ _ _ x)),
+      apply inverse, apply (right_inverse₂ D (ID₁ D f)),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' D),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' D),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply assoc₂',
+    do 2 (apply inv_tr_eq_of_eq_tr),
+    apply concat, apply (ap (λ x, comp₂ _ x _)), apply inverse, apply id_comp₂,
+    apply concat, apply (ap (λ x, comp₂ _ x _)),
+      apply inverse, apply (apD (λ x, ID₁ D x) (left_inverse f)⁻¹),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_vert D),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₂ _ x _)), apply zero_unique,
+    apply concat, apply (id_left₂' D),
+    do 2 (apply inv_tr_eq_of_eq_tr),
+    apply inverse,
+    apply concat, apply (transport_eq_transport4 (λ f g h i, D₂ f g h i)),
+    do 8 (apply concat; apply transport4_transport_acc),
+    apply transport4_set_reduce,
+  end
+
+  definition ID₂_respect_inv : ID₂ D (f⁻¹) = inv₁ D (ID₂ D f) :=
   begin
     apply concat, apply inverse, apply (id_right₁ D),
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₁ D _ x)), apply inverse, apply (right_inverse₁ D u),
-    apply concat, apply inverse, --apply (transp_comp₁_eq_comp₁_transp_u_r _ v _),
-  end-/
-
-  definition ID₁_respect_inv : ID₁ D (f⁻¹) = inv₂ D (ID₁ D f) :=
-  sorry
-
-  definition ID₂_respect_inv : ID₂ D (f⁻¹) = inv₁ D (ID₂ D f) :=
-  sorry
+    apply concat, apply (ap (λ x, comp₁ _ _ x)),
+      apply inverse, apply (right_inverse₁ D (ID₂ D f)),
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_u_r D),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_u_l D),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply assoc₁',
+    do 2 (apply inv_tr_eq_of_eq_tr),
+    apply concat, apply (ap (λ x, comp₁ _ x _)), apply inverse, apply id_comp₁,
+    apply concat, apply (ap (λ x, comp₁ _ x _)),
+      apply inverse, apply (apD (λ x, ID₂ D x) (left_inverse f)⁻¹),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_b_horiz D),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₁ _ x _)), apply inverse, apply zero_unique,
+    apply concat, apply (id_left₁' D),
+    do 2 (apply inv_tr_eq_of_eq_tr),
+    apply inverse,
+    apply concat, apply (transport_eq_transport4 (λ f g h i, D₂ f g h i)),
+    do 8 (apply concat; apply transport4_transport_acc),
+    apply transport4_set_reduce,
+  end
 
   definition ID₁_inverse_compose (f : hom a b) :
     comp₂ D (ID₁ D (f⁻¹)) (ID₁ D f) =
