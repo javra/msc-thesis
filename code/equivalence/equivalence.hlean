@@ -8,18 +8,18 @@ universe variables l₁ l₂ l₃
 
 --set_option pp.notation false
 --set_option pp.implicit true
-definition gamma_lambda_iso_hom_family [reducible] (X : Xmod)
+definition gamma_lambda_transf_hom_family [reducible] (X : Xmod)
   (p : carrier (to_fun_ob (functor.compose gamma.functor lambda.functor) X))
   (a : groups (to_fun_ob (functor.compose gamma.functor lambda.functor) X) p) :
   groups X (to_fun_ob (@functor.id (Precategory.mk _ (Xmod.gpd X))) p) :=
 by cases a; cases filler; exact m
 
-definition gamma_lambda_iso (X : Xmod) :
+definition gamma_lambda_transf (X : Xmod) :
   hom (functor.compose gamma.functor lambda.functor X) X :=
 begin
   fapply xmod_morphism.mk,
     apply functor.id,
-    intros, apply gamma_lambda_iso_hom_family, apply a,
+    intros, apply gamma_lambda_transf_hom_family, apply a,
     { intros, cases x with [lidx, fillerx], cases y with [lidy, fillery],
       cases fillerx with [fillerxm, fillerxcomm],
       cases fillery with [fillerym, fillerycomm],
@@ -38,9 +38,7 @@ begin
     {
       intros, cases x, cases filler,
       apply concat, apply (refl (lambda_morphism.m _)),
-      apply concat, apply lambda_morphism_m_transport_b,
-      apply concat, apply lambda_morphism_m_transport_b,
-      apply concat, apply lambda_morphism_m_transport_b,
+      do 3 (apply concat; apply lambda_morphism_m_transport_b),
       apply concat, apply one_mul,
       apply (ap (λ x, φ X a x)),
       apply concat, apply lambda_morphism_m_transport_b,
@@ -49,9 +47,9 @@ begin
     },
 end
 
-definition gamma_lambda_iso_nat (X Y : Xmod) (f : xmod_morphism X Y) :
-  ((@functor.id Cat_xmod) f) ∘ (gamma_lambda_iso X)
-  = (gamma_lambda_iso Y) ∘
+definition gamma_lambda_transf_nat (X Y : Xmod) (f : xmod_morphism X Y) :
+  ((@functor.id Cat_xmod) f) ∘ (gamma_lambda_transf X)
+  = (gamma_lambda_transf Y) ∘
     (@to_fun_hom _ _ (functor.compose gamma.functor lambda.functor) X Y f) :=
 begin
   fapply xmod_morphism_congr,
@@ -72,13 +70,32 @@ begin
   },
 end
 
-definition lambda_gamma_iso (G : carrier Cat_dbl_gpd) :
-  hom (functor.compose lambda.functor gamma.functor G) G :=
+set_option apply.class_instance false
+definition gamma_lambda_transf_iso (X : Xmod) : is_iso (gamma_lambda_transf X) :=
 begin
-  fapply dbl_functor.mk,
-    apply functor.id,
-    intros [a,b,c,d,f,g,h,i,u],
+  fapply @is_iso.mk,
+    fapply xmod_morphism.mk,
+    { apply functor.id, },
+    { intros,
+      fapply (@folded_sq.mk (carrier (Dbl_gpd.gpd (lambda.on_objects X)))),
+        apply (μ X a),
+      fapply lambda_morphism.mk, apply a,
+      apply inverse, apply concat, apply id_left,
+      apply concat, apply (ap (λ x, _ ∘ _ ∘ x)), apply id_inverse,
+      apply concat, apply (ap (λ x, _ ∘ x)), apply id_right,
+      apply id_right,
+    },
+    {
+      intros,
+      fapply (@folded_sq.congr (carrier (Dbl_gpd.gpd (lambda.on_objects X)))),
+        apply μ_respect_comp,
+
+    },
 end
+
+check @lambda.on_objects
+check @folded_sq.congr
+
 
 definition xmod_dbl_gpd_equivalence :
   equivalence Cat_dbl_gpd.{(max l₁ l₂) l₂ l₃} Cat_xmod.{(max l₁ l₂) l₂ l₃} :=
@@ -90,6 +107,8 @@ begin
     rotate 1,
     fapply iso.mk,
       fapply nat_trans.mk,
-        intro X, apply (gamma_lambda_iso X),
-      intros [X, Y, f], apply (gamma_lambda_iso_nat X Y f),
+        intro X, apply (gamma_lambda_transf X),
+      intros [X, Y, f], apply (gamma_lambda_transf_nat X Y f),
+    fapply @is_iso_nat_trans,
+    intro X, --apply (gamma_lambda_transf_iso X),
 end
