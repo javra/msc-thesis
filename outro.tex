@@ -1,0 +1,97 @@
+Summarizing the previous chapters, my work consists of translating the algebraic
+structures of double groupoids and crossed module to set based structures in
+homotopy type theory.
+I transferred the principal example of a fundamental double groupoid of a triple
+of spaces from the topological setting to its equivalent in the world of higher
+types by defining the fundamental double groupoid of a presented 2-type.
+I formalized the structures of double categories, double groupoids and crossed
+modules in the new theorem proving language Lean and mechanized the essential
+parts of the proof that double groupoids with thin structures and crossed modules
+form equivalent categories.
+I furthermore made the formalized structures applicable to 2-truncated higher types by
+instantiating the fundamental double groupoid of such types.
+
+I hereby made it possible to analyze presented 2-types in purely set-based algebraic
+structures.
+This opens up the analysis of second homotopy groups or second homotopy groupoids
+of 2-types and the characteristics of these groups and groupoids to the use of
+formalized group theoretical and category theoretical knowledge.
+This could lead to direct computation of several homotopy invariants.
+Being one of the first greater formalization projects in Lean, the problems encountered
+during the process of writing the formal definitions and proofs led to improvements
+in the performance and usability of Lean.
+With respect to their compilation time, my theory files also serve as a benchmark
+for the elaboration and type checking algorithms used in Lean.
+
+What are the main insights and experiences gained from this work?
+Many of the difficulties in writing the formalization are certainly due to the
+early development stage of the system used.
+During my work, Lean's features for structure definition, type class inference,
+tactics, as well as troubleshooting and output were vastly enhanced and improved.
+Also, the time Lean needs to elaborate and type check the theory files have decreased
+drastically since the start of the project.
+The library of category theory and group theory that were developed alongside the
+actual formalization project and are still work in progress.
+Another big hurdle was the management of transport terms in my proofs.
+Even actually trivial proofs involving equalities of two-cells in double
+categories and double groupoids turned out to be long and tedious due to the need
+of moving transport terms from the inside of an operator or a function to its
+outside.
+This is, of course, the price one has to pay for the heavy use of dependently
+typed two-cells in double categories.
+After gaining experience on what auxiliary lemmas were needed and how to use them,
+this burden of moving transport terms was reduced to a mere strain on the theorem
+prover and a part of the theories that made the files longer and less readable.
+Finally, some parts of the proofs which were not stated explicitly but instead
+left out as ``trivial'' in my main reference~\cite{nat} turned out to be more
+sophisticated than initially anticipated.
+
+There are several points where I could have made a different decision that would
+have led to different results in the complexity and the character of my formalization.
+As mentioned in chapter~\ref{chapter:types}, the decision on whether to formalize
+the higher cells of a double category as dependent types or as flat types with
+face operators is a difficult one.
+Deciding for flat types would have prevented the need for many auxiliary lemmas
+involved in the effort to control transport terms in equalities of two-cells.
+It is hard to judge whether a flat typed approach would have led to longer proofs
+and less readable definitions or if it made the formalization cleaner and shorter.
+Another way of preventing the need of said auxiliary lemmas and of applying lemmas
+to move transport terms to different sides of equations would be using what Daniel
+Licata calls ``pathovers'' and ``squareovers'' in his paper~\cite{licatacubical}
+describing a strategy for the proof that, as a higher inductive type, the torus
+is equivalent to the product of two circles.
+These encapsulate the type of equalities like those of the form $p_*(x) = y$ as objects,
+formalized as an inductive type. %TODO more details?
+Another solution would be to switch to a different logic that allow postulating
+judgmental equalities, e.g. the cubical identities~\ref{eq:corner-ident}.
+One example for such a logical framework might by Vladimir Voevodsky's
+Homotopy Type System (HTS)~\cite{hts}.
+This system might make it possible to generalize my formalization to the case
+of cubical $\omega$-groupoids and crossed complexes -- something which, with my
+current approach -- is not possible since there is no uniform way to describe the
+dependent types of $n$-cells for all $n \in \mathbb{N}$.
+
+This leads to the question what could be a possible way to continue and extend
+my project.
+The most obvious use of the formalization would be a 2-dimensional Seifert-van
+Kampen theorem for presented 2-types.
+In its most common form, such a theorem would state that the category
+theoretical pushout of the fundamental double groupoid of two presented 2-types
+is isomorphic to the fundamental double groupoid of the pushout of those presented
+2-types in the form of a higher inductive type.
+Then, one could search for ways to find ``reasonable'' presentations for 2-types,
+homotopy surjective ones come to mind, either manually or automatically at the
+time of the definition of a higher inductive type.
+Such an automation could then be part of the definitional package of an interactive
+theorem prover that provides these higher inductive types as a primitive.
+As mentioned in the above paragraph, the most important generalization of my work
+would consist of replacing the ``double'' in ``double groupoid'' by ``$n$-fold''
+for an arbitrary $n \in \mathbb{N}$ or, as an ultimate goal, by the case of
+$\omega$-groupoids that contain higher cells for every dimension.
+Finally, one could ask if there are any applications of Ronald Brown's attempts
+to ``compute'' crossed modules induced by subgroups \cite{brown1996computing}
+to computable homotopy characteristics of higher types.
+
+
+
+
