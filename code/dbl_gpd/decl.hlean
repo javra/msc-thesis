@@ -4,7 +4,7 @@ import ..dbl_cat.basic ..thin_structure.basic
 --open dbl_precat precategory
 open eq function iso category dbl_precat is_trunc
 
-context
+section
   parameters
     {D₀ : Type}
     (C : groupoid D₀)

@@ -99,7 +99,7 @@ namespace dbl_gpd
       end
   end
 
-  context
+  section
   parameters (D E : Dbl_gpd)
     (catF1 catF2 : functor (gpd D) (gpd E))
     (twoF1 : Π ⦃a b c d : gpd D⦄
@@ -190,7 +190,7 @@ namespace dbl_gpd
   eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.ID₂ D f)) _
    (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
 
-  context
+  section
   parameters {D E : Dbl_gpd} (F : dbl_functor D E)
     ⦃a b c₁ d₁ c₂ d₂ : gpd D⦄
     ⦃f : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
@@ -204,7 +204,7 @@ namespace dbl_gpd
 
   end
 
-  context
+  section
   parameters {D E : Dbl_gpd} (F : dbl_functor D E)
     ⦃a b₁ c d₁ b₂ d₂ : gpd D⦄
     ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h : hom a c⦄ ⦃i₁ : hom b₁ d₁⦄
@@ -218,7 +218,7 @@ namespace dbl_gpd
 
   end
 
-  context
+  section
   parameters
     {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b c d : gpd D} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
@@ -245,7 +245,7 @@ namespace dbl_gpd
 
   end
 
-  context
+  section
   parameters {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b c d : gpd D} {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     (u : two_cell D f g h i)
@@ -344,7 +344,7 @@ namespace dbl_gpd
 
   end
 
-  context
+  section
   parameters {D E : Dbl_gpd} (F : dbl_functor D E) {a b : gpd D} (f : hom a b)
 
   -- This is a helper lemma for the equivalence construction.
@@ -437,7 +437,7 @@ namespace dbl_gpd
   end
 
   --Algebraicly motivated congruence lemma for double functors
-  context
+  section
   parameters
     {D E : Dbl_gpd}
     (F G : dbl_functor D E)
@@ -448,7 +448,7 @@ namespace dbl_gpd
 
   parameter (q : Π ⦃a b : gpd D⦄ (f : hom a b), catF G f ∘ p_iso a = p_iso b ∘ catF F f)
 
-  context
+  section
   parameters ⦃a b c d : gpd D⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d)
     (u : two_cell D f g h i)

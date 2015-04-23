@@ -3,7 +3,7 @@ import .decl ..dbl_cat.transports ..thin_structure.basic ..transport4
 open eq dbl_precat iso category is_trunc thin_structure
 
 namespace dbl_gpd
-  context
+  section
   parameters {D₀ : Type} [C : groupoid D₀]
     {D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c → hom b d → Type}
     (D : dbl_gpd C D₂)

@@ -386,7 +386,7 @@ namespace dbl_gpd
     (ap ι' f) (ap ι' g) (ap ι' h) (ap ι' i) u
 
   --HALF-FlAT VERSION FOR THE INTERCHANGE LAW
-  context
+  section
   parameters (X A C : Type) [Xtrunc : is_trunc 2 X]
     [Atrunc : is_trunc 1 A] [Cset : is_hset C]
     {ι' : A → X}
@@ -479,7 +479,7 @@ namespace dbl_gpd
   end
 
   --DEFINITIONS FOR THE VERTICAL WORM PRECATEGORY
-  context
+  section
   parameters (X A C : Type) [Xtrunc : is_trunc 2 X]
     [Atrunc : is_trunc 1 A] [Cset : is_hset C]
     (ι' : A → X) (ι : C → A)
@@ -669,7 +669,7 @@ namespace dbl_gpd
     (ap ι' f₂) (ap ι' g₂) (ap ι' i₂) v u
 
   --DEFINITIONS FOR THE HORIZONTAL WORM PRECATEGORY
-  context
+  section
   parameters (X A C : Type) [Xtrunc : is_trunc 2 X]
     [Atrunc : is_trunc 1 A] [Cset : is_hset C]
     (ι' : A → X) (ι : C → A)
@@ -1041,7 +1041,7 @@ namespace dbl_gpd
 
   end
 
-  context
+  section
   parameters (X A C : Type) [Xtrunc : is_trunc 2 X]
     [Atrunc : is_trunc 1 A] [Cset : is_hset C]
     (ι' : A → X) (ι : C → A)

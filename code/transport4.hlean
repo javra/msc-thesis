@@ -1,6 +1,6 @@
 open eq is_trunc
 
-context
+section
   parameters {A B C D : Type} (P : A → B → C → D → Type)
 
   definition transport4 {a0 a1 : A} {b0 b1 : B} {c0 c1 : C} {d0 d1 : D}

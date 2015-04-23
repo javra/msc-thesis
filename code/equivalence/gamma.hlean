@@ -8,7 +8,7 @@ attribute gamma.folded_sq_group [instance]
 
 set_option pp.beta true
 namespace gamma
-  context
+  section
   parameters {D₀ : Type}
     [D₀set : is_hset D₀]
     [C : groupoid D₀]

@@ -6,7 +6,7 @@ set_option apply.class_instance false -- disable class instance resolution in th
 
 set_option pp.beta true
 namespace gamma
-  context
+  section
   universe variables l₁ l₂ l₃
   parameters {D₀ : Type.{l₁}}
     [D₀set : is_hset D₀]

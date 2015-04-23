@@ -5,7 +5,7 @@ open sigma sigma.ops
 
 namespace xmod
 
-  context
+  section
   parameters (X Y : Xmod)
   include X Y
 
@@ -79,7 +79,7 @@ namespace xmod
 
   end
 
-  context
+  section
   parameters
     (X Y : Xmod)
     (gpd_functor1 gpd_functor2 : functor (Groupoid.mk X (gpd X)) (Groupoid.mk Y (gpd Y)))
@@ -104,6 +104,7 @@ namespace xmod
          = hom_family2)
 
   include p q r
+  set_option apply.class_instance true
   definition xmod_morphism_congr :
     xmod_morphism.mk gpd_functor1 hom_family1 hom_family_hom1 mu_commute1 phi_commute1
     = xmod_morphism.mk gpd_functor2 hom_family2 hom_family_hom2 mu_commute2 phi_commute2 :=
@@ -132,7 +133,7 @@ namespace xmod
 
   end
 
-  context
+  section
   parameters
     {X Y Z : Xmod}
     (g : xmod_morphism Y Z) (f : xmod_morphism X Y)
@@ -165,7 +166,7 @@ namespace xmod
     intros, apply idp,
   end
 
-  context
+  section
   parameters
     (X Y Z W : Xmod)
     (h : xmod_morphism Z W) (g : xmod_morphism Y Z) (f : xmod_morphism X Y)
@@ -177,7 +178,7 @@ namespace xmod
     fapply xmod_morphism_congr,
         apply idp,
       apply idp,
-      repeat (apply eq_of_homotopy ; intros),
+    repeat (apply eq_of_homotopy ; intros),
     apply idp,
   end
 

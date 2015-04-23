@@ -7,7 +7,7 @@ attribute gamma.folded_sq_group [instance]
 
 set_option pp.beta true
 namespace gamma
-  context
+  section
   --universe variable l
   parameters {D₀ : Type/-.{l}-/}
     [D₀set : is_hset D₀]

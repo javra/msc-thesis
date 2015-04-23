@@ -100,7 +100,7 @@ namespace dbl_precat
       end
   end
 
-  context
+  section
   parameters (D E : Dbl_precat)
     (catF1 catF2 : functor (cat D) (cat E))
     (twoF1 : Π ⦃a b c d : cat D⦄
@@ -152,7 +152,7 @@ namespace dbl_precat
   eq_inv_tr_of_tr_eq _ _ _ _
     (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
 
-  context
+  section
   parameters {D E : Dbl_precat} (F : dbl_functor D E)
     ⦃a b c₁ d₁ c₂ d₂ : cat D⦄
     ⦃f : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
@@ -166,7 +166,7 @@ namespace dbl_precat
 
   end
 
-  context
+  section
   parameters {D E : Dbl_precat} (F : dbl_functor D E)
     ⦃a b₁ c d₁ b₂ d₂ : cat D⦄
     ⦃f₁ : hom a b₁⦄ ⦃g₁ : hom c d₁⦄ ⦃h : hom a c⦄ ⦃i₁ : hom b₁ d₁⦄
@@ -180,7 +180,7 @@ namespace dbl_precat
 
   end
 
-  context
+  section
   parameters
     {D E : Dbl_precat} (F : dbl_functor D E)
     {a b c d : cat D}
@@ -303,7 +303,7 @@ namespace dbl_precat
       intros, apply idp,
   end
 
-  context
+  section
   parameters
     {B E : Dbl_precat}
     (F1 G1 : functor (cat B) (cat E))

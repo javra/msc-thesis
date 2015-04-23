@@ -6,13 +6,20 @@ open eq sigma is_trunc unit iso category path_algebra xmod
 open equiv sigma.ops
 
 namespace lambda
-  context
+  section
   parameters {P₀ : Type} [P : groupoid P₀] {M : P₀ → Group} (MM : xmod M)
   include P MM
 
   structure lambda_morphism ⦃a b c d : P₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d) :=
   (m : M d) (comm : μ MM m = i ∘ f ∘ h⁻¹ ∘ g⁻¹)
+
+  definition lambda_morphism_m_transport_u ⦃a b c d : P₀⦄ {E : Type} {e : E → hom a b}
+    {f f' : E} (p : f = f') {g : hom c d} {h : hom a c} {i : hom b d}
+    (u : lambda_morphism (e f) g h i) :
+    lambda_morphism.m (transport (λ x, lambda_morphism (e x) g h i) p u)
+    = lambda_morphism.m u :=
+  by cases p; apply idp
 
   definition lambda_morphism_m_transport_b ⦃a b c d : P₀⦄ {E : Type} {e : E → hom c d}
     {f : hom a b} {g g' : E} (p : g = g') {h : hom a c} {i : hom b d}
@@ -303,7 +310,7 @@ namespace lambda
     apply is_hset.elim,
   end
 
-  context
+  section
   parameters ⦃a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : P₀⦄
     {f₀₀ : hom a₀₀ a₀₁} {f₀₁ : hom a₀₁ a₀₂} {f₁₀ : hom a₁₀ a₁₁}
     {f₁₁ : hom a₁₁ a₁₂} {f₂₀ : hom a₂₀ a₂₁} {f₂₁ : hom a₂₁ a₂₂}

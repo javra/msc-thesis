@@ -3,7 +3,7 @@ import .gamma ..dbl_gpd.functor ..xmod.morphism
 open eq category iso is_trunc path_algebra function xmod dbl_precat dbl_gpd Dbl_gpd functor
 
 namespace gamma
-  context
+  section
   parameters {G H : Dbl_gpd} (F : dbl_functor G H)
 
   protected definition on_morphisms_on_base [reducible] (p : gamma.on_objects G)

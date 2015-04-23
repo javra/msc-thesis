@@ -87,7 +87,7 @@ namespace dbl_precat
 end dbl_precat
 
 namespace worm_precat
-  context
+  section
   parameters {D₀ : Type} [C : precategory D₀]
     {D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c → hom b d → Type}
     (D : worm_precat C D₂)
