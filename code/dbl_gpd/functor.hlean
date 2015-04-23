@@ -108,14 +108,25 @@ namespace dbl_gpd
     (twoF2 : Π ⦃a b c d : gpd D⦄
       ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
       two_cell D f g h i → two_cell E (catF2 f) (catF2 g) (catF2 h) (catF2 i))
-    (respect_id₁1 : proof respect_id₁_type D E catF1 qed twoF1)
-    (respect_id₁2 : proof respect_id₁_type D E catF2 qed twoF2)
-    (respect_comp₁1 : proof respect_comp₁_type D E catF1 qed twoF1)
-    (respect_comp₁2 : proof respect_comp₁_type D E catF2 qed twoF2)
-    (respect_id₂1 : proof respect_id₂_type D E catF1 qed twoF1)
-    (respect_id₂2 : proof respect_id₂_type D E catF2 qed twoF2)
-    (respect_comp₂1 : proof respect_comp₂_type D E catF1 qed twoF1)
-    (respect_comp₂2 : proof respect_comp₂_type D E catF2 qed twoF2)
+
+  definition respect_id₁1_type [reducible] := respect_id₁_type D E catF1
+  definition respect_id₁2_type [reducible] := respect_id₁_type D E catF2
+  definition respect_comp₁1_type [reducible] := respect_comp₁_type D E catF1
+  definition respect_comp₁2_type [reducible] := respect_comp₁_type D E catF2
+  definition respect_id₂1_type [reducible] := respect_id₂_type D E catF1
+  definition respect_id₂2_type [reducible] := respect_id₂_type D E catF2
+  definition respect_comp₂1_type [reducible] := respect_comp₂_type D E catF1
+  definition respect_comp₂2_type [reducible] := respect_comp₂_type D E catF2
+
+  parameters
+    (respect_id₁1 : respect_id₁1_type twoF1)
+    (respect_id₁2 : respect_id₁2_type twoF2)
+    (respect_comp₁1 : respect_comp₁1_type twoF1)
+    (respect_comp₁2 : respect_comp₁2_type twoF2)
+    (respect_id₂1 : respect_id₂1_type twoF1)
+    (respect_id₂2 : respect_id₂2_type twoF2)
+    (respect_comp₂1 : respect_comp₂1_type twoF1)
+    (respect_comp₂2 : respect_comp₂2_type twoF2)
 
   definition dbl_functor.congr (p1 : catF1 = catF2) (p2 : p1 ▹ twoF1 = twoF2) :
     dbl_functor.mk catF1 twoF1

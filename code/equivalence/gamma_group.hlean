@@ -209,7 +209,7 @@ namespace gamma
       apply folded_sq.inverse_compose_aux5,
   end
 
-  protected definition folded_sq_group [instance] (a : D₀) : group (folded_sq a) :=
+  protected definition folded_sq_group (a : D₀) : group (folded_sq a) :=
   begin
     fapply group.mk,
       intros [u, v], apply (folded_sq.comp u v),
