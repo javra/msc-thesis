@@ -4,8 +4,7 @@ import algebra.precategory.functor
 open eq functor category dbl_precat functor
 open Dbl_precat prod equiv sigma.ops is_trunc
 
-set_option pp.beta true
-
+exit
 namespace dbl_precat
 
   section
