@@ -1,0 +1,54 @@
+Making mathematical definitions and theorem proofs readable and verifiable by
+computers has become increasingly important in the last years, not only since there
+are proofs that are hard or impossible to be checked by a single person due to their
+size (one example being Tom Hales' proof of the Kepler conjecture~\cite{flyspeck}).
+With the rise of formally verified software, one also wants the same level of trust
+for the mathematical theories whose soundness guarantee the correct functionality
+of the program.
+Fields where formal verification has been successfully used to certify computer
+programs include cryptography \cite{crypto} and aerospace industry \cite{aerospace}.
+These rely heavily on results from algebra and calculus and differential equations.
+
+\emph{Homotopy type theory} (HoTT) can serve as a foundation of mathematics
+that is better suited to fit the needs of formalizing certain branches of mathematics,
+especially the ones of \emph{topology}.
+In traditional, set-based approaches to formalizing the world
+of mathematical knowledge, topological spaces and their properties
+have to be modeled with much effort by referring to the type of real numbers.
+In contrast to this, homotopy type theory contains topologically motivated objects
+like fibrations and homotopy types as primitives.
+This makes it much easier and more natural to reason about topological properties
+of these objects.
+Homotopy type theory is a relatively new field but it already has produced several
+useful implementations and libraries in interactive theorem provers like
+Agda~\cite{hott-agda} and Coq~\cite{hott-coq}.
+One important feature of homotopy
+type theory is that it is \emph{constructive} and thus allows to extract programs
+from definitions and proofs.
+
+Homotopy type theory is \emph{proof relevant} which means that there can be distinct
+(and internally distinguishable) proofs for one statement.
+This leads to the fact that types in HoTT bear the structure of a higher groupoid
+in their identities.
+The essential problem in the field of \emph{homotopy} is to analyze this structure
+of paths and iterated paths between paths in topological spaces or,
+in the world of HoTT, in higher types.
+This happens by considering the algebraic properties of the homotopy groups or
+\emph{homotopy groupoids} of the spaces resp. types.
+
+In his book ``Nonabelian Algebraic Topology''~\cite{nat}, Ronald Brown
+introduces the notion of \emph{double groupoids with thin structures} and
+\emph{crossed modules over groupoids} to describe the interaction between
+the first and the second homotopy groupoid of a space algebraically.
+Brown's approach, preceding the discovery of homotopy type theory by a few
+decades, is formulated entirely classically and set-based.
+
+In this thesis I describe how I translated some of the central definitions and
+lemmas from his book to dependently typed algebraic structures in homotopy type
+theory, made them applicable to the analysis of 2-truncated types by creating
+the notion of a \emph{fundamental double groupoid of a presented 2-type},
+and then formalized them in the newly built interactive theorem proving system
+Lean~\cite{lean1}.
+
+
+

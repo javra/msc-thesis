@@ -1041,9 +1041,22 @@ We conclude this chapter by stating:
 The categories $\DGpd$ and $\XMod$ are equivalent.
 \end{thm}
 
+\begin{proof}
+We show that there are isomorphic natural transfromations $\gamma \lambda \simeq \id_{\XMod}$
+and $\lambda \gamma \simeq \id_{\DGpd}$.
 
+These transformation are just the identity on points an morphisms so we only have
+to consider their definition on two-cells.
+For a crossed module $(M_p)_{p \in P}$,
+\begin{align*}
+\gamma(\lambda(M_p)) &= \left\{ (f,g,h,i,m) ~\middle|~
+	\mu(m) = i \circ f \circ h\inv \circ g\inv, g = h = i = \id_p \right\} \\
+	&= \{ (f, \id_p, \id_p, \id_p, m) ~|~ \mu(m) = f\} \\
+	&\cong M_p \text{.}
+\end{align*}
+\end{proof}
 
-\section{The 2-dimensional Seifert-van Kampen theorem for spaces}
+%\section{The 2-dimensional Seifert-van Kampen theorem for spaces}
 
 
 
