@@ -4,17 +4,15 @@ import .gamma_functor .lambda_functor
 open eq category iso is_trunc path_algebra function xmod Xmod dbl_gpd Dbl_gpd functor
 open gamma lambda
 
-universe variables l₁ l₂ l₃
+universe variables l--₁ l₂ l₃
 
---set_option pp.notation false
---set_option pp.implicit true
 definition gamma_lambda_transf_hom_family [reducible] (X : Xmod)
   (p : carrier (to_fun_ob (functor.compose gamma.functor lambda.functor) X))
   (a : groups (to_fun_ob (functor.compose gamma.functor lambda.functor) X) p) :
   groups X (to_fun_ob (@functor.id (Precategory.mk _ (Xmod.gpd X))) p) :=
 by cases a; cases filler; exact m
 
-definition gamma_lambda_transf (X : Xmod) :
+definition gamma_lambda_transf [reducible] (X : Xmod) :
   hom (functor.compose gamma.functor lambda.functor X) X :=
 begin
   fapply xmod_morphism.mk,
@@ -27,16 +25,14 @@ begin
       apply (ap (λ x, fillerxm * x)),
       apply φ_respect_id,
     },
-    {
-      intros, cases x, cases filler,
+    { intros, cases x, cases filler,
       apply inverse, apply concat, apply comm,
       apply concat, apply id_left,
       apply concat, apply assoc,
       apply concat, apply (ap (λ x, _ ∘ x)), apply id_inverse,
       apply concat, apply id_right, apply id_right,
     },
-    {
-      intros, cases x, cases filler,
+    { intros, cases x, cases filler,
       apply concat, apply (refl (lambda_morphism.m _)),
       do 3 (apply concat; apply lambda_morphism_m_transport_b),
       apply concat, apply one_mul,
@@ -113,36 +109,43 @@ begin
     apply is_hset.elim,
   },
 end
---set_option pp.notation false
-definition gamma_lambda_transf_iso (X : Xmod) : is_iso (gamma_lambda_transf X) :=
+
+set_option apply.class_instance true
+definition gamma_lambda_transf_iso (X : Xmod.{l l l}) :
+  is_iso (gamma_lambda_transf X) :=
 begin
-  fapply @is_iso.mk, exact (gamma_lambda_transf_inv X),
+  fapply @is_iso.mk, exact (gamma_lambda_transf_inv.{l l l} X),
   { apply inverse, apply concat, apply (refl (@xmod_morphism.mk _ _ _ _ _ _ _)),
     fapply (xmod_morphism_congr
       (to_fun_ob (functor.compose gamma.functor lambda.functor) X)
       (to_fun_ob (functor.compose gamma.functor lambda.functor) X)),
-        apply idp,
-      apply idp,
+        apply idp, apply idp,
     apply concat, apply tr_idp,
     apply eq_of_homotopy, intro p, apply eq_of_homotopy, intro x,
     cases x, cases filler,
-    --apply concat, apply lambda.functor_on_hom_aux2,
-    --fapply folded_sq.congr',
-    /-apply concat, apply (refl (folded_sq.mk (struct (to_fun_ob lambda.functor X)) lid
-       (lambda_morphism.mk m comm))),-/
     apply inverse,
-    esimp[gamma_lambda_transf,gamma_lambda_transf_inv,xmod_morphism.hom_family],
-    apply folded_sq.congr,
+    fapply (@folded_sq.congr _ _ _ _ (struct (to_fun_ob lambda.functor X))),
+      apply inverse,
+      apply concat, apply inverse, apply id_left,
+      apply concat, apply inverse, apply (ap (λ x, _ ∘ x)), apply id_right,
+      apply concat, apply inverse, apply (ap (λ x, id ∘ lid ∘ x)), apply id_right,
+      apply concat, apply inverse, apply (ap (λ x, id ∘ lid ∘ x ∘ x)), apply id_inverse,
+      apply concat, apply inverse, apply comm,
+      apply (ap (λ x, μ X x)), apply idp,
+    fapply lambda_morphism.congr',
+      apply concat, apply lambda.functor_on_hom_aux1, apply idp,
+    apply is_hset.elim,
+  },
+  { fapply xmod_morphism_congr, apply idp, apply idp,
+    apply concat, apply tr_idp,
+    apply eq_of_homotopy, intro p, apply eq_of_homotopy, intro x,
+    apply idp,
   },
 end
 
-check @xmod_morphism_congr
-check @xmod_morphism.mk
-check @folded_sq.mk
-
-
+set_option apply.class_instance false
 definition xmod_dbl_gpd_equivalence :
-  equivalence Cat_dbl_gpd.{(max l₁ l₂) l₂ l₃} Cat_xmod.{(max l₁ l₂) l₂ l₃} :=
+  equivalence Cat_dbl_gpd.{l l l} Cat_xmod.{l l l} :=
 begin
   fapply equivalence.mk,
     apply gamma.functor,
@@ -154,5 +157,5 @@ begin
         intro X, apply (gamma_lambda_transf X),
       intros [X, Y, f], apply (gamma_lambda_transf_nat X Y f),
     fapply @is_iso_nat_trans,
-    intro X, --apply (gamma_lambda_transf_iso X),
+    intro X, esimp, apply (gamma_lambda_transf_iso X),
 end
