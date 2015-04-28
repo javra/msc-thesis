@@ -1,7 +1,7 @@
 My main goal in this thesis project was the formalization and application of
 Ronald Brown's structures for non-abelian algebraic topology in the theorem prover
 Lean.
-Lean, at the point of time when I started working on it, was still in a very early
+Lean, at the point of time when I started working on my project, was still in a very early
 stage of development and did not only lack any automation but also a basic library
 for homotopy type theory.
 Thus, we will first take a look at the basic language elements and technologies
@@ -14,7 +14,7 @@ crossed modules.
 
 The development of the theorem prover Lean was initiated in 2013 by Leo\-nar\-do
 de Moura and Jeremy Avigad.
-De Moura had previously been working on the automated theorem prover Z3, the leading
+De Moura had previously been working on the automated theorem prover Z3, one of the leading
 solver for problem sets in the SMT standard.
 With Lean, he intends to create a interactive theorem proving system that connects
 the strength of solvers like Z3 with the expressiveness and flexibility of
@@ -23,13 +23,16 @@ While in the world of automated theorem proving the verification of a statement
 results in a yes-or-no answer at best accompanied by a counterexample in the case
 that the statement gets refuted, in interactive theorem proving, we are interested
 in an actual proof that a statement is correct.
-Since in homotopy type theory it is relevant which proof of a theorem we assume
+Since in homotopy type theory it is relevant which proof of a theorem we consider
 and since proofs of theorems can be part of another definition or theorem,
 the proofs in an interactive theorem prover suitable for homotopy type theory
 should even be objects in the language itself.
 Lean has two modes: One for standard, proof irrelevant mathematics and one for
 homtopy type theory.
-In the following, I will only explain the features of latter.
+In the following, I will only explain the features of the latter.
+The explanations are not intended to be a tutorial for the system, but should
+equip the reader with the knowledge necessary to read the code excerpts in the
+later chapters.
 
 A first ingredient to the language are \textbf{type universes}.
 Instead of using $\UU$, universes in Lean are denoted as \leani{Type.{l}}, where
@@ -65,8 +68,8 @@ and the universe level of the function type is the maximum of the level of domai
 and codomain type.
 Lambda abstraction and function application can be written like known from e.g.
 Haskell.
-$\beta$ reduction is done for each output, $\eta$ conversion is applied when necessary
-in the unification process.
+$\beta$ reduction is applied automatically for each output, $\eta$ conversion is
+applied when necessary in the unification process.
 \begin{leancode}
 variables (A B : Type) (a : A) (b : B) (f : A → B)
 
@@ -103,7 +106,7 @@ The dependent recursor for inductive types is generated automatically by the ker
 inductive nat : Type :=
   zero : nat,
   succ : nat → nat
-check nat.succ nat.zero) -- Prints nat.succ nat.zero : nat
+check nat.succ nat.zero -- Prints nat.succ nat.zero : nat
 check @nat.rec_on -- Prints Π {C : nat → Type} (n : nat), C nat.zero →
                   --        (Π (a : nat), C a → C (nat.succ a)) → C n
 \end{leancode}
@@ -137,13 +140,14 @@ check @vec.rec_on A -- Prints Π {C : Π (a : ℕ), vec A a → Type} {a : ℕ}
 check cons 0 a (nil A) -- Prints cons 0 a (nil A) : vec A (0+1)
 \end{leancode}
 
-A widely used subclass of inductive types are \textbf{structures}, also often
-referred to as "records".
+A widely used subclass of inductive types are \textbf{structures}, which are
+similar to what is often referred to as ``records''.
 Structures are inductive types which are non-recursive and only have one constructor.
 That means that they are equivalent to iterated sigma types but, among other advantages,
 have named projections.
 Structures provide a basic inheritance mechanism as they can extend arbitrarily
-many other structures with \textbf{coercions} being added for each parent structure:
+many other structures with \textbf{coercions} to each parent structure being
+added automatically:
 \begin{leancode}
 structure graph (V : Type₀) :=
   (E : V → V → Type₀)
@@ -174,7 +178,7 @@ by Lean.
 One feature that allows more brevity are \textbf{implicit arguments}.
 To mark an argument to a definition to be automatically inferred by Lean,
 the user can mark it with curly brackets instead of round brackets when listing
-it in the signatur of the definition.
+it in the signature of the definition.
 Of course the missing arguments have to be such that they can be uniquely determined
 by the unification process, otherwise the unifier will return an appropriate error
 message whenever the definition is used.
@@ -184,10 +188,10 @@ The opposite, making all arguments explicit, can be achieved by prepending the
 symbol \leani{@}.
 By default, implicit arguments are \emph{maximally inserted}.
 That means, that any expression of a $\Pi$-type with its first argument implicit
-is not interpreted as is but further applied by inference of that argument.
-By using double curly brackets \leani{⦃...⦄} instead of single curly brackts,
-the user can change this behaviour to be more passive by only inferring the argument
-if it precedes a explicitely stated one:
+is not interpreted as is but already further applied by inference of that argument.
+By using double curly brackets \leani{⦃...⦄} instead of single curly brackets,
+the user can change this behaviour to be more passive and only infer an argument
+automatically if it precedes a explicitely stated one:
 \begin{leancode}
 definition inverse {P : Type} {x y : P} (p : x = y) : y = x :=
   eq.rec (eq.refl x) p
@@ -228,16 +232,16 @@ eval 4² -- Prints 16
 \end{leancode}
 Often, consecutive definitions share a lot of arguments.
 To avoid the need to repeat those arguments for each definition, Lean provides
-\textbf{sections} and \textbf{contexts} which serve as scopes for common variables.
-Variables declared in sections is persistent while variables in contexts will not
-be accessible after closing the scope.
+\textbf{sections} which serve as scopes for common variables.
+%Variables declared in sections is persistent while variables in contexts will not
+%be accessible after closing the scope. %TODO
 Besides \leani{variables}, there are \leani{parameters} which will not be generalized
 until the context or section is closed.
 
 One last feature helping to create short and readable files are \textbf{type
-classes}.
+class\-es}.
 After marking an inductive type or a family of inductive type as \leani{[class]},
-we can declare definitions that are objects of this type as \leani{[instance]}.
+we can declare definitions which are objects of this type as \leani{[instance]}.
 Then, we can use a fourth mode of argument implicitness (besides \leani{(...)},
 \leani{{...}}, and \leani{⦃...⦄}) denoted by \leani{[...]} to tell Lean that it
 should infer this argument by filling in one of the instances of the required
@@ -250,8 +254,8 @@ certain types or their closure under certain type formers, for example the struc
 of an abelian group on the type of integers or the direct product of groups as
 a canonical group structure on a product type.
 By marking theorems as instances which themselves have type class parameters,
-we can put quite some automation load on the type class resolution.
-In the following example we give a canonical graph structure to the natural numbers
+we can put quite some automation load on the type class resolution algorithm.
+In the following example we give a canonical graph structure on the natural numbers
 and prove that the resulting graph is serial:
 \begin{leancode}
 open nat eq sigma.ops
@@ -271,13 +275,13 @@ In some theorem provers like Agda \cite{agda}, this method, support by the prese
 of \texttt{let} and \texttt{where} terms, is used for all proofs while others,
 like Coq \cite{coq}, rely on the use of \textbf{tactics}.
 Tactics are sequentially executed commands that transform a given proof goal into
-an easier to solve set of goals.
-Lean allows both approaches to be used purely or even using tactics for subterms
+a set of (potentially) easier to solve goals.
+Lean allows both approaches to be used purely or even intertwined, using tactics for subterms
 of a declarative proofs.
-The user can switch to the tactic mode with \leani{begin ... end}.
+The user can declare a proof in tactic mode with \leani{begin ... end}.
 As soon as the tactic block has been successfully filled in with tactic calls,
-the full proof term gets elaborated, type checked, and is from there on in\-
-distinguishable from a directly entered proof.
+the full proof term gets elaborated, type checked, and is, from there on, in\-
+distinguishable from a declaratively entered proof.
 
 The tactics in Lean are still under development and will be extended in near
 future.
@@ -288,10 +292,10 @@ writing the formalizations in this thesis:
 to solve the first subgoal completely.
 If Lean fails to infer every argument that is not stated explicitly or if Lean
 cannot unify the expression with the goal, the tactic fails.
-\item If one wants to treat the current first subgoal with an arbitrary theorem
+\item If one wants to work on the current first subgoal with an arbitrary theorem
 without already solving it completely, one can use \leani{apply}.
 It unifies the theorem with the subgoal but opposed to failing it creates a new
-subgoal for each undetermined or unresolved argument of the state theorem.
+subgoal for each undetermined or unresolved argument of the stated theorem.
 The new subgoals are added from the last argument to the first.
 Arguments, that can be inferred from later arguments will not be converted to a
 new subgoal.
@@ -299,7 +303,7 @@ new subgoal.
 they appear in the statement of the applied theorem.
 This can be achieved by using \leani{fapply}.
 In general, it results in more subgoals than \leani{apply}.
-\item Using \leani{assert} lets the user proof a named statement which is added
+\item Using \leani{assert} lets the user prove a named hypothesis which then is added
 to the context for the rest of the main proof.
 \item If the current subgoal is a (dependent or non-dependent) function, \leani{intro}
 adds the variable, which the goal quantifies over, to the context and applies it
@@ -307,7 +311,7 @@ to the goal. \leani{intros} does the same iteratively for multiple variables.
 \leani{revert} does the opposite: It selects a variable in the context and
 replaces the goal by its quantification over this variable.
 A similar job is done by \leani{generalize}.
-It takes an arbitrary term as argument and quantifies the goal over a variable
+It takes an arbitrary term as argument and quantifies the goal over a variable of
 that term's type, replacing all its occurrences by the quantifying variable.
 \item The tactic \leani{clear} is used to delete unused variables from the context.
 This is especially useful to speed up type class resolution and to shorten the output
@@ -327,9 +331,9 @@ number of steps.
 This is useful when the user wants to postpone the goal at the first position
 to be solved at the end of the proof.
 \item Tactics can furthermore be concatenated to a single tactic using the and-then
-composition \leani{( tactic1 ; tactic2 )}.
+composition \leani{(tactic1 ; tactic2)}.
 The resulting tactic fails if either one of the tactics fail. \\
-The notation \leani{[ tactic1 | tactic2 ]} specifies an or-else branching of tactics:
+The notation \leani{[tactic1 | tactic2]} specifies an or-else branching of tactics:
 Lean first tries to apply the first tactic and if it fails the second one.
 The composed tactic only fails if both of them fail.
 \item Adding to this composition of tactics one can use the \leani{repeat}
@@ -338,6 +342,8 @@ The tactic given to \leani{repeat} as an argument is applied over and over until
 it fails.
 So, by giving it an or-else composition of tactics Lean tries each one from a set
 of tactics until none of them is applicable.
+If one wants to specify the number of repetitions manually (e.g. for performance
+reasons), \leani{do} is the tactic of choice.
 \item Curly brackets can be used to create a scope which only aims to solve the
 first subgoal.
 If the subgoal is not solved within that scope, an error will appear at the line
@@ -348,7 +354,7 @@ of the closing bracket. %TODO make this sound better
 
 Lean's homotopy type theory library is split into two parts:
 The content of a folder \texttt{init} is imported by default and provides
-theories for built-in features like \leani{rewrite}.
+theories which are used in built-in features like \leani{rewrite}.
 Besides this folder there are other theories which are not required at startup
 and which the user can import manually.
 They include characterizations of path spaces and basic theories about common
@@ -359,8 +365,8 @@ Jeremy Avigad, Floris van Doorn, Leonardo de Moura and me.
 One important definition in the initialization folder is, of course, the one of
 \textbf{propositional equality}.
 As mentioned above, equality is just a very basic example for an inductive type.
-Here, we define equality as inductive family of types \leani{eq} and with \leani{idp}
-give an alternative name for $\refl$ with the base being implicit:
+Here, we define equality \leani{eq} as inductive family of types and, with \leani{idp},
+give an alternative name for $\refl$ with the base being an implicit argument:
 \begin{leancode}
 universe variable l
 inductive eq.{l} {A : Type.{l}} (a : A) : A → Type.{l} :=
@@ -380,12 +386,13 @@ notation p ⁻¹ := inverse p
 By this definition, $p \ct \refl$ is definitionally equal to $p$ while $\refl \ct p = p$
 can only be proved by induction on $p$.
 A lot of basic calculations in the path groupoid can also be proved by just using
-path induction. Her is one example for this kind of lemma:
+path induction. Here is one example for this kind of lemma:
 \begin{leancode}
 definition eq_of_idp_eq_inv_con (p q : x = y) : idp = p⁻¹ ⬝ q → p = q :=
 eq.rec_on p (take q h, h ⬝ (idp_con _)) q
 \end{leancode}
-Two other basic definitions for paths are the one of transports and $\ap$.
+Two other basic definitions for paths are the one of transports and $\ap$, the
+application of a non-dependent function to a path.
 \begin{leancode}
 definition transport [reducible] (P : A → Type) {x y : A}
   (p : x = y) (u : P x) : P y :=
@@ -415,12 +422,13 @@ In practice, we will almost never use the generated constructor of \leani{is_equ
 but instead we proved an alternative constructor \leani{adjointify} which does
 not require the adjointness proof \leani{adj}.
 
-\textbf{Univalence} than states that the function \leani{equiv_of_eq}, which lets
+\textbf{Univalence} then states that the function \leani{equiv_of_eq}, which lets
 us gain an equivalence from an equality between two types in the same universe,
 is itself an equivalence.
 We mark the axiom as instance so that, whenever there is mention of \leani{equiv_of_eq},
 we have access to its inverse.
-This inverse \leani{ua} is also the only common form univalence appears elsewhere.
+This inverse \leani{ua} is also the only common form in which univalence appears
+elsewhere.
 \begin{leancodebr}
 section
   universe variable l
@@ -440,14 +448,13 @@ attribute univalence [instance]
 definition ua {A B : Type} : A ≃ B → A = B := (@equiv_of_eq A B)⁻¹
 \end{leancodebr}
 
-We use the univalence axiom to prove \textbf{function extensionality} first of
-non-dependent and then of dependent functions.
+We use the univalence axiom to prove \textbf{function extensionality} of first
+non-dependent and then dependent functions.
 We first define three varieties of function extensionality and then proof that
 the desired definition of function extensionality (stating that the function
-\leani{apD10} which returns for each equality between functions a homotopy
-between those functions) follows from the other ones.
-This approach has been ported from the Coq HoTT library
-~\footnote{\url{https://github.com/HoTT/HoTT}}.
+\leani{apD10}, which returns for each equality between functions a homotopy
+between those functions, is an equivalence) follows from the other ones.
+This approach has been ported from the Coq HoTT library~\cite{hott-coq}.
 \begin{leancode}
 definition funext.{l k} := 
 Π ⦃A : Type.{l}⦄ {P : A → Type.{k}} (f g : Π x, P x),
@@ -465,7 +472,7 @@ definition weak_funext :=
 \textbf{Truncation levels} are implemented by first creating a version of the natural
 numbers that ``start at -2'' together with a coercion from the actual type
 \leani{nat}, then defining internal versions of contractability and truncatedness,
-and at eventually defining a type class structure holding a proof of the internal
+and eventually defining a type class structure holding a proof of the internal
 truncatedness:
 \begin{leancodebr}
 inductive trunc_index : Type₁ :=
@@ -510,7 +517,7 @@ definition is_contr_unit [instance] : is_contr unit := ...
 -- The empty type is a mere proposition.
 definition is_hprop_empty [instance] : is_hprop empty := ...
 
--- A Sigma type is n-truncated if the type of every possible projections is.
+-- A Sigma type is n-truncated if the type of all possible projections is.
 definition is_trunc_sigma [instance] (B : A → Type) (n : trunc_index)
   [HA : is_trunc n A] [HB : Πa, is_trunc n (B a)] :
   is_trunc n (Σ a, B a) := ...
@@ -523,7 +530,7 @@ definition is_trunc_pi [instance] (B : A → Type) (n : trunc_index)
 theorem is_hprop_is_equiv [instance] : is_hprop (is_equiv f) := ...
 \end{leancodebr}
 
-An important part of the library besides the initialization files consists of
+An important part of the library, besides the initialization files, consists of
 theorems characterizing paths between instances of different type formers.
 One example for such a characterization is that a path between two dependent
 pairs can be built out of paths between their projections:
@@ -614,8 +621,8 @@ for category theory.
 \section{Category Theory in Lean}
 
 Our library of basic category theoretical definitions and theorems, which is
-still work in progress, also aims to mimic the structure of Coq's HoTT implementation
-of categories while being more succinct than it.
+still work in progress, also mimics the structure of Coq's HoTT implementation
+of categories while aiming to be more succinct than it.
 We use structures and type classes for most definitions of algebraic structures
 and their closure properties.
 
@@ -633,14 +640,14 @@ structure precategory [class] (ob : Type) : Type :=
   (id_right : Π ⦃a b : ob⦄ (f : hom a b), comp f !ID = f)
 \end{leancode}
 
-Since usually the domain of an identity morphism is determined by the context
+Since usually the domain of an identity morphism is determined by the context,
 we will most often use a shorter notation for the identity:
 \begin{leancode}
 definition id [reducible] := ID a
 \end{leancode}
 
 We introduce a shortcut for the type class instance postulating that each equality
-of morphism is a mere proposition.
+of morphisms is a mere proposition.
 We use this instance, for example, to prove that it is sufficient to give equalities
 between the morphism types, composition and identities of two precategories on the
 same type of objects, to show that these precategories are equal:
@@ -690,7 +697,7 @@ structure is_iso [class]
 
 On purpose, we weaken some theorems to accepting arbitrary witnesses for mere propositions
 that would actually be derivable from the other witnesses.
-By this, we can have class instance resolution fill in a witness selected by the
+By this, we can have class instance resolution fill in a witness selected by
 highest instance priority.
 In the following example, even if there is a theorem obtaining \leani{is_iso (f⁻¹)}
 from \leani{is_iso f}, we might want the witness to be the axiom that in a groupoid
@@ -712,7 +719,7 @@ inverse_eq_left (show (p⁻¹ʰ ∘ q⁻¹ʰ) ∘ q ∘ p = id, from
 \end{leancode}
 
 Not only the the property of a morphism $f$ being an isomorphism but also the type
-of morphisms between two given objects is encapsulated in a structure that heavily
+of morphisms between two given objects is encapsulated in a structure that
 helps to fill in proofs automatically. %TODO more precise
 \begin{leancode}
 structure iso (a b : ob) :=
@@ -730,12 +737,12 @@ begin
 end
 \end{leancode}
 
-Another definition we want to generalize to the two dimensional case is the one
+Another definition we later want to generalize to the two dimensional case is the one
 of a functor.
 We introduce functors as a structure and add coercions to its function on objects
 and to its function on morphisms.
-By doing so, we will be able to write \leani{F a} for the image of an object \leani{a}
-and \leani{F f} for the image of a morphism \leani{f} under a functor \leani{F}.
+By doing so, we will be able to write \leani{F a} for its evaluation at an object
+\leani{a} and \leani{F f} for its evaluation at a morphism \leani{f}.
 \begin{leancode}
 structure functor (C D : Precategory) : Type :=
   (to_fun_ob : C → D)
@@ -794,10 +801,10 @@ begin
 end
 \end{leancode}
 
-This enables us to implement the precategory of strict precategory (compare
+This enables us to implement the precategory of strict precategories (compare
 corollary \ref{thm:precat-strict-precat}).
 The proof that this precategory is univalent (lemma \ref{thm:precat-univalent})
-still needs a formalization.
+still lacks a formalization.
 
 \begin{leancode}
 structure strict_precategory [class] (ob : Type) extends precategory ob :=
@@ -894,8 +901,8 @@ structure worm_precat {D₀ : Type} (C  : precategory D₀)
 \end{leancodebr}
 
 We then use the inheritance mechanism for structures to define a double category
-as extending two worm precategories on the same object type \leani{D₀} and 1-skeleton
-\leani{C} and a dependent type of two-cells that differ by \emph{transposition}
+as extending two worm precategories on the same object type \leani{D₀}, the same 1-skeleton
+\leani{C} and dependent types of two-cells that differ by \emph{transposition}
 in the sense that if \leani{D₂} is the type of two-cells of the ``vertical''
 worm category, \leani{(λ ⦃a b c d : D₀⦄ f g h i, D₂ h i f g)} is the respective
 dependent type for the ``horizontal'' one.
@@ -927,9 +934,10 @@ structure dbl_precat {D₀ : Type} (C : precategory D₀)
     comp₁ (comp₂ x w) (comp₂ v u) = comp₂ (comp₁ x v) (comp₁ w u) qed)
 \end{leancode}
 
-This unbundled definition of a precategory is useful when making statements about
-all double category structures on a certain pair of 1-skeleton and two-cell type.
-But since we often want to talk about \emph{all} double categories, we add a bundled
+This unbundled definition of a double category is useful when making statements about
+all double category structures on a certain pair of 1-skeletons and two-cell types.
+But since we often want to talk about \emph{all} double categories (in a certain
+universe), we add a bundled
 up version that also adds the strictness condition. %TODO make that consistent
 \begin{leancode}
 structure Dbl_precat : Type :=
@@ -944,7 +952,7 @@ With that definition, we can start instantiating first simple examples.
 When implementing the square double category (definition \ref{def:shell-dbl-cat-hott}),
 we can make use of the \leani{repeat} tactic to fill in each of the many arguments
 of the double category constructor with either the constructor $\star$ of $\unit$, the
-fact that $\unit$ is a mere proposition or the fact mere propositions are sets:
+fact that $\unit$ is a mere proposition, or the fact mere propositions are sets:
 \begin{leancode}
 definition square_dbl_precat : dbl_precat C
   (λ ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d)
@@ -1031,7 +1039,7 @@ begin
 end
 \end{leancodebr}
 
-Now we can receive the vertical and horizontal precategory as the two-cell
+Now we can obtain the vertical and horizontal precategory as the two-cell
 precategory of each parent worm precategory:
 \begin{leancode}
 definition vert_precat (D : dbl_precat C D₂) :=
@@ -1042,14 +1050,13 @@ worm_precat.two_cell_precat.{l₀ l₁ l₂} (to_worm_precat_2 D)
 \end{leancode}
 
 Before we continue to define thin structures and double groupoids,
-we create a library of helper lemma that will be used in the other theories
-over and over again.
+we create a library of helper lemmas that will often be used in the other theories.
 In the definition of a double category we already saw that often composite
 squares have to be transported along an equality in one of their faces.
 Continuing to prove more complex equations of squares, these transports can
 best be managed when on the \emph{outside} of a composition.
 So we create a library of theorems that equate a square composition involving
-a transport on one of both of the squares with a another composition where the
+a transport on one or both of the squares with a another composition where the
 transport is pulled to the outside or eliminated.
 Some examples for these lemmas are the following:
 \begin{leancodebr}
@@ -1161,7 +1168,7 @@ begin
 end
 \end{leancodebr}
 
-To prove the transport laws, we use a similar auxiliary lemma and use the
+To prove the transport laws, we use a similar auxiliary lemma and the
 \leani{assert} command to provide proofs of commutativity and  for the different
 rows to the context:
 \begin{leancodebr}
@@ -1245,8 +1252,8 @@ structure weak_dbl_gpd {D₀ : Type} (C : groupoid D₀)
   (right_inverse₂ : right_inverse₂_type C D₂ D inv₂)
 \end{leancodebr}
 
-To implement and get the definition~\ref{def:dbl-gpd-hott} of a double
-group\-oid we only have to add a thin structure to a weak double groupoid.
+To implement definition~\ref{def:dbl-gpd-hott} of a double
+group\-oid, we only have to add a thin structure to a weak double groupoid.
 For the definition of the category of double group\-oids we again add a strict and
 bundled version:
 \begin{leancodebr}
@@ -1366,7 +1373,7 @@ respects the vertical identity:
       apply concat, apply transport4_transport_acc,
       apply transport4_set_reduce,
 \end{leancodebr}
-The two calls to \leani{apply respect_id₁'} are the use of that fact that each of the
+The two calls to \leani{apply respect_id₁'} are the use of the fact that each of the
 double functors respects identity squares.
 The lemmas \leani{twoF_transport_l} and \leani{twoF_transport_r} serve to pull
 a transport out of the application of a double functor to a two-cell.
@@ -1526,7 +1533,7 @@ two of them:
       hom_family_hom2 mu_commute2 phi_commute2 := ...
 \end{leancodebr}
 
-This equality lemma can then be uses to prove the identity and associativity of
+This equality lemma can then be used to prove the identity and associativity of
 crossed module morphisms to build the precategory of crossed modules.
 
 \begin{leancodebr}
@@ -1565,7 +1572,8 @@ following steps:
 \begin{enumerate}
 \item Define $\gamma$ and $\lambda$ on objects -- as functions mapping double
 groupoids to crossed modules and vice versa.
-\item Define $\gamma$ and $\lambda$ on double functors and crossed module morphisms.
+\item Define $\gamma$ and $\lambda$ on the morphisms of the respective categories:
+On double functors and crossed module morphisms.
 A step that we glossed over when defining the functors in the original topological and
 set theoretic setting.
 \item Instantiate $\gamma$ and $\lambda$ as actual functors by proving that
@@ -1573,7 +1581,7 @@ they respect identities and composition.
 \item Build natural transformations $\gamma\lambda \to \id_{\XMod}$ and
 $\lambda\gamma \to \id_{\DGpd}$.
 \item Show that these natural transformations are isomorphic by showing that they
-map each point in the respective category to an isomorphism in that category.
+map each object in the respective category to an isomorphism in that category.
 \end{enumerate} %TODO specify how much of this is completed
 
 We start by implementing $\gamma$ as a function \leani{Dbl_gpd → Xmod}.
@@ -1686,7 +1694,6 @@ and of the helper lemmas to move the resulting transport terms.
 
 We show the final instantiation of $\gamma$ as a functor using function extensionality
 for the proof that $\gamma$ respects composition and identity.
-Note that 
 \begin{leancodebr}
   protected definition functor :
     functor Cat_dbl_gpd.{l₁ l₂ l₃} Cat_xmod.{(max l₁ l₂) l₂ l₃} :=
@@ -1819,9 +1826,9 @@ is atomic and since in Lean $p \ct \refl$, but not $\refl \ct p$ is judgmentally
 equal to $p$.
 The following example shows the proof of the interchange law by destruction in the
 order which is illustrated in
-figure~\ref{fig:interchange-destruct} by
+figure~\ref{fig:interchange-destruct} (with
 non-reflexivity equalities shown as paths and iterated equalities as bounded
-areas.
+areas).
 \begin{leancodebr}
   variables
     {a₀₀ a₀₁ a₀₂ a₁₀ a₁₁ a₁₂ a₂₀ a₂₁ a₂₂ : X}
