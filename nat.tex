@@ -1064,14 +1064,26 @@ Assume a double groupoid $G$.
 We have to map each two-cell $u \in G_2$ with faces $f$, $g$, $h$, and $i$ to
 some tuple $(f,g,h,i,m)$ where $m$ is a square with identity on all but its top
 face.
-But how do we turn a square with arbitrary faces to a square with such constraints?
+But how do we turn a square with arbitrary faces to a square with such constraints
+in a revertible way?
 It turns out that we can use the connections (Definition~\ref{def:connections})
 to define such a \emph{folding} $\Phi$ of squares (cf. Figure~\ref{fig:fold}):
 \begin{equation*}
 \Phi(u) \coloneqq
 	\Gamma^-(i) \circ_2 u \circ_2 \invh(\Gamma^-(h)) \circ_2 \invh(\id_1(g))
 \end{equation*}
-\end{proof}
+$\phi$ is bijective since we can just rewrite the previous equation to
+\begin{equation*}
+u = \invh(\Gamma^-(i)) \circ_2 \Phi(u) \circ_2 \id_1(g) \circ_2 \Gamma^-(h)
+\end{equation*}
+Calculations tell us furthermore that $\Phi$ is a homomorphism.
+$\Phi$ preserves the thin structure on $G$ because it maps every thin square $u$
+to the zero square based in the lower right corner of $u$.
+This can be proved by showing that all thin squares are compositions of identity
+squares and connections and the fact that these get mapped to zero.
+Thus, we obtain a bijective double functor between $G$ and $\lambda(\gamma(G))$,
+whose naturality in $G$ is shown by a proof we omit for the sake of brevity.
+\end{proof} %TODO make this proof more explicit after formalizing it?
 
 \begin{figure} \centering
 \begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
