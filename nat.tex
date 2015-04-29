@@ -1057,10 +1057,46 @@ For a crossed module $(M_p)_{p \in P}$,
 It is easy to check that this isomorphism of groups extends to an isomorphism
 of crossed modules and that it is natural in $(M_p)_{p \in P}$.
 
-To find a suitable natural isomorphism $\lambda \gamma \simeq \id_{\DGpd}$,
+To find a suitable natural isomorphism $\id_{\DGpd} \simeq \lambda \gamma$,
 we have to match the structure of two-cells in a double groupoid, which are
-compsable in two dimensions, to the one-dimensional nature of a group.
+compsable in two dimensions, to the one-dimensional nature of a group:
+Assume a double groupoid $G$.
+We have to map each two-cell $u \in G_2$ with faces $f$, $g$, $h$, and $i$ to
+some tuple $(f,g,h,i,m)$ where $m$ is a square with identity on all but its top
+face.
+But how do we turn a square with arbitrary faces to a square with such constraints?
+It turns out that we can use the connections (Definition~\ref{def:connections})
+to define such a \emph{folding} $\Phi$ of squares (cf. Figure~\ref{fig:fold}):
+\begin{equation*}
+\Phi(u) \coloneqq
+	\Gamma^-(i) \circ_2 u \circ_2 \invh(\Gamma^-(h)) \circ_2 \invh(\id_1(g))
+\end{equation*}
 \end{proof}
+
+\begin{figure} \centering
+\begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]
+\draw[double] (0,1) -- (0,0);
+\draw[double] (1,1) -- (1,0) -- (2,0);
+\draw[double] (3,0) -- (4,0) -- (4,1);
+\draw (0,1) -- (1,1) node [midway,above] {$g\inv$};
+\draw (1,1) -- (2,1) node [midway,above] {$h\inv$};
+\draw (2,1) -- (3,1) node [midway,above] {$f$};
+\draw (3,1) -- (4,1) node [midway,above] {$i$};
+\draw (0,0) -- (1,0) node [midway,below] {$g\inv$};
+\draw (2,1) -- (2,0) -- (3,0) node [midway,below] {$g$} -- (3,1);
+\foreach \x in {0,1,2,3,4} {
+	\foreach \y in {0,1} {
+		\node[fill,circle,inner sep=0pt,minimum size=5pt] at (\x,\y) {};
+	}
+}
+\node at (0.5,0.5) {\footnotesize{$\invh\id_1(g)$}};
+\node at (1.5,0.5) {\footnotesize{$\invh\Gamma^-(h)$}};
+\node at (2.5,0.5) {$u$};
+\node at (3.5,0.5) {$\Gamma^-(i)$};
+\end{tikzpicture}
+\caption{Folding the faces of a square $u$ to its upper face.}
+\label{fig:fold}
+\end{figure}
 
 %\section{The 2-dimensional Seifert-van Kampen theorem for spaces}
 
