@@ -118,6 +118,7 @@ namespace dbl_gpd
     apply bl_connect'_id_eq_ID₁_aux,
   end
 
+
   definition eq_of_thin (pu pv : g ∘ h = i ∘ f)
     (thinu : u = thin D f g h i pu)
     (v : D₂ f g h i) (thinv : v = thin D f g h i pv) : u = v :=
@@ -129,6 +130,70 @@ namespace dbl_gpd
   end
 
   --TODO: show that bl_connect and bl_connect' are related...
+
+  end
+
+  section
+  parameters {D₀ : Type} [C : groupoid D₀]
+    {D₂ : Π ⦃a b c d : D₀⦄, hom a b → hom c d → hom a c → hom b d → Type}
+    (D : dbl_gpd C D₂)
+  include D
+  variables ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c)
+
+
+  definition bl_of_bl_square_aux {a b c d : D₀} {f f' : hom a b} (p : f = f')
+    {g g' : hom c d} (q : g = g') {h h' : hom a c} (r : h = h') {i : hom b d}
+    (comm1 : g ∘ h = i ∘ f) (comm2 : g' ∘ h' = i ∘ f') :
+    p ▹ q ▹ r ▹ (thin D f g h i comm1) = thin D f' g' h' i comm2 :=
+  begin
+    cases p, cases q, cases r, apply (ap (thin D _ _ _ _) (!is_hset.elim)),
+  end
+
+  set_option apply.class_instance true
+  definition bl_of_bl_square ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c) :
+    (transport (λ x, D₂ x _ _ _) (!comp_inverse)⁻¹
+     (transport (λ x, D₂ _ x _ _) (id_left id)
+     (transport (λ x, D₂ _ _ x _) (id_left id)
+      (comp₁ D (comp₂ D (ID₂ D g) (bl_connect' D g))
+       (comp₂ D (bl_connect' D f) (ID₁ D g⁻¹))))))
+    = bl_connect' D (g ∘ f) :=
+  begin
+    do 3 (apply tr_eq_of_eq_inv_tr),
+    -- Prove commutativity of second row
+    assert line2_commute : (id ∘ id) ∘ id = g ∘ id ∘ g⁻¹,
+      apply concat, apply id_right, apply concat, apply id_left,
+      apply inverse, apply concat, apply (ap (λ x, _ ∘ x)), apply id_left,
+      apply right_inverse,
+    -- Prove thinness of second row
+    assert line2_thin : comp₂ D (ID₂ D g) (bl_connect' D g)
+      = thin D (id ∘ g⁻¹) (id ∘ id) id g line2_commute,
+      apply concat, apply (ap (λx, comp₂ D x _)), apply inverse, apply (thin_id₂ D),
+      apply (thin_comp₂ D),
+    -- Prove commutativity of first row
+    assert line1_commute : (id ∘ g⁻¹) ∘ id = f ∘ f⁻¹ ∘ g⁻¹,
+      apply concat, apply id_right, apply concat, apply id_left,
+      apply inverse, apply concat, apply assoc,
+      apply concat, apply (ap (λ x, x ∘ _)), apply right_inverse, apply id_left,
+    -- Prove thinness of first row
+    assert line1_thin : comp₂ D (bl_connect' D f) (ID₁ D g⁻¹)
+      = thin D (f⁻¹ ∘ g⁻¹) (id ∘ g⁻¹) id f line1_commute,
+      apply concat, apply (ap (λx, comp₂ D _ x)), apply inverse, apply (thin_id₁ D),
+      apply (thin_comp₂ D),
+    -- Replace composite squares by thin squares
+    apply concat, exact (ap (λx, comp₁ D x _) line2_thin),
+    apply concat, exact (ap (λx, comp₁ D _ x) line1_thin),
+    -- Thinness of the entire 2x2 grid
+    apply concat, apply (thin_comp₁ D),
+    apply concat, apply (ap (λ x, _ ∘ x)), apply id_left,
+    apply concat, apply id_left,
+    apply inverse, apply concat, apply assoc,
+    apply concat, apply (ap (λ x, x ∘ _)), apply inverse, apply assoc,
+    apply concat, apply (ap (λ x, (_ ∘ x) ∘ _)), apply right_inverse,
+    apply concat, apply (ap (λ x, x ∘ _)), apply id_right,
+    apply right_inverse,
+    do 3 (apply eq_inv_tr_of_tr_eq),
+    apply bl_of_bl_square_aux,
+  end
 
   end
 end dbl_gpd

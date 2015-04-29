@@ -75,17 +75,19 @@ namespace dbl_gpd
   end
 
   definition br_of_br_square_aux {a c : D₀} (gf : hom a c)
-    (h₁ : hom c c) (p : h₁ = ID c)
-    (r1 : h₁ ∘ gf = h₁ ∘ gf) (r2 : (ID c) ∘ gf = (ID c) ∘ gf) :
-    (p ▹ thin D gf h₁ gf h₁ r1) = thin D gf (ID c) gf (ID c) r2 :=
-  by cases p; apply (ap (λ x, thin D _ _ _ _ x) !is_hset.elim)
+    (h₁ h₁' : hom c c) (p : h₁ = ID c) (p' : h₁' = ID c)
+    (r1 : h₁ ∘ gf = h₁' ∘ gf) (r2 : (ID c) ∘ gf = (ID c) ∘ gf) :
+    (p' ▹ p ▹ thin D gf h₁ gf h₁' r1) = thin D gf (ID c) gf (ID c) r2 :=
+  by cases p'; cases p; apply (ap (λ x, thin D _ _ _ _ x) !is_hset.elim)
 
   definition br_of_br_square ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c) :
-    (id_left id) ▹ (comp₁ D (comp₂ D (br_connect g) (ID₂ D g))
-      (comp₂ D (ID₁ D g) (br_connect f)))
+    (transport (λ x, D₂ _ _ _ x) (id_left id)
+     (transport (λ x, D₂ _ x _ _) (id_left id)
+      (comp₁ D (comp₂ D (br_connect g) (ID₂ D g))
+       (comp₂ D (ID₁ D g) (br_connect f)))))
     = br_connect (g ∘ f) :=
   begin
-    apply tr_eq_of_eq_inv_tr,
+    do 2 (apply tr_eq_of_eq_inv_tr),
     -- Prove commutativity of second row
     assert line2_commute : (id ∘ id) ∘ g = id ∘ g ∘ id,
       exact (calc (id ∘ id) ∘ g = id ∘ g : by rewrite id_left
@@ -110,7 +112,7 @@ namespace dbl_gpd
     apply concat, exact (ap (λx, comp₁ D _ x) line1_thin),
     -- Thinness of the entire 2x2 grid
     apply concat, apply thin_comp₁, apply idp,
-    apply eq_inv_tr_of_tr_eq,
+    do 2 (apply eq_inv_tr_of_tr_eq),
     apply br_of_br_square_aux,
   end
 
