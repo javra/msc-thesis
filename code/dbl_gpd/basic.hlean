@@ -103,6 +103,21 @@ namespace dbl_gpd
   definition bl_connect' (f : hom a b) : D₂ (f⁻¹) (ID b) (ID b) f :=
   thin D (f⁻¹) (ID b) (ID b) f (id_left (ID b) ⬝ (right_inverse f)⁻¹)
 
+  definition bl_connect'_id_eq_ID₁_aux (f f' g h i : hom a a) (p : f = f')
+    (comm1 : g ∘ h = i ∘ f) (comm2 : g ∘ h = i ∘ f') :
+    p ▹ thin D f g h i comm1 = thin D f' g h i comm2 :=
+  begin
+    cases p, apply (ap (thin D _ _ _ _)), apply is_hset.elim,
+  end
+
+  definition bl_connect'_id_eq_ID₁ :
+    bl_connect' (ID a) = (id_inverse a)⁻¹ ▹ ID₁ D (ID a) :=
+  begin
+    apply eq_inv_tr_of_tr_eq,
+    apply concat, rotate 1, apply (thin_id₁ D),
+    apply bl_connect'_id_eq_ID₁_aux,
+  end
+
   definition eq_of_thin (pu pv : g ∘ h = i ∘ f)
     (thinu : u = thin D f g h i pu)
     (v : D₂ f g h i) (thinv : v = thin D f g h i pv) : u = v :=

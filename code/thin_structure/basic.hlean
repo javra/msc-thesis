@@ -17,6 +17,13 @@ namespace dbl_gpd
   definition ul_connect ⦃a b : D₀⦄ (f : hom a b) : D₂ (ID a) f (ID a) f :=
   thin D (ID a) f (ID a) f idp
 
+  definition br_connect_id_eq_ID₁ (a : D₀) : br_connect (ID a) = ID₁ D (ID a) :=
+  begin
+    apply inverse, apply concat, apply inverse, apply thin_id₁,
+    apply (ap (λ x, thin D _ _ _ _ x)), apply is_hset.elim,
+  end
+
+
   definition ID₁_of_ul_br_aux {a b : D₀} (f g h : hom a b)
     (p : g = f) (q : h = f)
     (r1 : h ∘ id = id ∘ g) (r2 : f ∘ id = id ∘ f)

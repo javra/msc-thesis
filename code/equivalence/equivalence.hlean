@@ -2,6 +2,7 @@ import algebra.precategory.adjoint
 import .gamma_functor .lambda_functor ..dbl_gpd.basic
 
 open eq category iso is_trunc path_algebra function xmod Xmod dbl_gpd Dbl_gpd functor
+open dbl_precat
 open gamma lambda
 
 universe variables l--₁ l₂ l₃
@@ -176,6 +177,29 @@ begin
         apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply id_inverse,
         apply concat, apply (ap (λ x, _ ∘ x)), apply id_left,
         apply right_inverse,
+      esimp[lambda_gamma_fold],
+      do 4 (apply tr_eq_of_eq_inv_tr),
+      apply concat, apply (ap (λ x, comp₂ G x _)), apply br_connect_id_eq_ID₁,
+      apply concat, apply (ap (λ x, comp₂ G x _)), apply zero_unique,
+      apply concat, apply (id_left₂' G), do 2 (apply tr_eq_of_eq_inv_tr),
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G x _))), apply bl_connect'_id_eq_ID₁,
+      apply concat, apply (ap (λ x, comp₂ G _ x)), apply inverse,
+        apply (transp_comp₂_eq_comp₂_transp_r_u' G),
+      apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+      apply inv_tr_eq_of_eq_tr,
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G x _))), apply zero_unique,
+      apply concat, apply (ap (λ x, comp₂ G _ x)), apply (id_left₂' G),
+      apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+      apply inv_tr_eq_of_eq_tr,
+      apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
+      apply inv_tr_eq_of_eq_tr,
+      apply concat, apply (ap (λ x, comp₂ G _ x)), apply (ID₁_respect_inv G),
+      apply concat, apply (right_inverse₂' G), do 2 (apply inv_tr_eq_of_eq_tr),
+      apply inverse,
+      apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell G f g h i)),
+      do 10 (apply concat; apply transport4_transport_acc),
+      apply transport4_set_reduce, do 4 (apply !homH),
+    apply is_hset.elim,
   },
 end
 
