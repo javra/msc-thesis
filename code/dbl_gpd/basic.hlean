@@ -91,17 +91,27 @@ namespace dbl_gpd
     apply @transport4_set_reduce,
   end
 
-  definition ur_connect : D₂ (ID b) f (f⁻¹) (ID b) :=
-  thin_structure.thin D (ID b) f (f⁻¹) (ID b) (right_inverse f ⬝ (id_left (ID b))⁻¹)
+  definition ur_connect (f : hom a b) : D₂ (ID b) f (f⁻¹) (ID b) :=
+  thin D (ID b) f (f⁻¹) (ID b) (right_inverse f ⬝ (id_left (ID b))⁻¹)
 
-  definition ur_connect' : D₂ (ID a) (f⁻¹) f (ID a) :=
+  definition ur_connect' (f : hom a b) : D₂ (ID a) (f⁻¹) f (ID a) :=
   thin D (ID a) (f⁻¹) f (ID a) (left_inverse f ⬝ (id_left (ID a))⁻¹)
 
-  definition bl_connect : D₂ f (ID a) (ID a) (f⁻¹) :=
+  definition bl_connect (f : hom a b) : D₂ f (ID a) (ID a) (f⁻¹) :=
   thin D f (ID a) (ID a) (f⁻¹) (id_left (ID a) ⬝ (left_inverse f)⁻¹)
 
-  definition bl_connect' : D₂ (f⁻¹) (ID b) (ID b) f :=
+  definition bl_connect' (f : hom a b) : D₂ (f⁻¹) (ID b) (ID b) f :=
   thin D (f⁻¹) (ID b) (ID b) f (id_left (ID b) ⬝ (right_inverse f)⁻¹)
+
+  definition eq_of_thin (pu pv : g ∘ h = i ∘ f)
+    (thinu : u = thin D f g h i pu)
+    (v : D₂ f g h i) (thinv : v = thin D f g h i pv) : u = v :=
+  begin
+    apply concat, apply thinu,
+    apply inverse, apply concat, apply thinv,
+    apply (ap (λ x, thin D f g h i x)),
+    apply is_hset.elim,
+  end
 
   --TODO: show that bl_connect and bl_connect' are related...
 

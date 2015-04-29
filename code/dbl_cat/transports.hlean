@@ -11,6 +11,24 @@ namespace dbl_precat
   include D C
 
   section
+  variables {a b c d c₂ d₂ : D₀}
+    {f f' : hom a b} {g₁ g₁' : hom c d} {g₂ g₂' : hom c₂ d₂}
+    {h₁ : hom a c} {h₂ : hom c c₂} {i₁ : hom b d} {i₂ : hom d d₂}
+    (u : D₂ f g₁ h₁ i₁) (v : D₂ g₁ g₂ h₂ i₂)
+    (u' : D₂ f' g₁' h₁ i₁) (v' : D₂ g₁' g₂ h₂ i₂)
+    (p : f = f') (q : g₁ = g₁') (r : g₂ = g₂')
+    (P : u' = q ▹ p ▹ u) (Q : v' = r ▹ q ▹ v)
+  include P Q
+
+  definition comp₁_row_replacement :
+    comp₁ D v' u' = r ▹ p ▹ (comp₁ D v u) :=
+  begin
+    cases p, cases q, cases r, cases P, cases Q, apply idp,
+  end
+
+  end
+
+  section
   variables {a b c d b₂ d₂ : D₀} {E : Type}
     {f : hom a b} {g : hom c d} {h : hom a c} {i : hom b d}
     {f₂ : hom b b₂} {g₂ : hom d d₂} {i₂ : hom b₂ d₂}
@@ -281,6 +299,8 @@ namespace dbl_precat
     = comp₁ D (transport (λ x, D₂ id id _ (eg x)) q
           (transport (λ x, D₂ id id (ef x) _) p filler)) filler' :=
   by cases p; cases q; apply idp
+
+
 
   end
 

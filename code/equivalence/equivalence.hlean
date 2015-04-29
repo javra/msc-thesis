@@ -1,5 +1,5 @@
 import algebra.precategory.adjoint
-import .gamma_functor .lambda_functor
+import .gamma_functor .lambda_functor ..dbl_gpd.basic
 
 open eq category iso is_trunc path_algebra function xmod Xmod dbl_gpd Dbl_gpd functor
 open gamma lambda
@@ -143,6 +143,44 @@ begin
   },
 end
 
+section
+  parameters (G : Dbl_gpd) ⦃a b c d : carrier (Dbl_gpd.gpd G)⦄
+    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
+    (u : two_cell G f g h i)
+
+  definition lambda_gamma_fold [reducible] :=
+  transport (λ x, two_cell G _ x _ _) (!right_inverse)
+   (transport (λ x, two_cell G _ (_ ∘ x) _ _) (!id_left)
+    (transport (λ x, two_cell G _ x _ _) (!id_left)
+     (comp₂ G (br_connect G i) (comp₂ G u (comp₂ G (bl_connect' G h) (ID₁ G (g⁻¹)))))))
+
+end
+
+
+set_option apply.class_instance false
+definition lambda_gamma_transf (G : Dbl_gpd) :
+  dbl_functor G (functor.compose lambda.functor gamma.functor G) :=
+begin
+  fapply dbl_functor.mk, apply functor.id,
+  { intros [a,b,c,d,f,g,h,i,u],
+    fapply lambda_morphism.mk,
+      fapply (@folded_sq.mk (carrier (Dbl_gpd.gpd G))),
+        apply (i ∘ f ∘ h⁻¹ ∘ g⁻¹),
+      apply (lambda_gamma_fold _ u),
+    apply idp,
+  },
+  { intros,
+    fapply lambda_morphism.congr,
+      fapply folded_sq.congr,
+        apply concat, apply id_left,
+        apply concat, apply (ap (λ x, _ ∘ x ∘ _)), apply id_inverse,
+        apply concat, apply (ap (λ x, _ ∘ x)), apply id_left,
+        apply right_inverse,
+  },
+end
+
+exit
+
 set_option apply.class_instance false
 definition xmod_dbl_gpd_equivalence :
   equivalence Cat_dbl_gpd.{l l l} Cat_xmod.{l l l} :=
@@ -153,9 +191,11 @@ begin
       apply lambda.functor,
     rotate 1,
     fapply iso.mk,
-      fapply nat_trans.mk,
-        intro X, apply (gamma_lambda_transf X),
+      fapply nat_trans.mk, intro X, apply (gamma_lambda_transf X),
       intros [X, Y, f], apply (gamma_lambda_transf_nat X Y f),
     fapply @is_iso_nat_trans,
     intro X, esimp, apply (gamma_lambda_transf_iso X),
+  apply iso.symm, fapply iso.mk,
+    fapply nat_trans.mk, intro G, apply (lambda_gamma_transf G),
+
 end
