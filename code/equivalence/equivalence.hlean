@@ -157,7 +157,91 @@ section
 
 end
 
+section
+  variables (G : Dbl_gpd) {a b : carrier (gpd G)} (f : hom a b)
 
+  definition lambda_gamma_transf_aux1 :
+    transport (λ x, two_cell G f f (ID a) x) (id_left id)⁻¹ (ID₁ G f)
+    = transport (λ x, two_cell G f f x _) (id_left id) (comp₁ G (ID₁ G f) (ID₁ G f)) :=
+  begin
+    apply inverse, apply tr_eq_of_eq_inv_tr,
+    apply (id_left₁' G),
+  end
+
+end
+
+section
+  variables (G : Dbl_gpd) {a b c d c₂ d₂ : carrier (gpd G)}
+    {f : hom a b} {g₁ : hom c d} {h₁ : hom a c} {i₁ : hom b d}
+    {g₂ : hom c₂ d₂} {h₂ : hom c c₂} {i₂ : hom d d₂}
+    (u : two_cell G f g₁ h₁ i₁)
+    (v : two_cell G g₁ g₂ h₂ i₂)
+
+  definition lambda_gamma_transf_aux2 :
+    (comp₂ G (comp₂ G (br_connect G i₂) (ID₂ G i₂))
+       (comp₂ G v (comp₂ G (comp₂ G (ID₂ G h₂) (bl_connect' G h₂)) (ID₁ G g₂⁻¹))))
+    = (comp₂ G (comp₂ G (br_connect G i₂) (ID₂ G i₂))
+       (comp₂ G v (comp₂ G (comp₂ G (ID₂ G h₂) (bl_connect' G h₂)) (ID₁ G g₂⁻¹)))) :=
+  begin
+    apply concat, apply (ap (λ x, comp₂ G x _)), apply (id_right₂' G),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ (comp₂ G x _)))),
+      apply (id_left₂' G),
+    apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
+    apply concat, apply (ap (λ x, comp₂ G _ x)),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+    apply concat, apply (ap (λ x, comp₂ G _ x)),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
+    apply inv_tr_eq_of_eq_tr,
+    apply concat, apply inverse, apply (id_left₂ G),
+    do 2 (apply tr_eq_of_eq_inv_tr),
+    apply concat, apply (ap (λ x, comp₂ G x _)), apply inverse, apply (right_inverse₂ G),
+      apply (ID₁ G i₂),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) _)),
+      apply inverse, apply (ID₁_respect_inv G),
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) _)),
+      apply inverse, apply (id_left₂ G),
+    apply concat, apply (ap (λ x, comp₂ G x _)),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ G x _)),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G x _)) _)),
+      apply inverse, apply (id_left₂ G),
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) _)),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+    apply concat, apply (ap (λ x, comp₂ G x _)),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) _)),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
+    apply concat, apply (ap (λ x, comp₂ G x _)),
+      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G _ x)) _)),
+  end
+
+end
+
+exit
 set_option apply.class_instance false
 definition lambda_gamma_transf (G : Dbl_gpd) :
   dbl_functor G (functor.compose lambda.functor gamma.functor G) :=
@@ -231,11 +315,39 @@ begin
       apply tr_eq_of_eq_inv_tr,
       apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
       apply tr_eq_of_eq_inv_tr,
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ (comp₂ G x _)))),
+        apply inverse, apply (bl_of_bl_square G),
       apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+        apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
+      apply concat, apply (ap (λ x, comp₂ G _ x)),
+        apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+      apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+      apply inv_tr_eq_of_eq_tr,
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+        apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+      apply concat, apply (ap (λ x, comp₂ G _ x)),
+        apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
+      apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
+      apply tr_eq_of_eq_inv_tr,
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+        apply transp_comp₂_inner_deal2,
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ (comp₂ G _ x)))),
+        apply lambda_gamma_transf_aux1,
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+        apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_l G),
+      apply concat, apply (ap (λ x, comp₂ G _ x)),
+        apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_l G),
+      apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_l G),
+      apply tr_eq_of_eq_inv_tr,
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+        apply inverse, apply (interchange G),
+      apply concat, apply (ap (λ x, comp₂ G _ x)), apply inverse, apply (interchange G),
+      apply concat, apply inverse, apply (interchange G),
+      apply concat,
   },
 end
 
-check @assoc'
+check @comp₁_row_replacement
 
 exit
 
