@@ -60,7 +60,7 @@ check Type.{l} -- Prints Type.{l} : Type.{l+1}
 \end{leancode}
 
 The only built-in type formers are (dependent and non-dependent) function types,
-structures, and inductive datatypes.
+structures, and inductive families.
 
 The \textbf{type of functions} between types \leani{A} and \leani{B} is written
 as \leani{A → B}.
@@ -123,7 +123,8 @@ check @eq.rec_on A a -- Prints Π {C : Π (a_1 : A), eq A a a_1 → Type}
 \end{leancode}
 
 We can not only define single inductive types but also \textbf{families of
-inductive types}, which we can define by recursion on the index of the family:
+inductive types}~\cite{inductive-families}, which we can define by recursion on
+the index of the family:
 \begin{leancode}
 open nat
 

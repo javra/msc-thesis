@@ -65,7 +65,7 @@ types $A, B : \UU$.
 The inference rules that come with it are exactly those known from types $\lambda$-calculus:
 \begin{equation}
 \begin{gathered}
-\inferrule*[left=$\to$-Form]{A,B : \UU}{A \to B : \UU} \quad
+\inferrule*[left=$\to$-Form]{A,B : \UU}{A \to B : \UU} \qquad
 \inferrule*[left=$\to$-Intro]{a : A \vdash \Phi[a/x] : B}{(\lambda x. \Phi) : A \to B} \\
 \inferrule*[left=$\to$-Elim]{f : A \to B \\ a : A}{f(a) : B}
 \end{gathered}
@@ -73,17 +73,214 @@ The inference rules that come with it are exactly those known from types $\lambd
 Here, $\Phi$ is a term that may have $x$ as a free variable.
 $\Phi[a/x]$ denotes the replacement by every appearance of $x$ by $a$.
 Of course, we have the rules of $\eta$-conversion and $\beta$-reduction:
-\begin{equation}
-\inferrule*[left=$\eta$]{f : A \to B}{(\lambda x. f(x)) \equiv f} \quad
+\begin{equation} \label{eq:eta-beta}
+\begin{aligned}
+\inferrule*[left=$\eta$]{f : A \to B}{(\lambda x. f(x)) \equiv f} \qquad
 \inferrule*[left=$\beta$]{(\lambda x. \Phi) : A \to B \\ a : A}
 	{(\lambda x. \Phi)(a) \equiv \Phi[a/x]}
+\end{aligned}
 \end{equation}
 These definitional will from now on be used ``silently'' to replace subterms.
 In the logic interpretation of HoTT, function types model implication of propositions
 while in the set and topology interpretation they represent (arbitrary resp.
 continuous) maps.
 
-\section{Functions and Pi-Types}
+One important special case of non-dependent function types are those of the form
+$A \to \UU$ for a type $A : \UU$.
+We call it the type of \textbf{type families} indexed by $A$.
+With propositions as types, these represent propositions that depend on a variable
+$x : A$.
+Topologically, assigning to each point of a space another space ``above'' it
+in a continuous fashion reflects the notion of a \emph{fibration}.
+
+Especially when thinking of types modeling propositions, it is important to find
+types that correspond to to the absolute truth values true and false.
+A false statement should be provable, so it should be represented by the
+\textbf{empty type} $\emptytype$ which has no introduction rule at all:
+\begin{equation*}
+\inferrule*[left=$\emptytype$-Form]{ }{\emptytype : \UU} \qquad
+\inferrule*[left=$\emptytype$-Elim]{C : \emptytype \to \UU \\ x : \emptytype}
+	{\ind_\emptytype(C,x) : C(x)}
+\end{equation*}
+Here, $\ind_0$ stands for ``induction''.
+The name indicates that $\emptytype$ is generated \emph{inductively} on an
+empty collection of constructors.
+The rule asserts that we can infer every possible statement once we constructed
+an instance of $\emptytype$ (``ex falso quodlibet'').
+Just like for every induction rule we will state in the rest of this chapter,
+we can receive a non-dependent version of the rule, called \emph{recursion
+rule}, by assuming $C$ to be a constant type family or, in other words, a type
+$A : \UU$:
+\begin{equation*}
+\rec_\emptytype(A, x) :\equiv \ind_\emptytype((\lambda y. A), x) : A \text{.}
+\end{equation*}
+
+The type corresponding to ``true'' is the \textbf{unit type} $\unit$
+which provides exactly one way of constructing an instance of it:
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left=$\unit$-Form]{ }{\unit : \UU} \qquad
+\inferrule*[left=$\unit$-Intro]{ }{\star : \unit} \\
+\inferrule*[left=$\unit$-Elim]{C : \unit \to \UU \\ p : C(\star) \\ x : \unit}
+	{\ind_\unit(C,p,x) : C(x)}
+\end{gathered}
+\end{equation*}
+The elimination rule can be thought of ensuring that we can prove a statement
+about an arbitrary element of $\unit$ by just proving  it for the constructor
+$\star$.
+Additionally to the rule, we furthermore specify the behavior of the induction
+on the constructor itself, by saying that $\ind_\unit(C,p,\star) \equiv p$.
+In a set theoretic context, $\unit$ would be a (or ``the'') singleton, from the
+topological point of view it stands for a contractible space.
+Again, if we set $C(x) :\equiv A$ for some type $A : \UU$, we obtain a
+non-dependent recursor $\rec_\unit(A) : A \to \unit \to A$, selecting
+for each point $a : A$ the function that maps to $a$.
+
+Looking at the type of some of the recursors, for example $\rec_\unit$, before
+giving all their arguments, we struggle to express their type using only
+non-dependent functions, since e.g. $\rec_\unit(A)$ does not have the same type
+for every choice of $A : \UU$.
+This is where dependent functions come into play.
+
+\section{Dependent Functions and Products}
+
+\textbf{Dependent Functions}, also called $\Pi$\textbf{-types}, are the core of
+dependent type theory.
+Opposed to a non-dependent function $f : A \to B$ between two types $A, B : \UU$,
+which returns an instance of $B$ when applied to whatever instance of $A$,
+the return type of a dependent function on a type family $B : A \to \UU$ is
+$B(a)$  when the function is evaluated at some instance $a : A$.
+Of course, we can rediscover non-dependent function types as $\Pi$-types on
+constant type families.
+We write $\prod_{(a : A)} B(a)$ for the type of dependent functions on the type
+family $B : A \to \UU$.
+Since to construct such a dependent function, we need to give an element of
+$B(a)$ for \emph{every} $a : A$, we can think of $\prod_{(a : A)} B(a)$ as the
+statement ``For all $a : A$, the statement $B(a)$ holds''.
+In the topological interpretation, we can say that this corresponds to giving
+a point in each fiber of the fibration $B : A \to \UU$ varying continuously
+on the chosen $a : A$.
+this is called a \emph{section} of the fibration.
+The rules to form the type of $\Pi$-types and to introduce and apply dependent
+functions generalize the rules for non-dependent functions as follows:
+\begin{equation}
+\begin{gathered}
+\inferrule*[left=$\Pi$-Form]{A : \UU \\ B : A \to \UU}
+	{\textstyle{(\prod_{(a : A)} B(a))} : \UU} \qquad
+\inferrule*[left=$\Pi$-Intro]{a : A \vdash \Phi[a/x] : B(a)}
+	{(\lambda x. \Phi) : \textstyle{\prod_{(a : A)} B(a)}} \\
+\inferrule*[left=$\Pi$-Elim]{f : \textstyle{\prod_{(a : A)} B(a)} \\ a : A}
+	{f(a) : B(a)}
+\end{gathered}
+\end{equation} %TODO talk about predicativity?
+Again, we have the rules for $\beta$-reduction and $\eta$-conversion like in
+the non-dependent case~(\ref{eq:eta-beta}), yielding judgmental equalities
+$(\lambda x. f (x)) \equiv f$ and $(\lambda x. \Phi)(a) \equiv \Phi[a/x]$.
+
+Having defined $\Pi$-types we are able to state the recursor for other basic
+actually non-dependent type formers: Product and coproduct types.
+These take the type theoretic role of conjunction and disjunction of propositions,
+and of cartesian products and and disjoint unions of sets or topological
+spaces.
+The inference rules for \textbf{product types} are the following:
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left=$\times$-Form]{A, B : \UU}{A \times B : \UU} \qquad
+\inferrule*[left=$\times$-Intro]{a : A \\ b : B}{(a, b) : A \times B} \\
+\inferrule*[left=$\times$-Elim]{C : A \times B \to \UU \\
+	p: \textstyle{\prod_{(a : A)} \prod_{(b : B)} C((a,b))} \\ x : A \times B}
+	{\ind_{A \times B}(C, p, x) : C(x)}
+\end{gathered}
+\end{equation*}
+with the definitional equality $\ind_{A \times B}(C, p, (a, b)) \equiv p(a, b)$.
+Note that the type of $\ind_{A \times B}$ can now be expressed as
+\begin{equation*}
+\prod_{C : A \times B \to \UU} \left( \prod_{a : A} ~ \prod_{b : B} C((a,b)) \right)
+	\to \prod_{x : A \times B} C(x) \text{.}
+\end{equation*}
+The first and second projection of an instance $x : A \times B$ are then simply
+defined by
+\begin{align*}
+\pr_1(x) &:\equiv \ind_{A \times B}((\lambda y. A), (\lambda a. \lambda b. a), x) \\
+\pr_2(x) &:\equiv \ind_{A \times B}((\lambda y. A), (\lambda a. \lambda b. b), x) \text{,}
+\end{align*}
+yielding $\pr_1((a, b)) \equiv a$ and $\pr_2((a, b)) \equiv b$ judgmentally.
+An informal way of stating the meaning of $\times$\textsc{-Elim} would be:
+``To show a statement about all instances of a product type, is suffices to
+prove it for all pairs''.
+
+Dually to products we define the \textbf{coproduct} or \textbf{sum} of two types
+by giving the following rules:
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left=$+$-Form]{A : \UU \\ B : \UU}{A + B : \UU} \\[.7em]
+\inferrule*[left=$+$-Intro1]{a : A}{\inl(a) : A + B} \qquad
+\inferrule*[left=$+$-Intro2]{b : B}{\inr(b) : A + B} \\[.7em]
+\inferrule*[left=$+$-Elim]
+	{C : (A + B) \to \UU \\  p : \textstyle{\prod_{(a : A)} C(\inl(a))}
+		\\ q : \textstyle{\prod_{(b : B)} C(\inr(b))} \\ x : A + B}
+	{\ind_{A + B}(C, p, q, x) : C(x)}
+\end{gathered}
+\end{equation*}
+Note that this is the first type former for which there is more than just one
+introduction rule.
+Likewise there is more than one ``base case'' to prove to use the induction rule.
+
+Going back and looking at the product type, we recognize that we can, just as
+for the function type, find a more general, dependent version, the
+\textbf{dependent product type} or $\Sigma$\textbf{-type}.
+The gain of generality consists of the fact that, for the pairs that make up the
+type, the type of their second component may depend on the concrete value of the
+first component.
+This can be used to model existentially quantified statements like
+``there exists an $a : A$ such that $B(a)$ holds.''
+Topologically, the $\Sigma$-type of a fibration $B : A \to \UU$ represents the
+\emph{total space} of $B$.
+The first projection of a dependent pair corresponds to the projection of a point
+in a fiber onto its base.
+(This is the map which topologists would traditionally refer to as ``the fibration''.)
+The inference rules for dependent products are:
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left=$\Sigma$-Form]{A : \UU \\ B : A \to \UU}
+	{\textstyle{(\sum_{(a : A)} B(a))} : \UU} \qquad
+\inferrule*[left=$\Sigma$-Intro]{a : A \\ b : B(a)}
+	{(a, b) : \textstyle{(\sum_{(a : A)} B(a))}} \\[.7em]
+\inferrule*[left=$\Sigma$-Elim]
+	{C : (\textstyle{(\sum_{(a : A)} B(a))}) \to \UU \\
+		p : \textstyle{\prod_{(a : A)} \prod_{(b : B(a))}} C((a,b)) \\
+		x : \textstyle{(\sum_{(a : A)} B(a))}}
+	{\ind_{(\sum_{(a : A)} B(a))}(C, p, x) : C(x)}
+\end{gathered}
+\end{equation*}
+Again, we assume the definitional equality
+\begin{equation*}
+\ind_{(\sum_{(a : A)} B(a))}(C, p, (a, b)) \equiv p(a, b) \text{.}
+\end{equation*}
+We can recover non-dependent products by setting $B$ to be a constant type family.
+
+Product types, $\Sigma$-types, coproduct types, the unit type and the empty type
+all are examples for the larger class of \textbf{inductive types}.
+I will abstain from giving the general definition of inductive types and
+inductive types families and again refer to definitions in either the HoTT book~\cite{hottbook}
+and the introduction of inductive families by Peter Dybier~\cite{inductive-families},
+which provided the blueprint for the implementation in Lean.
+Instead, I will another a common example for an inductive type:
+
+Just as the unit type was defined inductively on its constructor $\star$ and
+the coproduct on two constructor $\inl$ and $\inr$, we can obtain the
+\textbf{natural numbers} $\N$ as the inductive type of a zero element
+$0 : \N$ and the successor function $S : \N \to \N$.
+These data yield, besides the obvious introduction rules, the following well-known
+elimination rule:
+\begin{equation*}
+\inferrule*[left=$\N$-Elim]
+	{C : \N \to \UU \\ p : C(0) \\ q : \textstyle{\prod_{(n : \N)}} C(n) \to C(S(n)) \\
+		x : \N}
+	{\ind_\N(C, p, q, x) : C(x)}
+\end{equation*}
+
+
 
 \section{Sigma-Types}
 

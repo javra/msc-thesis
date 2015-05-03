@@ -236,7 +236,7 @@ section
       apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G _ x)) _)),
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G (comp₂ G _ x) _)) _)),
   end
 
 end
