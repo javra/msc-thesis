@@ -9,13 +9,79 @@ for suggestions at GitHub.~\footnote{\url{https://github.com/HoTT/book}}
 My description of homotopy type theory will stick to the notation and terminology
 used in this book.
 
-Furthermore, I will not make any distinction between elements of homotopy type
-theory that were present in earlier approaches to intensional type theory,
-most prominently the one of Per Martin-L\"of~\cite{martin-lof1} as this
-defies the purpose of a concise introduction to the current state of the art.
-%TODO this sounds wrong and pretentious
-%TODO introduce natural number, unit type, identities, truncation
+Furthermore, I will not make the effort to distinguish between what elements of
+the theory were there in earlier approaches to intensional type theory,
+most prominently the one of Per Martin-L\"of~\cite{martin-lof1}, as this would
+defy the purpose of a concise introduction to the current ``state of the art''.
+%TODO this sounds wrong and pretentious?
 
+\section{Some Basic Non-Dependent Type Theory}
+
+A type theoretical foundation of mathematics uses \textbf{Types} wherever,
+in an approach based on set theory and predicate logic, sets and propositions
+are used.
+Homotopy type theory adds to this logical interpretation and set interpretation
+the point of view of a topological space or its homotopy type.
+\textbf{Objects} (or \textbf{instances}) of a type thus correspond to elements of
+a set, to proofs of a proposition, as well as to points in a space.
+
+The judgment that that some object $a$ is an instance of a type $A$ will be written
+as $a : A$.
+Opposed to set theory it is always a priori determined, what type some constructed
+object will be an instance of, and this type is, up to definitional equality of
+types, fixed.
+If an object or a type can be written in two different ways, we will express the
+fact that two expressions coincide using ``$\equiv$'' (since ``$=$'' will later
+denote propositional equality).
+Likewise, ``$:\equiv$'' is the notation for abbreviating the the right hand side
+by the expression on the left hand side.
+It is important to note that it is decidable to check whether $a \equiv b$ holds
+for two given terms $a$ and $b$.
+
+Types in homotopy type theory are organized in \textbf{universes}.
+For every $i \in \mathbb{N}$ we assume to have a universe $\UU_i$ which is itself,
+as an object, contained in the universe $\UU_{i+1}$.
+In this way, all types, including the universes, can be seen as objects in some
+greater type.
+Often, it is assumed that universes are \emph{cumulative} in the sense that if
+$A : \UU_i$, then $A : \UU_{i+1}$ (and thus, $A : \UU_j$ for every $j \geq i$).
+Since this entails some computational difficulties for theorem provers, the
+language Lean will not incorporate universe cumulativity.
+A replacement for the cumulativity is an inductively defined lifting function
+$\UU_i \to \UU_{i+1}$.
+In the following, I will most of the time leave the index of a universe implicit
+and just denote it by $\UU$. This means to say that these definitions are applicable
+to all (combinations of) universe indices.
+The reason for the need of multiple universes is that a system that simply assumed
+that $\UU : \UU$ would be inconsistent.
+
+We will now take a look at some of the non-dependent type formers, some of which
+will later be extended  to dependent ones.
+We will introduce these type formers by giving semi-formal rules for the formation
+of the type, the introduction of the type's instances and for their elimination.
+
+The most basic type is the type $A \to B$ of \textbf{non-dependent} functions between two
+types $A, B : \UU$.
+The inference rules that come with it are exactly those known from types $\lambda$-calculus:
+\begin{equation}
+\begin{gathered}
+\inferrule*[left=$\to$-Form]{A,B : \UU}{A \to B : \UU} \quad
+\inferrule*[left=$\to$-Intro]{a : A \vdash \Phi[a/x] : B}{(\lambda x. \Phi) : A \to B} \\
+\inferrule*[left=$\to$-Elim]{f : A \to B \\ a : A}{f(a) : B}
+\end{gathered}
+\end{equation}
+Here, $\Phi$ is a term that may have $x$ as a free variable.
+$\Phi[a/x]$ denotes the replacement by every appearance of $x$ by $a$.
+Of course, we have the rules of $\eta$-conversion and $\beta$-reduction:
+\begin{equation}
+\inferrule*[left=$\eta$]{f : A \to B}{(\lambda x. f(x)) \equiv f} \quad
+\inferrule*[left=$\beta$]{(\lambda x. \Phi) : A \to B \\ a : A}
+	{(\lambda x. \Phi)(a) \equiv \Phi[a/x]}
+\end{equation}
+These definitional will from now on be used ``silently'' to replace subterms.
+In the logic interpretation of HoTT, function types model implication of propositions
+while in the set and topology interpretation they represent (arbitrary resp.
+continuous) maps.
 
 \section{Functions and Pi-Types}
 

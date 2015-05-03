@@ -54,7 +54,7 @@ from the left and from the right:
 As with all the definitions given in this semi-informal style, it is, from a
 theoretical standpoint, equivalent whether to see them as a description of an
 iterated $\Sigma$-Type or as the only constructor of an inducitve type.
-We will later~\ref{rmk:inductives-not-sigmas} see that in formalization practice
+We will later~\ref{section:categories-lean} see that in formalization practice
 it is favorable to choose to introduce them as new inductive types instead of
 $\Sigma$-Types.
 
@@ -66,7 +66,7 @@ $\comp_C = \comp_D$ and $\id_C = \id_D$.
 Then, $C = D$. \hfill $\qed$
 \end{lemma}
 
-This also justifies that we do not require further coherence conditions on
+This also justifies the fact that we do not require further coherence conditions on
 associativity (the ``pentagon coherence law'') and identity laws. %TODO add further explanation?
 
 \begin{defn} [Functors] \label{def:hott-precat-functor}
@@ -152,13 +152,13 @@ with morphisms being arbitrary functions.
 
 But the truncation level of the carrier is not the only thing that could be bothersome
 when dealing with precategories:
-If we look at the previous two examples of precategories where each object itself
+if we look at the previous two examples of precategories where each object itself
 are types, we can conclude that if two objects are isomorphic in the algebraic sense
 they are equivalent types and thus, by the univalence axiom, equal.
 We want to transfer this as a requirement to all categories, extending the general
 idea of univalence which says that isomorphic objects should be treated as equals.
-To make this definition of a \emph{category} as smooth as possible, some helping
-will be necessary.
+To make this definition of a \emph{category} as smooth as possible, some auxiliary
+definitions will be necessary.
 
 \begin{defn}[Isomorphisms]
 Let $C$ be a precategory on a type $A : \UU$. A morphism $f : \hom_C(a, b)$ is
@@ -198,7 +198,7 @@ identities, we get an instance of $a \cong a$.
 
 \begin{defn}[Category]
 A \textbf{category} $C$ on $A$ is defined to be a precategory on $A$ which is
-\emph{univalent}: It's accompanied
+\emph{univalent}: it is accompanied
 by a proof that for all $a, b : A$, $\idtoiso_{a,b}$ is an equivalence.
 \end{defn}
 
@@ -253,7 +253,7 @@ A \textbf{(pre-)groupoid} is a (pre-)category $C$ on $A : \UU$ together with
 
 As we saw when introducing (pre-)categories in homotopy type theory, we use
 dependent types to model the type of morphisms. Instead, we could have said that
-a category is defined on a two types $A, H \in \UU$ where $A$ represents the objects
+a category is defined on two types $A, H \in \UU$ where $A$ represents the objects
 and $H$ is \emph{one} type of morphisms.
 This would have required us to give functions $\partial^-, \partial^+ : H \to A$
 specifying domain and codomain of morphisms and the composition to be of the type
@@ -262,15 +262,15 @@ specifying domain and codomain of morphisms and the composition to be of the typ
 	\sum_{h:H} \left(\partial^-(h)=\partial^-(f)\right)
 		\times \left(\partial^+(h)=\partial^+(g) \right) \right) \text{.}
 \end{equation*}
-The difference of this approach from the one we chose is that morphisms are only
+The difference between this approach and the one we chose is that morphisms are only
 composable if their respective codomain and domain are \emph{definitionally}
-the same. Both approaches are advantageous in some situations:
+the same. Each approach is advantageous in some situations:
 Using dependent types will force us more often to use transports to achieve
 definitional equality on codomain and domain, using $\partial^-$ and $\partial^+$
 requires an identity proof for each composition we want to construct.
 
 For the implementation of double categories and double groupoids I decided to
-adopt the dependently typed concept that's commonly also used to formalize categories.
+adopt the dependently typed concept that is commonly also used to formalize categories.
 Also note that in the following definition we will \emph{not} require the
 1-skeleton of a double category to be univalent since in our intended main
 use of the structures the object type will not be 1-truncated and thus the
@@ -373,8 +373,8 @@ Not only those, but also the four first equations in \ref{eq:linear-ident} hold
 by definition!
 Formulating the definition using three different categories would have rendered
 this impossible.
-But it is not the case that the notion of the two categories of two-cells are not
-accessible in the formalization:
+But the notion of the two categories of two-cells is still accessible in the
+formalization:
 
 \begin{defn}
 We can recover what in definition \ref{def:dbl-cat} we called the \textbf{vertical
@@ -507,7 +507,7 @@ on double groupoids on univalent ones. %TODO prove this
 
 \begin{defn}[Double functor] \label{defl:dbl-functor-hott}
 A \textbf{double functor} $F$ between double categories $D$ and $E$ shall consist
-of the follwing data:
+of the following data:
 \begin{itemize}
 \item A functor between the respective 1-skeleton of $D$ and $E$.
 We will write $F_0$ for the function on objects of $D$ and $F_1$ for the function
@@ -549,7 +549,7 @@ The proof can be done like the one of lemma \ref{thm:precat-univalent}.
 
 \section{Crossed modules in HoTT}
 
-When defining crossed modules, there is less room for decisions, like the in what
+When defining crossed modules, there is less room for decisions, like in what
 extent to rely on dependent types, than in the case of double categories and
 double groupoids.
 We use \emph{strict} groupoids as base as well as a family of groups that have
@@ -660,7 +660,10 @@ We can now define the fundamental double groupoid of a presented type.
 As it can be derived from the example above, the objects in $C$ will correspond
 to the objects of the groupoid, while morphisms in the groupoid will be
 equalities $A$ and two-cells will be equalities between equalities in $X$.
-We will start by first considering the 1-skeleton of this double groupoid:
+We will start by first considering the 1-skeleton of this double groupoid.
+%Note that we adopt the style of the HoTT Book~\cite{hottbook} to split constructions
+%into the statement of their proof relevant definitions and their accompanying,
+%merely propositional, proofs of TODO
 
 \begin{defn}[Fundamental groupoid] Let $A : \UU$ be a 1-type, $C : \UU$ be a set
 and $\iota : C \to A$. The \textbf{fundamental double groupoid} $G_1(A,C)$ 
@@ -741,7 +744,7 @@ lie in $A$ while two cells are equalities in $X$.
 Here, we can apply induction to the first order paths involved but not the iterated ones.
 \end{enumerate}
 I will refrain from stating these proofs in detail and I will give an example in
-\ref{section:dbl-gpd-lean} when presenting the formalization in Lean. %TODO not give one example?
+Section~\ref{section:dbl-gpd-lean} when presenting the formalization in Lean.
 
 The vertically inverse of a square $u : \apiop(h) \ct \apiop(g) 
 = \apiop(f) \ct \apiop(i)$ is again given by using the functoriality

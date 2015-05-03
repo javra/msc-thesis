@@ -13,9 +13,9 @@ crossed modules.
 \section{The Lean Theorem Prover}
 
 The development of the theorem prover Lean was initiated in 2013 by Leo\-nar\-do
-de Moura and Jeremy Avigad.
+de Moura.
 De Moura had previously been working on the automated theorem prover Z3, one of the leading
-solver for problem sets in the SMT standard.
+solvers for problem sets in the SMT standard.
 With Lean, he intends to create a interactive theorem proving system that connects
 the strength of solvers like Z3 with the expressiveness and flexibility of
 interactive systems like Agda, Coq or Isabelle.
@@ -49,8 +49,9 @@ The instantiation of a definition \leani{A} at a universe \leani{l} can be recei
 manually by writing \leani{A.{l}}.
 To have manual control over the coherence of universe levels of definitions in
 a certain scope, variable universe levels can be declared using the command
-\leani{universe variable}. The following snippet shows universe polymorphism
-and the use of universe variables:
+\leani{universe variable}.
+The following snippet shows universe polymorphism (introducing an implicit universe
+placeholder \leani{l_1}) and the use of universe variables:
 \begin{leancode}
 check Type -- Prints Type.{l_1} : Type.{l_1+1}
 
@@ -618,7 +619,7 @@ Tables \ref{tab:init-tree} and \ref{tab:hottlib-tree} show the line count and
 the compilation time for each theory in Lean's HoTT library excluding the library
 for category theory.
 
-\section{Category Theory in Lean}
+\section{Category Theory in Lean} \label{section:categories-lean}
 
 Our library of basic category theoretical definitions and theorems, which is
 still work in progress, also mimics the structure of Coq's HoTT implementation
@@ -774,7 +775,8 @@ functor.mk
 
 Like mentioned above, it is useful to still have a representation of a structure
 as an iterated product and $\Sigma$-type.
-With this characterization we can formalize lemma \ref{thm:functors-hset} easily:
+With this characterization we can formalize lemma \ref{thm:functors-hset} easily
+using type class resolution:
 \begin{leancode}
 protected definition sigma_char :
   (Σ (to_fun_ob : C → D)
@@ -784,20 +786,11 @@ protected definition sigma_char :
     to_fun_hom (g ∘ f) = to_fun_hom g ∘ to_fun_hom f)) ≃ (functor C D) :=
 ...
 
-set_option apply.class_instance false
-protected definition is_hset_functor [HD : is_hset D] : is_hset (C ⇒ D) :=
-begin
-  apply is_trunc_is_equiv_closed, apply equiv.to_is_equiv,
-    apply sigma_char,
-  apply is_trunc_sigma, apply is_trunc_pi, intros, exact HD, intro F,
-  apply is_trunc_sigma, apply is_trunc_pi, intro a,
-    {apply is_trunc_pi, intro b,
-     apply is_trunc_pi, intro c, apply !homH},
-  intro H, apply is_trunc_prod,
-    {apply is_trunc_pi, intro a,
-     apply is_trunc_eq, apply is_trunc_succ, apply !homH},
-    {repeat (apply is_trunc_pi; intros),
-     apply is_trunc_eq, apply is_trunc_succ, apply !homH},
+section
+  local attribute precategory.homH [priority 1001]
+  protected theorem is_hset_functor [instance]
+    [HD : is_hset D] : is_hset (functor C D) :=
+  by apply is_trunc_equiv_closed; apply functor.sigma_char
 end
 \end{leancode}
 
@@ -1133,8 +1126,7 @@ definition ul_connect ⦃a b : D₀⦄ (f : hom a b) : D₂ (ID a) f (ID a) f :=
 thin D (ID a) f (ID a) f idp
 \end{leancode}
 
-In contrast, proving the S-law (\ref{thm:s-law})
-takes surprisingly much effort.
+In contrast, proving the S-law (\ref{thm:s-law}) takes a surprising amount of effort.
 It is the first of many theorems for which we need helper lemmas that
 generalize paths to make a statement provable by path induction.
 \begin{leancodebr}
@@ -1214,13 +1206,13 @@ rows to the context:
 \end{leancodebr}
 
 Now we can start defining double groupoids.
-The definition of a weak double groupoid poses a greater task to lean's type
+The definition of a weak double groupoid poses a greater task to Lean's type
 checker than the one of a double category which is why we first define the the
 type of the arguments that are required to make a weak double groupoid out of a
 double category as separate definitions to give Lean the chance to elaborate
 and type check the terms before using them in the actual definition.
 Note that in the \leani{extends} command in structure definition, \leani{C} is
-automatically casted from a groupoid to a general precategory.
+automatically cast from a groupoid to a general precategory.
 
 \begin{leancodebr}
 context
@@ -1322,7 +1314,11 @@ following:
 
 But in practice, this formalization turned out to be less useful than one where
 we don't have a path between the category functors but instead between their
-objects and morphisms, separately:
+objects and morphisms, separately.
+The parameters of such a theorem \leani{dbl_functor.congr'} are the following.
+(\leani{apD011} is the lemma that equates $f(a,b)$ and $f(a',b')$ for an
+arbitrary dependent function $f$ and equalities between the respective
+arguments.)
 \begin{leancodebr}
     (p1 : to_fun_ob catF1 = to_fun_ob catF2)
     (p2 : transport
@@ -1353,7 +1349,7 @@ we can prove the associativity of double functors in a pretty straightforward wa
 \end{leancodebr}
 
 The composition mentioned in that theorem is defined as obvious on the 1-skeleton
-and on the two-cells, it is quite a bit of work to show that it respects
+and on the two-cells, but it is quite a bit of work to show that it respects
 identities and composition.
 Let's take a look at the part of the proof that shows that the composite functor
 respects the vertical identity:
@@ -1574,7 +1570,7 @@ following steps:
 groupoids to crossed modules and vice versa.
 \item Define $\gamma$ and $\lambda$ on the morphisms of the respective categories:
 On double functors and crossed module morphisms.
-A step that we glossed over when defining the functors in the original topological and
+This is a step that we glossed over when defining the functors in the original topological and
 set theoretic setting.
 \item Instantiate $\gamma$ and $\lambda$ as actual functors by proving that
 they respect identities and composition.
@@ -1780,7 +1776,7 @@ the definition of $\gamma$.
   end
 \end{leancodebr}
 
-\section{Instantiating the Fundamental Double Group\-oid}
+\section{Instantiating the Fundamental Double Group\-oid} \label{section:dbl-gpd-lean}
 
 The general strategy for the instantiation of the fundamental double group\-oid
 of a presented 2-type has been laid out in definition~\ref{def:fundamental-dbl-gpd}.
