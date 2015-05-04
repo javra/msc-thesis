@@ -95,7 +95,7 @@ in a continuous fashion reflects the notion of a \emph{fibration}.
 
 Especially when thinking of types modeling propositions, it is important to find
 types that correspond to to the absolute truth values true and false.
-A false statement should be provable, so it should be represented by the
+A false statement should not be provable, so it should be represented by the
 \textbf{empty type} $\emptytype$ which has no introduction rule at all:
 \begin{equation*}
 \inferrule*[left=$\emptytype$-Form]{ }{\emptytype : \UU} \qquad
@@ -279,12 +279,35 @@ elimination rule:
 		x : \N}
 	{\ind_\N(C, p, q, x) : C(x)}
 \end{equation*}
+The judgmental equalities of the rule are $\ind_\N(C, p, q, 0) \equiv p$ and
+the recursive equation
+\begin{equation*}
+\ind_\N(C, p, q, S(x)) \equiv q(x, \ind_\N(C, p, q, x)) \text{.}
+\end{equation*}
+For a constant type family we get the non-dependent recursion
+\begin{equation*}
+\rec_\N(A) :\equiv \ind(\lambda x. A) : A \to (\N \to A \to A) \to \N \to A \text{,}
+\end{equation*}
+which is exactly the intuitive way to define a function $\N \to A$ by recursion.
+If we were to define what it means for a natural number to be odd, we could do
+this by
+\begin{equation*}
+\isodd :\equiv \rec_\N(\UU, \emptytype, (\lambda n. \lambda A. A \to \emptytype)) : \N \to \UU \text{,}
+\end{equation*}
+where $A \to \emptytype$ is inhabited if $A$ is not, and thus models the negation
+of statements.
+For example, this gives us the statement that the number one is odd, witnessed by
+the following term:
+\begin{align*}
+(\lambda x. x) :~ & \emptytype \to \emptytype \\
+ &\equiv \ind_\N((\lambda x. \UU), \emptytype, (\lambda n. \lambda A. A \to \emptytype), 0)
+  \to \emptytype\\
+ &\equiv \ind_\N((\lambda x. \UU), \emptytype, (\lambda n. \lambda A. A \to \emptytype), S(0))\\
+ &\equiv \isodd(S(0)) \text{.}
+\end{align*}
 
 
-
-\section{Sigma-Types}
-
-\section{Equality}
+\section{Propositional Equality}
 
 \section{Truncated Types}
 
