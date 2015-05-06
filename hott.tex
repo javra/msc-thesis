@@ -306,8 +306,156 @@ the following term:
  &\equiv \isodd(S(0)) \text{.}
 \end{align*}
 
-
 \section{Propositional Equality}
+
+So far, all equalities were judgmental or definitional:
+They resulted from defining new notations and from the judgmental equalities that
+come with each induction rule.
+As mentioned before, it is decidable to check two terms for equality.
+But this means that with this kind of equality, we will not be able to reason
+about undecidable equality statements, or express equality \emph{inside} the
+theory.
+Since in the logical interpretation of type theory, every statement should be
+represented by a type, so should the equality of two objects of the same type.
+This is why we introduce the \textbf{equality type} or \textbf{identity type}
+as our next type.
+It is obvious that for a type $A : \UU$ and two objects $a, b : A$ there should
+be a type $a =_A b$ of which we need so construct an instance to show that $a$
+and $b$ are ``equal'' in some sense.
+But what should the introduction and the elimination rule for such a type look
+like?
+It turns out that it should be the relation that is defined inductively on the
+witnesses for its reflexivity:
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left={$=$-Form}]{A : \UU \\ a, b : A}{a =_A b : \UU} \qquad
+\inferrule*[left={$=$-Intro}]{A : \UU \\ a : A}{\refl_a : a =_A a} \\[.7em]
+\inferrule*[left={$=$-Elim}]
+	{C : \textstyle{\prod_{(a,b : A)} (a =_A b) \to \UU} \\
+		c : \textstyle{\prod_{(a : A)}} C (a, a, \refl_a) \\
+		a, b : A \\ p : a =_A b}
+	{\ind_{=_A}(C, c, a, b, p) : C(x, y, p)}
+\end{gathered}
+\end{equation*}
+The introduction rule gives us a canonical proof for the equality of two
+definitionally equal objects.
+The recursor says that to prove a statement about all pairs of points in a type
+and all equalities between them, it suffices to show it for reflexive case and
+the canonical equality proof $\refl$.
+An elimination rule equivalent to the \emph{unbased equality induction} or
+\emph{J-rule} stated above is the following \emph{based equality induction} where
+we fix the start point of each equality we reason about:
+\begin{equation*}
+\inferrule*[left={Based-$=$-Elim}]
+	{a : A \\ C : \textstyle{\prod_{(b : A)}} (a =_A b) \to \UU \\
+		c : C(a, \refl_a) \\
+		b : A \\ p : a =_A b}
+	{\ind'_{=_A}(a, C, c, b, p) : C(b, p)}
+\end{equation*}
+Both elimination rules are assumed to yield judgmental equalities when applied
+to the constructor $\refl$ itself:
+\begin{align*}
+\ind_{=_A}(C, c, a, a, \refl_a) &\equiv c(a) \text{ and } \\
+\ind'_{=_A}(a, C, c, a, \refl_a) &\equiv c \text{.}
+\end{align*}
+We will see that for the topological interpretation of types, the identity type
+should not necessarily be seen as representing equality of points but rather
+\emph{paths between points}.
+
+Equal objects should be indiscernible in the sense that every property $C : A \to \UU$
+that is provable for some $a : A$ by giving an instance of $C(a)$ should also be
+provable for $b : A$, given an equality $p : a =_A b$.
+As a first lemma about equality we prove that this is indeed the case.
+(Note that the distinction between a definition and a lemma or theorem together
+with its proof is less clear in type theory than it is for set based mathematics.)
+
+\begin{lemma}[Transport.] \label{thm:transport-hott}
+Let $C : A \to \UU$ be a type family, $a , b : A$ equal by $p : a =_A b$.
+Then, for each $c : C(a)$, we obtain an object $p_*(c) : C(b)$.
+We call this the \textbf{transport} $c$ along the path $p$.
+\end{lemma}
+
+\begin{proof}
+We can use (based or unbased) path induction to reduce the statement to the one
+where $p \equiv \refl_a$.
+In this case, we simply to chose $p_*(c) :\equiv c$.
+Formally, we define
+\begin{equation*}
+p_*(c) :\equiv \ind'_{=_A}(a, (\lambda b. \lambda p. C(b)), c, b, p) \text{.}
+\end{equation*}
+\end{proof}
+In the statement of the lemma, the listed precondition should be thought of as
+an iterated $\Pi$-type, so that the full statement is of the type
+\begin{equation*}
+\prod_{C : A \to \UU} ~ \prod_{a, b : A} ~ \prod_{p : a =_A b} C(a) \to C(b) \text{.}
+\end{equation*}
+
+We have seen that the propositional equality we defined above is, by its constructor
+reflexive.
+But since equality should be an equivalence relation, we have to prove its
+symmetry and transitivity, or, in the language of paths, provide the inverse and
+concatenation of paths.
+
+\begin{defn}[Inverse paths.]
+Let $A : \UU$ and $a, b : A$.
+For every path $p : a =_A b$, there is a path $p\inv : b =_A a$ such that
+$\refl_a\inv \equiv \refl_a$ for every $a : A$.
+\end{defn}
+
+\begin{proof}
+By path induction, it suffices to provide $\refl_a\inv : a =_A a$, which we provide
+by giving $\refl_a$. Formally:
+$p\inv :\equiv \ind'_{=_A}(a, (\lambda b. \lambda p. b =_A a), \refl_a, b, p)$.
+\end{proof}
+
+\begin{defn}[Concatenation of paths.]
+For a type $A : \UU$, $a, b, c : A$ and paths $p : a = b$ and $q : b = c$ there
+is a path $p \ct q : a = c$ which can be chosen in a way such that
+$\refl_a \ct \refl_a \equiv \refl_a$.
+\end{defn}
+
+\begin{proof}
+We again apply induction on the equalities involved to end up having only to
+specify an instance of $a = a$ which we choose to be $\refl_a$.
+I will from now on abstain from giving the type families and applications
+of the equality elimination rule explicitly.
+More formal proofs for these definitions can be found in any formalization or
+in the HoTT book~\cite{hottbook}.
+\end{proof}
+
+We see that this inversion and concatenation are exactly the operations which are
+part of a groupoid.
+It turns out that they also fulfill the defining properties of a groupoid:
+
+\begin{defn}[Groupoid laws.]
+Let $A : \UU$, $a, b, c, d : A$ and $p : a = b$, $q : b = c$ and $r : c = d$.
+Then,
+\begin{itemize}
+\item $p = p \ct \refl_b = \refl_a \ct p$,
+\item $p\inv \ct p = \refl_b$, $p \ct p\inv = \refl_a$,
+\item $(p\inv)\inv = p$ and
+\item $p \ct (q \ct r) = (p \ct q) \ct r$.
+\end{itemize}
+\end{defn}
+
+\begin{proof}
+We can prove all these by applying path induction to all the three paths involved.
+\end{proof}
+
+Note that all these propositional equalities are \emph{between equalities} and,
+if we wrote the first equation mentioned in the previous definition noting the
+type it was in, it would be $p =_{a =_A b} p \ct \refl_b$.
+We call these equalities \textbf{2-paths} or \textbf{2-dimensional paths}.
+These make the equality in a type an $\infty$-groupoid.
+
+To be a suitable notion of equality, it should be respected by functions in the
+sense that for a function $f : A \to B$ and an equality $p : a = b$ in its domain
+we should be able to obtain an equality $f(a) = f(b)$ in the codomain.
+This is indeed the case, which we can prove by induction on the equality:
+\begin{lemma}
+Let $A, B : \UU$, $f : A \to B$, and $a, b : A$. Then, there is a function
+$\ap_f : (a = b) \to (f(a) = f(b))$ such that $\ap_f(\refl_a) \equiv \refl_{f(a)}$.
+\end{lemma}
 
 \section{Truncated Types}
 
