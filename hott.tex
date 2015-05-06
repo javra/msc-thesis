@@ -369,7 +369,7 @@ As a first lemma about equality we prove that this is indeed the case.
 (Note that the distinction between a definition and a lemma or theorem together
 with its proof is less clear in type theory than it is for set based mathematics.)
 
-\begin{lemma}[Transport.] \label{thm:transport-hott}
+\begin{lemma}[Transport] \label{thm:transport-hott}
 Let $C : A \to \UU$ be a type family, $a , b : A$ equal by $p : a =_A b$.
 Then, for each $c : C(a)$, we obtain an object $p_*(c) : C(b)$.
 We call this the \textbf{transport} $c$ along the path $p$.
@@ -396,7 +396,7 @@ But since equality should be an equivalence relation, we have to prove its
 symmetry and transitivity, or, in the language of paths, provide the inverse and
 concatenation of paths.
 
-\begin{defn}[Inverse paths.]
+\begin{defn}[Inverse paths]
 Let $A : \UU$ and $a, b : A$.
 For every path $p : a =_A b$, there is a path $p\inv : b =_A a$ such that
 $\refl_a\inv \equiv \refl_a$ for every $a : A$.
@@ -408,7 +408,7 @@ by giving $\refl_a$. Formally:
 $p\inv :\equiv \ind'_{=_A}(a, (\lambda b. \lambda p. b =_A a), \refl_a, b, p)$.
 \end{proof}
 
-\begin{defn}[Concatenation of paths.]
+\begin{defn}[Concatenation of paths]
 For a type $A : \UU$, $a, b, c : A$ and paths $p : a = b$ and $q : b = c$ there
 is a path $p \ct q : a = c$ which can be chosen in a way such that
 $\refl_a \ct \refl_a \equiv \refl_a$.
@@ -427,7 +427,7 @@ We see that this inversion and concatenation are exactly the operations which ar
 part of a groupoid.
 It turns out that they also fulfill the defining properties of a groupoid:
 
-\begin{defn}[Groupoid laws.]
+\begin{defn}[Groupoid laws]
 Let $A : \UU$, $a, b, c, d : A$ and $p : a = b$, $q : b = c$ and $r : c = d$.
 Then,
 \begin{itemize}
@@ -455,8 +455,132 @@ This is indeed the case, which we can prove by induction on the equality:
 \begin{lemma}
 Let $A, B : \UU$, $f : A \to B$, and $a, b : A$. Then, there is a function
 $\ap_f : (a = b) \to (f(a) = f(b))$ such that $\ap_f(\refl_a) \equiv \refl_{f(a)}$.
+\hfill $\square$
 \end{lemma}
 
-\section{Truncated Types}
+We call $\ap_f$ the application of $f$ on paths. $ap$ is functorial with respect
+to the path in the sense that it respects the concatenation and inversion of
+paths, and with respect to the function by respecting composition of functions
+and acting neutral on the identity function.
 
-\section{Equivalences and univalence}
+\begin{lemma}
+Let $A, B, C : \UU$, $f : A \to B$ and $g : B \to C$. For paths $p : a =_A b$ and
+$q : b =_A c$ we have equalities
+\begin{itemize}
+\item $\ap_f(p \ct q) = \ap_f(p) \ct \ap_f(q)$,
+\item $\ap_f(p\inv) = \ap_f(p)\inv$,
+\item $\ap_g(\ap_f(p)) = \ap_{g \circ f}(p)$, and
+\item $\ap_{\id_A}(p) = p$. \hfill $\square$
+\end{itemize}
+\end{lemma}
+
+But what if $f$ is a dependent function? Then, the $f(a)$ and $f(b)$ would not
+necessarily be instances of the same type and so $f(a) = f(b)$ would not be a
+valid type.
+But we can use the transport (Lemma~\ref{thm:transport-hott}) to turn $f(a)$ into
+a point in the same fiber as $f(b)$.
+
+\begin{lemma}
+Let $A : \UU$, $P : A \to \UU$ and $f : \prod_{(a : A)} P(a)$. Then, we can construct
+a dependent function
+\begin{equation*}
+\apd_f : \prod_{a, b : A} ~ \prod_{p : a = b} (p_*(f(a)) = f(b)) \text{,}
+\end{equation*}
+such that $\apd_f(a, a, \refl_a) \equiv \refl_{f(a)}$. \hfill $\square$
+\end{lemma}
+
+\section{Equivalences and Univalence}
+
+In set based mathematics we clearly do not care about whether two proofs for the
+equality of two elements are themselves equal or not.
+Different from that, in the topological setting, where equalities correspond to
+paths and equalities between equalities correspond to \emph{homotopies} between
+paths, we might want to consider types, where not all paths are homotopic.
+But what about equalities between types?
+From the logical viewpoint, a good notion of equality would be the \emph{biconditional}:
+Two statements $A, B : \UU$ should be equal, if and only if we can find
+instances of $A \to B$ and $B \to A$.
+A notion of equality for sets, which is weaker than definitional equality, would
+be their isomorphicness in the category of sets --- that is, finding a bijection
+between them.
+When talking about the homotopy type of a topological space however, spaces are
+considered equivalent, and their homotopy type equal, when they are \emph{homotopy
+equivalent}.
+There is a notion of equivalence that captures all these three viewpoints.
+To formulate it, we first need the definition of homotopic functions, as known
+from classic homotopy theory:
+
+\begin{defn}[Homotopy of functions] \label{def:htpy-hott}
+Two maps $f, g : A \to B$ are called \textbf{homotopic} if for all $a : A$ we have
+$f(a) = g(a)$.
+We define the notation
+\begin{equation*}
+f \sim g :\equiv \prod_{a : A} (f(a) = g(a)) \text{.}
+\end{equation*}
+We can define the same for two dependent functions $f, g : \prod_{(a : A)} B(a)$
+over the same type family.
+\end{defn}
+
+\begin{defn}[Equivalences] \label{def:ishae-hott}
+Let $A, B : \UU$. A function $f : A \to B$ is called an \textbf{equivalence}
+between $A$ and $B$, if there is a $g : B \to A$ such that
+$\eta : g \circ f \sim \id_A$ and $\epsilon : f \circ g \sim \id_B$ and furthermore
+\begin{equation*}
+\tau : \prod_{a : A} \ap_f(\eta(a)) =_{f(g(f(a)))=a} \epsilon(f(a)) 
+ \equiv \ap_f \circ \eta \sim \epsilon \circ f \text{.}
+\end{equation*}
+We need $\tau$ to make sure that each two witnesses $f$ is an equivalence are
+equal.
+Since $\tau$ looks like the one of the two commutativity conditions for pairs
+of adjoint functors, this kind of equivalence is also called a \textbf{half
+adjoint equivalence}.
+The type of witnesses for $f$ to be an equivalence shall be
+\begin{equation*}
+\isequiv(f) :\equiv \sum_{g : B \to A} ~ \sum_{\eta : g \circ f \sim \id_A} ~
+\sum_{\epsilon : f \circ g \sim \id_B} \ap_f \circ \eta \sim \epsilon \circ f \text{.}
+\end{equation*}
+The type of all equivalences between two types $A, B : \UU$ is denoted by
+\begin{equation*}
+A \simeq B :\equiv \sum_{f : A \to B} \isequiv(f) \text{.}
+\end{equation*}
+\end{defn}
+
+It is an easy exercise to show that equivalence of types is indeed an equivalence
+relation. $\isequiv(f)$ itself is equivalent to other known definitions of equivalence,
+like for example the existence of a left inverse and of a right inverse of $f$.
+Easy examples for equivalent types include $(\unit \times A) \simeq A$,
+$(\unit \to A) \simeq A$, $(\emptytype + A) \simeq A$ and
+$(\emptytype \times A) \simeq \emptytype$, for a type $A : \UU$.
+
+But how do equality and equivalence of type relate to each other?
+Clearly equal types can be proven to be equivalent, just using path induction
+on the equality between them and the reflexivity of equivalence:
+\begin{lemma} \label{thm:idtoeqv-hott}
+Let $A, B : \UU$. Then there is a function
+\begin{equation*}
+\idtoeqv_{A, B} : (A =_{\UU} B) \to (A \simeq B) \text{,}
+\end{equation*}
+which for the reflexivity on $\UU$ is defined by
+\begin{equation*}
+\idtoeqv_{A,A} (\refl_A) \equiv (\id_A, \id_A, (\lambda a. \refl_a), (\lambda a. \refl_a),
+(\lambda a. \refl_{\refl_a})) \text{.}
+\end{equation*}
+\hfill $\square$
+\end{lemma}
+
+On the other hand, there is no way to obtain an equality of types from an equivalence.
+Vladimir Voevodsky proposed the following axiom to make up for this:
+\begin{axiom}[Univalence]
+For $\idtoeqv_{A, B}$ is itself an equivalence for every choice of $A, B : \UU$.
+
+This implies that
+\begin{equation*}
+(A =_\UU B) \simeq (A \simeq B)
+\end{equation*}
+and yields an inverse to $\idtoeqv_{A, B}$ which we call
+\begin{equation*}
+\ua_{A, B} : (A \simeq B) \to (A =_\UU B) \text{.}
+\end{equation*}
+\end{axiom}
+
+\section{Truncated Types}
