@@ -198,11 +198,11 @@ Note that the type of $\ind_{A \times B}$ can now be expressed as
 \prod_{C : A \times B \to \UU} \left( \prod_{a : A} ~ \prod_{b : B} C((a,b)) \right)
 	\to \prod_{x : A \times B} C(x) \text{.}
 \end{equation*}
-The first and second projection of an instance $x : A \times B$ are then simply
+The first and second projection of an instance $x : A \times B$ is then simply
 defined by
 \begin{align*}
-\pr_1(x) &:\equiv \ind_{A \times B}((\lambda y. A), (\lambda a. \lambda b. a), x) \\
-\pr_2(x) &:\equiv \ind_{A \times B}((\lambda y. A), (\lambda a. \lambda b. b), x) \text{,}
+\pr_1(x) &:\equiv \ind_{A \times B}((\lambda y. A), (\lambda a. \lambda b. a), x) : A \\
+\pr_2(x) &:\equiv \ind_{A \times B}((\lambda y. A), (\lambda a. \lambda b. b), x) : B \text{,}
 \end{align*}
 yielding $\pr_1((a, b)) \equiv a$ and $\pr_2((a, b)) \equiv b$ judgmentally.
 An informal way of stating the meaning of $\times$\textsc{-Elim} would be:
@@ -258,6 +258,14 @@ Again, we assume the definitional equality
 \ind_{(\sum_{(a : A)} B(a))}(C, p, (a, b)) \equiv p(a, b) \text{.}
 \end{equation*}
 We can recover non-dependent products by setting $B$ to be a constant type family.
+The projections to the first and second component are defined similar to the ones
+of non-dependent products for a dependent pair $x : \prod_{(a : A)} B(a)$:
+\begin{align*}
+\pr_1(x) &:\equiv \ind_{(\prod_{(a : A)} B(a))}((\lambda x. A),
+	(\lambda a. \lambda b. a), x) \text{ and } \\
+\pr_2(x) &:\equiv \ind_{(\prod_{(a : A)} B(a))}
+	((\lambda x. B(\pr_1(x))), (\lambda a. \lambda b. b), x) \text{.}
+\end{align*}
 
 Product types, $\Sigma$-types, coproduct types, the unit type and the empty type
 all are examples for the larger class of \textbf{inductive types}.
@@ -583,4 +591,134 @@ and yields an inverse to $\idtoeqv_{A, B}$ which we call
 \end{equation*}
 \end{axiom}
 
+From now on, we will always assume this axiom since as it is essential for the existence
+of higher types and thus for homotopy type theory in general.
+Another important consequence of assuming univalence is that we can prove
+the equality of two dependent functions by giving a homotopy between them:
+\begin{thm} \label{thm:funext-hott}
+Let $A : \UU$, $B : A \to \UU$ and $f, g : \prod_{(a : A)} B(a)$. Then,
+\begin{equation*}
+(f \sim g) \to (f =_{A \to B} g) \text{.}
+\end{equation*}
+\end{thm}
+We omit the non-trivial proof for this theorem and refer to the slightly distinct
+approaches in the HoTT book~\cite{hottbook} and the Lean library.
+
 \section{Truncated Types}
+
+As already considered in the previous sections, every type $A : \UU$ comes with
+a type of paths $a =_A b$ for each $a, b : A$ and iterated, higher dimensional
+paths between these paths.
+Sometimes we want a type to not contain any information in higher paths by assuming
+that all its $n$-dimensional paths are equal.
+This leads to the concept of \textbf{truncated types}.
+
+The first definition shall describe what it means for a type to contain only one
+point.
+We already defined the unit type $\unit$ as the type with exactly one constructor,
+but we want a property that we can check for any given type.
+This property will then be, as a type, equivalent to being equivalent to the unit
+type.
+When thinking about types in the logical context, this should remind the reader
+of the fact that a true statement which does not depend on any free variables,
+is logically equivalent to the canonical ``true'' statement.
+In topology, spaces that are homotopy equivalent to a single point are called
+contractible.
+They are equivalently characterized as those spaces which contain a point serving
+as \emph{center} for a contraction --- that is, a continuous choice of paths from each
+point in the space to the center.
+This is the definition of contractibility which is directly translated to
+its counterpart in homotopy type theory:
+\begin{defn}[Contractibility]
+A type $A : \UU$ is called \textbf{contractible} if
+\begin{equation*}
+\isContr(A) :\equiv \sum_{x : A} ~ \prod_{a : A} (a =_A x) \text{.}
+\end{equation*}
+\end{defn}
+
+Analyzing this definition, we first observe that a contractible type is inhabited
+by $\pr_1(\isContr(A))$ and that for each $a, b : A$ we can find a path between
+$a$ and $b$ by
+\begin{equation*}
+\pr_2(\isContr(A))(a) \ct \pr_2(\isContr(A))(b)\inv : a =_A b \text{.}
+\end{equation*}
+This equality of all objects of contractible types makes them the class of types
+we want to use for \emph{true propositions}.
+As mentioned above, contractible types are equivalent to the unit type:
+
+\begin{lemma}
+Let $A : \UU$ be a contractible type. Then, $A \simeq \unit$.
+\end{lemma}
+
+\begin{proof}
+Let $p : \isContr(A)$.
+We obtain a function $f : A \to \unit$ by setting $f(a) :\equiv \star$ for each
+$a : A$ and its inverse $g : \unit \to A$, which by induction we only have to
+define on the constructor of $\unit$, by $g(\star) :\equiv \pr_1(p)$.
+The proof that $f$ and $g$ are indeed inverse to each other is then done
+using induction on the unit type and the paths yielded by $\pr_2(p)$.
+\end{proof}
+
+If we want to build a class for all propositions, whether true or not, we can use
+this consequence of contractibility as a definition and remove the inhabitedness
+condition:
+\begin{defn}[Mere proposition]
+A type $A : \UU$ is a \textbf{mere proposition} if
+\begin{equation*}
+\isProp(A) :\equiv \prod_{a, b : A} (a =_A b) \text{.}
+\end{equation*}
+\end{defn}
+
+Besides contractible types, examples for mere propositions are $\emptytype$, 
+$\unit$, function types with merely propositional codomains, and many of the
+defined properties like being an equivalence $\isequiv(f)$, being a contractible
+type $\isContr(A)$ and even being a mere proposition $\isProp(A)$.
+In the definition of equivalence, the coherence condition $\tau$ is needed
+to make it a mere proposition.
+Examples for types which are not mere propositions are also easy to find:
+$A + B$, whenever $A$ and $B$ are both non-empty types, and $\mathbb{N}$ clearly
+contain non-equal objects.
+
+Since the proof that two functions are inverses of each is trivial on a pair of
+mere propositions, function types on mere propositions works just as one would
+expect from propositions:
+\begin{lemma}
+Let $A, B : \UU$ be mere propositions and $f : A \to B$, $g : B \to A$.
+Then, $A \simeq B$. \hfill $\square$
+\end{lemma}
+
+When dealing with sets, we do not require all their objects to be equal, but
+only the proofs of equality:
+\begin{defn}[Sets]
+A type $A : \UU$ is called a \textbf{set}, if there is an object in
+\begin{equation*}
+\isSet(A) :\equiv \prod_{a, b : A} ~ \prod_{p, q : a =_A b} (p =_{a =_A b} q) \text{.}
+\end{equation*}
+\end{defn}
+
+Just like $\isContr(A)$ and $\isProp(A)$, $\isSet(A)$ itself is a mere proposition.
+We can also prove that each mere proposition is a set, by which we get
+\begin{equation*}
+\isContr(A) \to \isProp(A) \to \isSet(A)
+\end{equation*}
+for each type $A : \UU$. Calling a set a 0-type, a mere proposition a $(-1)$-type
+and a contractible type a $(-2)$-type, we can extend this chain by the following
+definition for an arbitrary $n$-type or $n$-truncated type:
+\begin{defn}[Truncated types.]
+By recursion on the index we define $\isntype{n}$ as a function $\UU \to \UU$ by
+\begin{equation*}
+\isntype{n}(A) :\equiv \begin{cases}
+\isContr(A) & \text{if $n = -2$ and} \\
+\prod_{(a, b, : A)} \isntype{n'}(a =_A b) & \text{if $n = n' + 1$ otherwise.}
+\end{cases}
+\end{equation*}
+\end{defn}
+
+For example, for $n = 1$ this yields
+\begin{equation*}
+\isntype{1}(A) \simeq \prod_{a, b : A} ~ \prod_{p, q : a =_A b}
+	~ \prod_{\alpha, \beta : p =_{a =_A b} q} (\alpha =_{p =_{a =_A b} q} \beta) \text{.}
+\end{equation*}
+
+
+
