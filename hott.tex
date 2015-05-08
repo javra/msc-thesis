@@ -696,6 +696,33 @@ A type $A : \UU$ is called a \textbf{set}, if there is an object in
 \end{equation*}
 \end{defn}
 
+So far most types we encountered were sets, but we can use univalence to show
+that each of our universes is an example for a type that is not a set:
+\begin{lemma}
+For each $i$, the universe $\UU_i$ is not a set.
+\end{lemma}
+
+\begin{proof}
+Consider the type $\twotype :\equiv \unit + \unit : \UU_i$ and let
+$0_\twotype :\equiv \inl(\star)$ and $1_\twotype :\equiv \inr(\star)$ be its
+two constructors.
+As true for every (non-higher) inductive type with multiple constructors,
+distinct constructors are unequal: %TODO find easy, non encode-decode proof for this?
+\begin{equation*}
+(0_\twotype \neq 1_\twotype) \equiv (0_\twotype = 1_\twotype \to \emptytype) \text{.}
+\end{equation*}
+We define a function $f : \twotype \to \twotype$ by setting $f(0_\twotype) :\equiv 1_\twotype$
+and $f(1_\twotype) :\equiv 0_\twotype$.
+It's easy to see that $f$, as an involution, is an equivalence, which, by univalence
+results in a path $p : \twotype =_{\UU_i} \twotype$.
+If we assume $\UU_i$ to be a set, we receive an equality $p = \refl_\twotype$.
+But transporting along that equality, $f$ would be equal to $\id_\2$ and thus
+\begin{equation*}
+0_\twotype = f(1_\twotype) = \id_2(1_\twotype) = 1_\twotype \text{,}
+\end{equation*}
+which, with the above inequality gives the desired result.
+\end{proof}
+
 Just like $\isContr(A)$ and $\isProp(A)$, $\isSet(A)$ itself is a mere proposition.
 We can also prove that each mere proposition is a set, by which we get
 \begin{equation*}
