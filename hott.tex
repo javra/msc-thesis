@@ -142,7 +142,7 @@ non-dependent functions, since e.g. $\rec_\unit(A)$ does not have the same type
 for every choice of $A : \UU$.
 This is where dependent functions come into play.
 
-\section{Dependent Functions and Products}
+\section{Dependent Functions and Pairs}
 
 \textbf{Dependent Functions}, also called $\Pi$\textbf{-types}, are the core of
 dependent type theory.
@@ -156,7 +156,7 @@ We write $\prod_{(a : A)} B(a)$ for the type of dependent functions on the type
 family $B : A \to \UU$.
 Since to construct such a dependent function, we need to give an element of
 $B(a)$ for \emph{every} $a : A$, we can think of $\prod_{(a : A)} B(a)$ as the
-statement ``For all $a : A$, the statement $B(a)$ holds''.
+statement ``For all $a : A$, the statement $B(a)$ holds.''
 In the topological interpretation, we can say that this corresponds to giving
 a point in each fiber of the fibration $B : A \to \UU$ varying continuously
 on the chosen $a : A$.
@@ -466,7 +466,7 @@ $\ap_f : (a = b) \to (f(a) = f(b))$ such that $\ap_f(\refl_a) \equiv \refl_{f(a)
 \hfill $\square$
 \end{lemma}
 
-We call $\ap_f$ the application of $f$ on paths. $ap$ is functorial with respect
+We call $\ap_f$ the application of $f$ on paths. $\ap$ is functorial with respect
 to the path in the sense that it respects the concatenation and inversion of
 paths, and with respect to the function by respecting composition of functions
 and acting neutral on the identity function.
@@ -488,7 +488,7 @@ valid type.
 But we can use the transport (Lemma~\ref{thm:transport-hott}) to turn $f(a)$ into
 a point in the same fiber as $f(b)$.
 
-\begin{lemma}
+\begin{lemma} \label{thm:apd-hott}
 Let $A : \UU$, $P : A \to \UU$ and $f : \prod_{(a : A)} P(a)$. Then, we can construct
 a dependent function
 \begin{equation*}
@@ -731,7 +731,7 @@ We can also prove that each mere proposition is a set, by which we get
 for each type $A : \UU$. Calling a set a 0-type, a mere proposition a $(-1)$-type
 and a contractible type a $(-2)$-type, we can extend this chain by the following
 definition for an arbitrary $n$-type or $n$-truncated type:
-\begin{defn}[Truncated types.]
+\begin{defn}[Truncated types]
 By recursion on the index we define $\isntype{n}$ as a function $\UU \to \UU$ by
 \begin{equation*}
 \isntype{n}(A) :\equiv \begin{cases}
@@ -747,5 +747,159 @@ For example, for $n = 1$ this yields
 	~ \prod_{\alpha, \beta : p =_{a =_A b} q} (\alpha =_{p =_{a =_A b} q} \beta) \text{.}
 \end{equation*}
 
+Collecting basic facts about $n$-types, we have
+\begin{lemma}
+\begin{itemize}
+\item If $A : \UU$ is an $n$-type, then $A$ is an $(n+1)$-type.
+\item For each $n \geq -2$ and $A : \UU$, the type $\isntype{n}(A)$ is a mere
+proposition.
+\item If $A : \UU$ is an $n$-type and $B : A \to \UU$ such that for each $a : A$,
+$B(a)$ is an $n$-type, then $\sum_{(a : A)} B(a)$ is an $n$-type as well.
+\item If $A : \UU$ and $B : A \to \UU$ are such that $B(a)$ is an $n$-type for each
+$a : A$, then $\prod_{(a : A)} B(a)$ is an $n$-type as well.
+\item Let $n \geq -1$. $A : \UU$ is an $(n+1)$-type if and only if for all $a : A$,
+the equality type $a =_A a$ is an $n$-type.
+\item Let $n \geq 0$. $A : \UU$ is an $n$-type, if and only if for all $a : A$,
+the \emph{$n$-fold iterated loop space} $\Omega^{n+1}(A, a)$, which is defined using
+recursion on $n$ by
+\begin{align*}
+\Omega^1(A, a) &:\equiv (a =_A a) \text{ and}\\
+\Omega^{n+1}(A, a) &:\equiv (\refl_{\ddots_a} =_{\Omega^n(A,a)} \refl_{\ddots_a}) \text{,}
+\end{align*}
+is contractible.
+\end{itemize}
+\end{lemma}
+
+\section{Higher Inductive Types}
+
+Besides ``normal'' inductive types, which have constructors that objects of or
+functions to the type, there is the concept of a \textbf{higher inductive type}.
+Higher inductive types can also contain constructors which do not yield instances
+of the type itself, but instead propositional equalities between instances.
+Like for basic inductive types, I will abstain from giving rules for general
+higher inductive type but instead we will take a look at some common higher inductive
+types.
+
+We can picture the path constructors as \emph{gluing} a pair of other constructors
+together by a path.
+One of the simplest examples for such a case is the one where the type is constructed
+by just two instances $0_I$ and $1_I$, together with a path $\seg : 0_I = 1_I$.
+The inference rules for this \textbf{interval type} $I$ are the following:
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left=$I$-Form]{ }{I : \UU} \qquad
+\inferrule*[left=$I$-Intro1]{ }{0_I : I} \qquad
+\inferrule*[left=$I$-Intro2]{ }{1_I : I} \qquad
+\inferrule*[left=$I$-Intro3]{ }{\seg : 0_I = 1_I} \\[.7em]
+\inferrule*[left=$I$-Elim]
+	{C : I \to \UU \\ c_0 : C(0_I) \\ c_1 : C(1_I) \\ p : \seg_*(c_0) = c_1 \\ x : I}
+	{\ind_I(C, c_0, c_1, p, x) : C(x)}
+\end{gathered}
+\end{equation*}
+Of course, we again get judgmental equalities for the case where $x$ is one of the
+constructors.
+As a suitable counterpart for the third constructor, we assume that $\apd_f(seg) = s$,
+using the dependent application defined in \ref{thm:apd-hott}, where
+$f(x) :\equiv \ind_I(C, c_0, c_1, p, x)$.
+
+In words, to prove a statement for an arbitrary point on the interval, one has
+to prove it for both endpoints and show that the proofs can be connected by a
+path ``over'' $\seg$.
+In the case of the non-dependent recursor, the transport is not necessary.
+The type $I$ is a very uninteresting type because of the following:
+\begin{lemma}
+The interval $I$ is contractible, and therefore $I \simeq \unit$. \hfill $\square$
+\end{lemma}
+
+It turns out that if we don't assume the path to be between to distinct constructor
+instances but instead be a \emph{loop} based in a single constructor we obtain
+the homotopy type $\Sph^1$ of a \textbf{circle} or \textbf{1-sphere}:
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left=$\Sph^1$-Form]{ }{\Sph^1 : \UU} \qquad
+\inferrule*[left=$\Sph^1$-Intro1]{ }{\Sbase : \Sph^1} \qquad
+\inferrule*[left=$\Sph^1$-Intro2]{ }{\Sloop : \Sbase =_{\Sph^1} \Sbase} \\[.7em]
+\inferrule*[left=$\Sph^1$-Elim]
+	{C : \Sph^1 \to \UU \\ c : C(\Sbase) \\ p : \Sloop_*(c) = c \\ x : \Sph^1}
+	{\ind_{\Sph^1}(C,c,p,x) : C(x)}
+\end{gathered}
+\end{equation*}
+
+Topologically speaking, the elimination rule tells us that we can find all sections
+of a fibration above the circle up to homotopy by appending ``constant sections''
+to paths that only lie in one fiber.
+Again, if we take $C$ to be the constant type family, we obtain a non-dependent
+recursor that lets us define a function $f : \Sph^1 \to B$ by providing
+a point $b$, which becomes $f(\Sbase)$ and a loop $b =_B b$ which is propositionally
+equal to $\ap_f(\Sloop)$.
+
+We can show that $\Sloop \neq \refl_\Sbase$ and thus, $\Sph^1$ provides another
+example for a type which is not a set.
+Just as we used the type $\twotype$, which is not a mere proposition,
+to show that its surrounding universe is not a set, we can show that a universe,
+which contains the circle cannot be a 1-type.
+We can continue this correspondence by introducing higher dimensional spheres.
+As is topology, they can be built as the \textbf{suspension} of a lower dimensional
+sphere.
+Since suspension is an important operation, especially for homology, we define
+it as a type former on arbitrary types (its notation $\Sigma$ should not be confused
+with the notation for the type of dependent paris):
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left=Susp-Form]{A : \UU}{\Sigma A : \UU} \qquad
+\inferrule*[left=Susp-Intro1]{A : \UU}{N : \Sigma A} \qquad
+\inferrule*[left=Susp-Intro2]{A : \UU}{S : \Sigma A} \\[.7em]
+\inferrule*[left=Susp-Intro3]{A : \UU}{\Smerid : A \to N =_{\Sigma A} S} \\[.7em]
+\inferrule*[left=Susp-Elim]
+	{C : \Sigma A \to \UU \\ n : C(N) \\ s : C(S) \\
+		m : \textstyle{\prod_{(a : A)} \Smerid(a)_*(n) =_{C(S)} s } \\ x : \Sigma A}
+	{\ind_{\Sigma A}(C,n,s,m,x) : C(x)}
+\end{gathered}
+\end{equation*}
+
+We have judgmental equalities for the point constructors and a propositional
+equality to $\apd$ for the path constructor as in the previous examples.
+It's an easy task to prove that $\Sigma \twotype \simeq \Sph^1$
+which leads us to defining
+\begin{align*}
+\Sph^0 &:\equiv \twotype \text{ and} \\
+\Sph^{n+1} &:\equiv \Sigma \Sph^n
+\end{align*}
+recursively. For each $n : \N$, the type $S^{n+1}$ is not an $n$-type, the 2-sphere,
+for example, is not truncated at any level.
+
+Other important topological operations like pushouts and quotients and colimits
+can be defined in a similar way.
+When using higher types we often want to make a type $n$-truncated for some $n$
+by ``collapsing'' all equalities above dimension $n$ while preserving its properties
+below that level.
+This operation is called $n$\textbf{-truncation} and is defined by the following
+formation, introduction and elimination rules:
+\begin{equation*}
+\begin{gathered}
+\inferrule*[left=Trunc-Form]{A : \UU \\ n : \N}{\trunc{n}{A} : \UU} \qquad
+\inferrule*[left=Trunc-Intro]{a : A}{\left| a \right|_n : \trunc{n}{A}} \\[.7em]
+\inferrule*[left=Trunc-Elim]
+	{C : \trunc{n}{A} \to \UU \\
+		p : \textstyle{ \prod_{(x : \trunc{n}{A})} \isntype{n}(C(x)) } \\
+		g : \textstyle{ \prod_{(a : A)} P(\left| a \right|_n) } \\
+		x : \trunc{n}{A}}
+	{\ind_{\trunc{n}{A}}(C,p,g,x) : C(x)}
+\end{gathered}
+\end{equation*}
+
+As one can easily derive from the elimination rule, $\trunc{n}{A}$ is an $n$-type
+and, together with the introduction rule, we can prove that every map in
+$A \to B$ for an $n$-type $B$ factors through $\trunc{n}{A}$ by $\left| \cdot \right|_n$
+and $\ind_{\trunc{n}{A}}$.
+
+Of course there are many interactions between all the elements of homotopy type
+theory that were introduced in this chapter.
+A deeper analysis of these can be found in the HoTT book~\cite{hottbook} as
+well as in many subsequent publications.
+This introduction should suffice to give enough understanding for the reader
+to know all definitions used in chapter \ref{chapter:types}.
+Describing the general syntax and semantics of higher inductive types still
+remains an open problem.
 
 
