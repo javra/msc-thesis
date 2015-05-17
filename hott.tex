@@ -80,7 +80,7 @@ Of course, we have the rules of $\eta$-conversion and $\beta$-reduction:
 	{(\lambda x. \Phi)(a) \equiv \Phi[a/x]}
 \end{aligned}
 \end{equation}
-These definitional will from now on be used ``silently'' to replace subterms.
+These definitional equalities will from now on be used ``silently'' to replace subterms.
 In the logic interpretation of HoTT, function types model implication of propositions
 while in the set and topology interpretation they represent (arbitrary resp.
 continuous) maps.
@@ -107,8 +107,8 @@ The name indicates that $\emptytype$ is generated \emph{inductively} on an
 empty collection of constructors.
 The rule asserts that we can infer every possible statement once we constructed
 an instance of $\emptytype$ (``ex falso quodlibet'').
-Just like for every induction rule we will state in the rest of this chapter,
-we can receive a non-dependent version of the rule, called \emph{recursion
+Just like for every induction principle we will state in the rest of this chapter,
+we can obtain a non-dependent version of the rule, called \emph{recursion
 rule}, by assuming $C$ to be a constant type family or, in other words, a type
 $A : \UU$:
 \begin{equation*}
@@ -120,7 +120,7 @@ which provides exactly one way of constructing an instance of it:
 \begin{equation*}
 \begin{gathered}
 \inferrule*[left=$\unit$-Form]{ }{\unit : \UU} \qquad
-\inferrule*[left=$\unit$-Intro]{ }{\star : \unit} \\
+\inferrule*[left=$\unit$-Intro]{ }{\star : \unit} \\[.7em]
 \inferrule*[left=$\unit$-Elim]{C : \unit \to \UU \\ p : C(\star) \\ x : \unit}
 	{\ind_\unit(C,p,x) : C(x)}
 \end{gathered}
@@ -168,7 +168,7 @@ functions generalize the rules for non-dependent functions as follows:
 \inferrule*[left=$\Pi$-Form]{A : \UU \\ B : A \to \UU}
 	{\textstyle{(\prod_{(a : A)} B(a))} : \UU} \qquad
 \inferrule*[left=$\Pi$-Intro]{a : A \vdash \Phi[a/x] : B(a)}
-	{(\lambda x. \Phi) : \textstyle{\prod_{(a : A)} B(a)}} \\
+	{(\lambda x. \Phi) : \textstyle{\prod_{(a : A)} B(a)}} \\[.7em]
 \inferrule*[left=$\Pi$-Elim]{f : \textstyle{\prod_{(a : A)} B(a)} \\ a : A}
 	{f(a) : B(a)}
 \end{gathered}
@@ -177,8 +177,8 @@ Again, we have the rules for $\beta$-reduction and $\eta$-conversion like in
 the non-dependent case~(\ref{eq:eta-beta}), yielding judgmental equalities
 $(\lambda x. f (x)) \equiv f$ and $(\lambda x. \Phi)(a) \equiv \Phi[a/x]$.
 
-Having defined $\Pi$-types we are able to state the recursor for other basic
-actually non-dependent type formers: Product and coproduct types.
+Having defined $\Pi$-types we are able to state the recursor for other basic,
+essentially non-dependent, type formers: Product and coproduct types.
 These take the type theoretic role of conjunction and disjunction of propositions,
 and of cartesian products and and disjoint unions of sets or topological
 spaces.
@@ -186,7 +186,7 @@ The inference rules for \textbf{product types} are the following:
 \begin{equation*}
 \begin{gathered}
 \inferrule*[left=$\times$-Form]{A, B : \UU}{A \times B : \UU} \qquad
-\inferrule*[left=$\times$-Intro]{a : A \\ b : B}{(a, b) : A \times B} \\
+\inferrule*[left=$\times$-Intro]{a : A \\ b : B}{(a, b) : A \times B} \\[.7em]
 \inferrule*[left=$\times$-Elim]{C : A \times B \to \UU \\
 	p: \textstyle{\prod_{(a : A)} \prod_{(b : B)} C((a,b))} \\ x : A \times B}
 	{\ind_{A \times B}(C, p, x) : C(x)}
@@ -224,7 +224,7 @@ by giving the following rules:
 \end{equation*}
 Note that this is the first type former for which there is more than just one
 introduction rule.
-Likewise there is more than one ``base case'' to prove to use the induction rule.
+As a consequence, there is more than one ``base case'' to prove to use the induction rule.
 
 Going back and looking at the product type, we recognize that we can, just as
 for the function type, find a more general, dependent version, the
@@ -270,7 +270,7 @@ of non-dependent products for a dependent pair $x : \prod_{(a : A)} B(a)$:
 Product types, $\Sigma$-types, coproduct types, the unit type and the empty type
 all are examples for the larger class of \textbf{inductive types}.
 I will abstain from giving the general definition of inductive types and
-inductive types families and again refer to definitions in either the HoTT book~\cite{hottbook}
+inductive type families and again refer to definitions in either the HoTT book~\cite{hottbook}
 and the introduction of inductive families by Peter Dybier~\cite{inductive-families},
 which provided the blueprint for the implementation in Lean.
 Instead, I will another a common example for an inductive type:
@@ -378,9 +378,9 @@ As a first lemma about equality we prove that this is indeed the case.
 with its proof is less clear in type theory than it is for set based mathematics.)
 
 \begin{lemma}[Transport] \label{thm:transport-hott}
-Let $C : A \to \UU$ be a type family, $a , b : A$ equal by $p : a =_A b$.
+Let $A : \UU$ be a type, $C : A \to \UU$ a type family, and $a , b : A$ be equal by $p : a =_A b$.
 Then, for each $c : C(a)$, we obtain an object $p_*(c) : C(b)$.
-We call this the \textbf{transport} $c$ along the path $p$.
+We call this the \textbf{transport} of $c$ along the path $p$.
 \end{lemma}
 
 \begin{proof}
@@ -392,7 +392,8 @@ Formally, we define
 p_*(c) :\equiv \ind'_{=_A}(a, (\lambda b. \lambda p. C(b)), c, b, p) \text{.}
 \end{equation*}
 \end{proof}
-In the statement of the lemma, the listed precondition should be thought of as
+In the statement of this lemma, like in all the following,
+the list of preconditions should be thought of as
 an iterated $\Pi$-type, so that the full statement is of the type
 \begin{equation*}
 \prod_{C : A \to \UU} ~ \prod_{a, b : A} ~ \prod_{p : a =_A b} C(a) \to C(b) \text{.}
@@ -412,7 +413,8 @@ $\refl_a\inv \equiv \refl_a$ for every $a : A$.
 
 \begin{proof}
 By path induction, it suffices to provide $\refl_a\inv : a =_A a$, which we provide
-by giving $\refl_a$. Formally:
+by giving $\refl_a$ itself.
+Formally:
 $p\inv :\equiv \ind'_{=_A}(a, (\lambda b. \lambda p. b =_A a), \refl_a, b, p)$.
 \end{proof}
 
@@ -450,7 +452,7 @@ Then,
 We can prove all these by applying path induction to all the three paths involved.
 \end{proof}
 
-Note that all these propositional equalities are \emph{between equalities} and,
+Note that all these propositional equalities are \emph{between equalities}. For example,
 if we wrote the first equation mentioned in the previous definition noting the
 type it was in, it would be $p =_{a =_A b} p \ct \refl_b$.
 We call these equalities \textbf{2-paths} or \textbf{2-dimensional paths}.
@@ -560,7 +562,7 @@ Easy examples for equivalent types include $(\unit \times A) \simeq A$,
 $(\unit \to A) \simeq A$, $(\emptytype + A) \simeq A$ and
 $(\emptytype \times A) \simeq \emptytype$, for a type $A : \UU$.
 
-But how do equality and equivalence of type relate to each other?
+But how do equality and equivalence of types relate to each other?
 Clearly equal types can be proven to be equivalent, just using path induction
 on the equality between them and the reflexivity of equivalence:
 \begin{lemma} \label{thm:idtoeqv-hott}
@@ -577,7 +579,7 @@ which for the reflexivity on $\UU$ is defined by
 \end{lemma}
 
 On the other hand, there is no way to obtain an equality of types from an equivalence.
-Vladimir Voevodsky proposed the following axiom to make up for this:
+Vladimir Voevodsky proposed the following axiom to make it possible:
 \begin{axiom}[Univalence]
 For $\idtoeqv_{A, B}$ is itself an equivalence for every choice of $A, B : \UU$.
 
@@ -642,7 +644,7 @@ $a$ and $b$ by
 \begin{equation*}
 \pr_2(\isContr(A))(a) \ct \pr_2(\isContr(A))(b)\inv : a =_A b \text{.}
 \end{equation*}
-This equality of all objects of contractible types makes them the class of types
+This equality of all objects in contractible types makes them the class of types
 we want to use for \emph{true propositions}.
 As mentioned above, contractible types are equivalent to the unit type:
 
@@ -669,7 +671,7 @@ A type $A : \UU$ is a \textbf{mere proposition} if
 \end{equation*}
 \end{defn}
 
-Besides contractible types, examples for mere propositions are $\emptytype$, 
+Besides all contractible types, more concrete examples for mere propositions are $\emptytype$, 
 $\unit$, function types with merely propositional codomains, and many of the
 defined properties like being an equivalence $\isequiv(f)$, being a contractible
 type $\isContr(A)$ and even being a mere proposition $\isProp(A)$.
@@ -730,7 +732,7 @@ We can also prove that each mere proposition is a set, by which we get
 \end{equation*}
 for each type $A : \UU$. Calling a set a 0-type, a mere proposition a $(-1)$-type
 and a contractible type a $(-2)$-type, we can extend this chain by the following
-definition for an arbitrary $n$-type or $n$-truncated type:
+definition of an arbitrary $n$-type or $n$-truncated type:
 \begin{defn}[Truncated types]
 By recursion on the index we define $\isntype{n}$ as a function $\UU \to \UU$ by
 \begin{equation*}
@@ -757,9 +759,9 @@ proposition.
 $B(a)$ is an $n$-type, then $\sum_{(a : A)} B(a)$ is an $n$-type as well.
 \item If $A : \UU$ and $B : A \to \UU$ are such that $B(a)$ is an $n$-type for each
 $a : A$, then $\prod_{(a : A)} B(a)$ is an $n$-type as well.
-\item Let $n \geq -1$. $A : \UU$ is an $(n+1)$-type if and only if for all $a : A$,
+\item Let $n \geq -1$. Then, $A : \UU$ is an $(n+1)$-type if and only if for all $a : A$,
 the equality type $a =_A a$ is an $n$-type.
-\item Let $n \geq 0$. $A : \UU$ is an $n$-type, if and only if for all $a : A$,
+\item Let $n \geq 0$. Then, $A : \UU$ is an $n$-type, if and only if for all $a : A$,
 the \emph{$n$-fold iterated loop space} $\Omega^{n+1}(A, a)$, which is defined using
 recursion on $n$ by
 \begin{align*}
@@ -781,7 +783,7 @@ higher inductive type but instead we will take a look at some common higher indu
 types.
 
 We can picture the path constructors as \emph{gluing} a pair of other constructors
-together by a path.
+together by a new path.
 One of the simplest examples for such a case is the one where the type is constructed
 by just two instances $0_I$ and $1_I$, together with a path $\seg : 0_I = 1_I$.
 The inference rules for this \textbf{interval type} $I$ are the following:
@@ -836,7 +838,7 @@ equal to $\ap_f(\Sloop)$.
 We can show that $\Sloop \neq \refl_\Sbase$ and thus, $\Sph^1$ provides another
 example for a type which is not a set.
 Just as we used the type $\twotype$, which is not a mere proposition,
-to show that its surrounding universe is not a set, we can show that a universe,
+to show that its surrounding universe is not a set, we can show that a universe
 which contains the circle cannot be a 1-type.
 We can continue this correspondence by introducing higher dimensional spheres.
 As is topology, they can be built as the \textbf{suspension} of a lower dimensional
@@ -868,7 +870,7 @@ which leads us to defining
 recursively. For each $n : \N$, the type $S^{n+1}$ is not an $n$-type, the 2-sphere,
 for example, is not truncated at any level.
 
-Other important topological operations like pushouts and quotients and colimits
+Other important topological operations like pushouts, quotients, and colimits
 can be defined in a similar way.
 When using higher types we often want to make a type $n$-truncated for some $n$
 by ``collapsing'' all equalities above dimension $n$ while preserving its properties
@@ -890,7 +892,7 @@ formation, introduction and elimination rules:
 
 As one can easily derive from the elimination rule, $\trunc{n}{A}$ is an $n$-type
 and, together with the introduction rule, we can prove that every map in
-$A \to B$ for an $n$-type $B$ factors through $\trunc{n}{A}$ by $\left| \cdot \right|_n$
+$A \to B$, for an $n$-type $B$, factors through $\trunc{n}{A}$ by $\left| \cdot \right|_n$
 and $\ind_{\trunc{n}{A}}$.
 
 Of course there are many interactions between all the elements of homotopy type
