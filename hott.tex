@@ -12,8 +12,8 @@ used in this book.
 Furthermore, I will not make the effort to distinguish between what elements of
 the theory were there in earlier approaches to intensional type theory,
 most prominently the one of Per Martin-L\"of~\cite{martin-lof1}, as this would
-defy the purpose of a concise introduction to the current ``state of the art''.
-%TODO this sounds wrong and pretentious?
+defy the purpose of a concise and coherent introduction to the current ``state of the art''
+of homotopy type theory.
 
 \section{Some Basic Non-Dependent Type Theory}
 
@@ -165,14 +165,14 @@ The rules to form the type of $\Pi$-types and to introduce and apply dependent
 functions generalize the rules for non-dependent functions as follows:
 \begin{equation}
 \begin{gathered}
-\inferrule*[left=$\Pi$-Form]{A : \UU \\ B : A \to \UU}
-	{\textstyle{(\prod_{(a : A)} B(a))} : \UU} \qquad
+\inferrule*[left=$\Pi$-Form]{A : \UU_i \\ B : A \to \UU_j}
+	{\textstyle{(\prod_{(a : A)} B(a))} : \UU_{max\{i,j\}}} \qquad
 \inferrule*[left=$\Pi$-Intro]{a : A \vdash \Phi[a/x] : B(a)}
 	{(\lambda x. \Phi) : \textstyle{\prod_{(a : A)} B(a)}} \\[.7em]
 \inferrule*[left=$\Pi$-Elim]{f : \textstyle{\prod_{(a : A)} B(a)} \\ a : A}
 	{f(a) : B(a)}
 \end{gathered}
-\end{equation} %TODO talk about predicativity?
+\end{equation}
 Again, we have the rules for $\beta$-reduction and $\eta$-conversion like in
 the non-dependent case~(\ref{eq:eta-beta}), yielding judgmental equalities
 $(\lambda x. f (x)) \equiv f$ and $(\lambda x. \Phi)(a) \equiv \Phi[a/x]$.
@@ -709,7 +709,7 @@ Consider the type $\twotype :\equiv \unit + \unit : \UU_i$ and let
 $0_\twotype :\equiv \inl(\star)$ and $1_\twotype :\equiv \inr(\star)$ be its
 two constructors.
 As true for every (non-higher) inductive type with multiple constructors,
-distinct constructors are unequal: %TODO find easy, non encode-decode proof for this?
+distinct constructors are unequal:
 \begin{equation*}
 (0_\twotype \neq 1_\twotype) \equiv (0_\twotype = 1_\twotype \to \emptytype) \text{.}
 \end{equation*}
@@ -900,7 +900,7 @@ theory that were introduced in this chapter.
 A deeper analysis of these can be found in the HoTT book~\cite{hottbook} as
 well as in many subsequent publications.
 This introduction should suffice to give enough understanding for the reader
-to know all definitions used in chapter \ref{chapter:types}.
+to know all definitions used in Chapter \ref{chapter:types}.
 Describing the general syntax and semantics of higher inductive types still
 remains an open problem.
 

@@ -10,9 +10,6 @@ interaction between the first and the second homotopy group of a space by
 only consider the case $n = 2$.
 
 \section{Double Categories}
-
-%TODO difference to higher categories
-
 To make the precise definition of a double category easier, we observe that we
 can define a (small) category $C$ by giving a tuple $(ob_C, hom_C, \partial^-,
 \partial^+, \epsilon, \circ_C)$ where
@@ -37,7 +34,7 @@ to as \textbf{degeneracy map}.
 Extending this idea, we want a double category to be an algebraic structure
 that does not only contain points and lines but also squares, bounded by four
 bounding sides, which we will also call \textbf{faces}.
-Like shown in figure \ref{fig:corner-ident}, we must impose conditions on the
+Like shown in Figure~\ref{fig:corner-ident}, we must impose conditions on the
 face maps so that we can really speak of squares.
 Furthermore, just as we needed degenerate lines at each point, we will have
 degenerate squares that have a given line at both of their vertical or 
@@ -129,14 +126,14 @@ For each $u, v, w, x \in D_2$,
 has to hold if it is well-defined.
 \end{defn}
 
-As seen in figure \ref{fig:corner-ident}, the four identities~(\ref{eq:corner-ident})
+As seen in Figure~\ref{fig:corner-ident}, the four identities~(\ref{eq:corner-ident})
 correspond to the well-definedness of the corners of a given square $u \in D_2$.
 The next four equations~(\ref{eq:degen-ident}) tell us that for any line $f \in D_1$,
 besides the identities
 $\partial^\pm_1(\epsilon_1(f)) = f$ and
 $\partial^\pm_2(\epsilon_2(f)) = f$ (which follow from the definition of a
 category), the remaining two faces of a degenerate square are defined as
-consisting of the suitable degenerate lines. Figure \ref{fig:degen-ident}
+consisting of the suitable degenerate lines. Figure~\ref{fig:degen-ident}
 illustrates the cases of both the vertical and the horizontal category.
 Equation~(\ref{eq:zero-unique-ident}) is to make sure that in the case where we take the degenerate
 square of a line which is itself degenerate, and end up with a square with all four
@@ -166,7 +163,7 @@ degeneracy but that instead we receive a unique zero-element for each $x \in D_0
 \node at (3.5,0.5) {$\epsilon_2(f)$};
 \end{tikzpicture}
 \caption{Degenerate squares of the vertical and horizontal category for a given
-line $f \in D_1$. Degenerate lines are drawn as double lines.} %%TODO "double lines"?
+line $f \in D_1$. Degenerate lines are drawn as double lines.}
 \label{fig:degen-ident}
 \end{figure}
 
@@ -200,7 +197,7 @@ $2 \times 2$-grid to another square.
 It makes sure that the result of the composition does not depend on whether we
 first compose horizontally and then vertically or the other way round.
 This justifies illustrating such compositions, as well as larger, iterated ones,
-by ``grids'' like the one shown in figure \ref{fig:interchange}.
+by ``grids'' like the one shown in Figure~\ref{fig:interchange}.
 
 Starting from a given 1-skeleton, it is easy to find some very simple
 but nevertheless very useful and recurring examples for double categories:
@@ -210,10 +207,10 @@ Let $C = (C_0, C_1, \partial^-, \partial^+, \epsilon, \circ_C)$ be a category. T
 \textbf{square double category} on $C$ is defined by setting $D_0 \coloneqq C_0$,
 $D_1 \coloneqq C_1$ and
 \begin{align*}
-D_2 \coloneqq \left\{ (f, g, h, i) \right| &\partial^+(f) = \partial^-(i), 
-	\partial^+(i) = \partial^+(g), \\ %TODO: Make { bigger
-	&\left.\partial^-(g) = \partial^+(h), 
-	\partial^-(h) = \partial^-(f) \right\} \subseteq D_1^4
+D_2 \coloneqq \big\{ (f, g, h, i) \big| &\partial^+(f) = \partial^-(i), 
+	\partial^+(i) = \partial^+(g), \\
+	&\partial^-(g) = \partial^+(h), 
+	\partial^-(h) = \partial^-(f) \big\} \subseteq D_1^4
 \end{align*}
 and $\upperf$, $\lowerf$, $\leftf$, $\rightf$ to be the four projections on
 this set. (To keep things consistent, I will always state the faces of a square
@@ -267,7 +264,6 @@ Its initial object is the empty double category, its terminal object consists of
 double category $D$ with $D_0 = D_1 = D_2 = \{\ast\}$.
 \hfill $\square$
 \end{lemma}
-%TODO parts of the proof? pushouts?
 
 \section{Thin Structures and Connections}
 
@@ -275,7 +271,7 @@ We will now enrich double category with even more data: We need a notion of
 what it means for a square to be \emph{thin}.
 When defining the fundamental double category of a space these thin squares will
 correspond to those actual geometric squares inside the considered space, which are
-homotopic to degenerate squares. %TODO "which"? "that"?
+homotopic to degenerate squares.
 
 \begin{defn} \label{def:thin-structure}
 Let $D$ be a double category on a category $C = (C_0, C_1)$. Then, a \textbf{thin
@@ -302,7 +298,7 @@ Then, the \textbf{lower right connection} of $f$ is the thin square with $f$
 as its upper and left face and $\epsilon(\partial^+(f))$ as its lower and right face.
 Analogously, the \textbf{upper left connection} of $f$ is the thin square with
 $f$ on the bottom and right face and $\epsilon(\partial^-(f))$ on the upper and
-left side. (See figure \ref{fig:connections}.)
+left side. (See Figure~\ref{fig:connections}.)
 We denote the lower right connection of $f$ with $\Gamma^-(f)$ and the upper left
 connection with $\Gamma^+(f)$.
 \end{defn}
@@ -329,7 +325,7 @@ connection with $\Gamma^+(f)$.
 \draw[double] (BL) -- (UL) node [left, midway] {$\epsilon(\partial^-(f))$};
 \node at (3.5,0.5) {$\Gamma^+(f)$};
 \end{tikzpicture}
-\caption{Lower right and upper left connection of a morphism $f$.} %%TODO "double lines"?
+\caption{Lower right and upper left connection of a morphism $f$.}
 \label{fig:connections}
 \end{figure}
 
@@ -356,12 +352,12 @@ $\partial^+(f) = \partial^-(g)$. Then,
 \end{align*}
 \end{lemma}
 \begin{proof}
-As one can easily check (see figures \ref{fig:s-law-horiz} --
+As one can easily check (see Figures~\ref{fig:s-law-horiz} --
 \ref{fig:transport-law-plus}) for each of the equations,
 the composed squares are well defined and have the faces of the square on the left
 hand side coincide with those of the square on the right hand side.
 The composite squares are thin because they are a composition of thin squares.
-Then, the theorem follows from the uniqueness of thin fillers and the thinness
+Then, both theorems follow from the uniqueness of thin fillers and the thinness
 of identity squares.
 \end{proof}
 
@@ -470,7 +466,7 @@ come with a fixed thin structure.
 Note, that the three notions of inversion interact with each other by yielding
 the following laws:
 
-\begin{lemma}[Coherence of inverses] \label{thm:dbl-gpd-inv} %TODO
+\begin{lemma}[Coherence of inverses] \label{thm:dbl-gpd-inv}
 Let $D$ be a weak double groupoid, $a \in D_1$ and $u \in D_2$. Then,
 \begin{equation} \label{eq:inv-coherence1}
 \begin{aligned}
@@ -557,7 +553,6 @@ Similar to the last proof we calculate that
 \end{align*}
 \end{proof}
 
-%TODO S-lemmas
 Of course, the two basic examples we saw for double categories extend to
 double groupoids:
 \begin{lemma}[Square and shell double groupoids] \label{thm:shell-dbl-gpd}
@@ -569,7 +564,7 @@ shell double category $\square C$ are double groupoids.
 It is easily seen for both cases that $\invv(f, g, h, i) \coloneqq (g, f, h\inv, i\inv)$
 and $\invh(f, g, h, i) \coloneqq (f\inv, g\inv, i, h)$ provide valid inverses.
 Thin squares in both double categories are exactly those in $(\square C)_2$,
-which makes $\square C$ a double groupoids with all squares thin. %TODO a "thin double gpd"?
+which makes $\square C$ a double groupoids with all squares thin.
 \end{proof}
 
 We will now take a look at the most important example of a double groupoid:
@@ -654,7 +649,7 @@ But more, we require the homotopies \emph{thin} in the sense that for all
 $x \in \partial I^2$ we have $H(t,x) \in A$ for all $t \in I$.
 
 It can easily be seen that the operations defined on squares and lines in
-definition \ref{def:filtered-maps} respect this definition of equivalence and that
+Definition~\ref{def:filtered-maps} respect this definition of equivalence and that
 the resulting structure is, indeed, a weak double groupoid.
 
 This is furthermore the point where the reason for the name ``thin structure'' becomes
@@ -672,7 +667,6 @@ $g \circ h$ and $i \circ f$.
 It is true that in this case we can also choose $H$ such that $f$, $g$, $h$, and
 $i$ lie on the four faces of a square.
 We define such a choice of $H$ to be our thin filler for that quadruple of faces.
-%TODO: prove this, even if brown doesn't
 
 As a last step we have to prove that this choice is unique up to thin homotopy.
 We assume that we are not only given a thin square $H$ for
@@ -695,7 +689,7 @@ as five faces of a a cube:
 \node at (-.85,-.5) {$H$};
 \node at (.85,-.5) {$H_i$};
 \node at (-.6,.85) {$H_h$};
-\node at (.6,.85) {$H'$}; %TODO: make this a better picture
+\node at (.6,.85) {$H'$};
 \end{tikzpicture}
 \end{center}
 
@@ -711,7 +705,7 @@ for a space and its fundamental double groupoid:
 \begin{example}[The fundamental double groupoid of the sphere] \label{example:fdblgpd-sphere}
 Let $X \coloneqq \mathbb{S}^2$ be the 2-sphere, $A \subset X$ its equator and
 $C = \{c_1, c_2, c_3, c_4\} \subset A$ four points on the equator (see
-figure \ref{fig:fund-dbl-gpd-sphere}).
+Figure~\ref{fig:fund-dbl-gpd-sphere}).
 
 Then, $\Pi_2(X, A, C)$ has $C$ as point set, lines are generated by the segments
 $\overline{c_0 c_1}$, $\overline{c_1 c_2}$, $\overline{c_2 c_3}$ and
@@ -768,14 +762,13 @@ the sense that they map thin squares to thin squares.
 \node [fill,circle,inner sep=0pt,minimum size=5pt,label=above:$x$] at (-.84,1.82) {};
 \node at (-.1,1.5) {$l$};
 \node at (-.35,2.1) {$l$};
-\node at (.35,2.15) {$l\inv$}; %TODO improve this drawing
+\node at (.35,2.15) {$l\inv$};
 \end{tikzpicture}
 \caption{Pasting a loop $l$ to a disk $\alpha$.}
 \label{fig:xmod-motivation}
 \end{figure}
 
 
-%TODO: cite whitehead
 The motivation to introduce crossed modules as a tool for the analysis of the
 homotopy properties of a topological space comes from observing that in the
 long exact sequence of relative homotopy groups for the constellation 
@@ -791,7 +784,7 @@ by mapping a representative $\alpha : (\mathbb{D}^2, \partial \mathbb{D}^2) \to
 representative $l$ of $\pi_1(A, x)$ on the disk that represents the given
 element $[\alpha] \in \pi_2(X, A, x)$.
 We receive the resulting disk by extending $\alpha$ in a degenerate way along
-$l$ as illustrated in figure \ref{fig:xmod-motivation}.
+$l$ as illustrated in Figure~\ref{fig:xmod-motivation}.
 \end{enumerate}
 These two means of interaction can furthermore be observed to fulfil more algebraic
 requirements that will be captured in the definition of a crossed module:
@@ -814,7 +807,7 @@ $M$ such that:
 \begin{enumerate}
 \item For all $a \in P$, $x \in M$:
 \begin{equation} \label{eq:gp-CM1}
-\mu(\phi(a,x)) = a \cdot \mu(x) \cdot a\inv \text{.} %TODO should the \invr really be on the right side?
+\mu(\phi(a,x)) = a \cdot \mu(x) \cdot a\inv \text{.}
 \end{equation}
 \item For all $x, c \in M$ :
 \begin{equation} \label{eq:gp-CM2}
@@ -880,12 +873,12 @@ $\mu$ and action $\phi$ and let $(N_q)_{q \in Q}$ be a crossed module over $Q$
 with morphism $\mu'$ and action $\phi'$.
 A \textbf{morphism} between $(M_p)_{p \in P}$ and $(N_q)_{q \in Q}$ is a functor $F$
 between $P$ and $Q$ and a family of group homomorphisms $(\psi_p)_{p \in P}$ 
-with $\psi_p : M_p \to N_{F(p)}$ such that %TODO check if there's more conditions
+with $\psi_p : M_p \to N_{F(p)}$ such that
 \begin{itemize}
 \item $F \circ \mu_p = \mu'_{F(p)} \circ \psi_p$ for all $p \in P$ and
 \item for all $p, q : P$, $a \in \hom_P(p,q)$ and $x : M_p$, the action is preserved:
 \begin{equation*}
-\psi_q(\phi(a,x)) = \phi(F(a),\psi_p(x)) \text{.} %TODO: double check this
+\psi_q(\phi(a,x)) = \phi(F(a),\psi_p(x)) \text{.}
 \end{equation*}
 \end{itemize}
 \end{defn}
@@ -961,7 +954,7 @@ the interchange law twice becomes
 	\circ_2 \left(0(p) \circ_1 u\right)
 	\circ_2 \left(\invh(c) \circ_1 \upperf(c\inv)\right)
 \end{equation*}
-and can be simplified to $c \circ_2 u \circ_2 c$ (see figure \ref{fig:gamma-cm2}).
+and can be simplified to $c \circ_2 u \circ_2 c$ (see Figure~\ref{fig:gamma-cm2}).
 \end{proof}
 
 \begin{defn}
@@ -1084,7 +1077,7 @@ This can be proved by showing that all thin squares are compositions of identity
 squares and connections and the fact that these get mapped to zero.
 Thus, we obtain a bijective double functor between $G$ and $\lambda(\gamma(G))$,
 whose naturality in $G$ is shown by a proof we omit for the sake of brevity.
-\end{proof} %TODO make this proof more explicit after formalizing it?
+\end{proof}
 
 \begin{figure} \centering
 \begin{tikzpicture}[auto,scale=2,color=black,every path/.append style={thick}]

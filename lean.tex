@@ -237,7 +237,7 @@ To avoid the need to repeat those arguments for each definition, Lean provides
 \textbf{sections} which serve as scopes for common variables.
 %Variables declared in sections is persistent while variables in contexts will not
 %be accessible after closing the scope. %TODO
-Besides \leani{variables}, there are \leani{parameters} which will not be generalized
+Besides \leani{variables}, there are \linebreak \leani{parameters} which will not be generalized
 until the context or section is closed.
 
 One last feature helping to create short and readable files are \textbf{type
@@ -776,7 +776,7 @@ functor.mk
 
 Like mentioned above, it is useful to still have a representation of a structure
 as an iterated product and $\Sigma$-type.
-With this characterization we can formalize lemma \ref{thm:functors-hset} easily
+With this characterization we can formalize Lemma \ref{thm:functors-hset} easily
 using type class resolution:
 \begin{leancode}
 protected definition sigma_char :
@@ -796,8 +796,8 @@ end
 \end{leancode}
 
 This enables us to implement the precategory of strict precategories (compare
-corollary \ref{thm:precat-strict-precat}).
-The proof that this precategory is univalent (lemma \ref{thm:precat-univalent})
+Corollary \ref{thm:precat-strict-precat}).
+The proof that this precategory is univalent (Lemma \ref{thm:precat-univalent})
 still lacks a formalization.
 
 \begin{leancode}
@@ -849,7 +849,7 @@ Theories marked with * contain unfinished proofs.} \label{tab:cat-tree}
 
 \section{Formalizing Double Groupoids}
 
-When formalizing the structures presented in chapters \ref{chapter:nat} and
+When formalizing the structures presented in Chapters \ref{chapter:nat} and
 \ref{chapter:types}, I proceeded in the order the concepts are presented in this
 thesis.
 Since it was necessary to change several definitions to improve compatibility with
@@ -866,7 +866,7 @@ In contrast to an actual double category there are essentially two, instead of
 three, categories involved in the definition of a worm category.
 \begin{leancodebr}
 structure worm_precat {D₀ : Type} (C  : precategory D₀)
-  (D₂ : Π ⦃a b c d : D₀⦄
+  (D₂ : Π ⦃a b c d : D₀⦄ 
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type) :=
   (comp₁ : proof Π ⦃a b c₁ d₁ c₂ d₂ : D₀⦄
     ⦃f₁ : hom a b⦄ ⦃g₁ : hom c₁ d₁⦄ ⦃h₁ : hom a c₁⦄ ⦃i₁ : hom b d₁⦄
@@ -907,8 +907,8 @@ Then we add the laws that could not be expressed in terms of only one direction
 of two-cell composition.
 \begin{leancode}
 structure dbl_precat {D₀ : Type} (C : precategory D₀)
-  (D₂ : Π ⦃a b c d : D₀⦄ (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d),
-    Type)
+  (D₂ : Π ⦃a b c d : D₀⦄
+    (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type)
   extends worm_precat C D₂,
     worm_precat C (λ ⦃a b c d : D₀⦄ f g h i, D₂ h i f g)
   renaming comp₁→comp₂ ID₁→ID₂ assoc₁→assoc₂
@@ -943,7 +943,7 @@ structure Dbl_precat : Type :=
 \end{leancode}
 
 With that definition, we can start instantiating first simple examples.
-When implementing the square double category (definition \ref{def:shell-dbl-cat-hott}),
+When implementing the square double category (Definition \ref{def:shell-dbl-cat-hott}),
 we can make use of the \leani{repeat} tactic to fill in each of the many arguments
 of the double category constructor with either the constructor $\star$ of $\unit$, the
 fact that $\unit$ is a mere proposition, or the fact mere propositions are sets:
@@ -1245,7 +1245,7 @@ structure weak_dbl_gpd {D₀ : Type} (C : groupoid D₀)
   (right_inverse₂ : right_inverse₂_type C D₂ D inv₂)
 \end{leancodebr}
 
-To implement definition~\ref{def:dbl-gpd-hott} of a double
+To implement Definition~\ref{def:dbl-gpd-hott} of a double
 group\-oid, we only have to add a thin structure to a weak double groupoid.
 For the definition of the category of double group\-oids we again add a strict and
 bundled version:
@@ -1379,8 +1379,8 @@ with the same term on its left and right hand side but with lots of transport
 terms on one side.
 Since the transports are all on the different faces of a two-cell, we create an
 auxiliary definition \leani{transport4} holding transports for each face.
-Then we turn the regular transports into instances of this new definitions using
-\leani{transport_eq_transport4} and \leani{transport4_transport_acc} so that in the
+Then we turn the regular transports into instances of this new definition using
+\leani{transport_} \leani{eq_transport4} and \leani{transport4_transport_acc} so that in the
 end we can use the fact that morphisms between two objects form a set to eliminate
 the \leani{transport4} term.
 
@@ -1780,7 +1780,7 @@ the definition of $\gamma$.
 \section{Instantiating the Fundamental Double Group\-oid} \label{section:dbl-gpd-lean}
 
 The general strategy for the instantiation of the fundamental double group\-oid
-of a presented 2-type has been laid out in definition~\ref{def:fundamental-dbl-gpd}.
+of a presented 2-type has been laid out in Definition~\ref{def:fundamental-dbl-gpd}.
 We start by building the fundamental groupoid of a 1-type $A$, a set $C$ and a
 function $\iota : C \to A$ relating them:
 \begin{leancodebr}
@@ -1823,7 +1823,7 @@ is atomic and since in Lean $p \ct \refl$, but not $\refl \ct p$ is judgmentally
 equal to $p$.
 The following example shows the proof of the interchange law by destruction in the
 order which is illustrated in
-figure~\ref{fig:interchange-destruct} (with
+Figure~\ref{fig:interchange-destruct} (with
 non-reflexivity equalities shown as paths and iterated equalities as bounded
 areas).
 \begin{leancodebr}
@@ -2006,7 +2006,7 @@ twice along the functoriality \leani{ap_con} of path concatenation.
 \end{leancodebr}
 
 Then we can prove the axioms for the double groupoid performing step 2 and 3
-from the proof of definition~\ref{def:fundamental-dbl-gpd}.
+from the proof of Definition~\ref{def:fundamental-dbl-gpd}.
 Like in the following example of vertical associativity, we first use the flat
 version of the axiom and in the end refer to another auxiliary lemma that allows
 for path induction in the type $A$.
@@ -2078,13 +2078,12 @@ of the weak double groupoid lets us finally conclude by defining the fundamental
 double groupoid:
 \begin{leancodebr}
   definition fundamental_dbl_precat : dbl_gpd (fundamental_groupoid)
-    (λ (a b c d : C) (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
+    (λ (a b c d : C)
+      (f : ι a = ι b) (g : ι c = ι d) (h : ι a = ι c) (i : ι b = ι d),
       ap ι' h ⬝ ap ι' g = ap ι' f ⬝ ap ι' i) :=
   begin
-    fapply dbl_gpd.mk,
-      ...
-    fapply thin_structure.mk,
-      ...
+    fapply dbl_gpd.mk, ...
+    fapply thin_structure.mk, ...
   end
 \end{leancodebr}
 

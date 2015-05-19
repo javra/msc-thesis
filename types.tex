@@ -54,10 +54,10 @@ from the left and from the right:
 
 As with all the definitions given in this semi-informal style, it is, from a
 theoretical standpoint, equivalent whether to see them as a description of an
-iterated $\Sigma$-Type or as the only constructor of an inducitve type.
-We will later~\ref{section:categories-lean} see that in formalization practice
-it is favorable to choose to introduce them as new inductive types instead of
-$\Sigma$-Types.
+iterated $\Sigma$-Type or as the only constructor of an inductive type.
+We will later (Section~\ref{section:categories-lean}) see that in formalization
+practice it is favorable to choose to introduce them as new inductive types
+instead of $\Sigma$-Types.
 
 We also observe that, since equalities in sets are mere propositions, we have the
 following lemma:
@@ -276,7 +276,7 @@ adopt the dependently typed concept that is commonly also used to formalize cate
 Also note that in the following definition we will \emph{not} require the
 1-skeleton of a double category to be univalent since in our intended main
 use of the structures the object type will not be 1-truncated and thus the
-1-skeleton, as seen in lemma~\ref{thm:cat-1-type}, not a univalent category.
+1-skeleton, as seen in Lemma~\ref{thm:cat-1-type}, not a univalent category.
 
 \begin{defn}[Double category] \label{def:dbl-cat-hott}
 A \textbf{double category} $D$ is constructed by giving the following components:
@@ -289,7 +289,7 @@ chapter, we will write $D_1(a, b) : \UU$ for $\hom_C(a, b)$.
 D_2 : \prod_{a,b,c,d:D_0} ~ \prod_{f:D_1(a,b)} ~ \prod_{g:D_1(c,d)}
 	~ \prod_{h:D_1(a,c)} ~ \prod_{i:D_1(b,d)} \UU
 \end{equation*}
-We will always leave the first four parameters implicit and write $D_2(f,g,h,i)$
+We will always leave the first four parameters implicit and write \linebreak $D_2(f,g,h,i)$
 for the type of two-cells with $f$ as their upper face, $g$ as their bottom face,
 $h$ as their left face, and $i$ as their right face.
 \item The vertical composition operation: For all $a, b, c_1, d_1, c_2, d_2 : D_0$
@@ -335,8 +335,8 @@ of the two squares we compare.
 \item Analogously to the ones above, we need the associativiy and identitiy proofs
 for the horizontal composition:
 \begin{align*}
-\assoch &: \assoc(g_3,g_2,g_1)_*(\assoc(f_3,f_2,f_1)_*(w \circ_2 (v \circ_2 u))) =
-	(w \circ_2 v) \circ_1 u \text{,} \\ %TODO hbox
+\assoch &: \assoc(g_3,g_2,g_1)_*(\assoc(f_3,f_2,f_1)_*(w \circ_2 (v \circ_2 u))) \\
+		& \qquad =	(w \circ_2 v) \circ_1 u \text{,} \\
 \idLefth &: \idLeft(g)_*(\idLeft(f)_*(\id_2 \circ_2 u)) = u \text{, and } \\
 \idRighth &: \idRight(g)_*(\idRight(f)_*(\id_2 \circ_2 u) = u \text{,}
 \end{align*}
@@ -344,19 +344,19 @@ for every $u : D_2(f,g,h,i)$, $v : D_2(f_2,g_2,i,i_2)$, and $w : D_2(f_3,g_3,i_2
 \item For every $f$, $g$, $h$, and $i$, the type of two-cells $D_2(f,g,h,i)$ must
 be a set.
 \item The identities should distribute over the respective other composition
-(compare \ref{eq:linear-ident}):
+(compare (\ref{eq:linear-ident})):
 \begin{align*}
 \prod_{a,b,c : D_0} ~ \prod_{f : D_1(a,b)} ~ \prod_{g : D_1(b,c)}
 	\id_2 (g \circ f) = \id_2(g) \circ_1 \id_2(f) \\
 \prod_{a,b,c : D_0} ~ \prod_{f : D_1(a,b)} ~ \prod_{g : D_1(b,c)}
 	\id_1 (g \circ f) = \id_1(g) \circ_2 \id_1(f)
 \end{align*}
-\item Corresponding to the equation \ref{eq:zero-unique-ident}, we need a proof
+\item Corresponding to the equation (\ref{eq:zero-unique-ident}), we need a proof
 that there is only one, unique, zero-square for each point:
 \begin{equation*}
 \prod_{a : D_0} \id_1(\id_C(a)) = \id_2(\id_C(a))
 \end{equation*}
-\item Finally, as introduced in equation \ref{eq:interchange}, the interchange
+\item Finally, as introduced in equation (\ref{eq:interchange}), the interchange
 law should hold:
 \begin{equation*}
 \prod_{\ldots} (x \circ_2 w) \circ_1 (v \circ_2 u) = (x \circ_1 v) \circ_2 (w \circ_1 u)
@@ -369,9 +369,9 @@ We will continue to hide the indexing of two-cells for the sake of readability.
 
 This list of necessary parameters of a constructor to a double category might seem long at first
 glance, but the fact that we implemented the two-cells as dependent types
-released us from the duty of adding the cubical identities \ref{eq:corner-ident}
-and \ref{eq:degen-ident} propositionally.
-Not only those, but also the four first equations in \ref{eq:linear-ident} hold
+released us from the duty of adding the cubical identities (\ref{eq:corner-ident})
+and (\ref{eq:degen-ident}) propositionally.
+Not only those, but also the four first equations in (\ref{eq:linear-ident}) hold
 by definition!
 Formulating the definition using three different categories would have rendered
 this impossible.
@@ -379,8 +379,8 @@ But the notion of the two categories of two-cells is still accessible in the
 formalization:
 
 \begin{defn}
-We can recover what in definition \ref{def:dbl-cat} we called the \textbf{vertical
-precategory} of a double category $D$ as a category $V$ on $A :\equiv
+We can recover what in Definition~\ref{def:dbl-cat} we called the \textbf{vertical
+precategory} of a double category $D$ as a category $V$ on the type $A :\equiv
 \sum_{(a,b : D_0)} D_1(a,b)$ with morphisms
 \begin{equation*}
 \hom_V((a,b,f),(c,d,g)) :\equiv \sum_{h:D_1(a,c)} ~ \sum_{i:D_1(b,d)} D_2(f,g,h,i)
@@ -388,7 +388,7 @@ precategory} of a double category $D$ as a category $V$ on $A :\equiv
 and composition $(h_2,i_2,v) \circ_V (h_1,i_1,u) :\equiv
 (h_2 \circ h_1, i_2 \circ i_1, v \circ_1 u)$.
 The corresponding category axioms can easily be proved to follow from the ones
-of the 1-skeleton of $D$ and their counterparts in definition \ref{def:dbl-cat-hott}.
+of the 1-skeleton of $D$ and their counterparts in Definition~\ref{def:dbl-cat-hott}.
 
 The \textbf{horizontal precategory} $H$ of $D$ is defined likewise.
 \end{defn}
@@ -429,11 +429,11 @@ a quadruple of morphisms.
 We define a \textbf{thin structure} $T$ on a double category $D$ to consist of:
 \begin{itemize}
 \item A dependent function selecting a thin square for each commuting square:
-\begin{equation*}
+\begin{align*}
 \thin : \prod_{a,b,c,d:D_0} ~ \prod_{f:D_1(a,b)} ~ \prod_{g:D_1(c,d)}
-	~ \prod_{h:D_1(a,c)} ~ \prod_{i:D_1(b,c)} g \circ h = i \circ f \to
-	D_2(f,g,h,i)
-\end{equation*}
+	~ \prod_{h:D_1(a,c)} ~ \prod_{i:D_1(b,c)} g \circ h = i \circ f \\ 
+	\hfill \to	D_2(f,g,h,i)
+\end{align*}
 \item For each $a,b:D_0$, $f:D_1(a,b)$, and $p : f \circ \id(a) = \id(b) \circ f$,
 $q : \id(b) \circ f = f \circ \id(a)$, we have $\thin(f,f,\id(a),\id(b),p) =
 \id_1(f)$ and $\thin(\id(a),\id(b),f,f,q) = \id_2(f)$.
@@ -505,7 +505,7 @@ The most reasonable condition would be that, besides the 1-skeleton, also the
 vertical and horizontal precategory should be univalent.
 While our main example of a fundamental double groupoid will turn out to be univalent,
 I could not find a way to gain advantage by restricting general considerations
-on double groupoids on univalent ones. %TODO prove this
+on double groupoids on univalent ones.
 
 \begin{defn}[Double functor] \label{defl:dbl-functor-hott}
 A \textbf{double functor} $F$ between double categories $D$ and $E$ shall consist
@@ -526,10 +526,10 @@ and $f:D_1(a,b)$, we have proofs $\respectIdv(f)$ and $\respectIdh(f)$ for
 \end{align*}
 \item $F$ is linear with respect to vertical and horizontal composition:
 \begin{align*}
-\respectComp(i_2,i_1)_*\big(\respectComp(h_2,h_1)_*(F_2(v \circ_1 u))\big)
-	&= F_2(v) \circ_1 F_2(u) \text{ and } \\
-\respectComp(g_2,g_1)_*\big(\respectComp(f_2,f_1)_*(F_2(v \circ_2 u))\big)
-	&= F_2(v) \circ_2 F_2(u) \text{,}
+	& \respectComp(i_2,i_1)_*\big(\respectComp(h_2,h_1)_*(F_2(v \circ_1 u))\big) \\
+= 	& F_2(v) \circ_1 F_2(u) \text{ and } \\
+	& \respectComp(g_2,g_1)_*\big(\respectComp(f_2,f_1)_*(F_2(v \circ_2 u))\big) \\
+= 	& F_2(v) \circ_2 F_2(u) \text{,}
 \end{align*}
 wherever the respective composition of $u$ and $v$ is defined and where
 $\respectComp$ is the witness that the functor on the 1-skeletons is linear with
@@ -544,7 +544,7 @@ Weak double groupoids are a full subcategory of this category.
 \end{lemma}
 
 \begin{proof}
-The proof can be done like the one of lemma \ref{thm:precat-univalent}.
+The proof can be done like the one of Lemma~\ref{thm:precat-univalent}.
 \end{proof}
 
 %TODO state some of the lemmas
@@ -614,7 +614,7 @@ $\psi : \prod_{p:P_0} ~ M_p \to N_{F(p)}$ which should satisfy the following equ
 
 \section{Presented Types}
 
-In this section we want to transfer what in chapter \ref{chapter:nat} were the
+In this section we want to transfer what in Chapter~\ref{chapter:nat} were the
 fundamental double groupoid and the fundamental crossed module of a space to the
 world of higher types.
 This, of course involves more than just replacing each occurrence of the word
@@ -625,7 +625,7 @@ structures.
 In the topological setting we did not impose any conditions on the topological
 properties of the components of the nested triple of spaces -- even if we pictured
 $C$ as a disjoint union of points, $A$ as one-dimensional and $X$ as two-dimensional
-in our example \ref{example:fdblgpd-sphere} of the fundamental double groupoid
+in our Example~\ref{example:fdblgpd-sphere} of the fundamental double groupoid
 of a 2-sphere.
 To meet the truncation level requirements when instantiating the fundamental
 double groupoid of a triple of types we have to make the truncation levels of the
@@ -638,7 +638,7 @@ with functions $\iota : C \to A$ and $\iota' : A \to X$ where $X$ is a 2-type,
 $A$ is a 1-type and $C$ is a set.
 \end{defn}
 
-Example \ref{example:fdblgpd-sphere} matches these requirements:
+Example~\ref{example:fdblgpd-sphere} matches these requirements:
 
 \begin{example}
 The 2-sphere $\mathbb{S}^2$ can be defined as the higher inductive type on
@@ -716,7 +716,7 @@ Then, we obtain $v \circ_1 u$ as the following concatenation of paths:
 \end{equation}
 Here, the first and last equation (an instance of the general theorem saying that $\ap$
 is distributive over the concatenation of paths) is what keeps this definition from
-being a special case of the shell double category (definition \ref{def:shell-dbl-cat-hott})
+being a special case of the shell double category (Definition~\ref{def:shell-dbl-cat-hott})
 and makes its formalization a lot more difficult. Horizontal composition is given
 analogously, a vertical identity square for a morphism $f : \iota(a) = \iota(b)$
 consists of
