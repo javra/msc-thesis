@@ -1,4 +1,4 @@
-\documentclass[12pt,headings=optiontohead]{book}
+\documentclass[12pt,headings=optiontohead,a4paper]{book}
 %TODO: page layout
 \usepackage[backref=page,
 unicode,
@@ -186,7 +186,9 @@ pdfkeywords={homotopy theory, interactive theorem proving}]{hyperref}
 \begin{document}
 
 \title{Formalization of Non-Abelian Topology for Homotopy Type Theory}
-\author{\begin{tabular}{r@{ }l} 
+\author{
+Master Thesis\\[1cm]
+\begin{tabular}{r@{ }l} 
 Author:      & Jakob von Raumer \\[1ex] 
 Supervisors at CMU: & Prof. Jeremy Avigad\\
              & Prof. Steve Awodey \\[1ex]
@@ -206,7 +208,7 @@ from non-abelian algebraic topology to a setting of homotopy type theory and
 an application of these structures in the form of a fundamental double groupoid
 of a 2-truncated type which is presented by a set and a 1-type.
 I furthermore describe how I formalized parts of these definitions and theorems
-in the newly developed interactive theorem prover Lean. \newline
+in the newly developed interactive theorem prover Lean.\newline
 
 \noindent
 In dieser Arbeit präsentiere ich eine Übersetzung einiger essentieller algebraischer
@@ -214,21 +216,35 @@ Strukturen der nichtabelschen algebraischen Topologie in Homotopietypentheorie
 und eine Anwendung dieser Strukturen in Gestalt eines fun\-da\-men\-talen Doppel\-grupp\-oids
 eines 2-ab\-gestumpften Typs, welch\-er\linebreak durch ei\-ne Men\-ge und ei\-nen 1-Typ\-en dargestellt ist.
 Des\-weiteren be\-schrei\-be ich, wie ich Tei\-le dieser Definitionen und Sätze in dem
-neu entwickelten inter\-aktiven Theorem\-beweiser Lean for\-mali\-siert habe.
+neu entwickelten inter\-aktiven Theorem\-beweiser Lean for\-mali\-siert habe.\newline
+
+\newpage
+\noindent
+I declare that I have developed and written the enclosed thesis by myself, and have not
+used sources or means without declaration in the text.\newline
+
+\noindent
+Ich erkläre hiermit, dass ich die vorliegende Arbeit selbstständig verfasst und keine anderen
+als die angegebenen Quellen und Hilfsmittel verwendet habe.
+
+\vspace{2cm}
+\noindent \rule{6cm}{1pt} \\
+Jakob von Raumer
 
 \chapter*{Acknowledgements}
 %\thispagestyle{empty}
 
-First and foremost, I would like to express my deep gratitude to Prof. Jeremy Avigad,
+First and foremost, I would like to express my deep gratitude to Prof.~Jeremy Avigad,
 who has been an excellent advisor for this thesis and has been a great help
 in every stage of this thesis project.
-He was a great help in finding a topic, and gave lots of helpful advice for the
+He supported me in finding a topic, and gave lots of helpful advice for the
 formalization as well as for the write up.
 
-Also, I want to thank Prof. Steve Awodey for giving me the idea to formalize structures
+Also, I want to thank Prof.~Steve Awodey for giving me the idea to formalize structures
 from non-abelian topology and who gave me useful advice on what formalization goals
 to pursue.
-Another great help was including me in the reading group on non-abelian algebraic
+
+Another great help was to be included in the reading group on non-abelian algebraic
 topology whose other members 
 Ulrik Buchholtz, Kuen-Bang Hou (Favonia), Ed Morehouse, Clive Newstead, Egbert Rijke, and Bas Spitters
 I also want to thank for helping me to understand the matter.
@@ -246,13 +262,12 @@ user interface and for helping me to set up the environment for the code listing
 in this thesis.
 
 For their contribution to make my stay in Pittsburgh possible, I want to thank
-Prof. Dr. Gregor Snelting for supervising my thesis from Karlsruhe,
-Prof. Dr. Frank Herrlich for allowing the thesis to count for my mathematics major,
-and Prof. Dr. Alexander Waibel and the interACT exchange program for financing my
+Prof.~Dr.~Gregor Snelting for supervising my thesis from Karlsruhe,
+Prof.~Dr.~Frank Herrlich for allowing the thesis to count for my mathematics major,
+and Prof.~Dr.~Alexander Waibel and the interACT exchange program for financing my
 stay at Carnegie Mellon University.
-
 Last but not least, the thesis project would not have happened without my friend
-Felix Maurer pointing me to the videos of Prof. Robert Harper's homotopy type
+Felix Maurer pointing me to the videos of Prof.~Robert Harper's homotopy type
 theory course and the latter redirecting me to Jeremy Avigad and Steve Awodey.
 
 \clearpage

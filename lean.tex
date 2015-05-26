@@ -905,7 +905,7 @@ the default for structure fields with identical names), we have to rename
 the fields of the horizontal worm category.
 Then we add the laws that could not be expressed in terms of only one direction
 of two-cell composition.
-\begin{leancode}
+\begin{leancodebr}
 structure dbl_precat {D₀ : Type} (C : precategory D₀)
   (D₂ : Π ⦃a b c d : D₀⦄
     (f : hom a b) (g : hom c d) (h : hom a c) (i : hom b d), Type)
@@ -926,7 +926,7 @@ structure dbl_precat {D₀ : Type} (C : precategory D₀)
     (x : D₂ f₁₁ f₂₁ g₁₁ g₁₂) (w : D₂ f₁₀ f₂₀ g₁₀ g₁₁)
     (v : D₂ f₀₁ f₁₁ g₀₁ g₀₂) (u : D₂ f₀₀ f₁₀ g₀₀ g₀₁),
     comp₁ (comp₂ x w) (comp₂ v u) = comp₂ (comp₁ x v) (comp₁ w u) qed)
-\end{leancode}
+\end{leancodebr}
 
 This unbundled definition of a double category is useful when making statements about
 all double category structures on a certain pair of 1-skeletons and two-cell types.
