@@ -17,11 +17,11 @@ namespace dbl_precat
     (u : D₂ f g₁ h₁ i₁) (v : D₂ g₁ g₂ h₂ i₂)
     (u' : D₂ f' g₁' h₁ i₁) (v' : D₂ g₁' g₂ h₂ i₂)
     (p : f = f') (q : g₁ = g₁') (r : g₂ = g₂')
-    (P : u' = q ▹ p ▹ u) (Q : v' = r ▹ q ▹ v)
+    (P : u' = q ▸ p ▸ u) (Q : v' = r ▸ q ▸ v)
   include P Q
 
   definition comp₁_row_replacement :
-    comp₁ D v' u' = r ▹ p ▹ (comp₁ D v u) :=
+    comp₁ D v' u' = r ▸ p ▸ (comp₁ D v u) :=
   begin
     cases p, cases q, cases r, cases P, cases Q, apply idp,
   end
@@ -204,7 +204,7 @@ namespace dbl_precat
   definition comp₁_transp_eq_comp₁_transp_b {e : E → hom c₁ d₁}
     {g₁ g₁' : E} (pg₁ : g₁ = g₁')
     (v : D₂ (e g₁') g₂ h₂ i₂) (u : D₂ f₁ (e g₁) h₁ i₁) :
-    comp₁ D (transport (λ x, D₂ (e x) g₂ h₂ i₂) (pg₁⁻¹) v) u = comp₁ D v (pg₁ ▹ u) :=
+    comp₁ D (transport (λ x, D₂ (e x) g₂ h₂ i₂) (pg₁⁻¹) v) u = comp₁ D v (pg₁ ▸ u) :=
   by cases pg₁; apply idp
 
   definition transp_comp₁_eq_comp₁_transp_b_b {e : E → hom c₂ d₂}

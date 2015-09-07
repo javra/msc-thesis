@@ -1,3 +1,5 @@
+import init.
+
 open eq is_trunc
 
 section
@@ -6,7 +8,7 @@ section
   definition transport4 {a0 a1 : A} {b0 b1 : B} {c0 c1 : C} {d0 d1 : D}
     (pa : a0 = a1) (pb : b0 = b1) (pc : c0 = c1) (pd : d0 = d1)
     (u : P a0 b0 c0 d0) : P a1 b1 c1 d1 :=
-  pd ▹ pc ▹ pb ▹ pa ▹ u
+  pd ▸ pc ▸ pb ▸ pa ▸ u
 
   definition transport4_set_reduce [HA : is_hset A] [HB : is_hset B]
     [HC : is_hset C] [HD : is_hset D]

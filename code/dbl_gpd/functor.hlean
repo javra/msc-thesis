@@ -1,7 +1,7 @@
-import algebra.precategory.functor
+import algebra.category.functor
 import ..dbl_cat.transports .decl ..transport4 ..dbl_gpd.basic arity ..transport4
 
-open eq iso iso.iso category functor dbl_gpd dbl_precat equiv Dbl_gpd
+open eq iso iso category functor dbl_gpd dbl_precat equiv Dbl_gpd
 open prod prod.ops sigma sigma.ops pi is_trunc thin_structure
 
 namespace dbl_gpd
@@ -128,7 +128,7 @@ namespace dbl_gpd
     (respect_comp₂1 : respect_comp₂1_type twoF1)
     (respect_comp₂2 : respect_comp₂2_type twoF2)
 
-  definition dbl_functor.congr (p1 : catF1 = catF2) (p2 : p1 ▹ twoF1 = twoF2) :
+  definition dbl_functor.congr (p1 : catF1 = catF2) (p2 : p1 ▸ twoF1 = twoF2) :
     dbl_functor.mk catF1 twoF1
       respect_id₁1 respect_comp₁1 respect_id₂1 respect_comp₂1
     = dbl_functor.mk catF2 twoF2
@@ -146,13 +146,13 @@ namespace dbl_gpd
     (p2 : transport
       (λ x, Π (a b : carrier (gpd D)), hom a b → hom (x a) (x b)) p1
       (to_fun_hom catF1) = to_fun_hom catF2)
-    (p3 : apD011 (λ Hob Hhom,
+    (p3 : apd011 (λ Hob Hhom,
                   Π ⦃a b c d : carrier (gpd D)⦄
                     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
                     two_cell D f g h i →
                     @two_cell E (Hob a) (Hob b) (Hob c) (Hob d)
                      (Hhom a b f) (Hhom c d g) (Hhom a c h) (Hhom b d i))
-          p1 p2 ▹ twoF1 = twoF2)
+          p1 p2 ▸ twoF1 = twoF2)
 
   include p1 p2 p3
   definition dbl_functor.congr' :
@@ -193,13 +193,11 @@ namespace dbl_gpd
 
   definition respect_id₁' {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b : gpd D} (f : hom a b) :=
-  eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.ID₁ D f)) _
-   (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₁ F f))
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq (respect_id₁ F f))
 
   definition respect_id₂' {D E : Dbl_gpd} (F : dbl_functor D E)
     {a b : gpd D} (f : hom a b) :=
-  eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.ID₂ D f)) _
-   (eq_inv_tr_of_tr_eq _ _ _ _ (respect_id₂ F f))
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq (respect_id₂ F f))
 
   section
   parameters {D E : Dbl_gpd} (F : dbl_functor D E)
@@ -210,8 +208,7 @@ namespace dbl_gpd
     (u : two_cell D f g₁ h₁ i₁)
 
   definition respect_comp₁' :=
-  eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.comp₁ D v u)) _
-   (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₁ F v u))
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq (respect_comp₁ F v u))
 
   end
 
@@ -224,8 +221,7 @@ namespace dbl_gpd
     (u : two_cell D f₁ g₁ h i₁)
 
   definition respect_comp₂' :=
-  eq_inv_tr_of_tr_eq _ _ (twoF F (dbl_precat.comp₂ D v u)) _
-   (eq_inv_tr_of_tr_eq _ _ _ _ (respect_comp₂ F v u))
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq (respect_comp₂ F v u))
 
   end
 
@@ -236,22 +232,22 @@ namespace dbl_gpd
 
   definition twoF_transport_u {I : Type} (e : I → hom a b)
     {f f' : I} (pf : f = f') (u : two_cell D (e f) g h i) :
-    twoF F (pf ▹ u) = pf ▹ (twoF F u) :=
+    twoF F (pf ▸ u) = pf ▸ (twoF F u) :=
   by cases pf; apply idp
 
   definition twoF_transport_b  {I : Type} (e : I → hom c d)
     {g g' : I} (pg : g = g') (u : two_cell D f (e g) h i) :
-    twoF F (pg ▹ u) = pg ▹ (twoF F u) :=
+    twoF F (pg ▸ u) = pg ▸ (twoF F u) :=
   by cases pg; apply idp
 
   definition twoF_transport_l  {I : Type} (e : I → hom a c)
     {h h' : I} (ph : h = h') (u : two_cell D f g (e h) i) :
-    twoF F (ph ▹ u) = ph ▹ (twoF F u) :=
+    twoF F (ph ▸ u) = ph ▸ (twoF F u) :=
   by cases ph; apply idp
 
   definition twoF_transport_r  {I : Type} (e : I → hom b d)
     {i i' : I} (pi : i = i') (u : two_cell D f g h (e i)) :
-    twoF F (pi ▹ u) = pi ▹ (twoF F u) :=
+    twoF F (pi ▸ u) = pi ▸ (twoF F u) :=
   by cases pi; apply idp
 
   end
@@ -305,7 +301,7 @@ namespace dbl_gpd
   end
 
   definition respect_inv₁' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₁)
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq respect_inv₁)
 
   definition respect_inv₂ :
     transport (λ x, two_cell E _ x _ _) (functor.respect_inv (catF F) g)
@@ -351,7 +347,7 @@ namespace dbl_gpd
   end
 
   definition respect_inv₂' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ respect_inv₂)
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq respect_inv₂)
 
   end
 
@@ -369,13 +365,12 @@ namespace dbl_gpd
   (transport (λ x, two_cell E _ _ _ x) (eq.inverse (respect_id (catF F) a))
   proof (dbl_precat.ID₁ E (to_fun_hom (catF F) f)⁻¹) qed)))
 
-  definition respect_id₁''_aux := eq_inv_tr_of_tr_eq _ _ _ _ (apD
-    (λ x, dbl_precat.ID₁ E x) (functor.respect_inv (catF F) f))
+  definition respect_id₁''_aux := 
+  eq_inv_tr_of_tr_eq (apd (λ x, dbl_precat.ID₁ E x) (functor.respect_inv (catF F) f))
 
   definition respect_id₁'' : respect_id₁''_lhs = respect_id₁''_rhs :=
   begin
-    esimp[respect_id₁''_lhs, respect_id₁''_rhs],
-    apply concat, apply respect_id₁',
+    apply concat, apply (respect_id₁' F),
     do 2 (apply inv_tr_eq_of_eq_tr),
     apply concat, apply respect_id₁''_aux,
     apply inv_tr_eq_of_eq_tr, apply inverse,
@@ -455,7 +450,7 @@ namespace dbl_gpd
     (p : Π (a : gpd D), catF F a = catF G a)
 
   definition p_iso [reducible] := λ x, to_hom (iso_of_eq (p x))
-  attribute iso.iso.struct [instance]
+  attribute iso.struct [instance]
 
   parameter (q : Π ⦃a b : gpd D⦄ (f : hom a b), catF G f ∘ p_iso a = p_iso b ∘ catF F f)
 

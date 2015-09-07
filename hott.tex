@@ -166,7 +166,7 @@ functions generalize the rules for non-dependent functions as follows:
 \begin{equation}
 \begin{gathered}
 \inferrule*[left=$\Pi$-Form]{A : \UU_i \\ B : A \to \UU_j}
-	{\textstyle{(\prod_{(a : A)} B(a))} : \UU_{max\{i,j\}}} \qquad
+	{\textstyle{(\prod_{(a : A)} B(a))} : \UU_{\max\{i,j\}}} \qquad
 \inferrule*[left=$\Pi$-Intro]{a : A \vdash \Phi[a/x] : B(a)}
 	{(\lambda x. \Phi) : \textstyle{\prod_{(a : A)} B(a)}} \\[.7em]
 \inferrule*[left=$\Pi$-Elim]{f : \textstyle{\prod_{(a : A)} B(a)} \\ a : A}
@@ -718,11 +718,11 @@ and $f(1_\twotype) :\equiv 0_\twotype$.
 It's easy to see that $f$, as an involution, is an equivalence, which, by univalence
 results in a path $p : \twotype =_{\UU_i} \twotype$.
 If we assume $\UU_i$ to be a set, we receive an equality $p = \refl_\twotype$.
-But transporting along that equality, $f$ would be equal to $\id_\2$ and thus
+But transporting along that equality, $f$ would be equal to $\id_\twotype$ and thus
 \begin{equation*}
 0_\twotype = f(1_\twotype) = \id_2(1_\twotype) = 1_\twotype \text{,}
 \end{equation*}
-which, with the above inequality gives the desired result.
+which, with the above inequality, gives the desired result.
 \end{proof}
 
 Just like $\isContr(A)$ and $\isProp(A)$, $\isSet(A)$ itself is a mere proposition.

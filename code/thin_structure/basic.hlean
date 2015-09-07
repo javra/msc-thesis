@@ -19,20 +19,19 @@ namespace dbl_gpd
 
   definition br_connect_id_eq_ID₁ (a : D₀) : br_connect (ID a) = ID₁ D (ID a) :=
   begin
-    apply inverse, apply concat, apply inverse, apply thin_id₁,
+    apply inverse, apply concat, apply inverse, apply (thin_id₁ D),
     apply (ap (λ x, thin D _ _ _ _ x)), apply is_hset.elim,
   end
-
 
   definition ID₁_of_ul_br_aux {a b : D₀} (f g h : hom a b)
     (p : g = f) (q : h = f)
     (r1 : h ∘ id = id ∘ g) (r2 : f ∘ id = id ∘ f)
-    (rr : q ▹ (p ▹ r1) = r2) :
-    q ▹ (p ▹ thin D g h id id r1) = thin D f f id id r2 :=
+    (rr : q ▸ (p ▸ r1) = r2) :
+    q ▸ (p ▸ thin D g h id id r1) = thin D f f id id r2 :=
   by cases rr; cases p; cases q; apply idp
 
   definition ID₁_of_ul_br ⦃a b : D₀⦄ (f : hom a b) :
-    (id_left f) ▹ ((id_right f) ▹
+    (id_left f) ▸ ((id_right f) ▸
     (comp₂ D (br_connect f) (ul_connect f))) = ID₁ D f :=
   begin
     -- Bring transports to right hand side
@@ -40,7 +39,7 @@ namespace dbl_gpd
     -- Work on left hand side
     apply concat,
       -- Composites of thin squares are thin
-      apply thin_comp₂,
+      apply (thin_comp₂ D),
       -- Commutativity of composite square
       apply inverse, apply assoc,
     -- Bring transports to left hand side
@@ -50,18 +49,18 @@ namespace dbl_gpd
       apply ID₁_of_ul_br_aux, apply is_hset.elim,
       exact ((id_right f) ⬝ (id_left f)⁻¹),
     -- Identity squares are thin
-    apply thin_id₁,
+    apply (thin_id₁ D),
   end
 
   definition ID₂_of_br_ul_aux {a b : D₀} (f g h : hom a b)
     (p : g = f) (q : h = f)
     (r1 : id ∘ g = h ∘ id) (r2 : id ∘ f = f ∘ id)
-    (rr : q ▹ (p ▹ r1) = r2) :
-    q ▹ (p ▹ thin D id id g h r1) = thin D id id f f r2 :=
+    (rr : q ▸ (p ▸ r1) = r2) :
+    q ▸ (p ▸ thin D id id g h r1) = thin D id id f f r2 :=
   by cases rr; cases p; cases q; apply idp
 
   definition ID₂_of_br_ul ⦃a b : D₀⦄ (f : hom a b) :
-    (id_left f) ▹ ((id_right f) ▹
+    (id_left f) ▸ ((id_right f) ▸
     (comp₁ D (br_connect f) (ul_connect f))) = ID₂ D f :=
   begin
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
@@ -77,7 +76,7 @@ namespace dbl_gpd
   definition br_of_br_square_aux {a c : D₀} (gf : hom a c)
     (h₁ h₁' : hom c c) (p : h₁ = ID c) (p' : h₁' = ID c)
     (r1 : h₁ ∘ gf = h₁' ∘ gf) (r2 : (ID c) ∘ gf = (ID c) ∘ gf) :
-    (p' ▹ p ▹ thin D gf h₁ gf h₁' r1) = thin D gf (ID c) gf (ID c) r2 :=
+    (p' ▸ p ▸ thin D gf h₁ gf h₁' r1) = thin D gf (ID c) gf (ID c) r2 :=
   by cases p'; cases p; apply (ap (λ x, thin D _ _ _ _ x) !is_hset.elim)
 
   definition br_of_br_square ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c) :
@@ -111,7 +110,7 @@ namespace dbl_gpd
     apply concat, exact (ap (λx, comp₁ D x _) line2_thin),
     apply concat, exact (ap (λx, comp₁ D _ x) line1_thin),
     -- Thinness of the entire 2x2 grid
-    apply concat, apply thin_comp₁, apply idp,
+    apply concat, apply (thin_comp₁ D), apply idp,
     do 2 (apply eq_inv_tr_of_tr_eq),
     apply br_of_br_square_aux,
   end
@@ -119,11 +118,11 @@ namespace dbl_gpd
   definition ul_of_ul_square_aux {b d : D₀} (ih : hom b d)
     (f₁ : hom b b) (p : f₁ = ID b)
     (r1 : ih ∘ f₁ = ih ∘ f₁) (r2 : ih ∘ (ID b) = ih ∘ (ID b)) :
-    (p ▹ thin D f₁ ih f₁ ih r1) = thin D (ID b) ih (ID b) ih r2 :=
+    (p ▸ thin D f₁ ih f₁ ih r1) = thin D (ID b) ih (ID b) ih r2 :=
   by cases p; apply (ap (λ x, thin D _ _ _ _ x) !is_hset.elim)
 
   definition ul_of_ul_square ⦃a b c : D₀⦄ (f : hom a b) (g : hom b c) :
-    (id_left id) ▹
+    (id_left (ID a)) ▸
     (comp₂ D (comp₁ D (ul_connect g) (ID₂ D f)) (comp₁ D (ID₁ D f) (ul_connect f)))
     = ul_connect (g ∘ f) :=
   begin
@@ -135,7 +134,7 @@ namespace dbl_gpd
     assert col1_thin : comp₁ D (ID₁ D f) (ul_connect f)
       = thin D id f (id ∘ id) (id ∘ f) col1_commute,
       apply concat, apply (ap (λx, comp₁ D x _)), apply inverse, apply thin_id₁,
-      apply thin_comp₁,
+      apply (thin_comp₁ D),
     assert col2_commute : g ∘ id ∘ f = (g ∘ f) ∘ id,
       exact (calc g ∘ id ∘ f = g ∘ f : by rewrite id_left
                         ... = (g ∘ f) ∘ id : id_right),
@@ -145,7 +144,7 @@ namespace dbl_gpd
       apply thin_comp₁,
     apply concat, exact (ap (λx, comp₂ D _ x) col1_thin),
     apply concat, exact (ap (λx, comp₂ D x _) col2_thin),
-    apply concat, apply thin_comp₂, apply idp,
+    apply concat, apply (thin_comp₂ D), apply idp,
     apply eq_inv_tr_of_tr_eq,
     apply ul_of_ul_square_aux,
   end

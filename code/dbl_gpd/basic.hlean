@@ -14,35 +14,35 @@ namespace dbl_gpd
     (u : D₂ f g h i)
 
   definition left_inverse₁' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (left_inverse₁ D u))
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq (left_inverse₁ D u))
 
   definition left_inverse₂' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (left_inverse₂ D u))
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq (left_inverse₂ D u))
 
   definition right_inverse₁' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (right_inverse₁ D u))
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq (right_inverse₁ D u))
 
   definition right_inverse₂' :=
-  eq_inv_tr_of_tr_eq _ _ _ _ (eq_inv_tr_of_tr_eq _ _ _ _ (right_inverse₂ D u))
+  eq_inv_tr_of_tr_eq (eq_inv_tr_of_tr_eq (right_inverse₂ D u))
 
   definition ID₁_respect_inv : ID₁ D (f⁻¹) = inv₂ D (ID₁ D f) :=
   begin
     apply concat, apply inverse, apply (id_right₂ D),
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ _ _ x)),
+    apply concat, apply (ap (λ x, comp₂ D _ x)),
       apply inverse, apply (right_inverse₂ D (ID₁ D f)),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' D),
     apply tr_eq_of_eq_inv_tr,
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' D),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply assoc₂',
+    apply concat, apply (assoc₂' D),
     do 2 (apply inv_tr_eq_of_eq_tr),
-    apply concat, apply (ap (λ x, comp₂ _ x _)), apply inverse, apply id_comp₂,
-    apply concat, apply (ap (λ x, comp₂ _ x _)),
-      apply inverse, apply (apD (λ x, ID₁ D x) (left_inverse f)⁻¹),
+    apply concat, apply (ap (λ x, comp₂ D x _)), apply inverse, apply (id_comp₂ D),
+    apply concat, apply (ap (λ x, comp₂ D x _)),
+      apply inverse, apply (apd (λ x, ID₁ D x) (left_inverse f)⁻¹),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_vert D),
     apply inv_tr_eq_of_eq_tr,
-    apply concat, apply (ap (λ x, comp₂ _ x _)), apply zero_unique,
+    apply concat, apply (ap (λ x, comp₂ D x _)), apply (zero_unique D),
     apply concat, apply (id_left₂' D),
     do 2 (apply inv_tr_eq_of_eq_tr),
     apply inverse,
@@ -55,20 +55,20 @@ namespace dbl_gpd
   begin
     apply concat, apply inverse, apply (id_right₁ D),
     apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₁ _ _ x)),
+    apply concat, apply (ap (λ x, comp₁ D _ x)),
       apply inverse, apply (right_inverse₁ D (ID₂ D f)),
     apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_u_r D),
     apply tr_eq_of_eq_inv_tr,
     apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_u_l D),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply assoc₁',
+    apply concat, apply (assoc₁' D),
     do 2 (apply inv_tr_eq_of_eq_tr),
-    apply concat, apply (ap (λ x, comp₁ _ x _)), apply inverse, apply id_comp₁,
-    apply concat, apply (ap (λ x, comp₁ _ x _)),
-      apply inverse, apply (apD (λ x, ID₂ D x) (left_inverse f)⁻¹),
+    apply concat, apply (ap (λ x, comp₁ D x _)), apply inverse, apply (id_comp₁ D),
+    apply concat, apply (ap (λ x, comp₁ D x _)),
+      apply inverse, apply (apd (λ x, ID₂ D x) (left_inverse f)⁻¹),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_b_horiz D),
     apply inv_tr_eq_of_eq_tr,
-    apply concat, apply (ap (λ x, comp₁ _ x _)), apply inverse, apply zero_unique,
+    apply concat, apply (ap (λ x, comp₁ D x _)), apply inverse, apply (zero_unique D),
     apply concat, apply (id_left₁' D),
     do 2 (apply inv_tr_eq_of_eq_tr),
     apply inverse,
@@ -85,7 +85,7 @@ namespace dbl_gpd
     apply concat, apply (ap (λ x, comp₂ D x _)), apply ID₁_respect_inv,
     apply concat, apply left_inverse₂',
     apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
-    apply inverse, apply concat, apply zero_unique,
+    apply inverse, apply concat, apply (zero_unique D),
     apply inverse, apply concat, apply (transport_eq_transport4 (λ f g h i, D₂ f g h i)),
     do 3 (apply concat; apply transport4_transport_acc),
     apply @transport4_set_reduce,
@@ -105,13 +105,13 @@ namespace dbl_gpd
 
   definition bl_connect'_id_eq_ID₁_aux (f f' g h i : hom a a) (p : f = f')
     (comm1 : g ∘ h = i ∘ f) (comm2 : g ∘ h = i ∘ f') :
-    p ▹ thin D f g h i comm1 = thin D f' g h i comm2 :=
+    p ▸ thin D f g h i comm1 = thin D f' g h i comm2 :=
   begin
     cases p, apply (ap (thin D _ _ _ _)), apply is_hset.elim,
   end
 
   definition bl_connect'_id_eq_ID₁ :
-    bl_connect' (ID a) = (id_inverse a)⁻¹ ▹ ID₁ D (ID a) :=
+    bl_connect' (ID a) = (id_inverse a)⁻¹ ▸ ID₁ D (ID a) :=
   begin
     apply eq_inv_tr_of_tr_eq,
     apply concat, rotate 1, apply (thin_id₁ D),
@@ -144,7 +144,7 @@ namespace dbl_gpd
   definition bl_of_bl_square_aux {a b c d : D₀} {f f' : hom a b} (p : f = f')
     {g g' : hom c d} (q : g = g') {h h' : hom a c} (r : h = h') {i : hom b d}
     (comm1 : g ∘ h = i ∘ f) (comm2 : g' ∘ h' = i ∘ f') :
-    p ▹ q ▹ r ▹ (thin D f g h i comm1) = thin D f' g' h' i comm2 :=
+    p ▸ q ▸ r ▸ (thin D f g h i comm1) = thin D f' g' h' i comm2 :=
   begin
     cases p, cases q, cases r, apply (ap (thin D _ _ _ _) (!is_hset.elim)),
   end

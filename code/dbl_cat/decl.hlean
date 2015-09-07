@@ -1,4 +1,4 @@
-import algebra.precategory.basic
+import algebra.category
 open category is_trunc eq sigma sigma.ops unit
 
 structure worm_precat {D₀ : Type} (C  : precategory D₀)
@@ -14,17 +14,17 @@ structure worm_precat {D₀ : Type} (C  : precategory D₀)
     ⦃g₂ : hom c₂ d₂⦄ ⦃h₂ : hom c₁ c₂⦄ ⦃i₂ : hom d₁ d₂⦄
     ⦃g₃ : hom c₃ d₃⦄ ⦃h₃ : hom c₂ c₃⦄ ⦃i₃ : hom d₂ d₃⦄
     (w : D₂ g₂ g₃ h₃ i₃) (v : D₂ g₁ g₂ h₂ i₂) (u : D₂ f g₁ h₁ i₁),
-    (assoc i₃ i₂ i₁) ▹ ((assoc h₃ h₂ h₁) ▹
+    (assoc i₃ i₂ i₁) ▸ ((assoc h₃ h₂ h₁) ▸
         (comp₁ w (comp₁ v u))) = (comp₁ (comp₁ w v) u) qed)
   (id_left₁ : proof Π ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i),
-    (id_left i) ▹ ((id_left h) ▹
+    (id_left i) ▸ ((id_left h) ▸
         (comp₁ (ID₁ g) u)) = u qed)
   (id_right₁ : proof Π ⦃a b c d : D₀⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : D₂ f g h i),
-    (id_right i) ▹ ((id_right h) ▹
+    (id_right i) ▸ ((id_right h) ▸
         (comp₁ u (ID₁ f))) = u qed)
   (homH' : proof Π ⦃a b c d : D₀⦄ ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
     is_hset (D₂ f g h i) qed)

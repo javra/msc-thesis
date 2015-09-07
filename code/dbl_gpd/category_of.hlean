@@ -1,5 +1,5 @@
 import .functor
-import algebra.category.basic
+import algebra.category
 
 open eq function is_trunc Dbl_gpd category equiv prod sigma pi functor
 
