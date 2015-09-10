@@ -1,6 +1,6 @@
-import algebra.groupoid algebra.group
+import algebra.category.groupoid algebra.group
 
-open iso eq category is_trunc path_algebra
+open iso eq category is_trunc algebra
 
 structure xmod {P₀ : Type} [P : groupoid P₀] (M : P₀ → Group) :=
   (P₀_hset : is_hset P₀)
@@ -35,7 +35,7 @@ namespace xmod
   begin
     assert H : μ MM a⁻¹ᵍ ∘ μ MM a = (μ MM a)⁻¹ ∘ μ MM a,
       exact calc μ MM a⁻¹ᵍ ∘ μ MM a = μ MM (a⁻¹ᵍ * a) : μ_respect_comp
-                               ... = μ MM 1 : by rewrite mul_left_inv
+                               ... = μ MM 1 : by rewrite mul.left_inv
                                ... = id : μ_respect_id
                                ... = (μ MM a)⁻¹ ∘ μ MM a : left_inverse,
     apply epi.elim, exact H,

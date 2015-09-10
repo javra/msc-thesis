@@ -17,7 +17,7 @@ namespace dbl_gpd
     (λ ⦃a b : C⦄ (p : ι a = ι b),
       @is_iso.mk C _ a b p (eq.inverse p) (!con.right_inv) (!con.left_inv))
 
-  section
+  section flat
   parameters {X : Type} [Xtrunc : is_trunc 2 X]
   include Xtrunc 
 
@@ -311,9 +311,9 @@ namespace dbl_gpd
   end
 
   end
-  end
+  end flat
 
-  section  
+  section non_flat
   parameters {X A C : Type} [Xtrunc : is_trunc 2 X] [Atrunc : is_trunc 1 A] [Cset : is_hset C]
     {ι' : A → X} {ι : C → A}
   include Xtrunc Atrunc Cset
@@ -967,9 +967,7 @@ namespace dbl_gpd
 
   end horizontal_worm
 
-  section
-
-  definition fund_dbl_precat_id_comp₁_aux (a b c : A)
+  /-definition fund_dbl_precat_id_comp₁_aux (a b c : A)
     (f : a = b) (g : b = c) :
     fund_dbl_precat_flat_comp₁ (inverse (idp_con (ap ι' g)))
        (inverse (idp_con (ap ι' f)))
@@ -982,7 +980,7 @@ namespace dbl_gpd
   begin
     revert g, cases f,
     intro g, cases g, esimp,
-  end
+  end-/
 
   set_option pp.notation false
   definition fund_dbl_precat_id_comp₁ (a b c : C)
@@ -993,9 +991,9 @@ namespace dbl_gpd
     apply inverse,
     unfold fund_dbl_precat_comp₁, unfold fund_dbl_precat_id₂,
     apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
-    apply fund_dbl_precat_id_comp₁_aux,
+    exact sorry, --apply fund_dbl_precat_id_comp₁_aux,
   end
-exit
+
   definition fund_dbl_precat_id_comp₂_aux (a b c : A)
     (f : a = b) (g : b = c) :
     fund_dbl_precat_flat_comp₂ (idp_con (ap ι' g)) (idp_con (ap ι' f))
@@ -1009,14 +1007,13 @@ exit
 
   definition fund_dbl_precat_id_comp₂ (a b c : C)
     (f : ι a = ι b) (g : ι b = ι c) :
-    fund_dbl_precat_id₁ X A C ι' ι (f ⬝ g)
-    = fund_dbl_precat_comp₂ (fund_dbl_precat_id₁ X A C ι' ι g)
-      (fund_dbl_precat_id₁ X A C ι' ι f) :=
+    fund_dbl_precat_id₁ (f ⬝ g)
+    = fund_dbl_precat_comp₂ (fund_dbl_precat_id₁ g) (fund_dbl_precat_id₁ f) :=
   begin
     apply inverse,
     unfold fund_dbl_precat_comp₂, unfold fund_dbl_precat_id₁,
     apply inv_tr_eq_of_eq_tr, apply inv_tr_eq_of_eq_tr,
-    apply fund_dbl_precat_id_comp₂_aux,
+    exact sorry, --apply fund_dbl_precat_id_comp₂_aux,
   end
 
   definition fund_dbl_precat_thin {a b c d : C}
@@ -1032,11 +1029,11 @@ exit
     ⬝ (transport (λ x, _ = ap ι' x) (idp_con f ⬝ (con_idp f)⁻¹)
        (refl (ap ι' (concat idp f)))) ⬝ (ap_con ι' f idp)
     = idp_con (ap ι' f) :=
-  by cases f; esimp,
+  by cases f; esimp
 
   definition fund_dbl_precat_thin_id₁ {a b : C} (f : ι a = ι b) :
     fund_dbl_precat_thin ((idp_con f) ⬝ (con_idp f)⁻¹)
-    = fund_dbl_precat_id₁ X A C ι' ι f :=
+    = fund_dbl_precat_id₁ f :=
   by apply fund_dbl_precat_thin_id₁_aux
 
   definition fund_dbl_precat_thin_id₂_aux {a b : A} (f : a = b) :
@@ -1044,11 +1041,11 @@ exit
     ⬝ (transport (λ x, _ = ap ι' x) ((con_idp f) ⬝ (idp_con f)⁻¹)
        (refl (ap ι' (concat f idp)))) ⬝ (ap_con ι' idp f)
     = (idp_con (ap ι' f))⁻¹ :=
-  by cases f; esimp,
+  by cases f; esimp
 
   definition fund_dbl_precat_thin_id₂ {a b : C} (f : ι a = ι b) :
     fund_dbl_precat_thin ((con_idp f) ⬝ (idp_con f)⁻¹)
-    = fund_dbl_precat_id₂ X A C ι' ι f :=
+    = fund_dbl_precat_id₂ f :=
   by apply fund_dbl_precat_thin_id₂_aux
 
   attribute is_trunc_eq [instance]
@@ -1160,13 +1157,13 @@ exit
   begin
     fapply dbl_gpd.mk,
       intros, apply (fund_dbl_precat_comp₁ a_1 a_2),
-      intros, apply (@fund_dbl_precat_id₁ X A C Xtrunc Atrunc Cset ι' ι a b f),
+      intros, apply (@fund_dbl_precat_id₁ a b f),
       intros, apply fund_dbl_precat_assoc₁,
       intros, apply fund_dbl_precat_id₁_left,
       intros, apply fund_dbl_precat_id₁_right,
       intros, apply is_trunc_eq, apply is_trunc_eq, apply Xtrunc,
       intros, apply (fund_dbl_precat_comp₂ a_1 a_2),
-      intros, apply (@fund_dbl_precat_id₂ X A C Xtrunc Atrunc Cset ι' ι a b f),
+      intros, apply (@fund_dbl_precat_id₂ a b f),
       intros, apply fund_dbl_precat_assoc₂,
       intros, apply fund_dbl_precat_id₂_left,
       intros, apply fund_dbl_precat_id₂_right,
@@ -1189,5 +1186,5 @@ exit
       intros, apply fund_dbl_precat_thin_comp₂,
   end
 
-  end
+  end non_flat
 end dbl_gpd

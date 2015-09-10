@@ -1,7 +1,7 @@
 import ..dbl_gpd.basic ..dbl_cat.transports ..transport4
 
 open dbl_precat eq iso category is_trunc nat
-open equiv sigma sigma.ops prod path_algebra
+open equiv sigma sigma.ops prod algebra
 set_option apply.class_instance false -- disable class instance resolution in the apply tactic
 
 set_option pp.beta true
@@ -35,7 +35,7 @@ namespace gamma
   begin
     apply is_trunc_is_equiv_closed,
       apply equiv.to_is_equiv, apply (folded_sq.sigma_char a),
-    apply is_trunc_sigma, apply !homH,
+    apply is_trunc_sigma, apply is_hset_hom,
     intro f, apply (homH' G),
   end
 
@@ -47,13 +47,13 @@ namespace gamma
 
   protected definition folded_sq.congr ⦃a : D₀⦄
     (f1 g1 : hom a a) (f2 : D₂ f1 id id id) (g2 : D₂ g1 id id id)
-    (p1 : f1 = g1) (p2 :  p1 ▹ f2 = g2) :
+    (p1 : f1 = g1) (p2 :  p1 ▸f2 = g2) :
       folded_sq.mk f1 f2 = folded_sq.mk g1 g2 :=
   by cases p2; cases p1; apply idp
 
   protected definition folded_sq.congr' {a : D₀} (v u : folded_sq a)
     (p1 : folded_sq.lid v = folded_sq.lid u)
-    (p2 : p1 ▹ folded_sq.filler v = folded_sq.filler u) : v = u :=
+    (p2 : p1 ▸folded_sq.filler v = folded_sq.filler u) : v = u :=
   begin
     cases v, cases u, apply folded_sq.congr, apply p2,
   end
@@ -61,7 +61,7 @@ namespace gamma
   definition transport_commute {A B : Type} (P : A → B → Type)
     {a a' : A} (p : a = a') {b b' : B} (q : b = b')
     {P1 : P a b} :
-    p ▹ q ▹ P1 = q ▹ p ▹ P1 :=
+    p ▸ q ▸ P1 = q ▸ p ▸ P1 :=
   by cases p; cases q; apply idp
 
   protected definition folded_sq.assoc_aux {a : D₀} (w v u : folded_sq a) :
@@ -69,14 +69,14 @@ namespace gamma
     = transport (λ x, D₂ _ (id ∘ x) id id) (id_left id)
     (comp₂ G (folded_sq.filler w) (comp₂ G (folded_sq.filler v)
       (folded_sq.filler u))) :=
-  by apply !transp_comp₂_eq_comp₂_transp_l_b⁻¹
+  by apply !(transp_comp₂_eq_comp₂_transp_l_b G)⁻¹
 
   protected definition folded_sq.assoc_aux2 {a : D₀} (w v u : folded_sq a) :
     comp₂ G (folded_sq.filler (folded_sq.comp w v)) (folded_sq.filler u)
     = transport (λ x, D₂ _ (x ∘ id) id id) (id_left id)
     (comp₂ G (comp₂ G (folded_sq.filler w) (folded_sq.filler v))
       (folded_sq.filler u)) :=
-  by apply !transp_comp₂_eq_comp₂_transp_r_b⁻¹
+  by apply !(transp_comp₂_eq_comp₂_transp_r_b G)⁻¹
 
   protected definition folded_sq.assoc_aux4 {a : D₀}
     {lid f f' g g' : hom a a} (filler : D₂ lid (g ∘ f) id id)
@@ -100,11 +100,12 @@ namespace gamma
   protected definition folded_sq.assoc ⦃a : D₀⦄ (w v u : folded_sq a) :
     folded_sq.comp w (folded_sq.comp v u) = folded_sq.comp (folded_sq.comp w v) u :=
   begin
-    revert u, revert v, apply (folded_sq.rec_on w), intros [w1, w2],
-    intro v, apply (folded_sq.rec_on v), intros [v1, v2],
-    intro u, apply (folded_sq.rec_on u), intros [u1, u2],
-    fapply folded_sq.congr,
-      apply !assoc, apply concat,
+    revert u, revert v, cases w with [w1, w2],
+    intro v, cases v with [v1, v2],
+    intro u, cases u with [u1, u2],
+    fapply folded_sq.congr, esimp [folded_sq.comp],
+      apply assoc,
+      apply concat,
       apply transport_commute,
       apply (ap (transport (λ x, D₂ _ x id id) (id_left id))),
       apply concat,
@@ -121,7 +122,7 @@ namespace gamma
         (id_left id)),
       apply eq_tr_of_inv_tr_eq,
       apply concat, apply folded_sq.assoc_aux3,
-      apply assoc₂,
+      apply (assoc₂ G),
   end
 
   protected definition folded_sq.one [reducible] (a : D₀) : folded_sq a :=
@@ -133,9 +134,9 @@ namespace gamma
     folded_sq.comp (folded_sq.one a) M = M :=
   begin
     cases M with [lid, filler],
-    fapply (folded_sq.congr),
+    fapply folded_sq.congr,
       apply (id_left lid),
-      apply concat, rotate 3, apply (id_left₂ G filler),
+      apply concat, rotate 1, apply (id_left₂ G filler),
       apply transport_commute,
   end
 
@@ -154,7 +155,7 @@ namespace gamma
 
   definition folded_sq.inv_aux ⦃a : D₀⦄ (u : folded_sq a) :
     D₂ ((folded_sq.lid u)⁻¹) id id id :=
-  (@id_inverse D₀ C a (!all_iso)) ▹ (weak_dbl_gpd.inv₂ G (folded_sq.filler u))
+  (@id_inverse D₀ C a (!all_iso)) ▸(weak_dbl_gpd.inv₂ G (folded_sq.filler u))
 
   definition folded_sq.inv [reducible] ⦃a : D₀⦄ (u : folded_sq a) :
     folded_sq a :=
@@ -168,12 +169,12 @@ namespace gamma
     {g : hom a a} (p : id⁻¹ = g) :
   (comp₂ G (transport (λ x, D₂ ((folded_sq.lid v)⁻¹) x id id) p
     (weak_dbl_gpd.inv₂ G (folded_sq.filler v))) (folded_sq.filler u))
-    = p ▹ (comp₂ G (weak_dbl_gpd.inv₂ G (folded_sq.filler v)) (folded_sq.filler u)) :=
+    = p ▸(comp₂ G (weak_dbl_gpd.inv₂ G (folded_sq.filler v)) (folded_sq.filler u)) :=
   by cases p; apply idp
 
   definition folded_sq.inverse_compose_aux1 {a : D₀} (u : folded_sq a) :
     (comp₂ G (folded_sq.filler (folded_sq.inv u)) (folded_sq.filler u))
-    = !id_inverse ▹
+    = !id_inverse ▸
     (comp₂ G (weak_dbl_gpd.inv₂ G (folded_sq.filler u)) (folded_sq.filler u)) :=
   (folded_sq.inverse_compose_aux_aux u u !id_inverse)
 
@@ -187,7 +188,7 @@ namespace gamma
     {f1 f5 : hom a a} {g1 g1' g3 g4 : hom a a}
     (filler : D₂ f1 (g1 ∘ g1') (ID a) (ID a))
     (p1 : f1 = f5) (p2 : g1 ∘ g1' = g3) (p3 : g1 = g4) (p4 : f1 = f5) (p5 : g4 ∘ g1' = g3) :
-    p5 ▹ p4 ▹ p3 ▹ filler
+    p5 ▸p4 ▸p3 ▸filler
     = (transport (λ x, D₂ f5 x id id) p2
       (transport (λ x, D₂ x (g1 ∘ g1') id id) p1 filler)) :=
   begin

@@ -1,6 +1,6 @@
-import .decl algebra.precategory.functor types.pi
+import .decl algebra.category.functor types.pi
 
-open xmod Xmod category path_algebra functor function eq is_trunc pi prod is_equiv equiv
+open xmod Xmod category algebra functor function eq is_trunc pi prod is_equiv equiv
 open sigma sigma.ops
 
 namespace xmod
@@ -66,15 +66,15 @@ namespace xmod
     apply @functor.is_hset_functor, apply (P₀_hset Y),
     intros, apply is_trunc_sigma,
       repeat (apply is_trunc_pi ; intros),
-      apply (group.carrier_hset (groups Y (to_fun_ob a a_1))),
+      apply (group.is_hset_carrier (groups Y (to_fun_ob a a_1))),
     intros, apply is_trunc_prod,
       repeat (apply is_trunc_pi ; intros), apply is_trunc_eq,
-      apply is_trunc_succ, apply (group.carrier_hset (groups Y (to_fun_ob a a_2))),
+      apply is_trunc_succ, apply (group.is_hset_carrier (groups Y (to_fun_ob a a_2))),
     apply is_trunc_prod,
       repeat (apply is_trunc_pi ; intros), apply is_trunc_eq,
-      apply is_trunc_succ, apply homH,
+      apply is_trunc_succ, apply is_hset_hom,
     repeat (apply is_trunc_pi ; intros), apply is_trunc_eq,
-    apply is_trunc_succ, apply (group.carrier_hset (groups Y (to_fun_ob a a_3))),
+    apply is_trunc_succ, apply (group.is_hset_carrier (groups Y (to_fun_ob a a_3))),
   end
 
   end
@@ -115,20 +115,17 @@ namespace xmod
     assert P1 : hom_family_hom1 = hom_family_hom2,
       apply @is_hprop.elim,
       repeat ( apply is_trunc_pi ; intros ),
-      apply is_trunc_eq,
     cases P1,
     assert P2 : mu_commute1 = mu_commute2, apply is_hprop.elim,
     cases P2,
     assert P3 : phi_commute1 = phi_commute2,
       apply @is_hprop.elim,
       repeat ( apply is_trunc_pi ; intros ),
-      apply is_trunc_eq,
     cases P3,
     assert P4 : gf3 = gf7, apply is_hprop.elim,
     cases P4,
     assert P5 : @gf4 = @gf8, apply is_hprop.elim,
-    cases P5,
-    apply idp,
+    cases P5, esimp
   end
 
   end
