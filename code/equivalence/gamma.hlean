@@ -2,7 +2,7 @@ import .gamma_mu_phi ..transport4 ..dbl_gpd.basic ..dbl_cat.transports ..xmod.de
 
 open dbl_precat eq iso category is_trunc nat
 open equiv sigma sigma.ops prod
-open path_algebra dbl_gpd
+open algebra dbl_gpd
 set_option apply.class_instance false
 attribute gamma.folded_sq_group [instance]
 
@@ -25,12 +25,6 @@ namespace gamma
   comp₁ G (comp₂ G v (comp₂ G (ID₂ G id) (inv₂ G v)))
     (comp₂ G (ID₁ G a) (comp₂ G u (ID₁ G (a⁻¹))))
 
-  protected definition right_inverse₂' ⦃a b c d : D₀⦄
-    ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
-    (u : D₂ f g h i) :=
-  eq_inv_tr_of_tr_eq _ _ _ _
-    (eq_inv_tr_of_tr_eq _ _ _ _ (right_inverse₂ G u))
-
   protected definition gamma_CM2_horizontal ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :
   gamma_CM2_gadget a lidu v u
@@ -42,32 +36,30 @@ namespace gamma
             (transport (λ w, D₂ (a ∘ (lidu ∘ (a⁻¹))) (a ∘ w) id id) (id_left (a⁻¹))
               (comp₂ G (ID₁ G a) (comp₂ G u (ID₁ G (a⁻¹)))))))))) :=
   begin
-    apply concat, apply (ap (λ x, comp₁ G (comp₂ G v x) _)), apply gamma.id_left₂',
+    apply concat, apply (ap (λ x, comp₁ G (comp₂ G v x) _)), apply (id_left₂' G),
+    apply concat, apply (ap (λ x, comp₁ G x _)), apply inverse,
+      apply (transp_comp₂_eq_comp₂_transp_l_bu G),
     apply concat, apply (ap (λ x, comp₁ G x _)),
-      apply (!transp_comp₂_eq_comp₂_transp_l_bu⁻¹),
-    apply concat, apply (ap (λ x, comp₁ G x _)),
-    apply (ap (λ x, transport _ _ x)),
-      apply (ap (λ x, transport _ _ x)), apply right_inverse₂',
+    do 2 apply (ap (λ x, transport _ _ x)), apply (right_inverse₂' G),
     apply concat, apply (comp₁_transp_eq_comp₁_transp_b G (id_left (a⁻¹))),
-    apply concat, apply inverse, apply transp_comp₁_eq_comp₁_transp_b_b,
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_b_b G),
     apply inv_tr_eq_of_eq_tr,
-    apply concat, apply comp₁_transp_eq_comp₁_transp_b,
-    apply concat, apply inverse, apply transp_comp₁_eq_comp₁_transp_b_b,
+    apply concat, apply (comp₁_transp_eq_comp₁_transp_b G),
+    apply concat, apply inverse, apply (transp_comp₁_eq_comp₁_transp_b_b G),
     apply inv_tr_eq_of_eq_tr,
-    apply concat, apply (ap (λ x, comp₁ G x _)), apply inverse, apply zero_unique,
-    apply concat, apply gamma.id_left₁',
-    apply eq_tr_of_inv_tr_eq, apply eq_tr_of_inv_tr_eq,
-    apply idp,
+    apply concat, apply (ap (λ x, comp₁ G x _)), apply inverse, apply (zero_unique G),
+    apply concat, apply (id_left₁' G),
+    do 2 apply eq_tr_of_inv_tr_eq, esimp,
   end
 
   protected definition gamma_CM2_horizontal' ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :=
-  inv_tr_eq_of_eq_tr _ _ _ _
-    (inv_tr_eq_of_eq_tr _ _ _ _
-      (tr_eq_of_eq_inv_tr _ _ _ _
-        (tr_eq_of_eq_inv_tr _ _ _ _
-          (tr_eq_of_eq_inv_tr _ _ _ _
-            (tr_eq_of_eq_inv_tr _ _ _ _ (gamma_CM2_horizontal a lidu v u))))))
+  inv_tr_eq_of_eq_tr
+    (inv_tr_eq_of_eq_tr
+      (tr_eq_of_eq_inv_tr
+        (tr_eq_of_eq_inv_tr
+          (tr_eq_of_eq_inv_tr
+            (tr_eq_of_eq_inv_tr (gamma_CM2_horizontal a lidu v u))))))
 
   protected definition gamma_CM2_vertical ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :
@@ -76,68 +68,50 @@ namespace gamma
        (transport (λ w, D₂ _ _ _ w) ((id_right id)⁻¹)
           (comp₂ G v (comp₂ G u (inv₂ G v))))) :=
   begin
-    apply concat, apply interchange,
-    apply concat, apply (ap (λ x, comp₂ G x _)), apply gamma.id_right₁',
-    apply concat, apply (ap (λ x, comp₂ G _ x)), apply interchange,
+    apply concat, apply (interchange G),
+    apply concat, apply (ap (λ x, comp₂ G x _)), apply (id_right₁' G),
+    apply concat, apply (ap (λ x, comp₂ G _ x)), apply (interchange G),
     apply concat, apply (ap (λ x, comp₂ G _ x)), apply (ap (λ x, comp₂ G x _)),
-      apply (ap (λ x, comp₁ G x _)), apply (!zero_unique⁻¹),
+      apply (ap (λ x, comp₁ G x _)), apply inverse, apply (zero_unique G),
     apply concat, apply (ap (λ x, comp₂ G _ x)), apply (ap (λ x, comp₂ G x _)),
-      apply gamma.id_left₁',
+      apply (id_left₁' G),
     apply concat, apply (ap (λ x, comp₂ G _ x)), apply (ap (λ x, comp₂ G _ x)),
-      apply gamma.id_right₁',
+      apply (id_right₁' G),
     apply concat, apply (ap (λ x, comp₂ G _ x)), apply inverse,
       apply (transp_comp₂_eq_comp₂_transp_transp_rl G),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_transp_rl G),
-    apply idp,
+    esimp,
   end
 
   protected definition gamma_CM2_vertical' ⦃x : D₀⦄ (a lidu : hom x x)
     (v : D₂ a id id id) (u : D₂ lidu id id id) :=
-  tr_eq_of_eq_inv_tr _ _ _ _
-    (tr_eq_of_eq_inv_tr _ _ _ _ (gamma_CM2_vertical a lidu v u))
+  tr_eq_of_eq_inv_tr (tr_eq_of_eq_inv_tr (gamma_CM2_vertical a lidu v u))
 
   protected definition gamma_CM2 ⦃x : D₀⦄ (v u : folded_sq G x) :
     gamma.phi G (gamma.mu G v) u
     = folded_sq.comp G v (folded_sq.comp G u (folded_sq.inv G v)) :=
   begin
-    apply (folded_sq.rec_on v), intros [lidv, fillerv],
-    apply (folded_sq.rec_on u), intros [lidu, filleru],
-    fapply (folded_sq.congr),
-      apply idp,
-    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    cases v with [lidv, fillerv], cases u with [lidu, filleru],
+    fapply (folded_sq.congr), apply idp,
+    do 3 apply tr_eq_of_eq_inv_tr,
     unfold folded_sq.filler, unfold folded_sq.comp, unfold folded_sq.inv,
-    unfold folded_sq.inv_aux, unfold folded_sq.filler,
-    unfold gamma.mu, unfold folded_sq.lid, esimp,
+    unfold folded_sq.inv_aux, unfold gamma.mu, esimp,
     apply concat, apply inverse, apply gamma_CM2_horizontal', apply fillerv,
-    apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq, apply eq_inv_tr_of_tr_eq,
-    apply eq_tr_of_inv_tr_eq, apply inverse,
+    do 2 apply eq_inv_tr_of_tr_eq, apply eq_tr_of_inv_tr_eq, apply inverse,
     apply concat, apply inverse, apply (ap (λ x, comp₂ G _ x)),
-    apply (ap (λ x, transport _ _ x)), apply transp_comp₂_eq_comp₂_transp_l_b,
-    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
+    apply (ap (λ x, transport _ _ x)), apply (transp_comp₂_eq_comp₂_transp_l_b G),
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b,
+    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b G),
     apply tr_eq_of_eq_inv_tr,
     apply concat, apply inverse, apply gamma_CM2_vertical',
-    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
-    apply inverse,
+    do 2 apply tr_eq_of_eq_inv_tr, apply inverse,
     apply concat, apply (@transport_eq_transport4 _ _ _ _ (@D₂ x x x x) (hom x x)
       (λ w, lidv ∘ (lidu ∘ (lidv⁻¹))) (λ w, id ∘ (id ∘ _)) (λ w, w) (λ w, id ∘ id)
       _ _ ((id_right id)⁻¹)),
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
+    do 13 (apply concat; apply transport4_transport_acc),
     apply transport4_set_reduce,
-    apply homH, apply homH, apply homH, apply homH,
+    do 4 apply is_hset_hom,
   end
 
   protected definition xmod [reducible] : xmod (λ x, gamma.folded_sq_Group G x) :=

@@ -1,6 +1,6 @@
 import .gamma_morphisms ..xmod.category_of ..dbl_gpd.category_of
 
-open eq category iso is_trunc path_algebra function xmod Xmod dbl_gpd Dbl_gpd functor
+open eq category iso is_trunc algebra function xmod Xmod dbl_gpd Dbl_gpd functor
 
 namespace gamma
 
@@ -25,7 +25,7 @@ namespace gamma
     cases F with [F1, F2, F3, F4, F5, F6],
     fapply folded_sq.congr', apply idp,
     apply inverse,
-    apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr, apply tr_eq_of_eq_inv_tr,
+    do 3 apply tr_eq_of_eq_inv_tr,
     apply concat, apply (twoF_transport_b (dbl_functor.mk E1 E2 E3 E4 E5 E6)),
     apply tr_eq_of_eq_inv_tr,
     apply concat, apply (twoF_transport_l (dbl_functor.mk E1 E2 E3 E4 E5 E6)),
@@ -34,17 +34,9 @@ namespace gamma
     apply tr_eq_of_eq_inv_tr,
     apply inverse,
     apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell_2 f g h i)),
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
-    apply concat, apply transport4_transport_acc,
+    do 9 (apply concat; apply transport4_transport_acc),
     apply @transport4_set_reduce,
-    apply homH, apply homH, apply homH, apply homH,
+    do 4 apply is_hset_hom,
   end
 
 

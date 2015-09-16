@@ -1,7 +1,7 @@
-import .lambda algebra.precategory.functor
+import .lambda algebra.category.functor
 import ..xmod.category_of ..dbl_gpd.category_of
 
-open eq category iso is_trunc path_algebra function xmod Xmod dbl_gpd functor
+open eq category iso is_trunc algebra function xmod Xmod dbl_gpd functor
 
 namespace lambda
   variables {P₀ : Type} [P : groupoid P₀]
@@ -10,19 +10,19 @@ namespace lambda
     (u : lambda_morphism MM f g h i)
 
   protected definition functor_on_hom_aux1 (p : f = f') :
-    lambda_morphism.m (p ▹ u) = lambda_morphism.m u :=
+    lambda_morphism.m (p ▸ u) = lambda_morphism.m u :=
   by cases p; apply idp
 
   protected definition functor_on_hom_aux2 (p : g = g') :
-    lambda_morphism.m (p ▹ u) = lambda_morphism.m u :=
+    lambda_morphism.m (p ▸ u) = lambda_morphism.m u :=
   by cases p; apply idp
 
   protected definition functor_on_hom_aux3 (p : h = h') :
-    lambda_morphism.m (p ▹ u) = lambda_morphism.m u :=
+    lambda_morphism.m (p ▸ u) = lambda_morphism.m u :=
   by cases p; apply idp
 
   protected definition functor_on_hom_aux4 (p : i = i') :
-    lambda_morphism.m (p ▹ u) = lambda_morphism.m u :=
+    lambda_morphism.m (p ▸ u) = lambda_morphism.m u :=
   by cases p; apply idp
 
   protected definition on_morphisms {X Y : Xmod} (f : xmod_morphism X Y) :
@@ -44,24 +44,24 @@ namespace lambda
           apply (@functor.respect_inv _ _ F _ _ g (!all_iso)),
         apply idp,},
       {intros [p, q, a], fapply lambda_morphism.congr',
-        apply concat, apply functor_on_hom_aux4,
-        apply concat, apply functor_on_hom_aux3,
+        apply concat, apply lambda.functor_on_hom_aux4,
+        apply concat, apply lambda.functor_on_hom_aux3,
         apply (xmod_morphism_hom_family_id X Y (xmod_morphism.mk F ψ f3 f4 f5)),
       apply is_hset.elim,},
       {intros, fapply lambda_morphism.congr',
-        apply concat, apply functor_on_hom_aux4,
-        apply concat, apply functor_on_hom_aux3,
+        apply concat, apply lambda.functor_on_hom_aux4,
+        apply concat, apply lambda.functor_on_hom_aux3,
         apply concat, apply f3,
         cases v, cases u, apply (ap (λ x, x * _)), apply f5,
       apply is_hset.elim,},
       {intros [p, q, a], fapply lambda_morphism.congr',
-        apply concat, apply functor_on_hom_aux2,
-        apply concat, apply functor_on_hom_aux1,
+        apply concat, apply lambda.functor_on_hom_aux2,
+        apply concat, apply lambda.functor_on_hom_aux1,
         apply (xmod_morphism_hom_family_id X Y (xmod_morphism.mk F ψ f3 f4 f5)),
       apply is_hset.elim,},
       {intros, fapply lambda_morphism.congr',
-        apply concat, apply functor_on_hom_aux2,
-        apply concat, apply functor_on_hom_aux1,
+        apply concat, apply lambda.functor_on_hom_aux2,
+        apply concat, apply lambda.functor_on_hom_aux1,
         apply concat, apply f3,
         cases v, cases u, apply (ap (λ x, _ * x)), apply f5,
       apply is_hset.elim,},

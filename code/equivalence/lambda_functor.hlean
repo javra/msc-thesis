@@ -1,6 +1,6 @@
 import .lambda_morphisms
 
-open eq category iso is_trunc path_algebra function xmod Xmod dbl_gpd functor
+open eq category iso is_trunc algebra function xmod Xmod dbl_gpd functor
 
 namespace lambda
 
