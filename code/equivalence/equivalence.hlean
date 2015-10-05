@@ -1,28 +1,33 @@
-import algebra.precategory.adjoint
+import algebra.category.adjoint
 import .gamma_functor .lambda_functor ..dbl_gpd.basic
 
-open eq category iso is_trunc path_algebra function xmod Xmod dbl_gpd Dbl_gpd functor
+open eq category iso is_trunc algebra function xmod Xmod dbl_gpd Dbl_gpd functor
 open dbl_precat
 open gamma lambda
 
 universe variables l--₁ l₂ l₃
 
+variables (X : Xmod)
+
 definition gamma_lambda_transf_hom_family [reducible] (X : Xmod)
-  (p : carrier (to_fun_ob (functor.compose gamma.functor lambda.functor) X))
-  (a : groups (to_fun_ob (functor.compose gamma.functor lambda.functor) X) p) :
+  (p : carrier (to_fun_ob (functor.compose gamma.functor.{l l l} lambda.functor.{l l l}) X))
+  (a : groups (to_fun_ob (functor.compose gamma.functor.{l l l} lambda.functor.{l l l}) X) p) :
   groups X (to_fun_ob (@functor.id (Precategory.mk _ (Xmod.gpd X))) p) :=
-by cases a; cases filler; exact m
+lambda_morphism.m (folded_sq.filler a)
 
 definition gamma_lambda_transf [reducible] (X : Xmod) :
-  hom (functor.compose gamma.functor lambda.functor X) X :=
+  hom (functor.compose gamma.functor.{l l l} lambda.functor.{l l l} X) X :=
 begin
   fapply xmod_morphism.mk,
     apply functor.id,
     intros, apply gamma_lambda_transf_hom_family, apply a,
-    { intros, cases x with [lidx, fillerx], cases y with [lidy, fillery],
+    { intros, 
+      cases x with [lidx, fillerx],
+      cases y with [lidy, fillery],
+      esimp[gamma_lambda_transf_hom_family],
+      apply concat, apply (lambda_morphism_m_transport_b),
       cases fillerx with [fillerxm, fillerxcomm],
       cases fillery with [fillerym, fillerycomm],
-      apply concat, apply lambda_morphism_m_transport_b,
       apply (ap (λ x, fillerxm * x)),
       apply φ_respect_id,
     },
@@ -43,7 +48,7 @@ begin
       apply mul_one,
     },
 end
-
+exit
 definition gamma_lambda_transf_nat (X Y : Xmod) (f : xmod_morphism X Y) :
   ((@functor.id Cat_xmod) f) ∘ (gamma_lambda_transf X)
   = (gamma_lambda_transf Y) ∘
@@ -65,7 +70,7 @@ begin
     apply lambda.functor_on_hom_aux4,
   },
 end
-
+exit
 set_option apply.class_instance false
 definition gamma_lambda_transf_inv [reducible] (X : Xmod) :
   hom X (functor.compose gamma.functor lambda.functor X) :=
