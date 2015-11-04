@@ -1,5 +1,3 @@
-import init.
-
 open eq is_trunc
 
 section

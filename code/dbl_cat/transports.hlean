@@ -1,4 +1,4 @@
-import .decl .basic
+import .basic
 
 open dbl_precat category is_trunc eq
 

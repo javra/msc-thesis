@@ -99,7 +99,7 @@ namespace xmod
       hom_family2 q (φ X a x) = φ Y (gpd_functor2 a) (hom_family2 p x))
     (p : to_fun_ob gpd_functor1 = to_fun_ob gpd_functor2)
     (q : transport (λ x, Π a b, hom a b → hom (x a) (x b)) p
-      (to_fun_hom gpd_functor1) = to_fun_hom gpd_functor2)
+      @(to_fun_hom gpd_functor1) = @(to_fun_hom gpd_functor2))
     (r : transport (λ x, Π p', (groups X p') → (groups Y (x p'))) p hom_family1
          = hom_family2)
 

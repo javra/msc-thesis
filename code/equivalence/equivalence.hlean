@@ -7,16 +7,16 @@ open gamma lambda
 
 universe variables l--₁ l₂ l₃
 
-variables (X : Xmod)
+definition gamma_lambda [reducible] := functor.compose gamma.functor.{l l l} lambda.functor.{l l l}
 
 definition gamma_lambda_transf_hom_family [reducible] (X : Xmod)
-  (p : carrier (to_fun_ob (functor.compose gamma.functor.{l l l} lambda.functor.{l l l}) X))
-  (a : groups (to_fun_ob (functor.compose gamma.functor.{l l l} lambda.functor.{l l l}) X) p) :
+  (p : carrier (to_fun_ob gamma_lambda X))
+  (a : groups (to_fun_ob gamma_lambda X) p) :
   groups X (to_fun_ob (@functor.id (Precategory.mk _ (Xmod.gpd X))) p) :=
 lambda_morphism.m (folded_sq.filler a)
 
 definition gamma_lambda_transf [reducible] (X : Xmod) :
-  hom (functor.compose gamma.functor.{l l l} lambda.functor.{l l l} X) X :=
+  hom (gamma_lambda X) X :=
 begin
   fapply xmod_morphism.mk,
     apply functor.id,
@@ -48,11 +48,10 @@ begin
       apply mul_one,
     },
 end
-exit
-definition gamma_lambda_transf_nat (X Y : Xmod) (f : xmod_morphism X Y) :
+
+definition gamma_lambda_transf_nat (X Y : Xmod.{l l l}) (f : xmod_morphism X Y) :
   ((@functor.id Cat_xmod) f) ∘ (gamma_lambda_transf X)
-  = (gamma_lambda_transf Y) ∘
-    (@to_fun_hom _ _ (functor.compose gamma.functor lambda.functor) X Y f) :=
+  = (gamma_lambda_transf Y) ∘ (to_fun_hom gamma_lambda f) :=
 begin
   fapply xmod_morphism_congr,
   { cases X, cases Y, cases f,
@@ -70,10 +69,10 @@ begin
     apply lambda.functor_on_hom_aux4,
   },
 end
-exit
+
 set_option apply.class_instance false
 definition gamma_lambda_transf_inv [reducible] (X : Xmod) :
-  hom X (functor.compose gamma.functor lambda.functor X) :=
+  hom X (gamma_lambda X) :=
 begin
   fapply xmod_morphism.mk,
   { apply functor.id, },
@@ -120,14 +119,13 @@ set_option apply.class_instance true
 definition gamma_lambda_transf_iso (X : Xmod.{l l l}) :
   is_iso (gamma_lambda_transf X) :=
 begin
-  fapply @is_iso.mk, exact (gamma_lambda_transf_inv.{l l l} X),
+  fapply @is_iso.mk, exact (gamma_lambda_transf_inv.{l} X),
   { apply inverse, apply concat, apply (refl (@xmod_morphism.mk _ _ _ _ _ _ _)),
     fapply (xmod_morphism_congr
-      (to_fun_ob (functor.compose gamma.functor lambda.functor) X)
-      (to_fun_ob (functor.compose gamma.functor lambda.functor) X)),
+      (to_fun_ob gamma_lambda X)
+      (to_fun_ob gamma_lambda X)),
         apply idp, apply idp,
-    apply concat, apply tr_idp,
-    apply eq_of_homotopy, intro p, apply eq_of_homotopy, intro x,
+    esimp, apply eq_of_homotopy, intro p, apply eq_of_homotopy, intro x,
     cases x, cases filler,
     apply inverse,
     fapply (@folded_sq.congr _ _ _ _ (struct (to_fun_ob lambda.functor X))),
@@ -143,24 +141,35 @@ begin
     apply is_hset.elim,
   },
   { fapply xmod_morphism_congr, apply idp, apply idp,
-    apply concat, apply tr_idp,
     apply eq_of_homotopy, intro p, apply eq_of_homotopy, intro x,
     apply idp,
   },
 end
+
+definition inverse_alliso (G : Dbl_gpd) {a b : carrier (gpd G)} (f : hom a b) : is_iso f :=
+!all_iso
+postfix [parsing-only] `⁻¹ʰ`:std.prec.max_plus := inverse_alliso
+
 
 section
   parameters (G : Dbl_gpd) ⦃a b c d : carrier (Dbl_gpd.gpd G)⦄
     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄
     (u : two_cell G f g h i)
 
+  private definition all_iso_dgpd [instance] (a b : carrier (Dbl_gpd.gpd G)) (f : hom a b) : is_iso f :=
+  !all_iso
+
+  definition lambda_gamma_fold' [reducible] :=
+  (comp₂ G (br_connect G i) (comp₂ G u (comp₂ G (bl_connect' G h) (ID₁ G g⁻¹))))
+
   definition lambda_gamma_fold [reducible] :=
-  transport (λ x, two_cell G _ x _ _) (!right_inverse)
+  transport (λ x, two_cell G _ x _ _) (@right_inverse _ _ _ _ _ (!all_iso))
    (transport (λ x, two_cell G _ (_ ∘ x) _ _) (!id_left)
     (transport (λ x, two_cell G _ x _ _) (!id_left)
-     (comp₂ G (br_connect G i) (comp₂ G u (comp₂ G (bl_connect' G h) (ID₁ G (g⁻¹)))))))
+     lambda_gamma_fold'))
 
 end
+
 
 section
   variables (G : Dbl_gpd) {a b : carrier (gpd G)} (f : hom a b)
@@ -188,12 +197,12 @@ section
     = (comp₂ G (comp₂ G (br_connect G i₂) (ID₂ G i₂))
        (comp₂ G v (comp₂ G (comp₂ G (ID₂ G h₂) (bl_connect' G h₂)) (ID₁ G g₂⁻¹)))) :=
   begin
-    apply concat, apply (ap (λ x, comp₂ G x _)), apply (id_right₂' G),
+    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G v _))), apply (id_right₂' G),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
     apply inv_tr_eq_of_eq_tr,
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
     apply inv_tr_eq_of_eq_tr,
-    apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ (comp₂ G x _)))),
+    apply concat, apply (ap (λ x, comp₂ G (br_connect G _) (comp₂ G v (comp₂ G x _)))),
       apply (id_left₂' G),
     apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
       apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
@@ -209,47 +218,52 @@ section
     apply inv_tr_eq_of_eq_tr,
     apply concat, apply inverse, apply (id_left₂ G),
     do 2 (apply tr_eq_of_eq_inv_tr),
-    apply concat, apply (ap (λ x, comp₂ G x _)), apply inverse, apply (right_inverse₂ G),
+    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G _) _))),
+      apply inverse, apply (right_inverse₂ G),
       apply (ID₁ G i₂),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
     apply tr_eq_of_eq_inv_tr,
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) _)),
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (ID₁_respect_inv G),
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) _)),
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (id_left₂ G),
-    apply concat, apply (ap (λ x, comp₂ G x _)),
+    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G x _)),
+    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G x _)) _)),
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G x _))
+        (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (id_left₂ G),
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) _)),
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
-    apply concat, apply (ap (λ x, comp₂ G x _)),
+    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) _)),
+    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
-    apply concat, apply (ap (λ x, comp₂ G x _)),
+    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _))),
       apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G (comp₂ G _ x) _)) _)),
+    apply concat, --apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G (comp₂ G _ x) _))
+    --    (comp₂ G (br_connect G i₂) _))),
   end
 
 end
 
-exit
+definition lambda_gamma [reducible] :=
+functor.compose lambda.functor.{l l l} gamma.functor.{l l l}
+
 set_option apply.class_instance false
 definition lambda_gamma_transf (G : Dbl_gpd) :
-  dbl_functor G (functor.compose lambda.functor gamma.functor G) :=
+  dbl_functor G (lambda_gamma G) :=
 begin
   fapply dbl_functor.mk, apply functor.id,
   { intros [a,b,c,d,f,g,h,i,u],

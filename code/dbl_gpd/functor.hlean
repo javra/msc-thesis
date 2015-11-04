@@ -1,7 +1,8 @@
 import algebra.category.functor
 import ..dbl_cat.transports .decl ..transport4 ..dbl_gpd.basic arity ..transport4
 
-open eq iso iso category functor dbl_gpd dbl_precat equiv Dbl_gpd
+open eq iso iso category
+open functor dbl_gpd dbl_precat equiv Dbl_gpd
 open prod prod.ops sigma sigma.ops pi is_trunc thin_structure
 
 namespace dbl_gpd
@@ -71,10 +72,10 @@ namespace dbl_gpd
        (twoF : Π ⦃a b c d : gpd D⦄
          ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
          two_cell D f g h i → two_cell E (catF f) (catF g) (catF h) (catF i)),
-       (respect_id₁_type D E catF twoF) ×
-       (respect_comp₁_type D E catF twoF) ×
-       (respect_id₂_type D E catF twoF) ×
-       (respect_comp₂_type D E catF twoF)) ≃ (dbl_functor D E) :=
+       prod (respect_id₁_type D E catF twoF)
+        (prod (respect_comp₁_type D E catF twoF)
+         (prod (respect_id₂_type D E catF twoF)
+          (respect_comp₂_type D E catF twoF)))) ≃ (dbl_functor D E) :=
   begin
     fapply equiv.mk,
       begin
@@ -145,7 +146,7 @@ namespace dbl_gpd
     (p1 : to_fun_ob catF1 = to_fun_ob catF2)
     (p2 : transport
       (λ x, Π (a b : carrier (gpd D)), hom a b → hom (x a) (x b)) p1
-      (to_fun_hom catF1) = to_fun_hom catF2)
+      @(to_fun_hom catF1) = @(to_fun_hom catF2))
     (p3 : apd011 (λ Hob Hhom,
                   Π ⦃a b c d : carrier (gpd D)⦄
                     ⦃f : hom a b⦄ ⦃g : hom c d⦄ ⦃h : hom a c⦄ ⦃i : hom b d⦄,
