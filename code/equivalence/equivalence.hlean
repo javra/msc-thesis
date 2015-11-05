@@ -191,11 +191,159 @@ section
     (u : two_cell G f g₁ h₁ i₁)
     (v : two_cell G g₁ g₂ h₂ i₂)
 
+  definition lambda_gamma_transf_aux2_1 :=
+  (comp₂ G
+       (comp₂ G (ID₁ G i₂)
+          (comp₂ G
+             (comp₂ G (ID₂ G (ID d))
+                (comp₂ G (ID₁ G g₁)
+                   (comp₂ G (ID₂ G (ID c)) (ID₁ G (inverse g₁)))))
+             (ID₁ G (inverse i₂))))
+       (comp₂ G (br_connect G i₂)
+          (comp₂ G v (comp₂ G (bl_connect' G h₂) (ID₁ G g₂⁻¹)))))
+
+  check lambda_gamma_transf_aux2_1 G v
+
+--  set_option pp.notation false
   definition lambda_gamma_transf_aux2 :
     (comp₂ G (comp₂ G (br_connect G i₂) (ID₂ G i₂))
        (comp₂ G v (comp₂ G (comp₂ G (ID₂ G h₂) (bl_connect' G h₂)) (ID₁ G g₂⁻¹))))
-    = (comp₂ G (comp₂ G (br_connect G i₂) (ID₂ G i₂))
-       (comp₂ G v (comp₂ G (comp₂ G (ID₂ G h₂) (bl_connect' G h₂)) (ID₁ G g₂⁻¹)))) :=
+    = transport4 (λ f g h i, two_cell G f g h i)
+    (ap
+       (λ (x : hom d c),
+          (i₂ ∘ (ID d ∘ g₁ ∘ x) ∘ inverse i₂) ∘ i₂ ∘ g₁ ∘ inverse
+            h₂ ∘ g₂⁻¹)
+       (id_left (inverse g₁)) ⬝ (ap
+        (λ (x : hom d c),
+           (i₂ ∘ (ID d ∘ g₁ ∘ inverse g₁) ∘ inverse
+              i₂) ∘ i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)
+        (id_left (inverse g₁)) ⬝ (ap
+         (λ (x : hom d d),
+            (i₂ ∘ (ID d ∘ x) ∘ inverse i₂) ∘ i₂ ∘ g₁ ∘ inverse
+              h₂ ∘ g₂⁻¹)
+         (right_inverse g₁) ⬝ (ap
+          (λ (x : hom d d),
+             (i₂ ∘ (ID d ∘ ID d) ∘ inverse i₂) ∘ i₂ ∘ g₁ ∘ inverse
+               h₂ ∘ g₂⁻¹)
+          (right_inverse g₁) ⬝ (ap
+           (λ (x : hom d d),
+              (i₂ ∘ x ∘ inverse i₂) ∘ i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)
+           (id_left (ID d)) ⬝ (ap
+            (λ (x : hom d d),
+               (i₂ ∘ ID d ∘ inverse i₂) ∘ i₂ ∘ g₁ ∘ inverse
+                 h₂ ∘ g₂⁻¹)
+            (id_left (ID d)) ⬝ (ap
+             (λ (x : hom d₂ d),
+                (i₂ ∘ x) ∘ i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)
+             (id_left (inverse i₂)) ⬝ (ap
+              (λ (x : hom d₂ d),
+                 (i₂ ∘ inverse i₂) ∘ i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)
+              (id_left (inverse i₂)) ⬝ (ap
+               (λ (x : hom d₂ d₂), x ∘ i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)
+               (right_inverse i₂) ⬝ (ap
+                (λ (x : hom d₂ d₂),
+                   ID d₂ ∘ i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)
+                (right_inverse i₂) ⬝ (ap (λ (x : hom d₂ d₂), x)
+                 (id_left (i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)) ⬝ (ap
+                  (λ (x : hom d₂ d₂), i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)
+                  (id_left (ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)) ⬝ (ap
+                   (λ (x : hom c₂ c₂), i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)
+                   (id_left (ID c₂))⁻¹ ⬝ (ap
+                    (λ (x : hom c₂ c), i₂ ∘ g₁ ∘ x ∘ g₂⁻¹)
+                    (id_left (inverse h₂))⁻¹ ⬝ (ap
+                     (λ (x : hom d₂ d₂),
+                        i₂ ∘ g₁ ∘ (ID c ∘ inverse h₂) ∘ g₂⁻¹)
+                     (id_right (ID d₂))⁻¹ ⬝ ap
+                     (λ (w : hom d d₂), w ∘ g₁ ∘ (ID c ∘ inverse h₂) ∘ g₂⁻¹)
+                     (id_right i₂)⁻¹)))))))))))))))
+    (ap
+       (λ (x : hom d c),
+          (i₂ ∘ (ID d ∘ g₁ ∘ ID c ∘ inverse g₁) ∘ inverse i₂) ∘ ID
+            d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)
+       (id_left (inverse g₁)) ⬝ (ap
+        (λ (x : hom d c),
+           (i₂ ∘ (ID d ∘ g₁ ∘ x) ∘ inverse i₂) ∘ ID d₂ ∘ g₂ ∘ ID
+             c₂ ∘ g₂⁻¹)
+        (id_left (inverse g₁)) ⬝ (ap
+         (λ (x : hom d d),
+            (i₂ ∘ (ID d ∘ g₁ ∘ inverse g₁) ∘ inverse i₂) ∘ ID
+              d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)
+         (right_inverse g₁) ⬝ (ap
+          (λ (x : hom d d),
+             (i₂ ∘ (ID d ∘ x) ∘ inverse i₂) ∘ ID d₂ ∘ g₂ ∘ ID
+               c₂ ∘ g₂⁻¹)
+          (right_inverse g₁) ⬝ (ap
+           (λ (x : hom d d),
+              (i₂ ∘ (ID d ∘ ID d) ∘ inverse i₂) ∘ ID d₂ ∘ g₂ ∘ ID
+                c₂ ∘ g₂⁻¹)
+           (id_left (ID d)) ⬝ (ap
+            (λ (x : hom d d),
+               (i₂ ∘ x ∘ inverse i₂) ∘ ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)
+            (id_left (ID d)) ⬝ (ap
+             (λ (x : hom d₂ d),
+                (i₂ ∘ ID d ∘ inverse i₂) ∘ ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)
+             (id_left (inverse i₂)) ⬝ (ap
+              (λ (x : hom d₂ d), (i₂ ∘ x) ∘ ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)
+              (id_left (inverse i₂)) ⬝ (ap
+               (λ (x : hom d₂ d₂),
+                  (i₂ ∘ inverse i₂) ∘ ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)
+               (right_inverse i₂) ⬝ (ap
+                (λ (x : hom d₂ d₂), x ∘ ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)
+                (right_inverse i₂) ⬝ (ap
+                 (λ (x : hom d₂ d₂),
+                    ID d₂ ∘ ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)
+                 (id_left (i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)) ⬝ (ap
+                  (λ (x : hom d₂ d₂), x)
+                  (id_left (ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)) ⬝ (ap
+                   (λ (x : hom c₂ c₂), ID d₂ ∘ g₂ ∘ x ∘ g₂⁻¹)
+                   (id_left (ID c₂))⁻¹ ⬝ (ap
+                    (λ (x : hom c₂ c),
+                       ID d₂ ∘ g₂ ∘ (ID c₂ ∘ ID c₂) ∘ g₂⁻¹)
+                    (id_left (inverse h₂))⁻¹ ⬝ (ap
+                     (λ (x : hom d₂ d₂),
+                        x ∘ g₂ ∘ (ID c₂ ∘ ID c₂) ∘ g₂⁻¹)
+                     (id_right (ID d₂))⁻¹ ⬝ ap
+                     (λ (w : hom d d₂),
+                        comp (comp (ID d₂) (ID d₂))
+                          (comp g₂ (comp (comp (ID c₂) (ID c₂)) g₂⁻¹)))
+                     (id_right i₂)⁻¹)))))))))))))))
+    (ap (λ (x : hom d c), id) (id_left (inverse g₁)) ⬝ (ap (λ (x : hom d c), id)
+        (id_left (inverse g₁)) ⬝ (ap (λ (x : hom d d), id) (right_inverse g₁) ⬝ (ap
+          (λ (x : hom d d), id)
+          (right_inverse g₁) ⬝ (ap (λ (x : hom d d), ID d₂) (id_left (ID d)) ⬝ (ap
+            (λ (x : hom d d), ID d₂)
+            (id_left (ID d)) ⬝ (ap (λ (x : hom d₂ d), ID d₂)
+             (id_left (inverse i₂)) ⬝ (ap (λ (x : hom d₂ d), ID d₂)
+              (id_left (inverse i₂)) ⬝ (ap (λ (x : hom d₂ d₂), ID d₂)
+               (right_inverse i₂) ⬝ (ap (λ (x : hom d₂ d₂), ID d₂)
+                (right_inverse i₂) ⬝ (ap (λ (x : hom d₂ d₂), ID d₂)
+                 (id_left (i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)) ⬝ (ap
+                  (λ (x : hom d₂ d₂), ID d₂)
+                  (id_left (ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)) ⬝ (ap
+                   (λ (x : hom c₂ c₂), ID d₂)
+                   (id_left (ID c₂))⁻¹ ⬝ (ap (λ (x : hom c₂ c), ID d₂)
+                    (id_left (inverse h₂))⁻¹ ⬝ (ap (λ (x : hom d₂ d₂), ID d₂)
+                     (id_right (ID d₂))⁻¹ ⬝ ap (λ (w : hom d d₂), id)
+                     (id_right i₂)⁻¹)))))))))))))))
+    (ap (λ (x : hom d c), id) (id_left (inverse g₁)) ⬝ (ap (λ (x : hom d c), id)
+        (id_left (inverse g₁)) ⬝ (ap (λ (x : hom d d), id) (right_inverse g₁) ⬝ (ap
+          (λ (x : hom d d), id)
+          (right_inverse g₁) ⬝ (ap (λ (x : hom d d), ID d₂) (id_left (ID d)) ⬝ (ap
+            (λ (x : hom d d), ID d₂)
+            (id_left (ID d)) ⬝ (ap (λ (x : hom d₂ d), ID d₂)
+             (id_left (inverse i₂)) ⬝ (ap (λ (x : hom d₂ d), ID d₂)
+              (id_left (inverse i₂)) ⬝ (ap (λ (x : hom d₂ d₂), ID d₂)
+               (right_inverse i₂) ⬝ (ap (λ (x : hom d₂ d₂), ID d₂)
+                (right_inverse i₂) ⬝ (ap (λ (x : hom d₂ d₂), ID d₂)
+                 (id_left (i₂ ∘ g₁ ∘ inverse h₂ ∘ g₂⁻¹)) ⬝ (ap
+                  (λ (x : hom d₂ d₂), ID d₂)
+                  (id_left (ID d₂ ∘ g₂ ∘ ID c₂ ∘ g₂⁻¹)) ⬝ (ap
+                   (λ (x : hom c₂ c₂), ID d₂)
+                   (id_left (ID c₂))⁻¹ ⬝ (ap (λ (x : hom c₂ c), ID d₂)
+                    (id_left (inverse h₂))⁻¹ ⬝ (ap (λ (x : hom d₂ d₂), ID d₂)
+                     (id_right (ID d₂))⁻¹ ⬝ ap (λ (w : hom d d₂), id)
+                     (id_right i₂)⁻¹)))))))))))))))
+    (lambda_gamma_transf_aux2_1 G v) :=
   begin
     apply concat, apply (ap (λ x, comp₂ G x (comp₂ G v _))), apply (id_right₂' G),
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
@@ -218,43 +366,78 @@ section
     apply inv_tr_eq_of_eq_tr,
     apply concat, apply inverse, apply (id_left₂ G),
     do 2 (apply tr_eq_of_eq_inv_tr),
-    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G _) _))),
-      apply inverse, apply (right_inverse₂ G),
-      apply (ID₁ G i₂),
-    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+    apply concat, apply ap (λ x, comp₂ G x (comp₂ G (br_connect G _) _)),
+      apply inverse, apply right_inverse₂ G, apply ID₁ G i₂,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_b' G,
     apply tr_eq_of_eq_inv_tr,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_u' G,
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply ID₁_respect_inv G,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply id_left₂ G,
+    apply concat, apply ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b' G,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_b' G,
+    apply tr_eq_of_eq_inv_tr,
+    apply concat, apply ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_u' G,
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (ID₁_respect_inv G),
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (id_left₂ G),
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ (comp₂ G x _))
+        (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply id_left₂ G,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_r_b' G,
     apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
-    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_b' G,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_b' G,
     apply tr_eq_of_eq_inv_tr,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_r_u' G,
     apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_u' G,
     apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
     apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G x _))
-        (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (id_left₂ G),
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
-    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
-    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
-    apply tr_eq_of_eq_inv_tr,
-    apply concat, apply (ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
-    apply concat, apply (ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _))),
-      apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
-    apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
-    apply tr_eq_of_eq_inv_tr,
-    apply concat, --apply (ap (λ x, comp₂ G (comp₂ G _ (comp₂ G (comp₂ G _ x) _))
-    --    (comp₂ G (br_connect G i₂) _))),
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ (comp₂ G (comp₂ G (ID₂ G (ID d)) x) _))
+        (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply right_inverse₂ G, apply ID₁ G g₁, esimp,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ (comp₂ G x _))
+        (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_ub G,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_r_ub G,
+    apply concat, apply ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_ub G,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_ub G,
+    do 2 apply tr_eq_of_eq_inv_tr,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ (comp₂ G (comp₂ G (ID₂ G (ID d))
+        x) _)) (comp₂ G (br_connect G i₂) _)), apply ap (λ x, comp₂ G _ x),
+      apply inverse, apply ID₁_respect_inv G,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ (comp₂ G (comp₂ G (ID₂ G (ID d))
+        x) _)) (comp₂ G (br_connect G i₂) _)), apply ap (λ x, comp₂ G _ x),
+      apply inverse, apply id_left₂ G,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ (comp₂ G (comp₂ G (ID₂ G (ID d))
+        x) _)) (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_ub G,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ (comp₂ G x _))
+        (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_ub G,
+    apply concat, apply ap (λ x, comp₂ G (comp₂ G _ x) (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_r_ub G,
+    apply concat, apply ap (λ x, comp₂ G x (comp₂ G (br_connect G i₂) _)),
+      apply inverse, apply transp_comp₂_eq_comp₂_transp_l_ub G,
+    apply concat, apply inverse, apply transp_comp₂_eq_comp₂_transp_r_ub G,
+    do 2 apply tr_eq_of_eq_inv_tr,
+    do 12 apply eq_inv_tr_of_tr_eq,
+    do 4 apply eq_tr_of_inv_tr_eq,
+    apply concat, apply (@transport_eq_transport4 _ _ _ _ (@two_cell G _ _ _ _) _
+       (λ w, _) (λ w, (comp (comp (ID d₂) (ID d₂))      
+       (comp g₂ (comp (comp (ID c₂) (ID c₂)) (inverse g₂))))) (λ w, id) (λ w, id)),
+    do 15 (apply concat; apply transport4_transport_acc), esimp,
   end
+
+exit
 
 end
 
@@ -283,14 +466,14 @@ begin
       esimp[lambda_gamma_fold],
       do 4 (apply tr_eq_of_eq_inv_tr),
       apply concat, apply (ap (λ x, comp₂ G x _)), apply br_connect_id_eq_ID₁,
-      apply concat, apply (ap (λ x, comp₂ G x _)), apply zero_unique,
+      apply concat, apply (ap (λ x, comp₂ G x _)), apply (zero_unique G),
       apply concat, apply (id_left₂' G), do 2 (apply tr_eq_of_eq_inv_tr),
       apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G x _))), apply bl_connect'_id_eq_ID₁,
       apply concat, apply (ap (λ x, comp₂ G _ x)), apply inverse,
         apply (transp_comp₂_eq_comp₂_transp_r_u' G),
       apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
       apply inv_tr_eq_of_eq_tr,
-      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G x _))), apply zero_unique,
+      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G x _))), apply (zero_unique G),
       apply concat, apply (ap (λ x, comp₂ G _ x)), apply (id_left₂' G),
       apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
       apply inv_tr_eq_of_eq_tr,
@@ -301,7 +484,7 @@ begin
       apply inverse,
       apply concat, apply (transport_eq_transport4 (λ f g h i, two_cell G f g h i)),
       do 10 (apply concat; apply transport4_transport_acc),
-      apply transport4_set_reduce, do 4 (apply !homH),
+      apply transport4_set_reduce, do 4 (apply !is_hset_hom),
     apply is_hset.elim,
   },
   { intros,
@@ -328,41 +511,54 @@ begin
         apply concat, apply assoc,
         apply concat, apply (ap (λ x, x ∘ _)), apply left_inverse, apply id_left,
       esimp[lambda_gamma_fold],
-      do 4 (apply tr_eq_of_eq_inv_tr),
-      apply concat, apply (ap (λ x, comp₂ G x _)), apply inverse, apply br_of_br_square,
+      rotate 1, apply is_hset.elim,
+      apply eq.inv_tr_eq_of_eq_tr, do 3 (apply tr_eq_of_eq_inv_tr),
+      /-apply concat, apply (ap (λ x, comp₂ G x _)), apply inverse, apply br_of_br_square,
       apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_r G),
       apply tr_eq_of_eq_inv_tr,
       apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
       apply tr_eq_of_eq_inv_tr,
-      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ (comp₂ G x _)))),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) (comp₂ G _ (comp₂ G x _)))),
         apply inverse, apply (bl_of_bl_square G),
-      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) (comp₂ G _ x))),
         apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_u' G),
-      apply concat, apply (ap (λ x, comp₂ G _ x)),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) x)),
         apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
       apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_u' G),
       apply inv_tr_eq_of_eq_tr,
-      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
-        apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G),
-      apply concat, apply (ap (λ x, comp₂ G _ x)),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) (comp₂ G _ x))),
+        apply inverse, apply (transp_comp₂_eq_comp₂_transp_r_b' G), esimp,
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) x)),
         apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
       apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_b' G),
       apply tr_eq_of_eq_inv_tr,
-      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
-        apply transp_comp₂_inner_deal2,
-      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ (comp₂ G _ x)))),
-        apply lambda_gamma_transf_aux1,
-      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) (comp₂ G _ x))),
+        apply (transp_comp₂_inner_deal2 G),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) (comp₂ G _ (comp₂ G _ x)))),
+        apply (lambda_gamma_transf_aux1 G),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) (comp₂ G _ x))),
         apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_l G),
-      apply concat, apply (ap (λ x, comp₂ G _ x)),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) x)),
         apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_l G),
       apply concat, apply inverse, apply (transp_comp₂_eq_comp₂_transp_l_l G),
       apply tr_eq_of_eq_inv_tr,
-      apply concat, apply (ap (λ x, comp₂ G _ (comp₂ G _ x))),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) (comp₂ G _ x))),
         apply inverse, apply (interchange G),
-      apply concat, apply (ap (λ x, comp₂ G _ x)), apply inverse, apply (interchange G),
+      apply concat, apply (ap (λ x, comp₂ G (comp₁ G (comp₂ G (br_connect G i₂) _)
+          (comp₂ G _ (br_connect G i₁))) x)), apply inverse, apply (interchange G),
       apply concat, apply inverse, apply (interchange G),
-      apply concat,
+      apply concat,-/
+      
   },
 end
 
